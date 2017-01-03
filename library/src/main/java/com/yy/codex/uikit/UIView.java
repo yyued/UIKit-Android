@@ -14,12 +14,7 @@ import android.widget.FrameLayout;
 
 public class UIView extends FrameLayout {
 
-    private CGRect frame = new CGRect(0, 0, 0, 0);
-    private boolean wantsLayer = false;
-    private CALayer layer = new CALayer();
-    private boolean userInteractionEnabled = false;
-    private UIView superview;
-    private UIView[] subviews = new UIView[0];
+    /* FrameLayout initialize methods */
 
     public UIView(Context context) {
         super(context);
@@ -38,6 +33,10 @@ public class UIView extends FrameLayout {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 
+    /* category UIView Layout */
+
+    private CGRect frame = new CGRect(0, 0, 0, 0);
+
     public CGRect getFrame() {
         return frame;
     }
@@ -49,6 +48,11 @@ public class UIView extends FrameLayout {
         this.setMinimumWidth((int) frame.size.getWidth());
         this.setMinimumHeight((int) frame.size.getHeight());
     }
+
+    /* category UIView Hierarchy */
+
+    private UIView superview;
+    private UIView[] subviews = new UIView[0];
 
     public void removeFromSuperview() {
         if (superview != null) {
@@ -76,17 +80,10 @@ public class UIView extends FrameLayout {
         addView(subview, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
     }
 
-    public boolean isUserInteractionEnabled() {
-        return userInteractionEnabled;
-    }
+    /* category UIView Layer-Backed Service */
 
-    public void setUserInteractionEnabled(boolean userInteractionEnabled) {
-        this.userInteractionEnabled = userInteractionEnabled;
-    }
-
-    public void addGestureRecognizer() {
-        // todo: zhixuan
-    }
+    private boolean wantsLayer = false;
+    private CALayer layer = new CALayer();
 
     public boolean isWantsLayer() {
         return wantsLayer;
@@ -113,6 +110,23 @@ public class UIView extends FrameLayout {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         drawRect(canvas, new CGRect(0, 0, canvas.getWidth(), canvas.getHeight()));
+    }
+
+    /* category: UIView touch events */
+
+    private boolean userInteractionEnabled = false;
+
+
+    public boolean isUserInteractionEnabled() {
+        return userInteractionEnabled;
+    }
+
+    public void setUserInteractionEnabled(boolean userInteractionEnabled) {
+        this.userInteractionEnabled = userInteractionEnabled;
+    }
+
+    public void addGestureRecognizer() {
+        // todo: zhixuan
     }
 
 }
