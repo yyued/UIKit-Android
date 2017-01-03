@@ -21,16 +21,27 @@ public class MainActivity extends AppCompatActivity {
         UIView view = new UIView(this);
         view.setBackgroundColor(Color.GRAY);
 
-        UIView subview = new UIView(this);
+        final UIView subview = new UIView(this);
         subview.setBackgroundColor(Color.YELLOW);
-        subview.setFrame(new CGRect(100,100, 200, 200));
-        view.addSubview(subview);
+        subview.setFrame(new CGRect(0,0, 200, 200));
         view.addSubview(subview);
 
-        UIView subsubview = new UIView(this);
-        subsubview.setBackgroundColor(Color.RED);
-        subsubview.setFrame(new CGRect(50,50, 50, 50));
-        subview.addSubview(subsubview);
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        UIView.animateWithSpring(120.0, 12.0, 80.0, new Runnable() {
+                            @Override
+                            public void run() {
+                                subview.setFrame(new CGRect(0,0,300,300));
+                            }
+                        }, null);
+                    }
+                });
+            }
+        }, 2000);
 
         setContentView(view);
     }
