@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 /**
@@ -17,6 +18,8 @@ public class UIView extends FrameLayout {
     private boolean wantsLayer = false;
     private CALayer layer = new CALayer();
     private boolean userInteractionEnabled = false;
+    private UIView superview;
+    private UIView[] subviews = new UIView[0];
 
     public UIView(Context context) {
         super(context);
@@ -41,6 +44,36 @@ public class UIView extends FrameLayout {
 
     public void setFrame(CGRect frame) {
         this.frame = frame;
+        this.setX((float) frame.origin.getX());
+        this.setY((float) frame.origin.getY());
+        this.setMinimumWidth((int) frame.size.getWidth());
+        this.setMinimumHeight((int) frame.size.getHeight());
+    }
+
+    public void removeFromSuperview() {
+        if (superview != null) {
+            superview.removeView(this);
+            UIView[] cloneSubviews = new UIView[superview.subviews.length - 1];
+            for (int i = 0, j = 0; i < superview.subviews.length; i++) {
+                if (superview.subviews[i] != this) {
+                    cloneSubviews[j] = subviews[i];
+                }
+                j++;
+            }
+            subviews = cloneSubviews;
+        }
+    }
+
+    public void addSubview(UIView subview) {
+        subview.removeFromSuperview();
+        subview.superview = this;
+        UIView[] cloneSubviews = new UIView[subviews.length + 1];
+        for (int i = 0; i < subviews.length; i++) {
+            cloneSubviews[i] = subviews[i];
+        }
+        cloneSubviews[cloneSubviews.length - 1] = subview;
+        subviews = cloneSubviews;
+        addView(subview, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
     }
 
     public boolean isUserInteractionEnabled() {
