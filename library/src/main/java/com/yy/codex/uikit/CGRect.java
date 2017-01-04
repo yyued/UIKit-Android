@@ -17,8 +17,25 @@ public final class CGRect {
         this.size = new CGSize(width, height);
     }
 
-    public RectF toRectF(){
-        return new RectF((float) origin.getX(), (float)origin.getY(), (float) (origin.getX() + size.getWidth()), (float)(origin.getY() + size.getHeight()));
+    public RectF toRectF() {
+        return new RectF((float) origin.getX(), (float) origin.getY(), (float) (origin.getX() + size.getWidth()), (float) (origin.getY() + size.getHeight()));
+    }
+
+    public CGRect setX(double x) {
+        return new CGRect(x, this.origin.getY(), this.size.getWidth(), this.size.getHeight());
+    }
+
+    public CGRect setY(double y) {
+        return new CGRect(this.origin.getX(), y, this.size.getWidth(), this.size.getHeight());
+    }
+
+    public CGRect setWidth(double width) {
+        return new CGRect(this.origin.getX(), this.origin.getY(), width, this.size.getHeight());
+    }
+
+    public CGRect setHeight(double height) {
+        return new CGRect(this.origin.getX(), this.origin.getY(), this.size.getWidth(), height);
+
     }
 
 }
