@@ -19,17 +19,28 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         UIView view = new UIView(this);
-        view.setBackgroundColor(Color.GRAY);
+        int bodyColor = Color.WHITE;
+
+        view.setBackgroundColor(bodyColor); // not onDraw if no set background
 
         UIView subview = new UIView(this);
-        subview.setBackgroundColor(Color.YELLOW);
         subview.setFrame(new CGRect(100,100, 200, 200));
-        view.addSubview(subview);
+        subview.setBackgroundColor(bodyColor);
+        subview.setWantsLayer(true);
+        subview.getLayer()
+                .setShadowRadius(50).setShadowX(50).setShadowY(50)
+                .setBorderWidth(10).setCornerRadius(50)
+                .setBackgroundColor(Color.BLUE);
         view.addSubview(subview);
 
         UIView subsubview = new UIView(this);
-        subsubview.setBackgroundColor(Color.RED);
-        subsubview.setFrame(new CGRect(50,50, 50, 50));
+        subsubview.setFrame(new CGRect(50, 50, 50, 50));
+        subsubview.setBackgroundColor(bodyColor);
+        subsubview.setWantsLayer(true);
+        subsubview.getLayer()
+                .setShadowRadius(50).setShadowX(10).setShadowY(10)
+                .setBorderWidth(24).setBorderColor(0xffFF0000)
+                .setBackgroundColor(Color.GREEN);
         subview.addSubview(subsubview);
 
         setContentView(view);

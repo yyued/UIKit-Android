@@ -2,9 +2,14 @@ package com.yy.codex.uikit;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
@@ -104,6 +109,12 @@ public class UIView extends FrameLayout {
 
     public void drawRect(Canvas canvas, CGRect rect) {
         // TODO: 2017/1/3 adi
+        if (wantsLayer){
+            layer.drawRect(canvas, rect);
+            if (layer.getShadowRadius() > 0 && getLayerType() != LAYER_TYPE_SOFTWARE){
+                setLayerType(LAYER_TYPE_SOFTWARE, null);
+            }
+        }
     }
 
     @Override
