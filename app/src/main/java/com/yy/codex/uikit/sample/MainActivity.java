@@ -11,6 +11,7 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.yy.codex.uikit.CGRect;
+import com.yy.codex.uikit.NSLineBreakMode;
 import com.yy.codex.uikit.UIConstraint;
 import com.yy.codex.uikit.UILabel;
 import com.yy.codex.uikit.UIView;
@@ -63,7 +64,8 @@ class TestView extends UIView {
         aLabel.getConstraint().width = "50%";
         aLabel.getConstraint().centerHorizontally = true;
         aLabel.getConstraint().centerVertically = true;
-        aLabel.setNumberOfLines(0);
+        aLabel.setNumberOfLines(2);
+        aLabel.setLinebreakMode(NSLineBreakMode.ByTruncatingTail);
         aLabel.setText("123213fhjkdsgfljkdahsfkhdskjfhdksaljhfkldsajhfkjdsahfkjlhsadlfkfdsjhfgjdshafghljk123213fhjkdsgfljkdahsfkhdskjfhdksaljhfkldsajhfkjdsahfkjlhsadlfkfdsjhfgjdshafghljk");
         addSubview(aLabel);
     }

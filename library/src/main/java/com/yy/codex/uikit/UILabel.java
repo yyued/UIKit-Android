@@ -9,6 +9,7 @@ import android.support.annotation.RequiresApi;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
+import android.text.TextUtils;
 import android.text.style.AbsoluteSizeSpan;
 import android.util.AttributeSet;
 import android.view.View;
@@ -93,6 +94,24 @@ public class UILabel extends UIView {
             numberOfLines = 99999;
         }
         textView.setMaxLines(numberOfLines);
+    }
+
+    private NSLineBreakMode linebreakMode = NSLineBreakMode.ByWordWrapping;
+
+    public NSLineBreakMode getLinebreakMode() {
+        return linebreakMode;
+    }
+
+    public void setLinebreakMode(NSLineBreakMode linebreakMode) {
+        this.linebreakMode = linebreakMode;
+        switch (linebreakMode) {
+            case ByTruncatingTail:
+                textView.setEllipsize(TextUtils.TruncateAt.END);
+                break;
+            default:
+                textView.setEllipsize(null);
+                break;
+        }
     }
 
     /* category: Layouts */
