@@ -7,13 +7,10 @@ import android.graphics.Canvas;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.BounceInterpolator;
+import android.view.ViewParent;
 import android.widget.FrameLayout;
-
-import com.facebook.rebound.SimpleSpringListener;
 import com.facebook.rebound.Spring;
 import com.facebook.rebound.SpringConfig;
 import com.facebook.rebound.SpringListener;
@@ -22,8 +19,6 @@ import com.facebook.rebound.SpringSystem;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * Created by cuiminghui on 2016/12/30.
@@ -66,44 +61,71 @@ public class UIView extends FrameLayout {
     public void setFrame(CGRect frame) {
         CGRect oldValue = this.frame;
         this.frame = frame;
-        this.setX((float) frame.origin.getX() * getContext().getResources().getDisplayMetrics().scaledDensity);
-        this.setY((float) frame.origin.getY() * getContext().getResources().getDisplayMetrics().scaledDensity);
-        this.setMinimumWidth((int) (frame.size.getWidth() * getContext().getResources().getDisplayMetrics().scaledDensity));
-        this.setMinimumHeight((int) (frame.size.getHeight() * getContext().getResources().getDisplayMetrics().scaledDensity));
+        layoutSubviews();
+        float scaledDensity = getContext().getResources().getDisplayMetrics().scaledDensity;
+        this.setX((float) frame.origin.getX() * scaledDensity);
+        this.setY((float) frame.origin.getY() * scaledDensity);
+        this.setMinimumWidth((int) (frame.size.getWidth() * scaledDensity));
+        this.setMinimumHeight((int) (frame.size.getHeight() * scaledDensity));
         UIView.addAnimationState(this, "frame.origin.x", oldValue.origin.getX(), frame.origin.getX());
         UIView.addAnimationState(this, "frame.origin.y", oldValue.origin.getY(), frame.origin.getY());
         UIView.addAnimationState(this, "frame.size.width", oldValue.size.getWidth(), frame.size.getWidth());
         UIView.addAnimationState(this, "frame.size.height", oldValue.size.getHeight(), frame.size.getHeight());
     }
 
+    public void layoutSubviews() {
+
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+        if (getSuperview() == null) {
+            float scaledDensity = getContext().getResources().getDisplayMetrics().scaledDensity;
+            setFrame(new CGRect((float)left / scaledDensity, (float)top / scaledDensity, ((float)right - (float)left) / scaledDensity, ((float)bottom - (float)top) / scaledDensity));
+        }
+    }
+
+    /* category UIView Render */
+
+    @Override
+    public void setAlpha(float alpha) {
+        float oldValue = this.getAlpha();
+        super.setAlpha(alpha);
+        UIView.addAnimationState(this, "alpha", oldValue, alpha);
+    }
+
     /* category UIView Hierarchy */
 
-    private UIView superview;
-    private UIView[] subviews = new UIView[0];
+    public UIView getSuperview() {
+        ViewParent parent = getParent();
+        if (parent != null && parent.getClass().isAssignableFrom(UIView.class)) {
+            return (UIView)parent;
+        }
+        return null;
+    }
+
+    public UIView[] getSubviews() {
+        ArrayList<UIView> subviews = new ArrayList<>();
+        for(int index = 0; index < getChildCount(); index++) {
+            View nextChild = getChildAt(index);
+            if (nextChild.getClass().isAssignableFrom(UIView.class)) {
+                subviews.add((UIView)nextChild);
+            }
+        }
+        UIView[] subviewsArr = new UIView[subviews.size()];
+        subviews.toArray(subviewsArr);
+        return subviewsArr;
+    }
 
     public void removeFromSuperview() {
-        if (superview != null) {
-            superview.removeView(this);
-            UIView[] cloneSubviews = new UIView[superview.subviews.length - 1];
-            for (int i = 0, j = 0; i < superview.subviews.length; i++) {
-                if (superview.subviews[i] != this) {
-                    cloneSubviews[j] = subviews[i];
-                }
-                j++;
-            }
-            subviews = cloneSubviews;
+        if (getSuperview() != null) {
+            getSuperview().removeView(this);
         }
     }
 
     public void addSubview(UIView subview) {
         subview.removeFromSuperview();
-        subview.superview = this;
-        UIView[] cloneSubviews = new UIView[subviews.length + 1];
-        for (int i = 0; i < subviews.length; i++) {
-            cloneSubviews[i] = subviews[i];
-        }
-        cloneSubviews[cloneSubviews.length - 1] = subview;
-        subviews = cloneSubviews;
         addView(subview, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
     }
 
@@ -170,6 +192,9 @@ public class UIView extends FrameLayout {
         }
         else if (aKey.equalsIgnoreCase("frame.size.height")) {
             setFrame(this.frame.setHeight(aValue));
+        }
+        else if (aKey.equalsIgnoreCase("alpha")) {
+            setAlpha(aValue);
         }
     }
 
