@@ -7,10 +7,14 @@ import android.support.annotation.RequiresApi;
 import android.support.v4.view.ViewGroupCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Layout;
+import android.text.Spannable;
+import android.text.style.LeadingMarginSpan;
 import android.util.AttributeSet;
 import android.view.View;
 
 import com.yy.codex.uikit.CGRect;
+import com.yy.codex.uikit.NSAttributedString;
 import com.yy.codex.uikit.NSLineBreakMode;
 import com.yy.codex.uikit.UIConstraint;
 import com.yy.codex.uikit.UILabel;
@@ -64,9 +68,12 @@ class TestView extends UIView {
         aLabel.getConstraint().width = "50%";
         aLabel.getConstraint().centerHorizontally = true;
         aLabel.getConstraint().centerVertically = true;
-        aLabel.setNumberOfLines(2);
-        aLabel.setLinebreakMode(NSLineBreakMode.ByTruncatingTail);
-        aLabel.setText("123213fhjkdsgfljkdahsfkhdskjfhdksaljhfkldsajhfkjdsahfkjlhsadlfkfdsjhfgjdshafghljk123213fhjkdsgfljkdahsfkhdskjfhdksaljhfkldsajhfkjdsahfkjlhsadlfkfdsjhfgjdshafghljk");
+        NSAttributedString attributedString = new NSAttributedString("Test");
+        attributedString.setFont(null, 30);
+        attributedString.setTextColor(Color.RED);
+        attributedString.setAlignment(Layout.Alignment.ALIGN_CENTER);
+        attributedString.setDeleteline(true);
+        aLabel.setAttributedText(attributedString);
         addSubview(aLabel);
     }
 

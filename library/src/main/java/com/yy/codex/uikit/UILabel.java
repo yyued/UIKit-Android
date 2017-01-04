@@ -6,6 +6,7 @@ import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
+import android.text.Layout;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -64,15 +65,43 @@ public class UILabel extends UIView {
 
     /* category: TextView Props */
 
-    private String text;
+    private NSAttributedString attributedText;
+    private String fontFamilyName;
+    private double fontPointSize = 17;
+    private int textColor = Color.BLACK;
+    private Layout.Alignment textAlignment = Layout.Alignment.ALIGN_NORMAL;
+
+    public String getFontFamilyName() {
+        return fontFamilyName;
+    }
+
+    public void setFontFamilyName(String fontFamilyName) {
+        this.fontFamilyName = fontFamilyName;
+    }
+
+    public double getFontPointSize() {
+        return fontPointSize;
+    }
+
+    public void setFontPointSize(double fontPointSize) {
+        this.fontPointSize = fontPointSize;
+    }
 
     public String getText() {
-        return text;
+        return attributedText.toString();
     }
 
     public void setText(String text) {
-        this.text = text;
-        textView.setText(text);
+        NSAttributedString attributedString = new NSAttributedString(text);
+        attributedString.setFont(this.fontFamilyName, this.fontPointSize);
+        attributedString.setTextColor(textColor);
+        attributedString.setAlignment(textAlignment);
+        setAttributedText(attributedString);
+    }
+
+    public void setAttributedText(NSAttributedString attributedText) {
+        this.attributedText = attributedText;
+        this.textView.setText(attributedText);
         if (getConstraint() != null) {
             getConstraint().setNeedsLayout();
             UIView superview = getSuperview();
@@ -105,6 +134,12 @@ public class UILabel extends UIView {
     public void setLinebreakMode(NSLineBreakMode linebreakMode) {
         this.linebreakMode = linebreakMode;
         switch (linebreakMode) {
+            case ByTruncatingHead:
+                textView.setEllipsize(TextUtils.TruncateAt.START);
+                break;
+            case ByTruncatingMiddle:
+                textView.setEllipsize(TextUtils.TruncateAt.MIDDLE);
+                break;
             case ByTruncatingTail:
                 textView.setEllipsize(TextUtils.TruncateAt.END);
                 break;
