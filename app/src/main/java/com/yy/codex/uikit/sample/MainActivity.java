@@ -12,10 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.yy.codex.uikit.CGRect;
+import com.yy.codex.uikit.UIConstraint;
 import com.yy.codex.uikit.UIView;
-
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -62,13 +60,13 @@ class TestView extends UIView {
         redView = new UIView(getContext());
         redView.setBackgroundColor(Color.RED);
         redView.setFrame(new CGRect(0,0,20,20));
+        UIConstraint constraint = new UIConstraint();
+        constraint.centerHorizontally = true;
+        constraint.centerVertically = true;
+        constraint.width = "50%";
+        constraint.height = "50%";
+        redView.setConstraint(constraint);
         addSubview(redView);
-    }
-
-    @Override
-    public void layoutSubviews() {
-        super.layoutSubviews();
-        redView.setFrame(new CGRect(getFrame().size.getWidth() * 0.25, getFrame().size.getHeight() * 0.375 ,getFrame().size.getWidth() * 0.5, getFrame().size.getHeight() * 0.25));
     }
 
 }

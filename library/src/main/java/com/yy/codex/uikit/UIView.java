@@ -53,12 +53,16 @@ public class UIView extends FrameLayout {
     /* category UIView Layout */
 
     private CGRect frame = new CGRect(0, 0, 0, 0);
+    private UIConstraint constraint = null;
 
     public CGRect getFrame() {
         return frame;
     }
 
     public void setFrame(CGRect frame) {
+        if (this.getFrame().equals(frame)) {
+            return;
+        }
         CGRect oldValue = this.frame;
         this.frame = frame;
         layoutSubviews();
@@ -73,8 +77,36 @@ public class UIView extends FrameLayout {
         UIView.addAnimationState(this, "frame.size.height", oldValue.size.getHeight(), frame.size.getHeight());
     }
 
-    public void layoutSubviews() {
+    public CGPoint getCenter() {
+        return new CGPoint((frame.origin.getX() + frame.size.getWidth()) / 2.0, (frame.origin.getY() + frame.size.getHeight()) / 2.0);
+    }
 
+    public UIConstraint getConstraint() {
+        return constraint;
+    }
+
+    public void setConstraint(UIConstraint constraint) {
+        this.constraint = constraint;
+        UIView superview = getSuperview();
+        if (superview != null) {
+            superview.layoutSubviews();
+        }
+    }
+
+    public void layoutSubviews() {
+        UIView previous = null;
+        UIView[] subviews = getSubviews();
+        for (int i = 0; i < subviews.length; i++) {
+            UIView subview = subviews[i];
+            if (subview.constraint != null && !subview.constraint.disabled) {
+                subview.setFrame(subview.constraint.requestFrame(subview, this, previous));
+            }
+            previous = subview;
+        }
+    }
+
+    public CGSize intrinsicContentSize() {
+        return new CGSize(0, 0);
     }
 
     @Override
@@ -99,7 +131,7 @@ public class UIView extends FrameLayout {
 
     public UIView getSuperview() {
         ViewParent parent = getParent();
-        if (parent != null && parent.getClass().isAssignableFrom(UIView.class)) {
+        if (parent != null && UIView.class.isAssignableFrom(parent.getClass())) {
             return (UIView)parent;
         }
         return null;
@@ -109,7 +141,7 @@ public class UIView extends FrameLayout {
         ArrayList<UIView> subviews = new ArrayList<>();
         for(int index = 0; index < getChildCount(); index++) {
             View nextChild = getChildAt(index);
-            if (nextChild.getClass().isAssignableFrom(UIView.class)) {
+            if (UIView.class.isAssignableFrom(nextChild.getClass())) {
                 subviews.add((UIView)nextChild);
             }
         }
@@ -126,6 +158,9 @@ public class UIView extends FrameLayout {
 
     public void insertSubview(UIView subview, int atIndex) {
         subview.removeFromSuperview();
+        if (atIndex < 0 || atIndex > getChildCount()) {
+            return;
+        }
         addView(subview, atIndex, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
     }
 
@@ -135,11 +170,17 @@ public class UIView extends FrameLayout {
     }
 
     public void insertBelowSubview(UIView subview, UIView siblingSubview) {
-
+        if (siblingSubview.getSuperview() == this) {
+            int atIndex = indexOfChild(siblingSubview);
+            insertSubview(subview, atIndex);
+        }
     }
 
     public void insertAboveSubview(UIView subview, UIView siblingSubview) {
-
+        if (siblingSubview.getSuperview() == this) {
+            int atIndex = indexOfChild(siblingSubview);
+            insertSubview(subview, atIndex + 1);
+        }
     }
 
     public void bringSubviewToFront(UIView subview) {
@@ -179,11 +220,11 @@ public class UIView extends FrameLayout {
 
     @Override
     public void onViewAdded(View child) {
-        if (child.getClass().isAssignableFrom(UIView.class)) {
+        if (UIView.class.isAssignableFrom(child.getClass())) {
             ((UIView) child).willMoveToSuperview(this);
         }
         super.onViewAdded(child);
-        if (child.getClass().isAssignableFrom(UIView.class)) {
+        if (UIView.class.isAssignableFrom(child.getClass())) {
             didAddSubview((UIView) child);
             ((UIView) child).didMoveToSuperview();
         }
@@ -191,10 +232,10 @@ public class UIView extends FrameLayout {
 
     @Override
     public void onViewRemoved(View child) {
-        if (child.getClass().isAssignableFrom(UIView.class)) {
+        super.onViewRemoved(child);
+        if (UIView.class.isAssignableFrom(child.getClass())) {
             willRemoveSubview((UIView) child);
         }
-        super.onViewRemoved(child);
     }
 
     @Override
