@@ -4,10 +4,6 @@ import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Rect;
-import android.graphics.RectF;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
@@ -15,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.widget.FrameLayout;
+
 import com.facebook.rebound.Spring;
 import com.facebook.rebound.SpringConfig;
 import com.facebook.rebound.SpringListener;
@@ -71,6 +68,7 @@ public class UIView extends FrameLayout {
         this.setY((float) frame.origin.getY() * scaledDensity);
         this.setMinimumWidth((int) (frame.size.getWidth() * scaledDensity));
         this.setMinimumHeight((int) (frame.size.getHeight() * scaledDensity));
+        this.layer.setFrame(frame);
         UIView.addAnimationState(this, "frame.origin.x", oldValue.origin.getX(), frame.origin.getX());
         UIView.addAnimationState(this, "frame.origin.y", oldValue.origin.getY(), frame.origin.getY());
         UIView.addAnimationState(this, "frame.size.width", oldValue.size.getWidth(), frame.size.getWidth());

@@ -1,6 +1,5 @@
 package com.yy.codex.uikit;
 
-import android.graphics.Rect;
 import android.graphics.RectF;
 
 /**
@@ -35,7 +34,10 @@ public final class CGRect {
 
     public CGRect setHeight(double height) {
         return new CGRect(this.origin.getX(), this.origin.getY(), this.size.getWidth(), height);
+    }
 
+    public CGSize getSize(){
+        return size;
     }
 
 }

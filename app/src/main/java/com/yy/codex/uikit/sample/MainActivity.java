@@ -1,21 +1,18 @@
 package com.yy.codex.uikit.sample;
 
 import android.content.Context;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Build;
-import android.support.annotation.RequiresApi;
-import android.support.v4.view.ViewGroupCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
+import android.support.v7.app.AppCompatActivity;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.ViewGroup;
 
+import com.yy.codex.uikit.CALayer;
 import com.yy.codex.uikit.CGRect;
 import com.yy.codex.uikit.UIView;
-
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -61,14 +58,23 @@ class TestView extends UIView {
     public void init() {
         redView = new UIView(getContext());
         redView.setBackgroundColor(Color.RED);
-        redView.setFrame(new CGRect(0,0,20,20));
+        redView.setWantsLayer(true);
+        redView.setFrame(new CGRect(0,0,200,200));
+        CALayer mainLayer = redView.getLayer();
+        mainLayer.setCornerRadius(5).setBorderWidth(10).setBorderColor(Color.BLACK)
+                .setBackgroundColor(Color.GREEN);
         addSubview(redView);
-    }
 
-    @Override
-    public void layoutSubviews() {
-        super.layoutSubviews();
-        redView.setFrame(new CGRect(getFrame().size.getWidth() * 0.25, getFrame().size.getHeight() * 0.375 ,getFrame().size.getWidth() * 0.5, getFrame().size.getHeight() * 0.25));
+        CALayer sub1 = new CALayer(new CGRect(10, 10, 150, 150));
+        sub1.setCornerRadius(10).setBackgroundColor(Color.YELLOW);
+        mainLayer.addSubLayer(sub1);
+
+        CALayer sub2 = new CALayer(new CGRect(10, 10, 200, 200));
+        sub2.setBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.avatar))
+                .setBitmapGravity(CALayer.GRAVITY_BOTTOM)
+                .setCornerRadius(10).setBackgroundColor(Color.BLUE);
+        mainLayer.insertAboveSubLayer(sub2, sub1);
+
     }
 
 }
