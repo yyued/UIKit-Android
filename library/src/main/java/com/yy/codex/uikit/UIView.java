@@ -105,6 +105,16 @@ public class UIView extends FrameLayout {
         }
     }
 
+    private double maxWidth = 0.0;
+
+    public double getMaxWidth() {
+        return maxWidth;
+    }
+
+    public void setMaxWidth(double maxWidth) {
+        this.maxWidth = maxWidth;
+    }
+
     public CGSize intrinsicContentSize() {
         return new CGSize(0, 0);
     }
@@ -118,7 +128,7 @@ public class UIView extends FrameLayout {
         }
     }
 
-    /* category UIView Render */
+    /* category UIView Rendering */
 
     @Override
     public void setAlpha(float alpha) {
@@ -388,7 +398,7 @@ public class UIView extends FrameLayout {
         animationState = null;
     }
 
-    static public void animateWithSpring(double velocity, Runnable animations, final Runnable completion) {
+    static public void animateWithSpring(Runnable animations, final Runnable completion) {
         resetAnimationState();
         animations.run();
         final int[] aniCount = {0};
@@ -401,7 +411,6 @@ public class UIView extends FrameLayout {
                     viewProps.getKey().animate(animateProp.getKey(), (float)((double)log.originValue));
                     Spring spring = system.createSpring();
                     spring.setCurrentValue((float)((double)log.originValue));
-                    spring.setVelocity(velocity);
                     spring.addListener(new SpringListener() {
                         @Override
                         public void onSpringUpdate(Spring spring) {

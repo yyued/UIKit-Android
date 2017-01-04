@@ -78,6 +78,9 @@ public class UIConstraint {
             }
         }
         else {
+            if (width != null && !Double.isNaN(w)) {
+                myView.setMaxWidth(w);
+            }
             CGSize iSize = myView.intrinsicContentSize();
             if (iSize.getHeight() > 0.0) {
                 h = Math.ceil(iSize.getHeight());
@@ -246,8 +249,12 @@ public class UIConstraint {
 
     public double requestValue(double origin, double length, String formula) {
         formula = formula.replace("%", "/100.0*" + length);
-        Expression e = new ExpressionBuilder(formula).build();
-        return e.evaluate() + origin;
+        try {
+            Expression e = new ExpressionBuilder(formula).build();
+            return e.evaluate() + origin;
+        } catch (Exception e) {
+            return 0.0;
+        }
     }
 
     public boolean sizeCanFit() {

@@ -9,10 +9,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.yy.codex.uikit.CGRect;
 import com.yy.codex.uikit.UIConstraint;
+import com.yy.codex.uikit.UILabel;
 import com.yy.codex.uikit.UIView;
 
 public class MainActivity extends AppCompatActivity {
@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
 
 class TestView extends UIView {
 
-    UIView redView;
+    UILabel aLabel;
 
     public TestView(Context context, View view) {
         super(context, view);
@@ -57,16 +57,15 @@ class TestView extends UIView {
     }
 
     public void init() {
-        redView = new UIView(getContext());
-        redView.setBackgroundColor(Color.RED);
-        redView.setFrame(new CGRect(0,0,20,20));
-        UIConstraint constraint = new UIConstraint();
-        constraint.centerHorizontally = true;
-        constraint.centerVertically = true;
-        constraint.width = "50%";
-        constraint.height = "50%";
-        redView.setConstraint(constraint);
-        addSubview(redView);
+        aLabel = new UILabel(getContext());
+        aLabel.setBackgroundColor(Color.GREEN);
+        aLabel.setConstraint(new UIConstraint());
+        aLabel.getConstraint().width = "50%";
+        aLabel.getConstraint().centerHorizontally = true;
+        aLabel.getConstraint().centerVertically = true;
+        aLabel.setNumberOfLines(0);
+        aLabel.setText("123213fhjkdsgfljkdahsfkhdskjfhdksaljhfkldsajhfkjdsahfkjlhsadlfkfdsjhfgjdshafghljk123213fhjkdsgfljkdahsfkhdskjfhdksaljhfkldsajhfkjdsahfkjlhsadlfkfdsjhfgjdshafghljk");
+        addSubview(aLabel);
     }
 
 }
