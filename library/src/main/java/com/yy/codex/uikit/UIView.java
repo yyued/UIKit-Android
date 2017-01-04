@@ -124,9 +124,84 @@ public class UIView extends FrameLayout {
         }
     }
 
+    public void insertSubview(UIView subview, int atIndex) {
+        subview.removeFromSuperview();
+        addView(subview, atIndex, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+    }
+
     public void addSubview(UIView subview) {
         subview.removeFromSuperview();
         addView(subview, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+    }
+
+    public void insertBelowSubview(UIView subview, UIView siblingSubview) {
+
+    }
+
+    public void insertAboveSubview(UIView subview, UIView siblingSubview) {
+
+    }
+
+    public void bringSubviewToFront(UIView subview) {
+        bringChildToFront(subview);
+    }
+
+    public void sendSubviewToBack(UIView subview) {
+        if (subview.getSuperview() == this) {
+            subview.removeFromSuperview();
+            addSubview(subview);
+        }
+    }
+
+    public void didAddSubview(UIView subview) {
+
+    }
+
+    public void willRemoveSubview(UIView subview) {
+
+    }
+
+    public void willMoveToSuperview(UIView newSuperview) {
+
+    }
+
+    public void didMoveToSuperview() {
+
+    }
+
+    public void willMoveToWindow() {
+
+    }
+
+    public void didMoveToWindow() {
+
+    }
+
+    @Override
+    public void onViewAdded(View child) {
+        if (child.getClass().isAssignableFrom(UIView.class)) {
+            ((UIView) child).willMoveToSuperview(this);
+        }
+        super.onViewAdded(child);
+        if (child.getClass().isAssignableFrom(UIView.class)) {
+            didAddSubview((UIView) child);
+            ((UIView) child).didMoveToSuperview();
+        }
+    }
+
+    @Override
+    public void onViewRemoved(View child) {
+        if (child.getClass().isAssignableFrom(UIView.class)) {
+            willRemoveSubview((UIView) child);
+        }
+        super.onViewRemoved(child);
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        willMoveToWindow();
+        super.onAttachedToWindow();
+        didMoveToWindow();
     }
 
     /* category UIView Layer-Backed Service */
