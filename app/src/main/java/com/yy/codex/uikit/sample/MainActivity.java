@@ -32,12 +32,22 @@ public class MainActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        UIView.animateWithSpring(120.0, 12.0, 80.0, new Runnable() {
+                        UIView.animateWithSpring(120.0, 8.0, 120.0, new Runnable() {
                             @Override
                             public void run() {
-                                subview.setFrame(new CGRect(0,0,300,300));
+                                subview.setFrame(new CGRect(0, 0, 300, 300));
                             }
-                        }, null);
+                        }, new Runnable() {
+                            @Override
+                            public void run() {
+                                UIView.animate(0.3, new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        subview.setFrame(new CGRect(0,0,100,100));
+                                    }
+                                }, null);
+                            }
+                        });
                     }
                 });
             }

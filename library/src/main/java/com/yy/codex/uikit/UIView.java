@@ -1,5 +1,6 @@
 package com.yy.codex.uikit;
 
+import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
@@ -172,9 +173,12 @@ public class UIView extends FrameLayout {
         }
     }
 
-    static private HashMap<UIView, HashMap<String, UIViewPropertiesLog>> animationState = new HashMap<>();
+    static private HashMap<UIView, HashMap<String, UIViewPropertiesLog>> animationState = null;
 
     static private void addAnimationState(UIView view, String aKey, double originValue, double finalValue) {
+        if (animationState == null) {
+            return;
+        }
         if (originValue == finalValue) {
             return;
         }
@@ -189,17 +193,18 @@ public class UIView extends FrameLayout {
     }
 
     static private void resetAnimationState() {
-        animationState.clear();
+        animationState = new HashMap<>();
     }
 
-    static public void animate(double duration, Runnable animations, Runnable completion) {
+    static public void animate(double duration, Runnable animations, final Runnable completion) {
         resetAnimationState();
         animations.run();
+        final int[] aniCount = {0};
         for (final Map.Entry<UIView, HashMap<String, UIViewPropertiesLog>> viewProps: animationState.entrySet()) {
             for (final Map.Entry<String, UIViewPropertiesLog> animateProp: viewProps.getValue().entrySet()) {
-                String aKey = animateProp.getKey();
                 UIViewPropertiesLog log = animateProp.getValue();
                 if (log.valueType == 1) {
+                    aniCount[0]++;
                     viewProps.getKey().animate(animateProp.getKey(), (float)((double)log.originValue));
                     ValueAnimator animator = ValueAnimator.ofFloat((float)((double)log.originValue), (float)((double)log.finalValue));
                     animator.setDuration((long) (duration * 1000));
@@ -210,22 +215,48 @@ public class UIView extends FrameLayout {
                             viewProps.getKey().animate(animateProp.getKey(), currentValue);
                         }
                     });
+                    animator.addListener(new Animator.AnimatorListener() {
+                        @Override
+                        public void onAnimationStart(Animator animator) {
+
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animator animator) {
+                            aniCount[0]--;
+                            if (aniCount[0] <= 0 && completion != null) {
+                                completion.run();
+                            }
+                        }
+
+                        @Override
+                        public void onAnimationCancel(Animator animator) {
+
+                        }
+
+                        @Override
+                        public void onAnimationRepeat(Animator animator) {
+
+                        }
+                    });
                     animator.setTarget(viewProps.getKey());
                     animator.start();
                 }
             }
         }
+        animationState = null;
     }
 
-    static public void animateWithSpring(double velocity, Runnable animations, Runnable completion) {
+    static public void animateWithSpring(double velocity, Runnable animations, final Runnable completion) {
         resetAnimationState();
         animations.run();
+        final int[] aniCount = {0};
         SpringSystem system = SpringSystem.create();
         for (final Map.Entry<UIView, HashMap<String, UIViewPropertiesLog>> viewProps: animationState.entrySet()) {
             for (final Map.Entry<String, UIViewPropertiesLog> animateProp: viewProps.getValue().entrySet()) {
-                String aKey = animateProp.getKey();
                 UIViewPropertiesLog log = animateProp.getValue();
                 if (log.valueType == 1) {
+                    aniCount[0]++;
                     viewProps.getKey().animate(animateProp.getKey(), (float)((double)log.originValue));
                     Spring spring = system.createSpring();
                     spring.setCurrentValue((float)((double)log.originValue));
@@ -239,17 +270,18 @@ public class UIView extends FrameLayout {
 
                         @Override
                         public void onSpringAtRest(Spring spring) {
-
+                            aniCount[0]--;
+                            if (aniCount[0] <= 0 && completion != null) {
+                                completion.run();
+                            }
                         }
 
                         @Override
                         public void onSpringActivate(Spring spring) {
-
                         }
 
                         @Override
                         public void onSpringEndStateChange(Spring spring) {
-
                         }
                     });
                     spring.setEndValue((float)((double)log.finalValue));
@@ -258,15 +290,16 @@ public class UIView extends FrameLayout {
         }
     }
 
-    static public void animateWithSpring(double tension, double friction, double velocity, Runnable animations, Runnable completion) {
+    static public void animateWithSpring(double tension, double friction, double velocity, Runnable animations, final Runnable completion) {
         resetAnimationState();
         animations.run();
+        final int[] aniCount = {0};
         SpringSystem system = SpringSystem.create();
         for (final Map.Entry<UIView, HashMap<String, UIViewPropertiesLog>> viewProps: animationState.entrySet()) {
             for (final Map.Entry<String, UIViewPropertiesLog> animateProp: viewProps.getValue().entrySet()) {
-                String aKey = animateProp.getKey();
                 UIViewPropertiesLog log = animateProp.getValue();
                 if (log.valueType == 1) {
+                    aniCount[0]++;
                     viewProps.getKey().animate(animateProp.getKey(), (float)((double)log.originValue));
                     Spring spring = system.createSpring();
                     spring.setCurrentValue((float)((double)log.originValue));
@@ -282,17 +315,18 @@ public class UIView extends FrameLayout {
 
                         @Override
                         public void onSpringAtRest(Spring spring) {
-
+                            aniCount[0]--;
+                            if (aniCount[0] <= 0 && completion != null) {
+                                completion.run();
+                            }
                         }
 
                         @Override
                         public void onSpringActivate(Spring spring) {
-
                         }
 
                         @Override
                         public void onSpringEndStateChange(Spring spring) {
-
                         }
                     });
                     spring.setEndValue((float)((double)log.finalValue));
