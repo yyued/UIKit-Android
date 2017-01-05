@@ -7,11 +7,19 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.text.Layout;
+import android.text.Spannable;
+import android.text.style.LeadingMarginSpan;
 import android.util.AttributeSet;
 import android.view.View;
 
 import com.yy.codex.uikit.CALayer;
 import com.yy.codex.uikit.CGRect;
+import com.yy.codex.uikit.NSAttributedString;
+import com.yy.codex.uikit.NSLineBreakMode;
+import com.yy.codex.uikit.UIConstraint;
+import com.yy.codex.uikit.UILabel;
 import com.yy.codex.uikit.UIView;
 
 public class MainActivity extends AppCompatActivity {
@@ -27,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
 
 class TestView extends UIView {
 
-    UIView redView;
+    UILabel aLabel;
 
     public TestView(Context context, View view) {
         super(context, view);

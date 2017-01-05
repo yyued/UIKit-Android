@@ -40,4 +40,16 @@ public final class CGRect {
         return size;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (CGRect.class.isAssignableFrom(obj.getClass())) {
+            CGRect anObj = (CGRect) obj;
+            boolean equal = Math.abs(origin.getX() - anObj.origin.getX()) < 0.01 &&
+                            Math.abs(origin.getY() - anObj.origin.getY()) < 0.01 &&
+                            Math.abs(size.getWidth() - anObj.size.getWidth()) < 0.01 &&
+                            Math.abs(size.getHeight() - anObj.size.getHeight()) < 0.01;
+            return equal;
+        }
+        return false;
+    }
 }
