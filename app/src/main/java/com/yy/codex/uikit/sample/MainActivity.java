@@ -1,24 +1,16 @@
 package com.yy.codex.uikit.sample;
 
 import android.content.Context;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.text.Layout;
-import android.text.Spannable;
-import android.text.style.LeadingMarginSpan;
 import android.util.AttributeSet;
 import android.view.View;
 
 import com.yy.codex.uikit.CALayer;
 import com.yy.codex.uikit.CGRect;
-import com.yy.codex.uikit.NSAttributedString;
-import com.yy.codex.uikit.NSLineBreakMode;
-import com.yy.codex.uikit.UIConstraint;
 import com.yy.codex.uikit.UILabel;
 import com.yy.codex.uikit.UIView;
 
@@ -64,24 +56,37 @@ class TestView extends UIView {
     }
 
     public void init() {
-        redView = new UIView(getContext());
-        redView.setBackgroundColor(Color.RED);
+//        UIView posView = new UIView(getContext());
+//        posView.setFrame(new CGRect(10, 10, 10, 10));
+//        posView.setBackgroundColor(Color.WHITE);
+//        addSubview(posView);
+
+        UIView redView = new UIView(getContext());
+//        redView.setBackgroundColor(Color.RED);
         redView.setWantsLayer(true);
-        redView.setFrame(new CGRect(0,0,200,200));
+        redView.setFrame(new CGRect(10, 10, 200, 200));
         CALayer mainLayer = redView.getLayer();
-        mainLayer.setCornerRadius(5).setBorderWidth(10).setBorderColor(Color.BLACK)
-                .setBackgroundColor(Color.GREEN);
+        mainLayer
+                .setFrame(new CGRect(10, 10, 100, 100))
+                .setCornerRadius(10).setBorderWidth(10).setBorderColor(Color.BLACK)
+                .setClipToBounds(true) // @UIView bug, disable auto clipChildren
+                .setBackgroundColor(Color.YELLOW);
         addSubview(redView);
 
-        CALayer sub1 = new CALayer(new CGRect(10, 10, 150, 150));
-        sub1.setCornerRadius(10).setBackgroundColor(Color.YELLOW);
-        mainLayer.addSubLayer(sub1);
+//        UIView redSubView = new UIView(getContext());
+//        redSubView.setBackgroundColor(Color.WHITE);
+//        redSubView.setFrame(new CGRect(100, 100, 200, 200));
+//        redView.addSubview(redSubView);
 
-        CALayer sub2 = new CALayer(new CGRect(10, 10, 200, 200));
-        sub2.setBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.avatar))
-                .setBitmapGravity(CALayer.GRAVITY_BOTTOM)
-                .setCornerRadius(10).setBackgroundColor(Color.BLUE);
-        mainLayer.insertAboveSubLayer(sub2, sub1);
+//        CALayer sub1 = new CALayer(new CGRect(10, 10, 150, 150));
+//        sub1.setCornerRadius(10).setBackgroundColor(Color.YELLOW);
+//        mainLayer.addSubLayer(sub1);
+
+//        CALayer sub2 = new CALayer(new CGRect(10, 10, 200, 200));
+//        sub2.setBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.avatar))
+//                .setBitmapGravity(CALayer.GRAVITY_BOTTOM)
+//                .setCornerRadius(10).setBackgroundColor(Color.BLUE);
+//        mainLayer.insertAboveSubLayer(sub2, sub1);
 
     }
 

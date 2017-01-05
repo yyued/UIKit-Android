@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.Rect;
 
 import java.util.ArrayList;
@@ -16,6 +17,8 @@ import java.util.ArrayList;
 public class CALayer {
 
     private CGRect frame = new CGRect(0, 0, 0, 0);
+
+    private float scaledDensity;
 
     private int backgroundColor;
 
@@ -30,6 +33,8 @@ public class CALayer {
 
     private Bitmap bitmap;
     private int bitmapGravity = GRAVITY_SCALE_TO_FILL;
+
+    private boolean clipToBounds;
 
     private CALayer superLayer;
     private ArrayList<CALayer> subLayers = new ArrayList<CALayer>();
@@ -110,32 +115,49 @@ public class CALayer {
         paint.setAntiAlias(true);
         paint.setColor(backgroundColor);
 
-        // border
-        Paint borderPaint = new Paint();
-        borderPaint.setAntiAlias(true);
-        borderPaint.setStyle(Paint.Style.STROKE);
-        borderPaint.setStrokeWidth(borderWidth);
-        borderPaint.setColor(borderColor);
-
         if (bitmap != null){
-//            canvas.drawBitmap(bitmap, (float) frame.origin.getX(), (float) frame.origin.getY(), paint);
             canvas.drawBitmap(bitmap, calcBitmapRect(bitmap, bitmapGravity), frame.toRectF(), paint);
             return;
         }
 
         if (cornerRadius > 0){
+            if (clipToBounds){
+                Path clipPath = new Path();
+                clipPath.addRoundRect(frame.toRectF(), cornerRadius, cornerRadius, Path.Direction.CW);
+                canvas.clipPath(clipPath);
+            }
             if (shadowRadius > 0){
                 paint.setShadowLayer(shadowRadius, shadowX, shadowY, shadowColor);
             }
-            canvas.drawRoundRect(frame.toRectF(), cornerRadius, cornerRadius, paint);
-            canvas.drawRoundRect(halfBorderW, halfBorderW, canvas.getWidth()-halfBorderW, canvas.getHeight()-halfBorderW, cornerRadius, cornerRadius, borderPaint);
+            canvas.drawRoundRect(frame.toRectF(halfBorderW), cornerRadius, cornerRadius, paint);
+            if (borderWidth > 0){
+                paint.setStyle(Paint.Style.STROKE);
+                paint.setStrokeWidth(borderWidth);
+                paint.setColor(borderColor);
+                canvas.drawRoundRect(frame.toRectF(halfBorderW), cornerRadius, cornerRadius, paint);
+            }
         }
         else {
+            if (clipToBounds){
+                canvas.clipRect(frame.toRectF());
+            }
             if (shadowRadius > 0){
                 paint.setShadowLayer(shadowRadius, shadowX, shadowY, shadowColor);
             }
             canvas.drawRect(frame.toRectF(), paint);
-            canvas.drawRect(frame.toRectF(), borderPaint);
+            if (borderWidth > 0){
+                paint.setStyle(Paint.Style.STROKE);
+                paint.setStrokeWidth(borderWidth * 2);
+                paint.setColor(borderColor);
+                canvas.drawRect(frame.toRectF(), paint);
+            }
+        }
+    }
+
+    public void drawRect(Canvas canvas, CGRect rect){
+        drawLayer(canvas, rect);
+        for (CALayer item : subLayers){ // @Td unnecessary draw
+            item.drawLayer(canvas, rect);
         }
     }
 
@@ -155,13 +177,6 @@ public class CALayer {
         return null;
     }
 
-    public void drawRect(Canvas canvas, CGRect rect){
-        drawLayer(canvas, rect);
-        for (CALayer item : subLayers){ // @Td unnecessary draw
-            item.drawLayer(canvas, rect);
-        }
-    }
-
     /* category CALayer Getter&Setter */
 
     public int getBackgroundColor() {
@@ -178,7 +193,7 @@ public class CALayer {
     }
 
     public CALayer setCornerRadius(float cornerRadius) {
-        this.cornerRadius = cornerRadius;
+        this.cornerRadius = cornerRadius * scaledDensity;
         return this;
     }
 
@@ -191,7 +206,7 @@ public class CALayer {
     }
 
     public CALayer setBorderWidth(float borderWidth) {
-        this.borderWidth = borderWidth;
+        this.borderWidth = borderWidth * scaledDensity;
         return this;
     }
 
@@ -217,17 +232,17 @@ public class CALayer {
     }
 
     public CALayer setShadowX(float shadowX) {
-        this.shadowX = shadowX;
+        this.shadowX = shadowX * scaledDensity;
         return this;
     }
 
     public CALayer setShadowY(float shadowY) {
-        this.shadowY = shadowY;
+        this.shadowY = shadowY * scaledDensity;
         return this;
     }
 
     public CALayer setShadowRadius(float shadowRadius) {
-        this.shadowRadius = shadowRadius;
+        this.shadowRadius = shadowRadius * scaledDensity;
         return this;
     }
 
@@ -241,7 +256,11 @@ public class CALayer {
     }
 
     public CALayer setFrame(CGRect frame) {
-        this.frame = frame;
+        float x = (float) frame.origin.getX() * scaledDensity;
+        float y = (float) frame.origin.getY() * scaledDensity;
+        float w = (float) frame.size.getWidth() * scaledDensity;
+        float h = (float) frame.size.getHeight() * scaledDensity;
+        this.frame = new CGRect(x, y, w, h);
         return this;
     }
 
@@ -252,6 +271,24 @@ public class CALayer {
 
     public CALayer setBitmapGravity(int bitmapGravity) {
         this.bitmapGravity = bitmapGravity;
+        return this;
+    }
+
+    public Boolean getClipToBounds() {
+        return clipToBounds;
+    }
+
+    public CALayer setClipToBounds(Boolean clipToBounds) {
+        this.clipToBounds = clipToBounds;
+        return this;
+    }
+
+    public float getScaledDensity() {
+        return scaledDensity;
+    }
+
+    public CALayer setScaledDensity(float scaledDensity) {
+        this.scaledDensity = scaledDensity;
         return this;
     }
 }

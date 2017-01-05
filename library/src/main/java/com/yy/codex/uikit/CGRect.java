@@ -19,6 +19,13 @@ public final class CGRect {
     public RectF toRectF() {
         return new RectF((float) origin.getX(), (float) origin.getY(), (float) (origin.getX() + size.getWidth()), (float) (origin.getY() + size.getHeight()));
     }
+    public RectF toRectF(float point){
+        float x = (float) origin.getX() + point;
+        float y = (float) origin.getY() + point;
+        float w = (float) size.getWidth() + x - 2 * point;
+        float h = (float) size.getHeight() + x - 2 * point;
+        return new RectF(x, y, w, h);
+    }
 
     public CGRect setX(double x) {
         return new CGRect(x, this.origin.getY(), this.size.getWidth(), this.size.getHeight());
