@@ -78,9 +78,16 @@ class TestView extends UIView {
 //        redSubView.setFrame(new CGRect(100, 100, 200, 200));
 //        redView.addSubview(redSubView);
 
-//        CALayer sub1 = new CALayer(new CGRect(10, 10, 150, 150));
-//        sub1.setCornerRadius(10).setBackgroundColor(Color.YELLOW);
-//        mainLayer.addSubLayer(sub1);
+        CALayer sub1 = new CALayer(new CGRect(10, 10, 150, 150));
+        sub1.setCornerRadius(10)
+                .setHidden(true)
+                .setBackgroundColor(Color.RED);
+        mainLayer.addSubLayer(sub1);
+
+        CALayer sub2 = new CALayer(new CGRect(20, 20, 150, 150));
+        sub2.setCornerRadius(10)
+                .setBackgroundColor(Color.GREEN);
+        sub1.addSubLayer(sub2);
 
 //        CALayer sub2 = new CALayer(new CGRect(10, 10, 200, 200));
 //        sub2.setBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.avatar))

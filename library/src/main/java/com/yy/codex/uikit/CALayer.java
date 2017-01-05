@@ -18,7 +18,7 @@ public class CALayer {
 
     private CGRect frame = new CGRect(0, 0, 0, 0);
 
-    private float scaledDensity;
+    private float scaledDensity = 2;
 
     private int backgroundColor;
 
@@ -35,6 +35,8 @@ public class CALayer {
     private int bitmapGravity = GRAVITY_SCALE_TO_FILL;
 
     private boolean clipToBounds;
+
+    private boolean hidden;
 
     private CALayer superLayer;
     private ArrayList<CALayer> subLayers = new ArrayList<CALayer>();
@@ -55,7 +57,11 @@ public class CALayer {
     public CALayer() {}
 
     public CALayer(CGRect frame) {
-        this.frame = frame;
+        float x = (float) frame.origin.getX() * scaledDensity;
+        float y = (float) frame.origin.getY() * scaledDensity;
+        float w = (float) frame.size.getWidth() * scaledDensity;
+        float h = (float) frame.size.getHeight() * scaledDensity;
+        this.frame = new CGRect(x, y, w, h);
     }
 
     /* category CALayer Hierarchy */
@@ -115,6 +121,10 @@ public class CALayer {
         paint.setAntiAlias(true);
         paint.setColor(backgroundColor);
 
+        if (hidden){
+            return;
+        }
+
         if (bitmap != null){
             canvas.drawBitmap(bitmap, calcBitmapRect(bitmap, bitmapGravity), frame.toRectF(), paint);
             return;
@@ -155,9 +165,12 @@ public class CALayer {
     }
 
     public void drawRect(Canvas canvas, CGRect rect){
+        if (hidden){
+            return;
+        }
         drawLayer(canvas, rect);
         for (CALayer item : subLayers){ // @Td unnecessary draw
-            item.drawLayer(canvas, rect);
+            item.drawRect(canvas, rect);
         }
     }
 
@@ -289,6 +302,11 @@ public class CALayer {
 
     public CALayer setScaledDensity(float scaledDensity) {
         this.scaledDensity = scaledDensity;
+        return this;
+    }
+
+    public CALayer setHidden(boolean hidden) {
+        this.hidden = hidden;
         return this;
     }
 }

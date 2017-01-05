@@ -78,7 +78,6 @@ public class UIView extends FrameLayout {
         this.setMinimumWidth((int) (frame.size.getWidth() * scaledDensity));
         this.setMinimumHeight((int) (frame.size.getHeight() * scaledDensity));
         this.layer.setScaledDensity(scaledDensity);
-//        this.layer.setFrame(frame);
         this.layer.setFrame(new CGRect(0, 0, frame.size.getWidth(), frame.size.getHeight()));
         UIView.addAnimationState(this, "frame.origin.x", oldValue.origin.getX(), frame.origin.getX());
         UIView.addAnimationState(this, "frame.origin.y", oldValue.origin.getY(), frame.origin.getY());
