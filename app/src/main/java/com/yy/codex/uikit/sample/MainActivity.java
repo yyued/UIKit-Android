@@ -16,9 +16,16 @@ import android.view.View;
 import com.yy.codex.uikit.CGRect;
 import com.yy.codex.uikit.NSAttributedString;
 import com.yy.codex.uikit.NSLineBreakMode;
+import com.yy.codex.uikit.NSMutableAttributedString;
+import com.yy.codex.uikit.NSParagraphStyle;
+import com.yy.codex.uikit.NSRange;
+import com.yy.codex.uikit.NSShadow;
 import com.yy.codex.uikit.UIConstraint;
+import com.yy.codex.uikit.UIFont;
 import com.yy.codex.uikit.UILabel;
 import com.yy.codex.uikit.UIView;
+
+import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -68,12 +75,23 @@ class TestView extends UIView {
         aLabel.getConstraint().width = "50%";
         aLabel.getConstraint().centerHorizontally = true;
         aLabel.getConstraint().centerVertically = true;
-        NSAttributedString attributedString = new NSAttributedString("Test");
-        attributedString.setFont(null, 30);
-        attributedString.setTextColor(Color.RED);
-        attributedString.setAlignment(Layout.Alignment.ALIGN_CENTER);
-        attributedString.setDeleteline(true);
-        aLabel.setAttributedText(attributedString);
+        NSAttributedString attributedString = new NSAttributedString("Test", new HashMap(){{
+            put(NSAttributedString.NSFontAttributeName, new UIFont(34));
+            put(NSAttributedString.NSForegroundColorAttributeName, Color.RED);
+            put(NSAttributedString.NSBackgroundColorAttributeName, Color.WHITE);
+            put(NSAttributedString.NSUnderlineStyleAttributeName, true);
+            put(NSAttributedString.NSShadowAttributeName, new NSShadow());
+            NSParagraphStyle style = new NSParagraphStyle();
+            style.alignment = Layout.Alignment.ALIGN_CENTER;
+            put(NSAttributedString.NSParagraphStyleAttributeName, style);
+        }});
+
+        NSMutableAttributedString mutableAttributedString = new NSMutableAttributedString(attributedString);
+        mutableAttributedString.addAttributes(new HashMap<String, Object>(){{
+            put(NSAttributedString.NSFontAttributeName, new UIFont(17));
+        }}, new NSRange(1, 2));
+
+        aLabel.setAttributedText(mutableAttributedString);
         addSubview(aLabel);
     }
 
