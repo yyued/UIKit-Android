@@ -70,26 +70,37 @@ public class CALayer {
         return superLayer;
     }
 
-    public ArrayList<CALayer> getSubLayers() {
-        return subLayers;
-    }
+    public CALayer[] getSubLayers() { return subLayers.toArray(new CALayer[subLayers.size()]); }
 
-    public void removeFromSuperView(){
-
+    public void removeFromSuperLayer(){
+        if (this.superLayer != null){
+            this.superLayer.subLayers.remove(this);
+        }
     }
 
     public void addSubLayer(CALayer layer){
+        layer.removeFromSuperLayer();
         layer.superLayer = this;
         subLayers.add(layer);
     }
 
     public void insertSubLayerAtIndex(CALayer subLayer, int index){
-
+        subLayer.removeFromSuperLayer();
+        if (index < 1){
+            this.subLayers.add(0, subLayer);
+        }
+        else if (index > this.subLayers.size() - 1){
+            this.subLayers.add(subLayer);
+        }
+        else {
+            this.subLayers.add(index, subLayer);
+        }
     }
 
     public void insertBelowSubLayer(CALayer subLayer, CALayer siblingSubview){
         int idx = subLayers.indexOf(siblingSubview);
         if (idx > -1){
+            subLayer.removeFromSuperLayer();
             subLayers.add(idx, subLayer);
         }
     }
@@ -97,16 +108,17 @@ public class CALayer {
     public void insertAboveSubLayer(CALayer subLayer, CALayer siblingSubview){
         int idx = subLayers.indexOf(siblingSubview);
         if (idx > -1){
+            subLayer.removeFromSuperLayer();
             subLayers.add(idx + 1, subLayer);
         }
     }
 
-    public void bringSubLayerToFront(){
-
-    }
-
-    public void bringSubLayerToBack(){
-
+    public void replaceSubLayer(CALayer subLayer, CALayer newLayer){
+        int idx = subLayers.indexOf(subLayer);
+        if (idx > -1){
+            subLayer.removeFromSuperLayer();
+            insertSubLayerAtIndex(newLayer, idx);
+        }
     }
 
     /* category CALayer Appearance */
@@ -121,15 +133,18 @@ public class CALayer {
         paint.setAntiAlias(true);
         paint.setColor(backgroundColor);
 
+        // visible
         if (hidden){
             return;
         }
 
+        // image
         if (bitmap != null){
             canvas.drawBitmap(bitmap, calcBitmapRect(bitmap, bitmapGravity), frame.toRectF(), paint);
             return;
         }
 
+        // border clipToBounds
         if (cornerRadius > 0){
             if (clipToBounds){
                 Path clipPath = new Path();

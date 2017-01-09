@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 import com.yy.codex.uikit.CALayer;
@@ -68,7 +69,8 @@ class TestView extends UIView {
         CALayer mainLayer = redView.getLayer();
         mainLayer
                 .setFrame(new CGRect(10, 10, 100, 100))
-                .setCornerRadius(10).setBorderWidth(10).setBorderColor(Color.BLACK)
+                .setShadowRadius(8).setShadowX(-2).setShadowY(-2).setShadowColor(Color.RED)
+                .setCornerRadius(10).setBorderWidth(1).setBorderColor(Color.BLACK)
                 .setClipToBounds(true) // @UIView bug, disable auto clipChildren
                 .setBackgroundColor(Color.YELLOW);
         addSubview(redView);
@@ -80,14 +82,33 @@ class TestView extends UIView {
 
         CALayer sub1 = new CALayer(new CGRect(10, 10, 150, 150));
         sub1.setCornerRadius(10)
-                .setHidden(true)
                 .setBackgroundColor(Color.RED);
         mainLayer.addSubLayer(sub1);
 
-        CALayer sub2 = new CALayer(new CGRect(20, 20, 150, 150));
-        sub2.setCornerRadius(10)
+        CALayer sub12 = new CALayer(new CGRect(20, 20, 150, 150));
+        sub12.setCornerRadius(10)
                 .setBackgroundColor(Color.GREEN);
-        sub1.addSubLayer(sub2);
+        sub1.addSubLayer(sub12);
+
+        CALayer sub13 = new CALayer(new CGRect(30, 30, 150, 150));
+        sub13.setCornerRadius(10)
+                .setBackgroundColor(Color.BLUE);
+        sub1.addSubLayer(sub13);
+
+
+        // test insert:atIndex
+        sub1.insertSubLayerAtIndex(sub13, 0);
+        sub1.insertSubLayerAtIndex(sub12, 1);
+        sub1.insertBelowSubLayer(sub13, sub12);
+
+        Log.w("len: ", String.valueOf(sub1.getSubLayers().length));
+
+
+        // test remove
+//        sub1.removeFromSuperLayer();
+
+
+
 
 //        CALayer sub2 = new CALayer(new CGRect(10, 10, 200, 200));
 //        sub2.setBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.avatar))
