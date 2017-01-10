@@ -338,7 +338,7 @@ public class UIView extends UIResponder implements View.OnTouchListener {
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        if (gestureDetector != null) {
+        if (gestureDetector != null && this.userInteractionEnabled) {
             gestureDetector.onTouchEvent(event);
             return true;
         }
