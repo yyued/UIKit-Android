@@ -63,7 +63,6 @@ class TestView extends UIView {
 //        addSubview(posView);
 
         UIView redView = new UIView(getContext());
-//        redView.setBackgroundColor(Color.RED);
         redView.setWantsLayer(true);
         redView.setFrame(new CGRect(10, 10, 400, 400));
         CALayer mainLayer = redView.getLayer();
@@ -104,9 +103,10 @@ class TestView extends UIView {
         // test remove
 //        sub1.removeFromSuperLayer();
 
+        // test imageGravity
         CALayer sub2 = new CALayer(new CGRect(10, 10, 200, 160));
-        sub2.setBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.img180x180))
-                .setBitmapGravity(CALayer.GRAVITY_TOP_LEFT)
+        sub2.setBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.img120x180))
+                .setBitmapGravity(CALayer.GRAVITY_TOP_RIGHT)
                 .setCornerRadius(10).setBackgroundColor(Color.BLUE);
         mainLayer.insertAboveSubLayer(sub2, sub1);
 

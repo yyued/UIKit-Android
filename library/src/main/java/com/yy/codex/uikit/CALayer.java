@@ -17,8 +17,6 @@ public class CALayer {
 
     private CGRect frame = new CGRect(0, 0, 0, 0);
 
-    private float scaledDensity = 2;
-
     private int backgroundColor;
 
     private float cornerRadius; // default 0
@@ -40,6 +38,8 @@ public class CALayer {
     private CALayer superLayer;
     private ArrayList<CALayer> subLayers = new ArrayList<CALayer>();
 
+    public static float scaledDensity = 2;
+
     /* const imageGravity */
 
     public static final int GRAVITY_SCALE_TO_FILL = 0x01;
@@ -54,7 +54,6 @@ public class CALayer {
     public static final int GRAVITY_BOTTOM_RIGHT = 0x0a;
     public static final int GRAVITY_LEFT = 0x0b;
     public static final int GRAVITY_RIGHT = 0x0c;
-
 
     /* category CALayer Constructor */
 
@@ -480,15 +479,6 @@ public class CALayer {
 
     public CALayer setClipToBounds(Boolean clipToBounds) {
         this.clipToBounds = clipToBounds;
-        return this;
-    }
-
-    public float getScaledDensity() {
-        return scaledDensity;
-    }
-
-    public CALayer setScaledDensity(float scaledDensity) {
-        this.scaledDensity = scaledDensity;
         return this;
     }
 
