@@ -13,6 +13,7 @@ import java.lang.reflect.Method;
 
 public class UIGestureRecognizer extends GestureDetector.SimpleOnGestureListener {
 
+    UIView view;
     private Object target;
     private String selector;
 
@@ -31,7 +32,7 @@ public class UIGestureRecognizer extends GestureDetector.SimpleOnGestureListener
             int index = selector.indexOf(":");
             if (index != -1) {
                 String subSelector = selector.substring(0, index);
-                method = clazz.getDeclaredMethod(subSelector, UIGestureRecognizer.class);
+                method = clazz.getDeclaredMethod(subSelector, getClass());
                 method.invoke(target, this);
             }
             else  {
@@ -47,10 +48,15 @@ public class UIGestureRecognizer extends GestureDetector.SimpleOnGestureListener
         }
     }
 
+    public UIView getView() {
+        return view;
+    }
+
     public CGPoint locationInView(UIView view) {
         if (motionEvent != null) {
             return new CGPoint(motionEvent.getX(), motionEvent.getY());
         }
         return new CGPoint(0, 0);
     }
+
 }

@@ -330,6 +330,7 @@ public class UIView extends UIResponder implements View.OnTouchListener {
 
     private GestureDetector gestureDetector;
     public void addGestureRecognizer(UIGestureRecognizer gestureRecognizer) {
+        gestureRecognizer.view = this;
         this.setOnTouchListener(this);
         if (gestureRecognizer != null) {
             gestureDetector = new GestureDetector(getContext(), gestureRecognizer);

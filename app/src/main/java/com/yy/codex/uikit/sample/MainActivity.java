@@ -64,62 +64,12 @@ class TestView extends UIView {
     }
 
     private void init() {
-        testAnimation();
-//        final UIImageView imageView = new UIImageView(getContext());
-//        imageView.setBackgroundColor(Color.GRAY);
-//        imageView.getLayer().setCornerRadius(45.0f);
-//        imageView.getLayer().setClipToBounds(true);
-//        imageView.setFrame(new CGRect(44, 44, 90, 90));
-//        final Handler handler = new Handler();
-//        Thread thread = new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                try {
-//                    final Bitmap bitmap = BitmapFactory.decodeStream(new URL("http://img.hb.aicdn.com/a6b00bbdeeed21c79af74d043ba4b7505cbe11bf2225b-wsXC96_sq320").openConnection().getInputStream());
-//                    handler.post(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            imageView.setImage(new UIImage(bitmap));
-//                            imageView.invalidate();
-//                        }
-//                    });
-//                }
-//                catch (Exception e) {
-//                    System.out.println(e.toString());
-//                }
-//            }
-//        });
-//        addSubview(imageView);
-//        thread.start();
-    }
-
-    void testAnimation() {
-        final UIImageView imageView = new UIImageView(getContext());
-        imageView.setFrame(new CGRect(0, 0, 15, 15));
-        imageView.setAnimationImages(new UIImage[]{
-                new UIImage(getContext(), R.drawable.ani_0),
-                new UIImage(getContext(), R.drawable.ani_1),
-                new UIImage(getContext(), R.drawable.ani_2),
-                new UIImage(getContext(), R.drawable.ani_3),
-                new UIImage(getContext(), R.drawable.ani_4),
-                new UIImage(getContext(), R.drawable.ani_5),
-                new UIImage(getContext(), R.drawable.ani_6),
-                new UIImage(getContext(), R.drawable.ani_7),
-                new UIImage(getContext(), R.drawable.ani_8),
-                new UIImage(getContext(), R.drawable.ani_9),
-                new UIImage(getContext(), R.drawable.ani_10),
-                new UIImage(getContext(), R.drawable.ani_11),
-                new UIImage(getContext(), R.drawable.ani_12),
-                new UIImage(getContext(), R.drawable.ani_13),
-                new UIImage(getContext(), R.drawable.ani_14),
-                new UIImage(getContext(), R.drawable.ani_15),
-                new UIImage(getContext(), R.drawable.ani_16),
-                new UIImage(getContext(), R.drawable.ani_17),
-                new UIImage(getContext(), R.drawable.ani_18),
-                new UIImage(getContext(), R.drawable.ani_19),
-        });
-        addSubview(imageView);
-        imageView.startAnimating();
+        UIView view = new UIView(getContext());
+        view.setFrame(new CGRect(44, 44, 44, 44));
+        view.setBackgroundColor(Color.BLACK);
+        view.setUserInteractionEnabled(true);
+        view.addGestureRecognizer(new UITapGestureRecognizer(this, "xxx:"));
+        addSubview(view);
     }
 
 }
