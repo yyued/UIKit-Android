@@ -21,6 +21,7 @@ import com.yy.codex.uikit.UIImage;
 import com.yy.codex.uikit.UIImageView;
 import com.yy.codex.uikit.UITapGestureRecognizer;
 import com.yy.codex.uikit.UIView;
+import com.yy.codex.uikit.UIViewContentMode;
 
 import java.net.URL;
 
@@ -64,9 +65,10 @@ class TestView extends UIView {
 
     private void init() {
         final UIImageView imageView = new UIImageView(getContext());
+        imageView.setBackgroundColor(Color.GRAY);
         imageView.getLayer().setCornerRadius(45.0f);
         imageView.getLayer().setClipToBounds(true);
-        imageView.setFrame(new CGRect(0, 0, 90, 90));
+        imageView.setFrame(new CGRect(44, 44, 90, 90));
         final Handler handler = new Handler();
         Thread thread = new Thread(new Runnable() {
             @Override
