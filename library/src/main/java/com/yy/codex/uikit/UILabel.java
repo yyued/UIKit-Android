@@ -17,6 +17,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.HashMap;
+
 /**
  * Created by cuiminghui on 2017/1/4.
  */
@@ -92,11 +94,9 @@ public class UILabel extends UIView {
     }
 
     public void setText(String text) {
-        NSAttributedString attributedString = new NSAttributedString(text);
-        attributedString.setFont(this.fontFamilyName, this.fontPointSize);
-        attributedString.setTextColor(textColor);
-        attributedString.setAlignment(textAlignment);
-        setAttributedText(attributedString);
+//        NSAttributedString attributedString = new NSAttributedString(text, new HashMap(){{
+//        }});
+//        setAttributedText(attributedString);
     }
 
     public void setAttributedText(NSAttributedString attributedText) {
