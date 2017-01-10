@@ -126,7 +126,7 @@ public class CALayer {
 
     /* category CALayer Appearance */
 
-    private void drawLayer(Canvas canvas, CGRect rect){
+    protected void drawLayer(Canvas canvas, CGRect rect){
         // normalize layer's prop
         CGRect frame = this.frame;
         Float halfBorderW = borderWidth / 2.0f;
