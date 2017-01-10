@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.widget.FrameLayout;
+
 import com.facebook.rebound.Spring;
 import com.facebook.rebound.SpringConfig;
 import com.facebook.rebound.SpringListener;
@@ -31,23 +32,28 @@ public class UIView extends FrameLayout {
     public UIView(Context context, View view) {
         super(context);
         addView(view);
+        setWillNotDraw(false);
     }
 
     public UIView(Context context) {
         super(context);
+        setWillNotDraw(false);
     }
 
     public UIView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        setWillNotDraw(false);
     }
 
     public UIView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        setWillNotDraw(false);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public UIView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
+        setWillNotDraw(false);
     }
 
     /* category UIView Layout */
@@ -71,6 +77,8 @@ public class UIView extends FrameLayout {
         this.setY((float) frame.origin.getY() * scaledDensity);
         this.setMinimumWidth((int) (frame.size.getWidth() * scaledDensity));
         this.setMinimumHeight((int) (frame.size.getHeight() * scaledDensity));
+        CALayer.scaledDensity = scaledDensity;
+        this.layer.setFrame(new CGRect(0, 0, frame.size.getWidth(), frame.size.getHeight()));
         UIView.addAnimationState(this, "frame.origin.x", oldValue.origin.getX(), frame.origin.getX());
         UIView.addAnimationState(this, "frame.origin.y", oldValue.origin.getY(), frame.origin.getY());
         UIView.addAnimationState(this, "frame.size.width", oldValue.size.getWidth(), frame.size.getWidth());
@@ -279,6 +287,12 @@ public class UIView extends FrameLayout {
 
     public void drawRect(Canvas canvas, CGRect rect) {
         // TODO: 2017/1/3 adi
+        if (wantsLayer){
+            layer.drawRect(canvas, rect);
+            if (layer.getShadowRadius() > 0 && getLayerType() != LAYER_TYPE_SOFTWARE){
+                setLayerType(LAYER_TYPE_SOFTWARE, null);
+            }
+        }
     }
 
     @Override

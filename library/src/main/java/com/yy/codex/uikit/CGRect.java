@@ -1,5 +1,8 @@
 package com.yy.codex.uikit;
 
+import android.graphics.Rect;
+import android.graphics.RectF;
+
 /**
  * Created by cuiminghui on 2017/1/3.
  */
@@ -12,6 +15,21 @@ public final class CGRect {
     public CGRect(double x, double y, double width, double height) {
         this.origin = new CGPoint(x, y);
         this.size = new CGSize(width, height);
+    }
+
+    public RectF toRectF() {
+        return new RectF((float) origin.getX(), (float) origin.getY(), (float) (origin.getX() + size.getWidth()), (float) (origin.getY() + size.getHeight()));
+    }
+    public Rect toRect() {
+        return new Rect((int) origin.getX(), (int) origin.getY(), (int) (origin.getX() + size.getWidth()), (int) (origin.getY() + size.getHeight()));
+    }
+
+    public RectF toRectF(float point){
+        float x = (float) origin.getX() + point;
+        float y = (float) origin.getY() + point;
+        float w = (float) size.getWidth() + x - 2 * point;
+        float h = (float) size.getHeight() + x - 2 * point;
+        return new RectF(x, y, w, h);
     }
 
     public CGRect setX(double x) {
@@ -28,6 +46,10 @@ public final class CGRect {
 
     public CGRect setHeight(double height) {
         return new CGRect(this.origin.getX(), this.origin.getY(), this.size.getWidth(), height);
+    }
+
+    public CGSize getSize(){
+        return size;
     }
 
     @Override
