@@ -14,6 +14,7 @@ import android.text.ParcelableSpan;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
+import android.text.SpannedString;
 import android.text.TextPaint;
 import android.text.style.AbsoluteSizeSpan;
 import android.text.style.AlignmentSpan;
@@ -38,12 +39,12 @@ import java.util.HashMap;
 public class NSAttributedString extends SpannableStringBuilder {
 
     public static String NSFontAttributeName = "NSFontAttributeName"; // NSFont, default System 17
-    public static String NSParagraphStyleAttributeName = "NSParagraphStyleAttributeName";
-    public static String NSForegroundColorAttributeName = "NSForegroundColorAttributeName"; // NSColor, default blackColor
-    public static String NSBackgroundColorAttributeName = "NSBackgroundColorAttributeName"; // NSColor, default nil: no background
-    public static String NSKernAttributeName = "NSKernAttributeName"; // NSNumber containing floating point value, in points; amount to modify default kerning. 0 means kerning is disabled.
-    public static String NSStrikethroughStyleAttributeName = "NSStrikethroughStyleAttributeName"; // NSNumber containing integer, default 0: no strikethrough
-    public static String NSUnderlineStyleAttributeName = "NSUnderlineStyleAttributeName"; // NSNumber containing integer, default 0: no underline
+    public static String NSParagraphStyleAttributeName = "NSParagraphStyleAttributeName"; // NSParagraphStyle, default nil
+    public static String NSForegroundColorAttributeName = "NSForegroundColorAttributeName"; // int, default Color.BLACK
+    public static String NSBackgroundColorAttributeName = "NSBackgroundColorAttributeName"; // int, default Color.TRANSPARENT: no background
+    public static String NSKernAttributeName = "NSKernAttributeName"; // double containing floating point value, in points; amount to modify default kerning. 0 means kerning is disabled.
+    public static String NSStrikethroughStyleAttributeName = "NSStrikethroughStyleAttributeName"; // int containing integer, default 0: no strikethrough
+    public static String NSUnderlineStyleAttributeName = "NSUnderlineStyleAttributeName"; // int containing integer, default 0: no underline
     public static String NSStrokeColorAttributeName = "NSStrokeColorAttributeName";// TODO: 2017/1/9 not implemented.
     public static String NSStrokeWidthAttributeName = "NSStrokeWidthAttributeName";// TODO: 2017/1/9 not implemented.
     public static String NSShadowAttributeName = "NSShadowAttributeName"; // NSShadow, default nil: no shadow
@@ -53,6 +54,11 @@ public class NSAttributedString extends SpannableStringBuilder {
     public static String NSUnderlineColorAttributeName = "NSUnderlineColorAttributeName";// TODO: 2017/1/9 not implemented.
     public static String NSStrikethroughColorAttributeName = "NSStrikethroughColorAttributeName";// TODO: 2017/1/9 not implemented.
 
+    public NSAttributedString(String text) {
+        super(text);
+        this.reset(new HashMap<String, Object>(), new NSRange(0, text.length()));
+    }
+
     public NSAttributedString(String text, HashMap<String, Object> attributes) {
         super(text);
         this.reset(attributes, new NSRange(0, text.length()));
@@ -60,6 +66,14 @@ public class NSAttributedString extends SpannableStringBuilder {
 
     public NSAttributedString(NSAttributedString attributedString) {
         super(attributedString);
+    }
+
+    public NSAttributedString(SpannedString spannableString) {
+        super(spannableString);
+    }
+
+    public NSMutableAttributedString mutableCopy() {
+        return new NSMutableAttributedString(this);
     }
 
     public Object getAttribute(String attrName, int atIndex) {
@@ -73,6 +87,9 @@ public class NSAttributedString extends SpannableStringBuilder {
     }
 
     public HashMap<String, Object> getAttributes(int atIndex) {
+        if (atIndex >= length()) {
+            return null;
+        }
         NSAttributedSpan[] objects = getSpans(atIndex, 1, NSAttributedSpan.class);
         if (objects.length > 0) {
             return objects[0].attrs;

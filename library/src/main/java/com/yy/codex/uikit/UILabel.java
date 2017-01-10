@@ -10,6 +10,7 @@ import android.text.Layout;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
+import android.text.SpannedString;
 import android.text.TextUtils;
 import android.text.style.AbsoluteSizeSpan;
 import android.util.AttributeSet;
@@ -67,49 +68,33 @@ public class UILabel extends UIView {
 
     /* category: TextView Props */
 
-    private NSAttributedString attributedText;
-    private String fontFamilyName;
-    private double fontPointSize = 17;
+    /* Font */
+
+    private UIFont font = new UIFont(17);
+
+    public UIFont getFont() {
+        return font;
+    }
+
+    public void setFont(UIFont font) {
+        this.font = font;
+        updateTextAppearence();
+    }
+
+    /* TextColor */
+
     private int textColor = Color.BLACK;
-    private Layout.Alignment textAlignment = Layout.Alignment.ALIGN_NORMAL;
 
-    public String getFontFamilyName() {
-        return fontFamilyName;
+    public int getTextColor() {
+        return textColor;
     }
 
-    public void setFontFamilyName(String fontFamilyName) {
-        this.fontFamilyName = fontFamilyName;
+    public void setTextColor(int textColor) {
+        this.textColor = textColor;
+        updateTextAppearence();
     }
 
-    public double getFontPointSize() {
-        return fontPointSize;
-    }
-
-    public void setFontPointSize(double fontPointSize) {
-        this.fontPointSize = fontPointSize;
-    }
-
-    public String getText() {
-        return attributedText.toString();
-    }
-
-    public void setText(String text) {
-//        NSAttributedString attributedString = new NSAttributedString(text, new HashMap(){{
-//        }});
-//        setAttributedText(attributedString);
-    }
-
-    public void setAttributedText(NSAttributedString attributedText) {
-        this.attributedText = attributedText;
-        this.textView.setText(attributedText);
-        if (getConstraint() != null) {
-            getConstraint().setNeedsLayout();
-            UIView superview = getSuperview();
-            if (superview != null) {
-                superview.layoutSubviews();
-            }
-        }
-    }
+    /* Number of lines */
 
     private int numberOfLines = 1;
 
@@ -124,6 +109,8 @@ public class UILabel extends UIView {
         }
         textView.setMaxLines(numberOfLines);
     }
+
+    /* Line-Break Mode */
 
     private NSLineBreakMode linebreakMode = NSLineBreakMode.ByWordWrapping;
 
@@ -147,6 +134,71 @@ public class UILabel extends UIView {
                 textView.setEllipsize(null);
                 break;
         }
+        updateTextAppearence();
+    }
+
+    private Layout.Alignment alignment = Layout.Alignment.ALIGN_NORMAL;
+
+    public Layout.Alignment getAlignment() {
+        return alignment;
+    }
+
+    public void setAlignment(Layout.Alignment alignment) {
+        this.alignment = alignment;
+        updateTextAppearence();
+    }
+
+    /* Text */
+
+    private boolean needsUpdate = false;
+
+    public String getText() {
+        return getAttributedText() != null ? getAttributedText().toString() : null;
+    }
+
+    public void setText(String text) {
+        NSAttributedString attributedString = new NSAttributedString(text, new HashMap(){{
+            if (getFont() != null) {
+                put(NSAttributedString.NSFontAttributeName, getFont());
+            }
+            put(NSAttributedString.NSForegroundColorAttributeName, getTextColor());
+            NSParagraphStyle paragraphStyle = new NSParagraphStyle();
+            paragraphStyle.lineBreakMode = getLinebreakMode();
+            paragraphStyle.alignment = getAlignment();
+            put(NSAttributedString.NSParagraphStyleAttributeName, paragraphStyle);
+        }});
+        setAttributedText(attributedString);
+        needsUpdate = true;
+    }
+
+    private void updateTextAppearence() {
+        if (needsUpdate && getText() != null) {
+            String text = getText();
+            setText(text);
+        }
+    }
+
+    public NSAttributedString getAttributedText() {
+        if (this.textView.getText() != null && SpannedString.class.isAssignableFrom(this.textView.getText().getClass())) {
+            return new NSAttributedString((SpannedString) this.textView.getText());
+        }
+        return null;
+    }
+
+    public void setAttributedText(NSAttributedString attributedText) {
+        this.textView.setText(attributedText);
+        resetTextViewStyles();
+        if (getConstraint() != null) {
+            getConstraint().setNeedsLayout();
+            UIView superview = getSuperview();
+            if (superview != null) {
+                superview.layoutSubviews();
+            }
+        }
+    }
+
+    private void resetTextViewStyles() {
+        // TODO: 2017/1/10 not implemented.
     }
 
     /* category: Layouts */

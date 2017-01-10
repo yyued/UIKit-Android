@@ -75,23 +75,14 @@ class TestView extends UIView {
         aLabel.getConstraint().width = "50%";
         aLabel.getConstraint().centerHorizontally = true;
         aLabel.getConstraint().centerVertically = true;
-        NSAttributedString attributedString = new NSAttributedString("Test", new HashMap(){{
-            put(NSAttributedString.NSFontAttributeName, new UIFont(34));
-            put(NSAttributedString.NSForegroundColorAttributeName, Color.RED);
-            put(NSAttributedString.NSBackgroundColorAttributeName, Color.WHITE);
-            put(NSAttributedString.NSUnderlineStyleAttributeName, true);
-            put(NSAttributedString.NSShadowAttributeName, new NSShadow());
-            NSParagraphStyle style = new NSParagraphStyle();
-            style.alignment = Layout.Alignment.ALIGN_CENTER;
-            put(NSAttributedString.NSParagraphStyleAttributeName, style);
-        }});
+        aLabel.setNumberOfLines(0);
 
-        NSMutableAttributedString mutableAttributedString = new NSMutableAttributedString(attributedString);
-        mutableAttributedString.addAttributes(new HashMap<String, Object>(){{
+        NSAttributedString attributedString = new NSAttributedString("Test\nTest", new HashMap(){{
+            put(NSAttributedString.NSForegroundColorAttributeName, Color.BLUE);
             put(NSAttributedString.NSFontAttributeName, new UIFont(17));
-        }}, new NSRange(1, 2));
+        }});
+        aLabel.setAttributedText(attributedString);
 
-        aLabel.setAttributedText(mutableAttributedString);
         addSubview(aLabel);
     }
 
