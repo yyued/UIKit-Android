@@ -78,8 +78,17 @@ public class UIView extends UIResponder implements View.OnTouchListener {
         float scaledDensity = getContext().getResources().getDisplayMetrics().scaledDensity;
         this.setX((float) frame.origin.getX() * scaledDensity);
         this.setY((float) frame.origin.getY() * scaledDensity);
-        this.setMinimumWidth((int) (frame.size.getWidth() * scaledDensity));
-        this.setMinimumHeight((int) (frame.size.getHeight() * scaledDensity));
+
+        double mWidth = frame.size.getWidth() * scaledDensity;
+        double mHeight = frame.size.getHeight() * scaledDensity;
+        if (Math.ceil(mWidth) - mWidth < 0.1) {
+            mWidth = Math.ceil(mWidth);
+        }
+        if (Math.ceil(mWidth) - mHeight < 0.1) {
+            mHeight = Math.ceil(mHeight);
+        }
+        this.setMinimumWidth((int) mWidth);
+        this.setMinimumHeight((int) mHeight);
         CALayer.scaledDensity = scaledDensity;
         this.layer.setFrame(new CGRect(0, 0, frame.size.getWidth(), frame.size.getHeight()));
         UIView.addAnimationState(this, "frame.origin.x", oldValue.origin.getX(), frame.origin.getX());
@@ -458,7 +467,7 @@ public class UIView extends UIResponder implements View.OnTouchListener {
         SpringSystem system = SpringSystem.create();
         for (final Map.Entry<UIView, HashMap<String, UIViewPropertiesLog>> viewProps: animationState.entrySet()) {
             for (final Map.Entry<String, UIViewPropertiesLog> animateProp: viewProps.getValue().entrySet()) {
-                UIViewPropertiesLog log = animateProp.getValue();
+                final UIViewPropertiesLog log = animateProp.getValue();
                 if (log.valueType == 1) {
                     aniCount[0]++;
                     viewProps.getKey().animate(animateProp.getKey(), (float)((double)log.originValue));
@@ -473,12 +482,13 @@ public class UIView extends UIResponder implements View.OnTouchListener {
 
                         @Override
                         public void onSpringAtRest(Spring spring) {
+                            float currentValue = (float)spring.getCurrentValue();
+                            viewProps.getKey().animate(animateProp.getKey(), currentValue);
                             aniCount[0]--;
                             if (aniCount[0] <= 0 && completion != null) {
                                 completion.run();
                             }
                         }
-
                         @Override
                         public void onSpringActivate(Spring spring) {
                         }
