@@ -528,6 +528,8 @@ public class UIView extends UIResponder implements View.OnTouchListener {
 
                         @Override
                         public void onSpringAtRest(Spring spring) {
+                            float currentValue = (float)spring.getCurrentValue();
+                            viewProps.getKey().animate(animateProp.getKey(), currentValue);
                             aniCount[0]--;
                             if (aniCount[0] <= 0 && completion != null) {
                                 completion.run();

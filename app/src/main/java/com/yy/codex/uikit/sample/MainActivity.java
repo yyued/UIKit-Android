@@ -1,19 +1,28 @@
 package com.yy.codex.uikit.sample;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.yy.codex.uikit.CALayer;
 import com.yy.codex.uikit.CGRect;
+import com.yy.codex.uikit.UIImage;
+import com.yy.codex.uikit.UIImageView;
+import com.yy.codex.uikit.UITapGestureRecognizer;
 import com.yy.codex.uikit.UIView;
+
+import java.net.URL;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -54,30 +63,30 @@ class TestView extends UIView {
     }
 
     private void init() {
-        final UIView roundView = new UIView(getContext());
-        roundView.setFrame(new CGRect(44, 44, 44, 44));
-        roundView.setWantsLayer(true);
-        roundView.getLayer().setBackgroundColor(Color.BLACK);
-        roundView.getLayer().setCornerRadius(22.0f);
-        addSubview(roundView);
-        postDelayed(new Runnable() {
+        final UIImageView imageView = new UIImageView(getContext());
+        imageView.getLayer().setCornerRadius(45.0f);
+        imageView.getLayer().setClipToBounds(true);
+        imageView.setFrame(new CGRect(0, 0, 90, 90));
+        final Handler handler = new Handler();
+        Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                UIView.animateWithSpring(new Runnable() {
-                    @Override
-                    public void run() {
-                        roundView.setFrame(new CGRect(22, 22, 88, 88));
-//                        roundView.getLayer().setCornerRadius(44.0f);
-                    }
-                }, new Runnable() {
-                    @Override
-                    public void run() {
-                        roundView.getLayer().setCornerRadius(44.0f);
-                        roundView.invalidate();
-                    }
-                });
+                try {
+                    final Bitmap bitmap = BitmapFactory.decodeStream(new URL("http://img.hb.aicdn.com/a6b00bbdeeed21c79af74d043ba4b7505cbe11bf2225b-wsXC96_sq320").openConnection().getInputStream());
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            imageView.setImage(new UIImage(bitmap));
+                            imageView.invalidate();
+                        }
+                    });
+                }
+                catch (Exception e) {
+                    System.out.println(e.toString());
+                }
             }
-        }, 3000);
+        });
+        addSubview(imageView);
+        thread.start();
     }
-
 }
