@@ -1,5 +1,6 @@
 package com.yy.codex.uikit;
 
+import android.graphics.Rect;
 import android.graphics.RectF;
 
 /**
@@ -19,6 +20,10 @@ public final class CGRect {
     public RectF toRectF() {
         return new RectF((float) origin.getX(), (float) origin.getY(), (float) (origin.getX() + size.getWidth()), (float) (origin.getY() + size.getHeight()));
     }
+    public Rect toRect() {
+        return new Rect((int) origin.getX(), (int) origin.getY(), (int) (origin.getX() + size.getWidth()), (int) (origin.getY() + size.getHeight()));
+    }
+
     public RectF toRectF(float point){
         float x = (float) origin.getX() + point;
         float y = (float) origin.getY() + point;

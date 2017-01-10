@@ -1,13 +1,13 @@
 package com.yy.codex.uikit.sample;
 
 import android.content.Context;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 
 import com.yy.codex.uikit.CALayer;
@@ -65,13 +65,13 @@ class TestView extends UIView {
         UIView redView = new UIView(getContext());
 //        redView.setBackgroundColor(Color.RED);
         redView.setWantsLayer(true);
-        redView.setFrame(new CGRect(10, 10, 200, 200));
+        redView.setFrame(new CGRect(10, 10, 400, 400));
         CALayer mainLayer = redView.getLayer();
         mainLayer
                 .setFrame(new CGRect(10, 10, 100, 100))
-                .setShadowRadius(8).setShadowX(-2).setShadowY(-2).setShadowColor(Color.RED)
+//                .setShadowRadius(8).setShadowX(-2).setShadowY(-2).setShadowColor(Color.RED)
                 .setCornerRadius(10).setBorderWidth(1).setBorderColor(Color.BLACK)
-                .setClipToBounds(true) // @UIView bug, disable auto clipChildren
+//                .setClipToBounds(true) // @UIView bug, disable auto clipChildren
                 .setBackgroundColor(Color.YELLOW);
         addSubview(redView);
 
@@ -80,41 +80,35 @@ class TestView extends UIView {
 //        redSubView.setFrame(new CGRect(100, 100, 200, 200));
 //        redView.addSubview(redSubView);
 
-        CALayer sub1 = new CALayer(new CGRect(10, 10, 150, 150));
+        CALayer sub1 = new CALayer(new CGRect(10, 10, 200, 160));
         sub1.setCornerRadius(10)
                 .setBackgroundColor(Color.RED);
         mainLayer.addSubLayer(sub1);
-
-        CALayer sub12 = new CALayer(new CGRect(20, 20, 150, 150));
-        sub12.setCornerRadius(10)
-                .setBackgroundColor(Color.GREEN);
-        sub1.addSubLayer(sub12);
-
-        CALayer sub13 = new CALayer(new CGRect(30, 30, 150, 150));
-        sub13.setCornerRadius(10)
-                .setBackgroundColor(Color.BLUE);
-        sub1.addSubLayer(sub13);
+//
+//        CALayer sub12 = new CALayer(new CGRect(20, 20, 150, 150));
+//        sub12.setCornerRadius(10)
+//                .setBackgroundColor(Color.GREEN);
+//        sub1.addSubLayer(sub12);
+//
+//        CALayer sub13 = new CALayer(new CGRect(30, 30, 150, 150));
+//        sub13.setCornerRadius(10)
+//                .setBackgroundColor(Color.BLUE);
+//        sub1.addSubLayer(sub13);
 
 
         // test insert:atIndex
-        sub1.insertSubLayerAtIndex(sub13, 0);
-        sub1.insertSubLayerAtIndex(sub12, 1);
-        sub1.insertBelowSubLayer(sub13, sub12);
-
-        Log.w("len: ", String.valueOf(sub1.getSubLayers().length));
-
+//        sub1.insertSubLayerAtIndex(sub13, 0);
+//        sub1.insertSubLayerAtIndex(sub12, 1);
+//        sub1.insertBelowSubLayer(sub13, sub12);
 
         // test remove
 //        sub1.removeFromSuperLayer();
 
-
-
-
-//        CALayer sub2 = new CALayer(new CGRect(10, 10, 200, 200));
-//        sub2.setBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.avatar))
-//                .setBitmapGravity(CALayer.GRAVITY_BOTTOM)
-//                .setCornerRadius(10).setBackgroundColor(Color.BLUE);
-//        mainLayer.insertAboveSubLayer(sub2, sub1);
+        CALayer sub2 = new CALayer(new CGRect(10, 10, 200, 160));
+        sub2.setBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.img180x180))
+                .setBitmapGravity(CALayer.GRAVITY_TOP_LEFT)
+                .setCornerRadius(10).setBackgroundColor(Color.BLUE);
+        mainLayer.insertAboveSubLayer(sub2, sub1);
 
     }
 

@@ -5,7 +5,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.Rect;
 
 import java.util.ArrayList;
 
@@ -32,7 +31,7 @@ public class CALayer {
     private int shadowColor = Color.BLACK;
 
     private Bitmap bitmap;
-    private int bitmapGravity = GRAVITY_SCALE_TO_FILL;
+    private int bitmapGravity = GRAVITY_SCALE_ASCEPT_FIT;
 
     private boolean clipToBounds;
 
@@ -46,11 +45,16 @@ public class CALayer {
     public static final int GRAVITY_SCALE_TO_FILL = 0x01;
     public static final int GRAVITY_SCALE_ASCEPT_FIT = 0x02;
     public static final int GRAVITY_SCALE_ASCEPT_FILL = 0x03;
-    public static final int GRAVITY_TOP = 0x04;
-    public static final int GRAVITY_LEFT = 0x05;
-    public static final int GRAVITY_BOTTOM = 0x06;
-    public static final int GRAVITY_RIGHT = 0x07;
-    public static final int GRAVITY_CENRER = 0x08;
+    public static final int GRAVITY_CENRER = 0x04;
+    public static final int GRAVITY_TOP = 0x05;
+    public static final int GRAVITY_TOP_LEFT = 0x06;
+    public static final int GRAVITY_TOP_RIGHT = 0x07;
+    public static final int GRAVITY_BOTTOM = 0x08;
+    public static final int GRAVITY_BOTTOM_LEFT = 0x09;
+    public static final int GRAVITY_BOTTOM_RIGHT = 0x0a;
+    public static final int GRAVITY_LEFT = 0x0b;
+    public static final int GRAVITY_RIGHT = 0x0c;
+
 
     /* category CALayer Constructor */
 
@@ -140,7 +144,7 @@ public class CALayer {
 
         // image
         if (bitmap != null){
-            canvas.drawBitmap(bitmap, calcBitmapRect(bitmap, bitmapGravity), frame.toRectF(), paint);
+            drawBitmap(canvas, frame, bitmap, bitmapGravity);
             return;
         }
 
@@ -189,20 +193,188 @@ public class CALayer {
         }
     }
 
-    private Rect calcBitmapRect(Bitmap bitmap, int bitmapGravity){
-        // @Td
+    private void drawBitmap(Canvas canvas, CGRect rect, Bitmap bitmap, int bitmapGravity){
         double imageW = bitmap.getWidth();
         double imageH = bitmap.getHeight();
+        double imageRatio = imageW / imageH;
         double frameW = frame.getSize().getWidth();
         double frameH = frame.getSize().getHeight();
         double frameRatio = frameW / frameH;
+        double frameX = rect.origin.getX();
+        double frameY = rect.origin.getY();
+        CGRect imageRect = new CGRect(0, 0, imageW, imageH);
+        CGRect frameRect = rect;
+
         switch (bitmapGravity){
-            case GRAVITY_SCALE_ASCEPT_FIT:
-            case GRAVITY_SCALE_ASCEPT_FILL:
             case GRAVITY_SCALE_TO_FILL:
+                break;
+            case GRAVITY_SCALE_ASCEPT_FIT:
+                if (frameRatio > imageRatio){
+                    double scaledFrameW = frameH * imageRatio;
+                    frameRect = new CGRect(frameX + (frameW - scaledFrameW) / 2, frameY, scaledFrameW, frameH);
+                }
+                else {
+                    double scaledH = frameW / imageRatio;
+                    frameRect = new CGRect(frameX, frameY + (frameH - scaledH)/2, frameW, scaledH);
+                }
+                break;
+            case GRAVITY_SCALE_ASCEPT_FILL:
+                if (frameRatio > imageRatio){
+                    double clipedImageH = imageW / frameRatio;
+                    imageRect = new CGRect(0, (imageH - clipedImageH)/2, imageW, clipedImageH);
+                }
+                else {
+                    double clipedImageW = imageH * frameRatio;
+                    imageRect = new CGRect((imageW - clipedImageW) / 2, 0, clipedImageW, imageH);
+                }
+                break;
+            case GRAVITY_CENRER:
+                if (frameW >= imageW && frameH >= imageH){
+                    frameRect = new CGRect(frameX + (frameW - imageW) / 2, frameY + (frameH - imageH) / 2, imageW, imageH);
+                }
+                else if (frameW < imageW && frameH >= imageH ){
+                    imageRect = new CGRect((imageW - frameW)/2, 0, frameW, imageH);
+                    frameRect = new CGRect(frameX, frameY+(frameH - imageH)/2, frameW, imageH);
+                }
+                else if (frameH < imageH && frameW >= imageW) {
+                    imageRect = new CGRect(0, (imageH - frameH)/2, imageW, frameH);
+                    frameRect = new CGRect(frameX+(frameW - imageW)/2, frameY, imageW, frameH);
+                }
+                else {
+                    imageRect = new CGRect((imageW - frameW)/2, (imageH - frameH)/2, frameW, frameH);
+                }
+                break;
+            case GRAVITY_TOP:
+                if (frameW >= imageW && frameH >= imageH){
+                    frameRect = new CGRect(frameX+(frameW-imageW)/2, frameY, imageW, imageH);
+                }
+                else if (frameW < imageW && frameH >= imageH ){
+                    imageRect = new CGRect((imageW-frameW)/2, 0, frameW, imageH);
+                    frameRect = new CGRect(frameX, frameY, frameW, imageH);
+                }
+                else if (frameH < imageH && frameW >= imageW) {
+                    imageRect = new CGRect(0, 0, imageW, frameH);
+                    frameRect = new CGRect(frameX+(imageW-frameW)/2, frameY, imageW, frameH);
+                }
+                else {
+                    imageRect = new CGRect((imageW-frameW)/2, 0, frameW, frameH);
+                }
+                break;
+            case GRAVITY_TOP_LEFT:
+                if (frameW >= imageW && frameH >= imageH){
+                    frameRect = new CGRect(frameX, frameY, imageW, imageH);
+                }
+                else if (frameW < imageW && frameH >= imageH ){
+                    imageRect = new CGRect(0, 0, frameW, imageH);
+                    frameRect = new CGRect(frameX, frameY, frameW, imageH);
+                }
+                else if (frameH < imageH && frameW >= imageW) {
+                    imageRect = new CGRect(0, 0, imageW, frameH);
+                    frameRect = new CGRect(frameX, frameY, imageW, frameH);
+                }
+                else {
+                    imageRect = new CGRect(0, 0, frameW, frameH);
+                }
+                break;
+            case GRAVITY_TOP_RIGHT:
+                if (frameW >= imageW && frameH >= imageH){
+                    frameRect = new CGRect(frameX+(frameW-imageW), frameY, imageW, imageH);
+                }
+                else if (frameW < imageW && frameH >= imageH ){
+                    imageRect = new CGRect((imageW-frameW), 0, frameW, imageH);
+                    frameRect = new CGRect(frameX, frameY, frameW, imageH);
+                }
+                else if (frameH < imageH && frameW >= imageW) {
+                    imageRect = new CGRect(0, 0, imageW, frameH);
+                    frameRect = new CGRect(frameX+(frameW-imageW), frameY, imageW, frameH);
+                }
+                else {
+                    imageRect = new CGRect((imageW-frameW), 0, frameW, frameH);
+                }
+                break;
+            case GRAVITY_BOTTOM:
+                if (frameW >= imageW && frameH >= imageH){
+                    frameRect = new CGRect(frameX+(frameW-imageW)/2, frameY+(frameH-imageH), imageW, imageH);
+                }
+                else if (frameW < imageW && frameH >= imageH ){
+                    imageRect = new CGRect((imageW-frameW)/2, 0, frameW, imageH);
+                    frameRect = new CGRect(frameX, frameY+(frameH-imageH), frameW, imageH);
+                }
+                else if (frameH < imageH && frameW >= imageW) {
+                    imageRect = new CGRect(0, (imageH-frameH), imageW, frameH);
+                    frameRect = new CGRect(frameX+(frameW-imageW)/2, frameY, imageW, frameH);
+                }
+                else {
+                    imageRect = new CGRect((imageW-frameW)/2, (imageH-frameH), frameW, frameH);
+                }
+                break;
+            case GRAVITY_BOTTOM_LEFT:
+                if (frameW >= imageW && frameH >= imageH){
+                    frameRect = new CGRect(frameX, frameY+(frameH-imageH), imageW, imageH);
+                }
+                else if (frameW < imageW && frameH >= imageH ){
+                    imageRect = new CGRect(0, 0, frameW, imageH);
+                    frameRect = new CGRect(frameX, frameY+(frameH-imageH), frameW, imageH);
+                }
+                else if (frameH < imageH && frameW >= imageW) {
+                    imageRect = new CGRect(0, (imageH-frameH), imageW, frameH);
+                    frameRect = new CGRect(frameX, frameY, imageW, frameH);
+                }
+                else {
+                    imageRect = new CGRect(0, (imageH-frameH), frameW, frameH);
+                }
+                break;
+            case GRAVITY_BOTTOM_RIGHT:
+                if (frameW >= imageW && frameH >= imageH){
+                    frameRect = new CGRect(frameX+(frameW-imageW), frameY+(frameH-imageH), imageW, imageH);
+                }
+                else if (frameW < imageW && frameH >= imageH ){
+                    imageRect = new CGRect((imageW-frameW), 0, frameW, imageH);
+                    frameRect = new CGRect(frameX, frameY+(frameH-imageH), frameW, imageH);
+                }
+                else if (frameH < imageH && frameW >= imageW) {
+                    imageRect = new CGRect(0, (imageH-frameH), imageW, frameH);
+                    frameRect = new CGRect(frameX+(frameW-imageW), frameY, imageW, frameH);
+                }
+                else {
+                    imageRect = new CGRect((imageW-frameW), (imageH-frameH), frameW, frameH);
+                }
+                break;
+            case GRAVITY_LEFT:
+                if (frameW >= imageW && frameH >= imageH){
+                    frameRect = new CGRect(frameX, frameY+(frameH-imageH)/2, imageW, imageH);
+                }
+                else if (frameW < imageW && frameH >= imageH ){
+                    imageRect = new CGRect(0, 0, frameW, imageH);
+                    frameRect = new CGRect(frameX, frameY+(frameH-imageH)/2, frameW, imageH);
+                }
+                else if (frameH < imageH && frameW >= imageW) {
+                    imageRect = new CGRect(0, (imageH-frameH)/2, imageW, frameH);
+                    frameRect = new CGRect(frameX, frameY, imageW, frameH);
+                }
+                else {
+                    imageRect = new CGRect(0, 0, frameW, frameH);
+                }
+                break;
+            case GRAVITY_RIGHT:
+                if (frameW >= imageW && frameH >= imageH){
+                    frameRect = new CGRect(frameX+(frameW-imageW), frameY+(frameH-imageH)/2, imageW, imageH);
+                }
+                else if (frameW < imageW && frameH >= imageH ){
+                    imageRect = new CGRect((imageW-frameW), 0, frameW, imageH);
+                    frameRect = new CGRect(frameX, frameY+(frameH-imageH)/2, frameW, imageH);
+                }
+                else if (frameH < imageH && frameW >= imageW) {
+                    imageRect = new CGRect(0, (imageH-frameH)/2, imageW, frameH);
+                    frameRect = new CGRect(frameX+(frameW-imageW), frameY, imageW, frameH);
+                }
+                else {
+                    imageRect = new CGRect((imageW-frameW), (imageH-frameH)/2, frameW, frameH);
+                }
+                break;
         }
-        // return new Rect(bitmap.getWidth() / 3, bitmap.getHeight() / 3, bitmap.getWidth() / 3 * 2, bitmap.getHeight() / 3 * 2);
-        return null;
+
+        canvas.drawBitmap(bitmap, imageRect.toRect(), frameRect.toRect(), new Paint());
     }
 
     /* category CALayer Getter&Setter */
