@@ -331,6 +331,7 @@ public class UIView extends UIResponder implements View.OnTouchListener {
 
     private GestureDetector gestureDetector;
     public void addGestureRecognizer(UIGestureRecognizer gestureRecognizer) {
+        gestureRecognizer.view = this;
         this.setOnTouchListener(this);
         if (gestureRecognizer != null) {
             gestureDetector = new GestureDetector(getContext(), gestureRecognizer);
@@ -339,7 +340,7 @@ public class UIView extends UIResponder implements View.OnTouchListener {
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        if (gestureDetector != null) {
+        if (gestureDetector != null && this.userInteractionEnabled) {
             gestureDetector.onTouchEvent(event);
             return true;
         }
@@ -529,6 +530,8 @@ public class UIView extends UIResponder implements View.OnTouchListener {
 
                         @Override
                         public void onSpringAtRest(Spring spring) {
+                            float currentValue = (float)spring.getCurrentValue();
+                            viewProps.getKey().animate(animateProp.getKey(), currentValue);
                             aniCount[0]--;
                             if (aniCount[0] <= 0 && completion != null) {
                                 completion.run();

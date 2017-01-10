@@ -20,16 +20,16 @@
 
     <!--</com.yy.codex.uikit.sample.TestLayout>-->
 
-    <!--<com.yy.codex.uikit.UIView-->
-        <!--android:id="@+id/testUIView"-->
-        <!--android:layout_height="100dp"-->
-        <!--android:layout_width="100dp"-->
-        <!--android:background="@color/colorAccent">-->
+    <com.yy.codex.uikit.UIView
+        android:id="@+id/testUIView"
+        android:layout_height="100dp"
+        android:layout_width="100dp"
+        android:background="@color/colorAccent">
 
-        <!--<Button-->
-            <!--android:layout_width="20dp"-->
-            <!--android:layout_height="20dp" />-->
-    <!--</com.yy.codex.uikit.UIView>-->
+        <Button
+            android:layout_width="20dp"
+            android:layout_height="20dp" />
+    </com.yy.codex.uikit.UIView>
     <!--<Button-->
         <!--android:layout_width="100dp"-->
         <!--android:layout_height="100dp"-->
