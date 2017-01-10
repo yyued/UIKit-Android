@@ -7,73 +7,28 @@ import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 
 import com.yy.codex.uikit.NSAttributedString;
 import com.yy.codex.uikit.UIConstraint;
 import com.yy.codex.uikit.UIFont;
 import com.yy.codex.uikit.UILabel;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.Scroller;
+
+import com.yy.codex.uikit.CGPoint;
+import com.yy.codex.uikit.CGRect;
+import com.yy.codex.uikit.UIGestureRecognizer;
+import com.yy.codex.uikit.UIPanGestureRecognizer;
+import com.yy.codex.uikit.UITapGestureRecognizer;
 import com.yy.codex.uikit.UIView;
 
 import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        final UIView view = new TestView(this);
-        view.setBackgroundColor(Color.GRAY);
-        setContentView(view);
-    }
-}
-
-class TestView extends UIView {
-
-    UILabel aLabel;
-
-    public TestView(Context context, View view) {
-        super(context, view);
-        init();
-    }
-
-    public TestView(Context context) {
-        super(context);
-        init();
-    }
-
-    public TestView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init();
-    }
-
-    public TestView(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        init();
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public TestView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-        init();
-    }
-
-    public void init() {
-        aLabel = new UILabel(getContext());
-        aLabel.setBackgroundColor(Color.GREEN);
-        aLabel.setConstraint(new UIConstraint());
-        aLabel.getConstraint().width = "50%";
-        aLabel.getConstraint().centerHorizontally = true;
-        aLabel.getConstraint().centerVertically = true;
-        aLabel.setNumberOfLines(0);
-
-        NSAttributedString attributedString = new NSAttributedString("Test\nTest", new HashMap(){{
-            put(NSAttributedString.NSForegroundColorAttributeName, Color.BLUE);
-            put(NSAttributedString.NSFontAttributeName, new UIFont(17));
-        }});
-        aLabel.setAttributedText(attributedString);
-
-        addSubview(aLabel);
-    }
 
 }
