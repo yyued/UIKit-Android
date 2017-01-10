@@ -34,4 +34,5 @@ public class UIPanGestureRecognizer extends UIGestureRecognizer {
     public CGPoint velocityInView(UIView view) {
         return new CGPoint(velocityTracker.getXVelocity(), velocityTracker.getYVelocity());
     }
+
 }

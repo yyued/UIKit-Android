@@ -12,6 +12,8 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.util.AttributeSet;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -19,6 +21,7 @@ import com.yy.codex.uikit.CALayer;
 import com.yy.codex.uikit.CGRect;
 import com.yy.codex.uikit.UIImage;
 import com.yy.codex.uikit.UIImageView;
+import com.yy.codex.uikit.UIPanGestureRecognizer;
 import com.yy.codex.uikit.UITapGestureRecognizer;
 import com.yy.codex.uikit.UIView;
 import com.yy.codex.uikit.UIViewContentMode;
@@ -68,17 +71,18 @@ class TestView extends UIView {
         view.setFrame(new CGRect(44, 44, 44, 44));
         view.setBackgroundColor(Color.BLACK);
         view.setUserInteractionEnabled(true);
-        view.addGestureRecognizer(new UITapGestureRecognizer(this, "xxx:"));
+        view.addGestureRecognizer(new UIPanGestureRecognizer(this, "xxx:"));
         addSubview(view);
     }
 
-    public void xxx(final UITapGestureRecognizer tapGestureRecognizer) {
-        UIView.animateWithSpring(120.0, 3.0, 20.0, new Runnable() {
-            @Override
-            public void run() {
-                tapGestureRecognizer.getView().setFrame(new CGRect(44, 44, 88, 88));
-            }
-        }, null);
+    public void xxx(final UIPanGestureRecognizer panGestureRecognizer) {
+
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        System.out.println(event);
+        return super.onTouchEvent(event);
     }
 
 }
