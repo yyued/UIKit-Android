@@ -7,6 +7,7 @@ import android.widget.Scroller;
 
 import com.yy.codex.uikit.CGPoint;
 import com.yy.codex.uikit.UIGestureRecognizer;
+import com.yy.codex.uikit.UITapGestureRecognizer;
 import com.yy.codex.uikit.UIView;
 
 /**
@@ -28,7 +29,8 @@ public class MyMainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         view = new UIView(this);
         setContentView(R.layout.activity_main);
-//        view = (UIView)findViewById(R.id.testUIView);
+        view = (UIView)findViewById(R.id.testUIView);
+
 //        button = (Button)findViewById(R.id.testButton);
 //        moveButton = (Button)findViewById(R.id.testMoveButton);
 //
@@ -43,12 +45,12 @@ public class MyMainActivity extends AppCompatActivity {
 //            }
 //        });
 //
-//        UITapGestureRecognizer tap = new UITapGestureRecognizer(this, "ttt:");
-//        view.addGestureRecognizer(tap);
+        UITapGestureRecognizer tap = new UITapGestureRecognizer(this, "ttt:");
+        view.addGestureRecognizer(new UITapGestureRecognizer(this, "ttt:"));
+        view.setUserInteractionEnabled(false);
     }
 
     public void ttt(UIGestureRecognizer gestureRecognizer) {
         CGPoint point = gestureRecognizer.locationInView(view);
-        moveButton.scrollBy(30, 0);
     }
 }
