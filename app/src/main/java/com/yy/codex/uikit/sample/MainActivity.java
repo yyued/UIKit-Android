@@ -72,4 +72,13 @@ class TestView extends UIView {
         addSubview(view);
     }
 
+    public void xxx(final UITapGestureRecognizer tapGestureRecognizer) {
+        UIView.animateWithSpring(120.0, 3.0, 20.0, new Runnable() {
+            @Override
+            public void run() {
+                tapGestureRecognizer.getView().setFrame(new CGRect(44, 44, 88, 88));
+            }
+        }, null);
+    }
+
 }

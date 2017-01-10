@@ -14,37 +14,19 @@ import java.lang.reflect.Method;
 public class UIGestureRecognizer extends GestureDetector.SimpleOnGestureListener {
 
     UIView view;
-    private Object target;
-    private String selector;
+    private NSInvocation invocation;
 
     protected MotionEvent motionEvent;
 
     public UIGestureRecognizer(Object target, String selector) {
-        this.target = target;
-        this.selector = selector;
+        invocation = new NSInvocation(target, selector);
     }
 
     protected void invokeSelector() {
-        try {
-            Class clazz = target.getClass();
-
-            Method method = null;
-            int index = selector.indexOf(":");
-            if (index != -1) {
-                String subSelector = selector.substring(0, index);
-                method = clazz.getDeclaredMethod(subSelector, getClass());
-                method.invoke(target, this);
-            }
-            else  {
-                method = clazz.getDeclaredMethod(selector);
-                method.invoke(target);
-            }
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
+        if (invocation != null) {
+            try {
+                invocation.invoke(new Object[]{this});
+            } catch (Exception e) {}
         }
     }
 
