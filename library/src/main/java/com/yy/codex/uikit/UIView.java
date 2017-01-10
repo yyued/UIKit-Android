@@ -91,6 +91,7 @@ public class UIView extends UIResponder implements View.OnTouchListener {
         this.setMinimumHeight((int) mHeight);
         CALayer.scaledDensity = scaledDensity;
         this.layer.setFrame(new CGRect(0, 0, frame.size.getWidth(), frame.size.getHeight()));
+        this.layer.bindView(this);
         UIView.addAnimationState(this, "frame.origin.x", oldValue.origin.getX(), frame.origin.getX());
         UIView.addAnimationState(this, "frame.origin.y", oldValue.origin.getY(), frame.origin.getY());
         UIView.addAnimationState(this, "frame.size.width", oldValue.size.getWidth(), frame.size.getWidth());
