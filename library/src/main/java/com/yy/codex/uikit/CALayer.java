@@ -163,12 +163,12 @@ public class CALayer {
         if (isDrawInNewCanvas){
             // create srcBitmap
             CGPoint origin = calcOrigin(this);
-            Bitmap srcBitmap = Bitmap.createBitmap((int)(frame.getSize().getWidth()+origin.getX()), (int)(frame.getSize().getHeight()+origin.getY()), Bitmap.Config.ARGB_8888);
+            Bitmap srcBitmap = Bitmap.createBitmap((int)(frame.size.getWidth()+origin.getX()), (int)(frame.size.getHeight()+origin.getY()), Bitmap.Config.ARGB_8888);
             Canvas canvasA = new Canvas(srcBitmap);
             drawLayersInCanvas(canvasA);
 
             // create maskBitmap
-            Bitmap maskBitmap = Bitmap.createBitmap((int)(frame.getSize().getWidth()+origin.getX()), (int)(frame.getSize().getHeight()+origin.getY()), Bitmap.Config.ARGB_8888);
+            Bitmap maskBitmap = Bitmap.createBitmap((int)(frame.size.getWidth()+origin.getX()), (int)(frame.size.getHeight()+origin.getY()), Bitmap.Config.ARGB_8888);
             Canvas canvasB = new Canvas(maskBitmap);
             Paint p3 = new Paint();
             p3.setAntiAlias(true);
@@ -214,7 +214,7 @@ public class CALayer {
             if (shadowRadius > 0){
                 paint.setShadowLayer((float) shadowRadius, (float) shadowX, (float) shadowY, shadowColor);
             }
-            Log.w("newContext", String.valueOf(frame.getSize().getHeight()));
+            Log.w("newContext", String.valueOf(frame.size.getHeight()));
             canvas.drawRoundRect(frame.shrinkToRectF(halfBorderW, calculatedOrigin), (float) cornerRadius, (float) cornerRadius, paint);
             if (borderWidth > 0){
                 paint.setStyle(Paint.Style.STROKE);
@@ -263,8 +263,8 @@ public class CALayer {
         double imageW = bitmap.getWidth();
         double imageH = bitmap.getHeight();
         double imageRatio = imageW / imageH;
-        double frameW = frame.getSize().getWidth();
-        double frameH = frame.getSize().getHeight();
+        double frameW = frame.size.getWidth();
+        double frameH = frame.size.getHeight();
         double frameRatio = frameW / frameH;
         double frameX = rect.origin.getX();
         double frameY = rect.origin.getY();

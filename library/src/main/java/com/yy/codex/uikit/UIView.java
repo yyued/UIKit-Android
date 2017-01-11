@@ -7,8 +7,6 @@ import android.graphics.Canvas;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
-import android.view.GestureDetector;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
@@ -26,7 +24,7 @@ import java.util.Map;
  * Created by cuiminghui on 2016/12/30.
  */
 
-public class UIView extends UIResponder implements View.OnTouchListener {
+public class UIView extends UIResponder {
 
     /* FrameLayout initialize methods */
 
@@ -319,7 +317,6 @@ public class UIView extends UIResponder implements View.OnTouchListener {
 
     private boolean userInteractionEnabled = false;
     private ArrayList<UIGestureRecognizer> gestureRecognizers = new ArrayList<UIGestureRecognizer>();
-    private ArrayList<GestureDetector> gestureDetectors = new ArrayList<GestureDetector>();
 
     public boolean isUserInteractionEnabled() {
         return userInteractionEnabled;
@@ -329,43 +326,13 @@ public class UIView extends UIResponder implements View.OnTouchListener {
         this.userInteractionEnabled = userInteractionEnabled;
     }
 
-    private GestureDetector gestureDetector;
     public void addGestureRecognizer(UIGestureRecognizer gestureRecognizer) {
-        gestureRecognizer.view = this;
-        this.setOnTouchListener(this);
-        if (gestureRecognizer != null) {
-            gestureDetector = new GestureDetector(getContext(), gestureRecognizer);
-        }
+        gestureRecognizers.add(gestureRecognizer);
+        gestureRecognizer.didAddToView(this);
     }
 
-    @Override
-    public boolean onTouch(View v, MotionEvent event) {
-        if (gestureDetector != null && this.userInteractionEnabled) {
-            gestureDetector.onTouchEvent(event);
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        if (gestureDetector != null) {
-            gestureDetector.onTouchEvent(event);
-        }
-//        final int action = event.getAction();
-//        switch (action) {
-//            case MotionEvent.ACTION_DOWN:
-//                touchesBegan();
-//                break;
-//            case MotionEvent.ACTION_MOVE:
-//                touchesMoved();
-//                break;
-//            case MotionEvent.ACTION_UP:
-//                touchesEnded();
-//                break;
-//        }
-
-        return super.onTouchEvent(event);
+    public ArrayList<UIGestureRecognizer> getGestureRecognizers() {
+        return gestureRecognizers;
     }
 
     /* UIView animation */

@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 
 import com.yy.codex.uikit.CALayer;
@@ -85,7 +86,12 @@ class TestView extends UIView {
                 .setCornerRadius(3)
                 .setBackgroundColor(Color.RED);
         subLayer.addSubLayer(subsubLayer);
+    }
 
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        System.out.println(event);
+        return super.onTouchEvent(event);
     }
 
 }
