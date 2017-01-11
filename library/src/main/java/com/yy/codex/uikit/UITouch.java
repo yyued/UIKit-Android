@@ -40,6 +40,14 @@ public class UITouch {
         tapCountStore = newTapCountStore;
     }
 
+    public CGPoint getRelativePoint() {
+        return mRelativePoint;
+    }
+
+    public long getTimestamp() {
+        return mTimestamp;
+    }
+
     public CGPoint locationInView(UIView view) {
         return new CGPoint(0, 0);
     }

@@ -81,6 +81,15 @@ public class UIGestureRecognizer {
         }
     }
 
+    static void markOtherGestureRecognizersFailed(UIGestureRecognizer excepts) {
+        for (int i = 0; i < currentLoopGestureRecognizers.size(); i++) {
+            if (currentLoopGestureRecognizers.get(i) == excepts) {
+                continue;
+            }
+            currentLoopGestureRecognizers.get(i).mState = UIGestureRecognizerState.Failed;
+        }
+    }
+
     static void onTouchesBegan(ArrayList<UIGestureRecognizer> gestureRecognizers, UITouch[] touches, UIEvent event) {
         if (currentLoopGestureRecognizers == null) {
             currentLoopGestureRecognizers = gestureRecognizers;

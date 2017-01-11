@@ -45,27 +45,28 @@ public class UITapGestureRecognizer extends UIGestureRecognizer {
         super.touchesEnded(touches, event);
         if (!moveOutOfBounds(touches)) {
             mState = UIGestureRecognizerState.Ended;
+            markOtherGestureRecognizersFailed(this);
             sendActions();
         }
     }
 
     private boolean moveOutOfBounds(UITouch[] touches) {
         if (startTouches == null) {
-            return false;
+            return true;
         }
-        double allowMovement = 8.0;
+        double allowableMovement = 22.0;
         int accepted = 0;
         for (int i = 0; i < touches.length; i++) {
             CGPoint p0 = touches[i].locationInView(this.mView);
             for (int j = 0; j < startTouches.length; j++) {
                 CGPoint p1 = startTouches[j].locationInView(this.mView);
-                if (p0.inRange(allowMovement, allowMovement, p1)) {
+                if (p0.inRange(allowableMovement, allowableMovement, p1)) {
                     accepted++;
                     break;
                 }
             }
         }
-        return accepted >= startTouches.length;
+        return accepted < startTouches.length;
     }
 
 }
