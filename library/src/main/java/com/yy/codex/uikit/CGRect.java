@@ -20,16 +20,31 @@ public final class CGRect {
     public RectF toRectF() {
         return new RectF((float) origin.getX(), (float) origin.getY(), (float) (origin.getX() + size.getWidth()), (float) (origin.getY() + size.getHeight()));
     }
+    public RectF toRectF(CGPoint point) {
+        float top = (float) point.getY();
+        float left = (float) point.getX();
+        float right = (float) size.getWidth() + left;
+        float bottom = (float) size.getHeight() + top;
+        return new RectF(left, top, right, bottom);
+    }
     public Rect toRect() {
         return new Rect((int) origin.getX(), (int) origin.getY(), (int) (origin.getX() + size.getWidth()), (int) (origin.getY() + size.getHeight()));
     }
 
-    public RectF toRectF(float point){
-        float x = (float) origin.getX() + point;
-        float y = (float) origin.getY() + point;
-        float w = (float) size.getWidth() + x - 2 * point;
-        float h = (float) size.getHeight() + x - 2 * point;
-        return new RectF(x, y, w, h);
+    public RectF shrinkToRectF(float offset){
+        float top = (float) origin.getY() + offset;
+        float left = (float) origin.getX() + offset;
+        float right = (float) size.getWidth() + left - 2 * offset;
+        float bottom = (float) size.getHeight() + top - 2 * offset;
+        return new RectF(left, top, right, bottom);
+    }
+
+    public RectF shrinkToRectF(float offset, CGPoint point){
+        float top = (float) point.getY() + offset;
+        float left = (float) point.getX() + offset;
+        float right = (float) size.getWidth() + left - 2 * offset;
+        float bottom = (float) size.getHeight() + top - 2 * offset;
+        return new RectF(left, top, right, bottom);
     }
 
     public CGRect setX(double x) {
