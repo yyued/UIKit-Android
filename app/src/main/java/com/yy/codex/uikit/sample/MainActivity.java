@@ -1,32 +1,19 @@
 package com.yy.codex.uikit.sample;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.util.AttributeSet;
-import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.ImageView;
 
 import com.yy.codex.uikit.CALayer;
 import com.yy.codex.uikit.CGRect;
-import com.yy.codex.uikit.UIImage;
-import com.yy.codex.uikit.UIImageView;
-import com.yy.codex.uikit.UIPanGestureRecognizer;
-import com.yy.codex.uikit.UITapGestureRecognizer;
 import com.yy.codex.uikit.UIView;
-import com.yy.codex.uikit.UIViewContentMode;
-
-import java.net.URL;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -81,12 +68,7 @@ class TestView extends UIView {
         sublayer.addSubLayer(subsubLayer);
         view.getLayer().addSubLayer(sublayer);
         view.setUserInteractionEnabled(true);
-        view.addGestureRecognizer(new UIPanGestureRecognizer(this, "xxx:"));
         addSubview(view);
-    }
-
-    public void xxx(final UIPanGestureRecognizer panGestureRecognizer) {
-
     }
 
     @Override
