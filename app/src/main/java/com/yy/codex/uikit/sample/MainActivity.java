@@ -12,7 +12,9 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import com.yy.codex.uikit.CALayer;
+import com.yy.codex.uikit.CGPoint;
 import com.yy.codex.uikit.CGRect;
+import com.yy.codex.uikit.UITouch;
 import com.yy.codex.uikit.UIView;
 
 public class MainActivity extends AppCompatActivity {
@@ -54,7 +56,7 @@ class TestView extends UIView {
     }
 
     private void init() {
-        UIView view = new UIView(getContext());
+        final UIView view = new UIView(getContext());
         view.setFrame(new CGRect(44, 44, 44, 44));
 //        view.setBackgroundColor(Color.BLACK);
         view.setWantsLayer(true);
