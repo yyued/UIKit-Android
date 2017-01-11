@@ -1,29 +1,19 @@
 package com.yy.codex.uikit.sample;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.ImageView;
 
 import com.yy.codex.uikit.CALayer;
 import com.yy.codex.uikit.CGRect;
-import com.yy.codex.uikit.UIImage;
-import com.yy.codex.uikit.UIImageView;
-import com.yy.codex.uikit.UITapGestureRecognizer;
 import com.yy.codex.uikit.UIView;
-import com.yy.codex.uikit.UIViewContentMode;
-
-import java.net.URL;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -63,13 +53,39 @@ class TestView extends UIView {
         init();
     }
 
+
     private void init() {
-        UIView view = new UIView(getContext());
-        view.setFrame(new CGRect(44, 44, 44, 44));
-        view.setBackgroundColor(Color.BLACK);
-        view.setUserInteractionEnabled(true);
-        view.addGestureRecognizer(new UITapGestureRecognizer(this, "xxx:"));
-        addSubview(view);
+        UIView redView = new UIView(getContext());
+        redView.setWantsLayer(true);
+        redView.setFrame(new CGRect(0, 0, 400, 400));
+//        redView.setBackgroundColor(Color.BLACK);
+        CALayer mainLayer = redView.getLayer();
+        mainLayer
+                .setFrame(new CGRect(10, 10, 120, 120))
+                .setCornerRadius(3)
+                .setBorderWidth(10).setBorderColor(Color.GRAY)
+                .setBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.img212x645))
+                .setBitmapGravity(CALayer.GRAVITY_LEFT)
+                .setClipToBounds(true)
+                .setBackgroundColor(Color.GREEN)
+        ;
+        addSubview(redView);
+
+        CALayer subLayer = new CALayer();
+        subLayer.setFrame(new CGRect(-10, 10, 60, 60))
+                .setCornerRadius(3)
+                .setBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.img180x180))
+                .setBitmapGravity(CALayer.GRAVITY_SCALE_ASCEPT_FIT)
+                .setClipToBounds(true)
+                .setBackgroundColor(Color.YELLOW);
+        mainLayer.addSubLayer(subLayer);
+
+        CALayer subsubLayer = new CALayer();
+        subsubLayer.setFrame(new CGRect(10, 10, 30, 30))
+                .setCornerRadius(3)
+                .setBackgroundColor(Color.RED);
+        subLayer.addSubLayer(subsubLayer);
+
     }
 
 }

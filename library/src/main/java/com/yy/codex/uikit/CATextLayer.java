@@ -29,8 +29,8 @@ public class CATextLayer extends CALayer {
     }
 
     @Override
-    protected void drawLayer(Canvas canvas, CGRect rect) {
-        super.drawLayer(canvas, rect);
+    protected void drawLayer(Canvas canvas, CGRect rect, boolean inNewCanvas) {
+        super.drawLayer(canvas, rect, inNewCanvas);
 
         Paint paint = new Paint();
         paint.setAntiAlias(true);

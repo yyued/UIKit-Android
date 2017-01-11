@@ -4,7 +4,9 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Path;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -37,6 +39,7 @@ public class CALayer {
     /* renderProps */
 
     private boolean needDisplay;
+    private boolean newCanvasContext;
 
     /* hierarchyProps */
 
@@ -134,8 +137,65 @@ public class CALayer {
 
     /* category CALayer Appearance */
 
-    protected void drawLayer(Canvas canvas, CGRect rect){
+    public void drawRect(Canvas canvas, CGRect rect){
+        if(this.askIfNeedDispaly()){
+            this.resetNeedDisplayToFalse();
+            drawAllLayers(canvas, rect);
+        }
+    }
+
+    private void drawAllLayers(Canvas canvas, CGRect rect){
+        if (hidden){
+            return;
+        }
+        if (isNewCanvasContext()){
+            drawLayer(canvas, rect, true);
+        }
+        else {
+            drawLayer(canvas, rect, false);
+            for (CALayer item : subLayers){
+                item.drawAllLayers(canvas, rect);
+            }
+        }
+    }
+
+    protected void drawLayer(Canvas canvas, CGRect rect, boolean isDrawInNewCanvas){
+        if (isDrawInNewCanvas){
+            // create srcBitmap
+            CGPoint origin = calcOrigin(this);
+            Bitmap srcBitmap = Bitmap.createBitmap((int)(frame.getSize().getWidth()+origin.getX()), (int)(frame.getSize().getHeight()+origin.getY()), Bitmap.Config.ARGB_8888);
+            Canvas canvasA = new Canvas(srcBitmap);
+            drawLayersInCanvas(canvasA);
+
+            // create maskBitmap
+            Bitmap maskBitmap = Bitmap.createBitmap((int)(frame.getSize().getWidth()+origin.getX()), (int)(frame.getSize().getHeight()+origin.getY()), Bitmap.Config.ARGB_8888);
+            Canvas canvasB = new Canvas(maskBitmap);
+            Paint p3 = new Paint();
+            p3.setAntiAlias(true);
+            canvasB.drawRoundRect(new CGRect(origin.getX(), origin.getY(), frame.size.getWidth(), frame.size.getHeight()).toRectF(), (float) cornerRadius, (float) cornerRadius, p3);
+
+            // apply maskBitmap on srcBitmap
+            Paint p2 = new Paint();
+            p2.setAntiAlias(true);
+            canvas.drawBitmap(maskBitmap, 0, 0, p2);
+            p2.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+            canvas.drawBitmap(srcBitmap, 0, 0, p2);
+        }
+        else {
+            drawInCanvas(canvas);
+        }
+    }
+
+    private void drawLayersInCanvas(Canvas canvas){
+        drawInCanvas(canvas);
+        for (CALayer item : subLayers){
+            item.drawLayersInCanvas(canvas);
+        }
+    }
+
+    private void drawInCanvas(Canvas canvas){
         // normalize layer's prop
+        CGPoint calculatedOrigin = calcOrigin(this);
         CGRect frame = this.frame;
         float halfBorderW = (float) borderWidth / 2.0f;
 
@@ -149,55 +209,57 @@ public class CALayer {
             return;
         }
 
-        // image
-        if (bitmap != null){
-            drawBitmap(canvas, frame, bitmap, bitmapGravity);
-//            return;
-        }
-
         // border clipToBounds
         if (cornerRadius > 0){
-            if (clipToBounds){
-                Path clipPath = new Path();
-                clipPath.addRoundRect(frame.toRectF(), (float) cornerRadius, (float) cornerRadius, Path.Direction.CW);
-                canvas.clipPath(clipPath);
-            }
             if (shadowRadius > 0){
                 paint.setShadowLayer((float) shadowRadius, (float) shadowX, (float) shadowY, shadowColor);
             }
-            canvas.drawRoundRect(frame.toRectF(halfBorderW), (float) cornerRadius, (float) cornerRadius, paint);
+            Log.w("newContext", String.valueOf(frame.getSize().getHeight()));
+            canvas.drawRoundRect(frame.shrinkToRectF(halfBorderW, calculatedOrigin), (float) cornerRadius, (float) cornerRadius, paint);
             if (borderWidth > 0){
                 paint.setStyle(Paint.Style.STROKE);
                 paint.setStrokeWidth((float) borderWidth);
                 paint.setColor(borderColor);
-                canvas.drawRoundRect(frame.toRectF(halfBorderW), (float) cornerRadius, (float) cornerRadius, paint);
+                canvas.drawRoundRect(frame.shrinkToRectF(halfBorderW, calculatedOrigin), (float) cornerRadius, (float) cornerRadius, paint);
             }
         }
         else {
-            if (clipToBounds){
-                canvas.clipRect(frame.toRectF());
-            }
             if (shadowRadius > 0){
                 paint.setShadowLayer((float) shadowRadius, (float) shadowX, (float) shadowY, shadowColor);
             }
-            canvas.drawRect(frame.toRectF(), paint);
+            canvas.drawRect(frame.toRectF(calculatedOrigin), paint);
             if (borderWidth > 0){
                 paint.setStyle(Paint.Style.STROKE);
-                paint.setStrokeWidth((float) borderWidth * 2);
+                paint.setStrokeWidth((float) borderWidth);
                 paint.setColor(borderColor);
-                canvas.drawRect(frame.toRectF(), paint);
+                canvas.drawRect(frame.shrinkToRectF(halfBorderW, calculatedOrigin), paint);
             }
         }
-    }
 
-    public void drawRect(Canvas canvas, CGRect rect){
-        if(this.askIfNeedDispaly()){
-            this.resetNeedDisplayToFalse();
-            drawAllLayers(canvas, rect);
+        if (bitmap != null){
+            CGRect newFrame = null;
+            if (borderWidth > 0){
+                newFrame = new CGRect(calculatedOrigin.getX()+halfBorderW, calculatedOrigin.getY()+halfBorderW, frame.size.getWidth()-borderWidth, frame.size.getHeight()-borderWidth);
+            }
+            else {
+                newFrame = new CGRect(calculatedOrigin.getX(), calculatedOrigin.getY(), frame.size.getWidth(), frame.size.getHeight());
+            }
+            drawBitmap(canvas, newFrame, bitmap, bitmapGravity, paint);
         }
     }
 
-    private void drawBitmap(Canvas canvas, CGRect rect, Bitmap bitmap, int bitmapGravity){
+    private boolean askIfNeedDispaly(){
+        return true;
+    }
+
+    private void resetNeedDisplayToFalse(){
+        this.needDisplay = false;
+        for (CALayer item : subLayers){
+            item.resetNeedDisplayToFalse();
+        }
+    }
+
+    private void drawBitmap(Canvas canvas, CGRect rect, Bitmap bitmap, int bitmapGravity, Paint paint){
         double imageW = bitmap.getWidth();
         double imageH = bitmap.getHeight();
         double imageRatio = imageW / imageH;
@@ -378,7 +440,7 @@ public class CALayer {
                 break;
         }
 
-        canvas.drawBitmap(bitmap, imageRect.toRect(), frameRect.toRect(), new Paint());
+        canvas.drawBitmap(bitmap, imageRect.toRect(), frameRect.toRect(), paint);
     }
 
     /* category CALayer Getter&Setter */
@@ -427,6 +489,15 @@ public class CALayer {
         return clipToBounds;
     }
 
+    public boolean isNewCanvasContext() {
+        boolean result = false || this.clipToBounds;
+        return result;
+    }
+
+    public void setNewCanvasContext(boolean newCanvasContext) {
+        this.newCanvasContext = newCanvasContext;
+    }
+
     public CALayer setFrame(CGRect frame) {
         float x = (float) frame.origin.getX() * scaledDensity;
         float y = (float) frame.origin.getY() * scaledDensity;
@@ -441,10 +512,10 @@ public class CALayer {
     }
 
     public CALayer setBitmap(Bitmap bitmap) {
-//        if (this.bitmap != bitmap){
+        if (this.bitmap != bitmap){
             this.bitmap = bitmap;
             this.setNeedDisplay(true);
-//        }
+        }
         return this;
     }
 
@@ -538,13 +609,30 @@ public class CALayer {
 
     public void setNeedDisplay(boolean needDisplay) {
         this.needDisplay = needDisplay;
-        UIView view = this.requestRootLayer().view;
-        if (view != null){
-            view.invalidate();
+        if (needDisplay){
+            UIView view = this.requestRootLayer().view;
+            if (view != null){
+                view.invalidate();
+            }
         }
     }
 
     /* category CALayer support method */
+
+    private CGPoint calcOrigin(CALayer layer){
+        double oriX = layer.frame.origin.getX();
+        double oriY = layer.frame.origin.getY();
+        CALayer p = layer.getSuperLayer();
+        while (p != null){
+//            if (p.isNewCanvasContext()) {
+//                break;
+//            }
+            oriX += p.frame.origin.getX();
+            oriY += p.frame.origin.getY();
+            p = p.getSuperLayer();
+        }
+        return new CGPoint(oriX, oriY);
+    }
 
     private CALayer requestRootLayer(){
         CALayer root = this;
@@ -555,40 +643,6 @@ public class CALayer {
             }
         }
         return root;
-    }
-
-    private boolean askIfNeedDispaly(){
-        if (this.needDisplay){
-            return true;
-        }
-        else {
-            for (CALayer item : subLayers){
-                if (item.askIfNeedDispaly()){
-                    return true;
-                }
-                else {
-                    continue;
-                }
-            }
-        }
-        return false;
-    }
-
-    private void resetNeedDisplayToFalse(){
-        this.needDisplay = false;
-        for (CALayer item : subLayers){
-            item.resetNeedDisplayToFalse();
-        }
-    }
-
-    private void drawAllLayers(Canvas canvas, CGRect rect){
-        if (hidden){
-            return;
-        }
-        drawLayer(canvas, rect);
-        for (CALayer item : subLayers){
-            item.drawAllLayers(canvas, rect);
-        }
     }
 
     private boolean doubleEqual(Double a, Double b){

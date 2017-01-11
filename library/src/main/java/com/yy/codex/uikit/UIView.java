@@ -7,13 +7,11 @@ import android.graphics.Canvas;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
-import android.widget.FrameLayout;
 
 import com.facebook.rebound.Spring;
 import com.facebook.rebound.SpringConfig;
@@ -34,28 +32,33 @@ public class UIView extends UIResponder implements View.OnTouchListener {
 
     public UIView(Context context, View view) {
         super(context);
+        setupProps();
         addView(view);
-        setWillNotDraw(false);
     }
 
     public UIView(Context context) {
         super(context);
-        setWillNotDraw(false);
+        setupProps();
     }
 
     public UIView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        setWillNotDraw(false);
+        setupProps();
     }
 
     public UIView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        setWillNotDraw(false);
+        setupProps();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public UIView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
+        setupProps();
+    }
+
+    private void setupProps(){
+        this.layer.bindView(this);
         setWillNotDraw(false);
     }
 
@@ -91,7 +94,6 @@ public class UIView extends UIResponder implements View.OnTouchListener {
         this.setMinimumHeight((int) mHeight);
         CALayer.scaledDensity = scaledDensity;
         this.layer.setFrame(new CGRect(0, 0, frame.size.getWidth(), frame.size.getHeight()));
-        this.layer.bindView(this);
         UIView.addAnimationState(this, "frame.origin.x", oldValue.origin.getX(), frame.origin.getX());
         UIView.addAnimationState(this, "frame.origin.y", oldValue.origin.getY(), frame.origin.getY());
         UIView.addAnimationState(this, "frame.size.width", oldValue.size.getWidth(), frame.size.getWidth());
@@ -303,9 +305,7 @@ public class UIView extends UIResponder implements View.OnTouchListener {
         // TODO: 2017/1/3 adi
         if (wantsLayer){
             layer.drawRect(canvas, rect);
-            if (layer.getShadowRadius() > 0 && getLayerType() != LAYER_TYPE_SOFTWARE){
-                setLayerType(LAYER_TYPE_SOFTWARE, null);
-            }
+            setLayerType(LAYER_TYPE_SOFTWARE, null); // for PorterDuffXferMode
         }
     }
 
