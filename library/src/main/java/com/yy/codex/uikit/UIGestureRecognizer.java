@@ -17,6 +17,38 @@ public class UIGestureRecognizer {
         mActions = new NSInvocation[]{new NSInvocation(target, selector)};
     }
 
+    public void addTarget(Object target, String selector) {
+        NSInvocation[] actions = new NSInvocation[mActions.length + 1];
+        for (int i = 0; i < mActions.length; i++) {
+            actions[i] = mActions[i];
+        }
+        actions[actions.length - 1] = new NSInvocation(target, selector);
+    }
+
+    public void removeTarget(Object target, String selector) {
+        if (target == null && selector == null) {
+            mActions = new NSInvocation[0];
+        }
+        ArrayList<NSInvocation> actions = new ArrayList<>();
+        for (int i = 0; i < mActions.length; i++) {
+            if (target != null && mActions[i].getTarget() == target && selector != null && mActions[i].getSelector() == selector) {
+                continue;
+            }
+            else if (target == null && selector != null && mActions[i].getSelector() == selector) {
+                continue;
+            }
+            else if (target != null && mActions[i].getTarget() == target && selector == null) {
+                continue;
+            }
+            else {
+                actions.add(mActions[i]);
+            }
+        }
+        NSInvocation[] actionsArray = new NSInvocation[actions.size()];
+        actions.toArray(actionsArray);
+        mActions = actionsArray;
+    }
+
     /* UIView Helpers */
 
     static ArrayList<UIGestureRecognizer> getGestureRecognizers(UIView view) {
@@ -49,7 +81,7 @@ public class UIGestureRecognizer {
         }
     }
 
-    static void onTouchesBegan(ArrayList<UIGestureRecognizer> gestureRecognizers, Object[] touches, Object event) {
+    static void onTouchesBegan(ArrayList<UIGestureRecognizer> gestureRecognizers, UITouch[] touches, UIEvent event) {
         if (currentLoopGestureRecognizers == null) {
             currentLoopGestureRecognizers = gestureRecognizers;
             for (int i = 0; i < gestureRecognizers.size(); i++) {
@@ -73,24 +105,33 @@ public class UIGestureRecognizer {
         }
         for (int i = 0; i < gestureRecognizersTrimmingInvalid.size(); i++) {
             gestureRecognizersTrimmingInvalid.get(i).touchesBegan(touches, event);
+            if (gestureRecognizersTrimmingInvalid.get(i).mState == UIGestureRecognizerState.Began || gestureRecognizersTrimmingInvalid.get(i).mState == UIGestureRecognizerState.Changed || gestureRecognizersTrimmingInvalid.get(i).mState == UIGestureRecognizerState.Ended) {
+                break;
+            }
         }
     }
 
-    static void onTouchesMove(ArrayList<UIGestureRecognizer> gestureRecognizers, Object[] touches, Object event) {
+    static void onTouchesMove(ArrayList<UIGestureRecognizer> gestureRecognizers, UITouch[] touches, UIEvent event) {
         ArrayList<UIGestureRecognizer> gestureRecognizersTrimmingInvalid = gestureRecognizersByTrimmingInvalid(currentLoopGestureRecognizers);
         for (int i = 0; i < gestureRecognizersTrimmingInvalid.size(); i++) {
             gestureRecognizersTrimmingInvalid.get(i).touchesMoved(touches, event);
+            if (gestureRecognizersTrimmingInvalid.get(i).mState == UIGestureRecognizerState.Began || gestureRecognizersTrimmingInvalid.get(i).mState == UIGestureRecognizerState.Changed || gestureRecognizersTrimmingInvalid.get(i).mState == UIGestureRecognizerState.Ended) {
+                break;
+            }
         }
     }
 
-    static void onTouchesEnded(ArrayList<UIGestureRecognizer> gestureRecognizers, Object[] touches, Object event) {
+    static void onTouchesEnded(ArrayList<UIGestureRecognizer> gestureRecognizers, UITouch[] touches, UIEvent event) {
         ArrayList<UIGestureRecognizer> gestureRecognizersTrimmingInvalid = gestureRecognizersByTrimmingInvalid(currentLoopGestureRecognizers);
         for (int i = 0; i < gestureRecognizersTrimmingInvalid.size(); i++) {
             gestureRecognizersTrimmingInvalid.get(i).touchesEnded(touches, event);
+            if (gestureRecognizersTrimmingInvalid.get(i).mState == UIGestureRecognizerState.Began || gestureRecognizersTrimmingInvalid.get(i).mState == UIGestureRecognizerState.Changed || gestureRecognizersTrimmingInvalid.get(i).mState == UIGestureRecognizerState.Ended) {
+                break;
+            }
         }
     }
 
-    static void onTouchesCancelled(ArrayList<UIGestureRecognizer> gestureRecognizers, Object[] touches, Object event) {
+    static void onTouchesCancelled(ArrayList<UIGestureRecognizer> gestureRecognizers, UITouch[] touches, UIEvent event) {
         ArrayList<UIGestureRecognizer> gestureRecognizersTrimmingInvalid = gestureRecognizersByTrimmingInvalid(currentLoopGestureRecognizers);
         for (int i = 0; i < gestureRecognizersTrimmingInvalid.size(); i++) {
             gestureRecognizersTrimmingInvalid.get(i).touchesCancelled(touches, event);
@@ -98,13 +139,17 @@ public class UIGestureRecognizer {
     }
 
     static ArrayList<UIGestureRecognizer> gestureRecognizersByTrimmingInvalid(ArrayList<UIGestureRecognizer> gestureRecognizers) {
-        ArrayList<UIGestureRecognizer> filted = new ArrayList<>();
+        ArrayList<UIGestureRecognizer> filtered = new ArrayList<>();
         for (int i = 0; i < gestureRecognizers.size(); i++) {
-            if (gestureRecognizers.get(i).mState != UIGestureRecognizerState.Failed) {
-                filted.add(gestureRecognizers.get(i));
+            if(gestureRecognizers.get(i).mState == UIGestureRecognizerState.Began || gestureRecognizers.get(i).mState == UIGestureRecognizerState.Changed || gestureRecognizers.get(i).mState == UIGestureRecognizerState.Ended) {
+                filtered.add(gestureRecognizers.get(i));
+                break;
+            }
+            else if (gestureRecognizers.get(i).mState != UIGestureRecognizerState.Failed) {
+                filtered.add(gestureRecognizers.get(i));
             }
         }
-        return filted;
+        return filtered;
     }
 
     /* Props */
@@ -127,20 +172,60 @@ public class UIGestureRecognizer {
 
     /* Events */
 
-    public void touchesBegan(Object[] touches, Object event) {
-
+    public void touchesBegan(UITouch[] touches, UIEvent event) {
+        if (!mEnabled) {
+            mState = UIGestureRecognizerState.Failed;
+        }
+        lastPoints = touches;
     }
 
-    public void touchesMoved(Object[] touches, Object event) {
-
+    public void touchesMoved(UITouch[] touches, UIEvent event) {
+        if (!mEnabled) {
+            mState = UIGestureRecognizerState.Failed;
+        }
+        lastPoints = touches;
     }
 
-    public void touchesEnded(Object[] touches, Object event) {
-
+    public void touchesEnded(UITouch[] touches, UIEvent event) {
+        if (!mEnabled) {
+            mState = UIGestureRecognizerState.Failed;
+        }
+        lastPoints = touches;
     }
 
-    public void touchesCancelled(Object[] touches, Object event) {
+    public void touchesCancelled(UITouch[] touches, UIEvent event) {
+        lastPoints = touches;
+        mState = UIGestureRecognizerState.Cancelled;
+    }
 
+    protected void sendActions() {
+        if (mActions != null) {
+            for (int i = 0; i < mActions.length; i++) {
+                try {
+                    mActions[i].invoke(new Object[]{this});
+                } catch (Exception e) {}
+            }
+        }
+    }
+
+    /* Points */
+
+    protected UITouch[] lastPoints;
+
+    public CGPoint location() {
+        return location(this.mView, 0);
+    }
+
+    public CGPoint location(UIView inView) {
+        return location(inView, 0);
+    }
+
+    public CGPoint location(UIView inView, int touchIndex) {
+        return new CGPoint(0, 0);// TODO: 2017/1/11
+    }
+
+    public int numberOfTouches() {
+        return lastPoints != null ? lastPoints.length : 0;
     }
 
 }

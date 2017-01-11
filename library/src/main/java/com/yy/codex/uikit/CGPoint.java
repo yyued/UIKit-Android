@@ -22,4 +22,8 @@ public final class CGPoint {
         return this.y;
     }
 
+    public boolean inRange(double xRange, double yRange, CGPoint toPoint) {
+        return Math.abs(toPoint.x - this.x) < xRange && Math.abs(toPoint.y - this.y) < yRange;
+    }
+
 }
