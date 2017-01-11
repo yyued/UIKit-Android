@@ -196,8 +196,8 @@ public class CALayer {
         double imageW = bitmap.getWidth();
         double imageH = bitmap.getHeight();
         double imageRatio = imageW / imageH;
-        double frameW = frame.getSize().getWidth();
-        double frameH = frame.getSize().getHeight();
+        double frameW = frame.size.getWidth();
+        double frameH = frame.size.getHeight();
         double frameRatio = frameW / frameH;
         double frameX = rect.origin.getX();
         double frameY = rect.origin.getY();

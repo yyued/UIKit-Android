@@ -69,7 +69,17 @@ class TestView extends UIView {
     private void init() {
         UIView view = new UIView(getContext());
         view.setFrame(new CGRect(44, 44, 44, 44));
-        view.setBackgroundColor(Color.BLACK);
+//        view.setBackgroundColor(Color.BLACK);
+        view.setWantsLayer(true);
+        view.getLayer().setBackgroundColor(Color.BLACK);
+        CALayer sublayer = new CALayer();
+        sublayer.setFrame(new CGRect(20, 20, 20, 20));
+        sublayer.setBackgroundColor(Color.YELLOW);
+        CALayer subsubLayer = new CALayer();
+        subsubLayer.setFrame(new CGRect(0,0,10,10));
+        subsubLayer.setBackgroundColor(Color.GREEN);
+        sublayer.addSubLayer(subsubLayer);
+        view.getLayer().addSubLayer(sublayer);
         view.setUserInteractionEnabled(true);
         view.addGestureRecognizer(new UIPanGestureRecognizer(this, "xxx:"));
         addSubview(view);

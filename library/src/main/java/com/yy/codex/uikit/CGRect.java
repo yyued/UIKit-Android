@@ -48,10 +48,6 @@ public final class CGRect {
         return new CGRect(this.origin.getX(), this.origin.getY(), this.size.getWidth(), height);
     }
 
-    public CGSize getSize(){
-        return size;
-    }
-
     @Override
     public boolean equals(Object obj) {
         if (CGRect.class.isAssignableFrom(obj.getClass())) {
