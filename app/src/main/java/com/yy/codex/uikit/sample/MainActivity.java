@@ -17,7 +17,9 @@ import android.view.View;
 import com.yy.codex.uikit.CALayer;
 import com.yy.codex.uikit.CGRect;
 import com.yy.codex.uikit.NSLog;
+import com.yy.codex.uikit.UIGestureRecognizerState;
 import com.yy.codex.uikit.UILabel;
+import com.yy.codex.uikit.UILongPressGestureRecognizer;
 import com.yy.codex.uikit.UITapGestureRecognizer;
 import com.yy.codex.uikit.UIView;
 
@@ -67,6 +69,7 @@ class TestView extends UIView {
         redView.getLayer().setCornerRadius(44.0);
         redView.setUserInteractionEnabled(true);
         redView.addGestureRecognizer(new UITapGestureRecognizer(this, "onTap:"));
+        redView.addGestureRecognizer(new UILongPressGestureRecognizer(this, "onLongPressed:"));
         addSubview(redView);
     }
 
@@ -85,6 +88,22 @@ class TestView extends UIView {
                         NSLog.log(redView);
                     }
                 });
+        }
+    }
+
+    public void onLongPressed(UILongPressGestureRecognizer longPressGestureRecognizer) {
+        final UIView redView = longPressGestureRecognizer.getView();
+        if (redView != null) {
+            if (longPressGestureRecognizer.getState() == UIGestureRecognizerState.Began) {
+                redView.getLayer().setBackgroundColor(Color.GRAY);
+            }
+            else if (longPressGestureRecognizer.getState() == UIGestureRecognizerState.Changed) {
+                redView.getLayer().setBackgroundColor(Color.GREEN);
+                NSLog.log(longPressGestureRecognizer.location());
+            }
+            else if (longPressGestureRecognizer.getState() == UIGestureRecognizerState.Ended) {
+                redView.getLayer().setBackgroundColor(Color.YELLOW);
+            }
         }
     }
 

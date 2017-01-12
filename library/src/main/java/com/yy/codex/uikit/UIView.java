@@ -390,7 +390,7 @@ public class UIView extends UIResponder {
                     return hitTestView;
                 }
             }
-//            prepareTouch(point, this, event);
+            prepareTouch(point, this, event);
             return this;
         }
         return null;
@@ -406,7 +406,6 @@ public class UIView extends UIResponder {
                 mTouchCount++;
                 touches.clear();
                 UITouch touch = new UITouch(hitTestView, touchPoint);
-                touch.resetTapCount();
                 touches.add(touch);
             }
                 break;
@@ -415,7 +414,6 @@ public class UIView extends UIResponder {
                 for (int i = 0; i < event.getPointerCount(); i++) {
                     double x = event.getX(i);
                     double y = event.getY(i);
-
                     UITouch touch = new UITouch(hitTestView, touchPoint);
                     touches.add(touch);
                 }
@@ -431,7 +429,6 @@ public class UIView extends UIResponder {
             case MotionEvent.ACTION_POINTER_DOWN: {
                 mTouchCount++;
                 UITouch touch = new UITouch(hitTestView, touchPoint);
-                touch.resetTapCount();
                 touches.add(touch);
             }
                 break;
@@ -474,6 +471,9 @@ public class UIView extends UIResponder {
         if (this.userInteractionEnabled && this.gestureRecognizers.size() > 0 && touches.size() > 0) {
             UITouch[] arr = new UITouch[touches.size()];
             touches.toArray(arr);
+            for (int i = 0; i < arr.length; i++) {
+                arr[i].resetTapCount();
+            }
             if (arr[0].getHitTestedView() == this) {
                 UIGestureRecognizer.onTouchesBegan(UIGestureRecognizer.getGestureRecognizers(this), arr, event);
             }

@@ -174,7 +174,7 @@ public class UIGestureRecognizer {
     @Nullable
     public UIView getView() {
         UIView view = this.weakView != null ? this.weakView.get() : null;
-        if (view == null) {
+        if (view != null) {
             return view;
         }
         return null;
@@ -250,7 +250,10 @@ public class UIGestureRecognizer {
 
     @NonNull
     public CGPoint location(UIView inView, int touchIndex) {
-        return new CGPoint(0, 0);// TODO: 2017/1/11
+        if (lastPoints != null && touchIndex < lastPoints.length) {
+            return lastPoints[touchIndex].locationInView(inView);
+        }
+        return new CGPoint(0, 0);
     }
 
     public int numberOfTouches() {

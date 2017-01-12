@@ -26,4 +26,8 @@ public final class CGPoint {
         return Math.abs(toPoint.x - this.x) < xRange && Math.abs(toPoint.y - this.y) < yRange;
     }
 
+    @Override
+    public String toString() {
+        return "x = " + x + ", y = " + y;
+    }
 }
