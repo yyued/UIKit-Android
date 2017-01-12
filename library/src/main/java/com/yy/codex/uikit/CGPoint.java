@@ -28,6 +28,6 @@ public final class CGPoint {
 
     @Override
     public String toString() {
-        return "x = " + x + ", y = " + y;
+        return "CGPoint{x=" + x + ",y=" + y + "}";
     }
 }
