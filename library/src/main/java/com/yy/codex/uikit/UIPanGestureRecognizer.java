@@ -17,6 +17,10 @@ public class UIPanGestureRecognizer extends UIGestureRecognizer {
         super(target, selector);
     }
 
+    public UIPanGestureRecognizer(@NonNull Runnable triggerBlock) {
+        super(triggerBlock);
+    }
+
     @Override
     public void touchesBegan(@NonNull UITouch[] touches, @NonNull UIEvent event) {
         super.touchesBegan(touches, event);

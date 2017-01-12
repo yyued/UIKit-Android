@@ -68,8 +68,20 @@ class TestView extends UIView {
         redView.getLayer().setBackgroundColor(Color.BLACK);
         redView.getLayer().setCornerRadius(44.0);
         redView.setUserInteractionEnabled(true);
-        redView.addGestureRecognizer(new UITapGestureRecognizer(this, "onTap:"));
-        redView.addGestureRecognizer(new UILongPressGestureRecognizer(this, "onLongPressed:"));
+
+//        UITapGestureRecognizer tapGestureRecognizer = new UITapGestureRecognizer(this, "onTap:");
+//        redView.addGestureRecognizer(tapGestureRecognizer);
+
+        UILongPressGestureRecognizer longPressGestureRecognizer = new UILongPressGestureRecognizer(this, "onLongPressed:");
+        redView.addGestureRecognizer(longPressGestureRecognizer);
+
+        redView.addGestureRecognizer(new UITapGestureRecognizer(new Runnable() {
+            @Override
+            public void run() {
+                redView.getLayer().setBackgroundColor(Color.RED);
+            }
+        }));
+
         addSubview(redView);
     }
 

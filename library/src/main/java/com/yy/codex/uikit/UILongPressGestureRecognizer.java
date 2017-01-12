@@ -13,6 +13,7 @@ import java.util.TimerTask;
 public class UILongPressGestureRecognizer extends UIGestureRecognizer {
 
     private UITouch[] startTouches;
+    private Timer startTimer;
 
     public double minimumPressDuration = 0.5;
     public double allowableMovement = 10.0;
@@ -21,14 +22,18 @@ public class UILongPressGestureRecognizer extends UIGestureRecognizer {
         super(target, selector);
     }
 
+    public UILongPressGestureRecognizer(@NonNull Runnable triggerBlock) {
+        super(triggerBlock);
+    }
+
     @Override
     public void touchesBegan(@NonNull UITouch[] touches, @NonNull UIEvent event) {
         super.touchesBegan(touches, event);
         startTouches = touches;
         final UILongPressGestureRecognizer self = this;
         final Handler handler = new Handler();
-        Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
+        startTimer = new Timer();
+        startTimer.schedule(new TimerTask() {
             @Override
             public void run() {
                 handler.post(new Runnable() {
@@ -50,6 +55,7 @@ public class UILongPressGestureRecognizer extends UIGestureRecognizer {
         super.touchesMoved(touches, event);
         if (mState == UIGestureRecognizerState.Possible && moveOutOfBounds(touches)) {
             mState = UIGestureRecognizerState.Failed;
+            startTimer.cancel();
         }
         else if (mState == UIGestureRecognizerState.Began || mState == UIGestureRecognizerState.Changed) {
             mState = UIGestureRecognizerState.Changed;
@@ -63,6 +69,10 @@ public class UILongPressGestureRecognizer extends UIGestureRecognizer {
         if (mState == UIGestureRecognizerState.Began || mState == UIGestureRecognizerState.Changed) {
             mState = UIGestureRecognizerState.Ended;
             sendActions();
+        }
+        else {
+            mState = UIGestureRecognizerState.Failed;
+            startTimer.cancel();
         }
     }
 

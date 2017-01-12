@@ -15,10 +15,15 @@ public class UIGestureRecognizer {
     @Nullable protected WeakReference<UIView> weakView;
     private boolean mEnabled = true;
     @Nullable private NSInvocation[] mActions;
+    @Nullable private Runnable mTriggerBlock;
     protected UIGestureRecognizerState mState = UIGestureRecognizerState.Possible;
 
     public UIGestureRecognizer(@NonNull Object target, @NonNull String selector) {
         mActions = new NSInvocation[]{new NSInvocation(target, selector)};
+    }
+
+    public UIGestureRecognizer(@NonNull Runnable triggerBlock) {
+        mTriggerBlock = triggerBlock;
     }
 
     public void addTarget(@NonNull Object target, @NonNull String selector) {
@@ -107,6 +112,9 @@ public class UIGestureRecognizer {
             onTouchesBegan(gestureRecognizers, touches, event);
             return;
         }
+        if (currentLoopGestureRecognizers == null) {
+            return;
+        }
         ArrayList<UIGestureRecognizer> gestureRecognizersTrimmingInvalid = gestureRecognizersByTrimmingInvalid(currentLoopGestureRecognizers);
         for (int i = 0; i < gestureRecognizersTrimmingInvalid.size(); i++) {
             if (gestureRecognizersTrimmingInvalid.get(i).mState == UIGestureRecognizerState.Ended) {
@@ -125,6 +133,9 @@ public class UIGestureRecognizer {
     }
 
     static void onTouchesMove(@NonNull ArrayList<UIGestureRecognizer> gestureRecognizers, @NonNull UITouch[] touches, @NonNull UIEvent event) {
+        if (currentLoopGestureRecognizers == null) {
+            return;
+        }
         ArrayList<UIGestureRecognizer> gestureRecognizersTrimmingInvalid = gestureRecognizersByTrimmingInvalid(currentLoopGestureRecognizers);
         for (int i = 0; i < gestureRecognizersTrimmingInvalid.size(); i++) {
             gestureRecognizersTrimmingInvalid.get(i).touchesMoved(touches, event);
@@ -135,6 +146,9 @@ public class UIGestureRecognizer {
     }
 
     static void onTouchesEnded(@NonNull ArrayList<UIGestureRecognizer> gestureRecognizers, @NonNull UITouch[] touches, @NonNull UIEvent event) {
+        if (currentLoopGestureRecognizers == null) {
+            return;
+        }
         ArrayList<UIGestureRecognizer> gestureRecognizersTrimmingInvalid = gestureRecognizersByTrimmingInvalid(currentLoopGestureRecognizers);
         for (int i = 0; i < gestureRecognizersTrimmingInvalid.size(); i++) {
             gestureRecognizersTrimmingInvalid.get(i).touchesEnded(touches, event);
@@ -227,6 +241,9 @@ public class UIGestureRecognizer {
                     mActions[i].invoke(new Object[]{this});
                 } catch (Exception e) {}
             }
+        }
+        if (mTriggerBlock != null) {
+            mTriggerBlock.run();
         }
     }
 
