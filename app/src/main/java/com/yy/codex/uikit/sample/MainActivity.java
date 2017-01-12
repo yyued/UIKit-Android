@@ -127,11 +127,10 @@ class TestView extends UIView {
                 redView.getLayer().setBackgroundColor(Color.GREEN);
                 CGPoint translation = panGestureRecognizer.translation();
                 redView.setFrame(new CGRect(88 + translation.getX(), 88 + translation.getY(), 88.0, 88.0));
-                NSLog.log(translation);
-                NSLog.log(redView);
             }
             else if (panGestureRecognizer.getState() == UIGestureRecognizerState.Ended) {
                 redView.getLayer().setBackgroundColor(Color.YELLOW);
+                NSLog.log((panGestureRecognizer.velocity()));
             }
         }
     }

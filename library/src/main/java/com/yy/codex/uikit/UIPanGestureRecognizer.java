@@ -56,9 +56,6 @@ public class UIPanGestureRecognizer extends UIGestureRecognizer {
 
     @Override
     public void touchesEnded(@NonNull UITouch[] touches, @NonNull UIEvent event) {
-        if (mState == UIGestureRecognizerState.Began || mState == UIGestureRecognizerState.Changed) {
-            resetVelocity(touches);
-        }
         super.touchesEnded(touches, event);
         if (mState == UIGestureRecognizerState.Began || mState == UIGestureRecognizerState.Changed) {
             mState = UIGestureRecognizerState.Ended;
@@ -93,9 +90,13 @@ public class UIPanGestureRecognizer extends UIGestureRecognizer {
 
     private void resetVelocity(@NonNull UITouch[] nextTouches) {
         if (lastPoints.length > 0 && nextTouches.length > 0) {
-            double vx = (nextTouches[0].getRelativePoint().getX() - lastPoints[0].getRelativePoint().getX()) / ((nextTouches[0].getTimestamp() - lastPoints[0].getTimestamp()) / 1000);
-            double vy = (nextTouches[0].getRelativePoint().getY() - lastPoints[0].getRelativePoint().getY()) / ((nextTouches[0].getTimestamp() - lastPoints[0].getTimestamp()) / 1000);
-            velocityPoint = new CGPoint(vx, vy);
+            double ts = ((double)(nextTouches[0].getTimestamp() - lastPoints[0].getTimestamp()) / 1000.0);
+            if (ts == 0.0) { }
+            else {
+                double vx = (nextTouches[0].getAbsolutePoint().getX() - lastPoints[0].getAbsolutePoint().getX()) / ts;
+                double vy = (nextTouches[0].getAbsolutePoint().getY() - lastPoints[0].getAbsolutePoint().getY()) / ts;
+                velocityPoint = new CGPoint(vx, vy);
+            }
         }
     }
 
