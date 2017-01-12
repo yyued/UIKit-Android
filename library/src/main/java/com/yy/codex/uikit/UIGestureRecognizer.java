@@ -159,6 +159,9 @@ public class UIGestureRecognizer {
     }
 
     static void onTouchesCancelled(@NonNull ArrayList<UIGestureRecognizer> gestureRecognizers, @NonNull UITouch[] touches, @NonNull UIEvent event) {
+        if (currentLoopGestureRecognizers == null) {
+            return;
+        }
         ArrayList<UIGestureRecognizer> gestureRecognizersTrimmingInvalid = gestureRecognizersByTrimmingInvalid(currentLoopGestureRecognizers);
         for (int i = 0; i < gestureRecognizersTrimmingInvalid.size(); i++) {
             gestureRecognizersTrimmingInvalid.get(i).touchesCancelled(touches, event);
