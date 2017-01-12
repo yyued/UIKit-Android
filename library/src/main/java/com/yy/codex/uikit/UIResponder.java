@@ -2,6 +2,8 @@ package com.yy.codex.uikit;
 
 import android.content.Context;
 import android.os.Build;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -20,10 +22,11 @@ public class UIResponder extends FrameLayout {
 
     private WeakReference<UIResponder> mNextResponder;
 
-    public void setNextResponder(UIResponder responder) {
+    public void setNextResponder(@NonNull UIResponder responder) {
         this.mNextResponder = new WeakReference<>(responder);
     }
 
+    @Nullable
     public UIResponder getNextResponder() {
         UIResponder nextResponder = this.mNextResponder.get();
         if (nextResponder != null) {
@@ -32,39 +35,39 @@ public class UIResponder extends FrameLayout {
         return null;
     }
 
-    public UIResponder(Context context) {
+    public UIResponder(@NonNull Context context) {
         super(context);
     }
 
-    public UIResponder(Context context, AttributeSet attrs) {
+    public UIResponder(@NonNull Context context, @NonNull AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public UIResponder(Context context, AttributeSet attrs, int defStyleAttr) {
+    public UIResponder(@NonNull Context context, @NonNull AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public UIResponder(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public UIResponder(@NonNull Context context, @NonNull AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 
 
-    public void touchesBegan(Set<UITouch> touches, UIEvent event) {
+    public void touchesBegan(@NonNull Set<UITouch> touches, @NonNull UIEvent event) {
         UIResponder nextResponder = getNextResponder();
         if (nextResponder != null) {
             nextResponder.touchesBegan(touches, event);
         }
     }
 
-    public void touchesMoved(Set<UITouch> touches, UIEvent event) {
+    public void touchesMoved(@NonNull Set<UITouch> touches, @NonNull UIEvent event) {
         UIResponder nextResponder = getNextResponder();
         if (nextResponder != null) {
             nextResponder.touchesMoved(touches, event);
         }
     }
 
-    public void touchesEnded(Set<UITouch> touches, UIEvent event) {
+    public void touchesEnded(@NonNull Set<UITouch> touches, @NonNull UIEvent event) {
         UIResponder nextResponder = getNextResponder();
         if (nextResponder != null) {
             nextResponder.touchesEnded(touches, event);

@@ -2,6 +2,8 @@ package com.yy.codex.uikit;
 
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 /**
  * Created by cuiminghui on 2017/1/3.
@@ -9,17 +11,20 @@ import android.graphics.RectF;
 
 public final class CGRect {
 
-    public CGPoint origin = new CGPoint(0, 0);
-    public CGSize size = new CGSize(0, 0);
+    @NonNull public CGPoint origin = new CGPoint(0, 0);
+    @NonNull public CGSize size = new CGSize(0, 0);
 
     public CGRect(double x, double y, double width, double height) {
         this.origin = new CGPoint(x, y);
         this.size = new CGSize(width, height);
     }
 
+    @NonNull
     public RectF toRectF() {
         return new RectF((float) origin.getX(), (float) origin.getY(), (float) (origin.getX() + size.getWidth()), (float) (origin.getY() + size.getHeight()));
     }
+
+    @NonNull
     public RectF toRectF(CGPoint point) {
         float top = (float) point.getY();
         float left = (float) point.getX();
@@ -27,10 +32,13 @@ public final class CGRect {
         float bottom = (float) size.getHeight() + top;
         return new RectF(left, top, right, bottom);
     }
+
+    @NonNull
     public Rect toRect() {
         return new Rect((int) origin.getX(), (int) origin.getY(), (int) (origin.getX() + size.getWidth()), (int) (origin.getY() + size.getHeight()));
     }
 
+    @NonNull
     public RectF shrinkToRectF(float offset){
         float top = (float) origin.getY() + offset;
         float left = (float) origin.getX() + offset;
@@ -39,6 +47,7 @@ public final class CGRect {
         return new RectF(left, top, right, bottom);
     }
 
+    @NonNull
     public RectF shrinkToRectF(float offset, CGPoint point){
         float top = (float) point.getY() + offset;
         float left = (float) point.getX() + offset;
@@ -47,6 +56,7 @@ public final class CGRect {
         return new RectF(left, top, right, bottom);
     }
 
+    @NonNull
     public CGRect setX(double x) {
         return new CGRect(x, this.origin.getY(), this.size.getWidth(), this.size.getHeight());
     }
@@ -55,6 +65,7 @@ public final class CGRect {
         return origin.getX();
     }
 
+    @NonNull
     public CGRect setY(double y) {
         return new CGRect(this.origin.getX(), y, this.size.getWidth(), this.size.getHeight());
     }
@@ -63,6 +74,7 @@ public final class CGRect {
         return origin.getY();
     }
 
+    @NonNull
     public CGRect setWidth(double width) {
         return new CGRect(this.origin.getX(), this.origin.getY(), width, this.size.getHeight());
     }
@@ -71,6 +83,7 @@ public final class CGRect {
         return size.getWidth();
     }
 
+    @NonNull
     public CGRect setHeight(double height) {
         return new CGRect(this.origin.getX(), this.origin.getY(), this.size.getWidth(), height);
     }
@@ -80,8 +93,8 @@ public final class CGRect {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (CGRect.class.isAssignableFrom(obj.getClass())) {
+    public boolean equals(@Nullable Object obj) {
+        if (obj != null && CGRect.class.isAssignableFrom(obj.getClass())) {
             CGRect anObj = (CGRect) obj;
             boolean equal = Math.abs(origin.getX() - anObj.origin.getX()) < 0.01 &&
                             Math.abs(origin.getY() - anObj.origin.getY()) < 0.01 &&
@@ -91,4 +104,5 @@ public final class CGRect {
         }
         return false;
     }
+
 }

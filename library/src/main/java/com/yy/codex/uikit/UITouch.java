@@ -1,5 +1,7 @@
 package com.yy.codex.uikit;
 
+import android.support.annotation.NonNull;
+
 import java.util.ArrayList;
 
 /**
@@ -10,10 +12,10 @@ public class UITouch {
 
     private long mTimestamp = 0;
     private int mTapCount = 1;
-    private UIView mRelativeView;
-    private CGPoint mRelativePoint;
+    @NonNull private UIView mRelativeView;
+    @NonNull private CGPoint mRelativePoint;
 
-    public UITouch(UIView relativeView, CGPoint relativePoint) {
+    public UITouch(@NonNull UIView relativeView, @NonNull CGPoint relativePoint) {
         mRelativeView = relativeView;
         mRelativePoint = relativePoint;
         mTimestamp = System.currentTimeMillis();
@@ -40,6 +42,7 @@ public class UITouch {
         tapCountStore = newTapCountStore;
     }
 
+    @NonNull
     public CGPoint getRelativePoint() {
         return mRelativePoint;
     }
@@ -48,6 +51,7 @@ public class UITouch {
         return mTimestamp;
     }
 
+    @NonNull
     public CGPoint locationInView(UIView view) {
         return new CGPoint(0, 0);
     }

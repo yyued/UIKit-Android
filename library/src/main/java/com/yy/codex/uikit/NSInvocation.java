@@ -1,5 +1,8 @@
 package com.yy.codex.uikit;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
 
@@ -9,14 +12,15 @@ import java.lang.reflect.Method;
 
 public class NSInvocation {
 
-    private WeakReference<Object> mTarget;
-    private String mSelector;
+    @Nullable private WeakReference<Object> mTarget;
+    @Nullable private String mSelector;
 
-    public NSInvocation(Object target, String selector) {
-        this.mTarget = new WeakReference<Object>(target);
+    public NSInvocation(@NonNull Object target, @NonNull String selector) {
+        this.mTarget = new WeakReference<>(target);
         this.mSelector = selector;
     }
 
+    @Nullable
     public Object getTarget() {
         Object target = this.mTarget.get();
         if (target != null) {
@@ -29,11 +33,12 @@ public class NSInvocation {
         this.mTarget = new WeakReference<Object>(target);
     }
 
+    @NonNull
     public String getSelector() {
         return mSelector;
     }
 
-    public void setSelector(String selector) {
+    public void setSelector(@NonNull String selector) {
         this.mSelector = selector;
     }
 
