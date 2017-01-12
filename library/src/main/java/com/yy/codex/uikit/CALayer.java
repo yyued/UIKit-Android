@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
-import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -23,23 +22,23 @@ public class CALayer {
 
     /* styleProps */
 
-    private int backgroundColor;
-    private double cornerRadius;
-    private double borderWidth;
+    private int backgroundColor = Color.WHITE;
+    private double cornerRadius = 0.0;
+    private double borderWidth = 0.0;
     private int borderColor = Color.BLACK;
     private double shadowX = 2.0;
     private double shadowY = 2.0;
-    private double shadowRadius;
+    private double shadowRadius = 0.0;
     private int shadowColor = Color.BLACK;
-    private Bitmap bitmap;
+    private Bitmap bitmap = null;
     private int bitmapGravity = GRAVITY_SCALE_ASCEPT_FIT;
-    private boolean clipToBounds;
-    private boolean hidden;
+    private boolean clipToBounds = false;
+    private boolean hidden = false;
 
     /* renderProps */
 
-    private boolean needDisplay;
-    private boolean newCanvasContext;
+    private boolean needDisplay = false;
+    private boolean newCanvasContext = false;
 
     /* hierarchyProps */
 
@@ -209,12 +208,23 @@ public class CALayer {
             return;
         }
 
-        // border clipToBounds
+        // background bitmap border
         if (cornerRadius > 0){
             if (shadowRadius > 0){
                 paint.setShadowLayer((float) shadowRadius, (float) shadowX, (float) shadowY, shadowColor);
             }
             canvas.drawRoundRect(frame.shrinkToRectF(halfBorderW, calculatedOrigin), (float) cornerRadius, (float) cornerRadius, paint);
+
+            if (bitmap != null){
+                CGRect newFrame = new CGRect(calculatedOrigin.getX(), calculatedOrigin.getY(), frame.size.getWidth(), frame.size.getHeight());
+                Paint p2 = new Paint();
+                p2.setAntiAlias(true);
+                Bitmap maskBitmap = createRadiusMask(newFrame, cornerRadius);
+                canvas.drawBitmap(maskBitmap, 0, 0, p2);
+                p2.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+                drawBitmap(canvas, newFrame, bitmap, bitmapGravity, p2);
+            }
+
             if (borderWidth > 0){
                 paint.setStyle(Paint.Style.STROKE);
                 paint.setStrokeWidth((float) borderWidth);
@@ -227,6 +237,12 @@ public class CALayer {
                 paint.setShadowLayer((float) shadowRadius, (float) shadowX, (float) shadowY, shadowColor);
             }
             canvas.drawRect(frame.toRectF(calculatedOrigin), paint);
+
+            if (bitmap != null){
+                CGRect newFrame = new CGRect(calculatedOrigin.getX(), calculatedOrigin.getY(), frame.size.getWidth(), frame.size.getHeight());;
+                drawBitmap(canvas, newFrame, bitmap, bitmapGravity, paint);
+            }
+
             if (borderWidth > 0){
                 paint.setStyle(Paint.Style.STROKE);
                 paint.setStrokeWidth((float) borderWidth);
@@ -234,17 +250,15 @@ public class CALayer {
                 canvas.drawRect(frame.shrinkToRectF(halfBorderW, calculatedOrigin), paint);
             }
         }
+    }
 
-        if (bitmap != null){
-            CGRect newFrame = null;
-            if (borderWidth > 0){
-                newFrame = new CGRect(calculatedOrigin.getX()+halfBorderW, calculatedOrigin.getY()+halfBorderW, frame.size.getWidth()-borderWidth, frame.size.getHeight()-borderWidth);
-            }
-            else {
-                newFrame = new CGRect(calculatedOrigin.getX(), calculatedOrigin.getY(), frame.size.getWidth(), frame.size.getHeight());
-            }
-            drawBitmap(canvas, newFrame, bitmap, bitmapGravity, paint);
-        }
+    private Bitmap createRadiusMask(CGRect rect, double radius){
+        Bitmap maskBitmap = Bitmap.createBitmap((int)(rect.size.getWidth()+rect.origin.getX()), (int)(rect.size.getHeight()+rect.origin.getY()), Bitmap.Config.ARGB_8888);
+        Canvas canvasB = new Canvas(maskBitmap);
+        Paint p3 = new Paint();
+        p3.setAntiAlias(true);
+        canvasB.drawRoundRect(rect.toRectF(), (float) radius, (float) radius, p3);
+        return maskBitmap;
     }
 
     private boolean askIfNeedDispaly(){
@@ -262,8 +276,8 @@ public class CALayer {
         double imageW = bitmap.getWidth();
         double imageH = bitmap.getHeight();
         double imageRatio = imageW / imageH;
-        double frameW = frame.size.getWidth();
-        double frameH = frame.size.getHeight();
+        double frameW = rect.size.getWidth();
+        double frameH = rect.size.getHeight();
         double frameRatio = frameW / frameH;
         double frameX = rect.origin.getX();
         double frameY = rect.origin.getY();
@@ -489,7 +503,7 @@ public class CALayer {
     }
 
     public boolean isNewCanvasContext() {
-        boolean result = false || this.clipToBounds;
+        boolean result = this.getSubLayers().length > 0 && this.clipToBounds;
         return result;
     }
 
