@@ -433,6 +433,11 @@ public class UIView extends UIResponder {
                 }
             }
         }
+        if (aniCount[0] <= 0) {
+            if (completion != null) {
+                completion.run();
+            }
+        }
         animationState = null;
     }
 
@@ -477,6 +482,12 @@ public class UIView extends UIResponder {
                 }
             }
         }
+        if (aniCount[0] <= 0) {
+            if (completion != null) {
+                completion.run();
+            }
+        }
+        animationState = null;
     }
 
     static public void animateWithSpring(double tension, double friction, double velocity, Runnable animations, final Runnable completion) {
@@ -524,6 +535,12 @@ public class UIView extends UIResponder {
                 }
             }
         }
+        if (aniCount[0] <= 0) {
+            if (completion != null) {
+                completion.run();
+            }
+        }
+        animationState = null;
     }
 
 }
