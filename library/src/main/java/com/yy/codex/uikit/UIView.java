@@ -7,6 +7,8 @@ import android.graphics.Canvas;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
@@ -16,8 +18,11 @@ import com.facebook.rebound.SpringConfig;
 import com.facebook.rebound.SpringListener;
 import com.facebook.rebound.SpringSystem;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -319,7 +324,7 @@ public class UIView extends UIResponder {
 
     /* category: UIView touch events */
 
-    private boolean userInteractionEnabled = false;
+    private boolean userInteractionEnabled = true;
     private ArrayList<UIGestureRecognizer> gestureRecognizers = new ArrayList<UIGestureRecognizer>();
 
     public boolean isUserInteractionEnabled() {
@@ -337,6 +342,141 @@ public class UIView extends UIResponder {
 
     public ArrayList<UIGestureRecognizer> getGestureRecognizers() {
         return gestureRecognizers;
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        float scaledDensity = getContext().getResources().getDisplayMetrics().scaledDensity;
+        CGPoint touchPoint = new CGPoint(event.getX() / scaledDensity, event.getY() / scaledDensity);
+        UIView hitTestView = hitTest(touchPoint, event);
+        sendEvent(event, hitTestView);
+        return true;
+    }
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        return true;
+    }
+
+    public UIView hitTest(CGPoint point, MotionEvent event) {
+        UIView[] views = getSubviews();
+        if (!isUserInteractionEnabled() && !(getAlpha() > 0)) {
+            return null;
+        }
+
+        if (pointInside(point)) {
+            for (UIView subview: views) {
+                CGPoint convertedPoint = convertPoint(point, subview);
+                UIView hitTestView = subview.hitTest(convertedPoint, event);
+                if (hitTestView != null) {
+                    return hitTestView;
+                }
+            }
+            return this;
+        }
+        return null;
+    }
+
+    private void sendEvent(MotionEvent event, UIView hitTestView) {
+        final int action = event.getAction();
+        switch (action) {
+            case MotionEvent.ACTION_DOWN:
+                hitTestView.touchesBegan();
+                break;
+            case MotionEvent.ACTION_MOVE:
+                hitTestView.touchesMoved();
+                break;
+            case MotionEvent.ACTION_UP:
+                hitTestView.touchesEnded();
+                break;
+        }
+    }
+
+    public boolean pointInside(CGPoint point) {
+        double h = getFrame().size.getHeight();
+        double w = getFrame().size.getWidth();
+
+        double touchX = point.getX();
+        double touchY = point.getY();
+
+        if (touchY <= h && touchX <= w && touchY >= 0 && touchX >= 0) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public CGPoint convertPoint(CGPoint point, UIView toView) {
+        if (this == toView) {
+            return point;
+        }
+
+        CGPoint convertPoint = point;
+        List<UIView> listSubViews = Arrays.asList(this.getSubviews());
+        List<UIView> listToViewViews = Arrays.asList(toView.getSubviews());
+        UIView toViewSuperView = toView;
+        UIView superView = this;
+
+        if (listSubViews.contains(toView)) {
+            // toView is a subview in 'this'
+            do {
+                convertPoint = convertPointToSubView(point, toViewSuperView);
+                toViewSuperView = toViewSuperView.getSuperview();
+            }while (toViewSuperView != this && toViewSuperView != null);
+
+            return convertPoint;
+        }
+        else if (listToViewViews.contains(this)){
+            // 'this' is a subview in toView
+            do {
+                convertPoint = convertPointToSuperView(convertPoint, superView);
+                superView = superView.getSuperview();
+            }while (toViewSuperView != this);
+
+            return convertPoint;
+        }
+        else {
+            do {
+                UIView innerToViewSuperView = toViewSuperView.getSuperview();
+                UIView innerSuperView = superView.getSuperview();
+                if (innerToViewSuperView == superView) {
+                    break;
+                }
+
+                convertPoint = convertPointToSuperView(convertPoint, superView);
+
+                if (innerToViewSuperView != null) {
+                    toViewSuperView = innerToViewSuperView;
+                }
+
+                if (innerSuperView != null) {
+                    superView = innerSuperView;
+                }
+
+            }while (toViewSuperView != superView);
+
+            if (toViewSuperView != null && superView != null) {
+
+                double toX = toView.frame.origin.getX();
+                double toY = toView.frame.origin.getY();
+
+                return new CGPoint(convertPoint.getX() - toX, convertPoint.getY() - toY);
+            }
+        }
+
+        return new CGPoint(0, 0);
+    }
+
+    private CGPoint convertPointToSuperView(CGPoint point, UIView superView) {
+        double x = superView.frame.origin.getX();
+        double y = superView.frame.origin.getY();
+        return new CGPoint(point.getX() + x, point.getY() + y);
+    }
+
+    private CGPoint convertPointToSubView(CGPoint point, UIView subView) {
+        double x = subView.frame.origin.getX();
+        double y = subView.frame.origin.getY();
+        return new CGPoint(point.getX() - x, point.getY() - y);
     }
 
     /* UIView animation */

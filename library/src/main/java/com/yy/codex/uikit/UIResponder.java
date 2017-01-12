@@ -40,14 +40,20 @@ public class UIResponder extends FrameLayout {
     }
 
     public void touchesBegan() {
-        nextResponder.touchesBegan();
+        if (nextResponder != null) {
+            nextResponder.touchesBegan();
+        }
     }
 
     public void touchesMoved() {
-        nextResponder.touchesMoved();
+        if (nextResponder != null) {
+            nextResponder.touchesMoved();
+        }
     }
 
     public void touchesEnded() {
-        nextResponder.touchesEnded();
+        if (nextResponder != null) {
+            nextResponder.touchesEnded();
+        }
     }
 }
