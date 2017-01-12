@@ -55,7 +55,6 @@ class TestView extends UIView {
         init();
     }
 
-
     private void init() {
         final UIView redView = new UIView(getContext());
         redView.setWantsLayer(true);

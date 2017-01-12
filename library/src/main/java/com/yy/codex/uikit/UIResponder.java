@@ -7,6 +7,8 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.FrameLayout;
 
+import java.lang.ref.WeakReference;
+
 /**
  * Created by it on 17/1/6.
  */
@@ -14,12 +16,19 @@ import android.widget.FrameLayout;
 public class UIResponder extends FrameLayout {
 
     /* UIResponder initialize methods */
-    private UIResponder nextResponder;
+
+    private WeakReference<UIResponder> mNextResponder;
+
     public void setNextResponder(UIResponder responder) {
-        this.nextResponder = responder;
+        this.mNextResponder = new WeakReference<UIResponder>(responder);
     }
+
     public UIResponder getNextResponder() {
-        return this.nextResponder;
+        UIResponder nextResponder = this.mNextResponder.get();
+        if (nextResponder != null) {
+            return nextResponder;
+        }
+        return null;
     }
 
     public UIResponder(Context context) {
@@ -40,14 +49,23 @@ public class UIResponder extends FrameLayout {
     }
 
     public void touchesBegan() {
-        nextResponder.touchesBegan();
+        UIResponder nextResponder = getNextResponder();
+        if (nextResponder != null) {
+            nextResponder.touchesBegan();
+        }
     }
 
     public void touchesMoved() {
-        nextResponder.touchesMoved();
+        UIResponder nextResponder = getNextResponder();
+        if (nextResponder != null) {
+            nextResponder.touchesMoved();
+        }
     }
 
     public void touchesEnded() {
-        nextResponder.touchesEnded();
+        UIResponder nextResponder = getNextResponder();
+        if (nextResponder != null) {
+            nextResponder.touchesEnded();
+        }
     }
 }

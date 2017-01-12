@@ -1,5 +1,6 @@
 package com.yy.codex.uikit;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 /**
@@ -8,7 +9,7 @@ import java.util.ArrayList;
 
 public class UIGestureRecognizer {
 
-    protected UIView mView;
+    protected WeakReference<UIView> weakView;
     private boolean mEnabled = true;
     private NSInvocation[] mActions;
     protected UIGestureRecognizerState mState = UIGestureRecognizerState.Possible;
@@ -164,7 +165,15 @@ public class UIGestureRecognizer {
     /* Props */
 
     void didAddToView(UIView view) {
-        this.mView = view;
+        this.weakView = new WeakReference<UIView>(view);
+    }
+
+    public UIView getView() {
+        UIView view = this.weakView.get();
+        if (view == null) {
+            return view;
+        }
+        return null;
     }
 
     public UIGestureRecognizerState getState() {
@@ -222,7 +231,11 @@ public class UIGestureRecognizer {
     protected UITouch[] lastPoints;
 
     public CGPoint location() {
-        return location(this.mView, 0);
+        UIView view = getView();
+        if (view != null) {
+            return location(getView(), 0);
+        }
+        return new CGPoint(0, 0);
     }
 
     public CGPoint location(UIView inView) {

@@ -51,16 +51,32 @@ public final class CGRect {
         return new CGRect(x, this.origin.getY(), this.size.getWidth(), this.size.getHeight());
     }
 
+    public double getX() {
+        return origin.getX();
+    }
+
     public CGRect setY(double y) {
         return new CGRect(this.origin.getX(), y, this.size.getWidth(), this.size.getHeight());
+    }
+
+    public double getY() {
+        return origin.getY();
     }
 
     public CGRect setWidth(double width) {
         return new CGRect(this.origin.getX(), this.origin.getY(), width, this.size.getHeight());
     }
 
+    public double getWidht() {
+        return size.getWidth();
+    }
+
     public CGRect setHeight(double height) {
         return new CGRect(this.origin.getX(), this.origin.getY(), this.size.getWidth(), height);
+    }
+
+    public double getHeight() {
+        return size.getHeight();
     }
 
     @Override

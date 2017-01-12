@@ -54,12 +54,16 @@ public class UITapGestureRecognizer extends UIGestureRecognizer {
         if (startTouches == null) {
             return true;
         }
+        UIView view = getView();
+        if (view == null) {
+            return true;
+        }
         double allowableMovement = 22.0;
         int accepted = 0;
         for (int i = 0; i < touches.length; i++) {
-            CGPoint p0 = touches[i].locationInView(this.mView);
+            CGPoint p0 = touches[i].locationInView(view);
             for (int j = 0; j < startTouches.length; j++) {
-                CGPoint p1 = startTouches[j].locationInView(this.mView);
+                CGPoint p1 = startTouches[j].locationInView(view);
                 if (p0.inRange(allowableMovement, allowableMovement, p1)) {
                     accepted++;
                     break;

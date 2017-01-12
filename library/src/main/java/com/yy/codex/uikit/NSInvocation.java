@@ -1,6 +1,6 @@
 package com.yy.codex.uikit;
 
-import java.lang.reflect.InvocationTargetException;
+import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
 
 /**
@@ -9,42 +9,45 @@ import java.lang.reflect.Method;
 
 public class NSInvocation {
 
-    private Object target;
-    private String selector;
+    private WeakReference<Object> mTarget;
+    private String mSelector;
 
     public NSInvocation(Object target, String selector) {
-        this.target = target;
-        this.selector = selector;
+        this.mTarget = new WeakReference<Object>(target);
+        this.mSelector = selector;
     }
 
     public Object getTarget() {
-        return target;
+        return mTarget;
     }
 
     public void setTarget(Object target) {
-        this.target = target;
+        this.mTarget = new WeakReference<Object>(target);
     }
 
     public String getSelector() {
-        return selector;
+        return mSelector;
     }
 
     public void setSelector(String selector) {
-        this.selector = selector;
+        this.mSelector = selector;
     }
 
     public void invoke(Object[] arguments) throws Exception {
-        invoke(target, arguments);
+        Object target = this.mTarget.get();
+        if (target != null) {
+            invoke(target, arguments);
+        }
     }
 
     public void invoke(Object target, Object[] arguments) throws Exception {
-        if (target == null || selector == null) {
+        if (target == null || mSelector == null) {
             throw new Exception("Null target or null selector.");
         }
         Class clazz = target.getClass();
-        String[] coms = selector.endsWith(":") ? (selector+"_").split(":") : selector.split(":");
+        String[] coms = mSelector.endsWith(":") ? (mSelector+"_").split(":") : mSelector.split(":");
         if (coms.length == 1) {
-            Method method = clazz.getDeclaredMethod(selector);
+            Method method = clazz.getDeclaredMethod(mSelector);
             method.invoke(target);
         }
         else if (arguments != null) {
