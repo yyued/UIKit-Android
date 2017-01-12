@@ -357,11 +357,14 @@ public class UIView extends UIResponder {
         else if (aKey.equalsIgnoreCase("alpha")) {
             setAlpha(aValue);
         }
+        else if (aKey.startsWith("layer.")) {
+            getLayer().animate(aKey, aValue);
+        }
     }
 
     static private HashMap<UIView, HashMap<String, UIViewPropertiesLog>> animationState = null;
 
-    static private void addAnimationState(UIView view, String aKey, double originValue, double finalValue) {
+    static void addAnimationState(UIView view, String aKey, double originValue, double finalValue) {
         if (animationState == null) {
             return;
         }

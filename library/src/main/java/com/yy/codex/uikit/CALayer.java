@@ -560,8 +560,12 @@ public class CALayer {
 
     public CALayer setCornerRadius(double cornerRadius) {
         if (!doubleEqual(this.cornerRadius, cornerRadius * scaledDensity)){
+            double oldValue = this.cornerRadius;
             this.cornerRadius = cornerRadius * scaledDensity;
             this.setNeedDisplay(true);
+            if (this.requestRootLayer().view != null) {
+                UIView.addAnimationState(this.requestRootLayer().view, "layer.cornerRadius", oldValue, cornerRadius);
+            }
         }
         return this;
     }
@@ -650,6 +654,15 @@ public class CALayer {
         }
         return false;
     }
+
+    /* Animation */
+
+    public void animate(String aKey, float aValue) {
+        if (aKey.equalsIgnoreCase("layer.cornerRadius")) {
+            setCornerRadius(aValue);
+        }
+    }
+
 }
 
 
