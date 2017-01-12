@@ -169,7 +169,7 @@ public class UIGestureRecognizer {
     }
 
     public UIView getView() {
-        UIView view = this.weakView.get();
+        UIView view = this.weakView != null ? this.weakView.get() : null;
         if (view == null) {
             return view;
         }

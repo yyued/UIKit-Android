@@ -18,7 +18,11 @@ public class NSInvocation {
     }
 
     public Object getTarget() {
-        return mTarget;
+        Object target = this.mTarget.get();
+        if (target != null) {
+            return target;
+        }
+        return null;
     }
 
     public void setTarget(Object target) {
@@ -34,7 +38,7 @@ public class NSInvocation {
     }
 
     public void invoke(Object[] arguments) throws Exception {
-        Object target = this.mTarget.get();
+        Object target = getTarget();
         if (target != null) {
             invoke(target, arguments);
         }

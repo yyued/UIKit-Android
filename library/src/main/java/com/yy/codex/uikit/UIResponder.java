@@ -20,7 +20,7 @@ public class UIResponder extends FrameLayout {
     private WeakReference<UIResponder> mNextResponder;
 
     public void setNextResponder(UIResponder responder) {
-        this.mNextResponder = new WeakReference<UIResponder>(responder);
+        this.mNextResponder = new WeakReference<>(responder);
     }
 
     public UIResponder getNextResponder() {
