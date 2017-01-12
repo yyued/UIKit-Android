@@ -15,11 +15,13 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import com.yy.codex.uikit.CALayer;
+import com.yy.codex.uikit.CGPoint;
 import com.yy.codex.uikit.CGRect;
 import com.yy.codex.uikit.NSLog;
 import com.yy.codex.uikit.UIGestureRecognizerState;
 import com.yy.codex.uikit.UILabel;
 import com.yy.codex.uikit.UILongPressGestureRecognizer;
+import com.yy.codex.uikit.UIPanGestureRecognizer;
 import com.yy.codex.uikit.UITapGestureRecognizer;
 import com.yy.codex.uikit.UIView;
 
@@ -69,18 +71,14 @@ class TestView extends UIView {
         redView.getLayer().setCornerRadius(44.0);
         redView.setUserInteractionEnabled(true);
 
-//        UITapGestureRecognizer tapGestureRecognizer = new UITapGestureRecognizer(this, "onTap:");
-//        redView.addGestureRecognizer(tapGestureRecognizer);
+        UITapGestureRecognizer tapGestureRecognizer = new UITapGestureRecognizer(this, "onTap:");
+        redView.addGestureRecognizer(tapGestureRecognizer);
 
-        UILongPressGestureRecognizer longPressGestureRecognizer = new UILongPressGestureRecognizer(this, "onLongPressed:");
-        redView.addGestureRecognizer(longPressGestureRecognizer);
+//        UILongPressGestureRecognizer longPressGestureRecognizer = new UILongPressGestureRecognizer(this, "onLongPressed:");
+//        redView.addGestureRecognizer(longPressGestureRecognizer);
 
-        redView.addGestureRecognizer(new UITapGestureRecognizer(new Runnable() {
-            @Override
-            public void run() {
-                redView.getLayer().setBackgroundColor(Color.RED);
-            }
-        }));
+        UIPanGestureRecognizer panGestureRecognizer = new UIPanGestureRecognizer(this, "onPan:");
+        redView.addGestureRecognizer(panGestureRecognizer);
 
         addSubview(redView);
     }
@@ -119,10 +117,23 @@ class TestView extends UIView {
         }
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        System.out.println(event);
-        return super.onTouchEvent(event);
+    public void onPan(UIPanGestureRecognizer panGestureRecognizer) {
+        final UIView redView = panGestureRecognizer.getView();
+        if (redView != null) {
+            if (panGestureRecognizer.getState() == UIGestureRecognizerState.Began) {
+                redView.getLayer().setBackgroundColor(Color.GRAY);
+            }
+            else if (panGestureRecognizer.getState() == UIGestureRecognizerState.Changed) {
+                redView.getLayer().setBackgroundColor(Color.GREEN);
+                CGPoint translation = panGestureRecognizer.translation();
+                redView.setFrame(new CGRect(88 + translation.getX(), 88 + translation.getY(), 88.0, 88.0));
+                NSLog.log(translation);
+                NSLog.log(redView);
+            }
+            else if (panGestureRecognizer.getState() == UIGestureRecognizerState.Ended) {
+                redView.getLayer().setBackgroundColor(Color.YELLOW);
+            }
+        }
     }
 
 }

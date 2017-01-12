@@ -42,7 +42,7 @@ public class UIPanGestureRecognizer extends UIGestureRecognizer {
             return;
         }
         if (mState == UIGestureRecognizerState.Possible && moveOutOfBounds(touches)) {
-            setTranslation(new CGPoint(0, 0));
+//            setTranslation(new CGPoint(0, 0));
             mState = UIGestureRecognizerState.Began;
             markOtherGestureRecognizersFailed(this);
             sendActions();
@@ -107,7 +107,7 @@ public class UIPanGestureRecognizer extends UIGestureRecognizer {
             return true;
         }
         int accepted = 0;
-        double allowableMovement = 22.0;
+        double allowableMovement = 8.0;
         for (int i = 0; i < touches.length; i++) {
             CGPoint p0 = touches[i].locationInView(view);
             for (int j = 0; j < startTouches.length; j++) {
