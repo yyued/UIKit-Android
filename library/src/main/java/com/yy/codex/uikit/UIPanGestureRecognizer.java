@@ -29,6 +29,7 @@ public class UIPanGestureRecognizer extends UIGestureRecognizer {
             return;
         }
         startTouches = touches;
+        setTranslation(new CGPoint(0, 0));
     }
 
     @Override
@@ -42,7 +43,7 @@ public class UIPanGestureRecognizer extends UIGestureRecognizer {
             return;
         }
         if (mState == UIGestureRecognizerState.Possible && moveOutOfBounds(touches)) {
-//            setTranslation(new CGPoint(0, 0));
+            setTranslation(new CGPoint(-translation().getX(), -translation().getY()));
             mState = UIGestureRecognizerState.Began;
             markOtherGestureRecognizersFailed(this);
             sendActions();
@@ -69,8 +70,8 @@ public class UIPanGestureRecognizer extends UIGestureRecognizer {
     public CGPoint translation() {
         if (lastPoints.length > 0 && translatePoint != null) {
             return new CGPoint(
-                    lastPoints[0].getRelativePoint().getX() - translatePoint.getX(),
-                    lastPoints[0].getRelativePoint().getY() - translatePoint.getY()
+                    lastPoints[0].getAbsolutePoint().getX() - translatePoint.getX(),
+                    lastPoints[0].getAbsolutePoint().getY() - translatePoint.getY()
             );
         }
         return new CGPoint(0, 0);
@@ -79,8 +80,8 @@ public class UIPanGestureRecognizer extends UIGestureRecognizer {
     public void setTranslation(@NonNull CGPoint point) {
         if (lastPoints.length > 0) {
             translatePoint = new CGPoint(
-                    lastPoints[0].getRelativePoint().getX() + point.getX(),
-                    lastPoints[0].getRelativePoint().getY() + point.getY()
+                    lastPoints[0].getAbsolutePoint().getX() + point.getX(),
+                    lastPoints[0].getAbsolutePoint().getY() + point.getY()
             );
         }
     }

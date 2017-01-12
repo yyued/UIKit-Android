@@ -59,6 +59,11 @@ public class UITouch {
         return mRelativePoint;
     }
 
+    @NonNull
+    public CGPoint getAbsolutePoint() {
+        return mAbsolutePoint;
+    }
+
     public long getTimestamp() {
         return mTimestamp;
     }
