@@ -8,6 +8,7 @@ import android.util.Log;
 import android.widget.FrameLayout;
 
 import java.lang.ref.WeakReference;
+import java.util.Set;
 
 /**
  * Created by it on 17/1/6.
@@ -48,24 +49,25 @@ public class UIResponder extends FrameLayout {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 
-    public void touchesBegan() {
+
+    public void touchesBegan(Set<UITouch> touches, UIEvent event) {
         UIResponder nextResponder = getNextResponder();
         if (nextResponder != null) {
-            nextResponder.touchesBegan();
+            nextResponder.touchesBegan(touches, event);
         }
     }
 
-    public void touchesMoved() {
+    public void touchesMoved(Set<UITouch> touches, UIEvent event) {
         UIResponder nextResponder = getNextResponder();
         if (nextResponder != null) {
-            nextResponder.touchesMoved();
+            nextResponder.touchesMoved(touches, event);
         }
     }
 
-    public void touchesEnded() {
+    public void touchesEnded(Set<UITouch> touches, UIEvent event) {
         UIResponder nextResponder = getNextResponder();
         if (nextResponder != null) {
-            nextResponder.touchesEnded();
+            nextResponder.touchesEnded(touches, event);
         }
     }
 }

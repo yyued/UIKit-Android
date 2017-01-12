@@ -22,8 +22,10 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by cuiminghui on 2016/12/30.
@@ -324,6 +326,8 @@ public class UIView extends UIResponder {
 
     /* category: UIView touch events */
 
+    private Set<UITouch> touches;
+
     private boolean userInteractionEnabled = true;
     private ArrayList<UIGestureRecognizer> gestureRecognizers = new ArrayList<UIGestureRecognizer>();
 
@@ -342,6 +346,15 @@ public class UIView extends UIResponder {
 
     public ArrayList<UIGestureRecognizer> getGestureRecognizers() {
         return gestureRecognizers;
+    }
+
+    private boolean multipleTouchEnabled = false;
+    public boolean isMultipleTouchEnabled() {
+        return multipleTouchEnabled;
+    }
+
+    public void setMultipleTouchEnabled(boolean multipleTouchEnabled) {
+        this.multipleTouchEnabled = multipleTouchEnabled;
     }
 
     @Override
@@ -369,6 +382,7 @@ public class UIView extends UIResponder {
                 CGPoint convertedPoint = convertPoint(point, subview);
                 UIView hitTestView = subview.hitTest(convertedPoint, event);
                 if (hitTestView != null) {
+                    prepareTouch(convertedPoint, hitTestView, event);
                     return hitTestView;
                 }
             }
@@ -377,17 +391,67 @@ public class UIView extends UIResponder {
         return null;
     }
 
-    private void sendEvent(MotionEvent event, UIView hitTestView) {
+    private void prepareTouch(CGPoint touchPoint, UIView hitTestView, MotionEvent event) {
         final int action = event.getAction();
         switch (action) {
+            case MotionEvent.ACTION_DOWN: {
+                touches = new HashSet<UITouch>();
+                UITouch touch = new UITouch(hitTestView, touchPoint);
+                touch.resetTapCount();
+                touches.add(touch);
+            }
+                break;
+            case MotionEvent.ACTION_MOVE: {
+//                int touchCount = touches.size();
+//                for (int i=0; i < touchCount; i++) {
+//                    double x = event.getX(i);
+//                    double y = event.getY(i);
+//
+//                    UITouch touch = new UITouch(hitTestView, touchPoint);
+//                    touches.add(touch);
+//                }
+            }
+                break;
+            case MotionEvent.ACTION_UP:{
+                touches = new HashSet<UITouch>();
+                UITouch touch = new UITouch(hitTestView, touchPoint);
+                touch.resetTapCount();
+                touches.add(touch);
+            }
+                break;
+            case MotionEvent.ACTION_POINTER_DOWN: {
+                UITouch touch = new UITouch(hitTestView, touchPoint);
+                touch.resetTapCount();
+                touches.add(touch);
+            }
+                break;
+            case MotionEvent.ACTION_POINTER_UP:
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void sendEvent(MotionEvent event, UIView hitTestView) {
+        final int action = event.getAction();
+        UIEvent ev = new UIEvent();
+        switch (action) {
             case MotionEvent.ACTION_DOWN:
-                hitTestView.touchesBegan();
+                hitTestView.touchesBegan(touches, ev);
                 break;
             case MotionEvent.ACTION_MOVE:
-                hitTestView.touchesMoved();
+                hitTestView.touchesMoved(touches, ev);
                 break;
             case MotionEvent.ACTION_UP:
-                hitTestView.touchesEnded();
+                hitTestView.touchesEnded(touches, ev);
+                break;
+            case MotionEvent.ACTION_POINTER_DOWN:
+                hitTestView.touchesBegan(touches, ev);
+                break;
+            case MotionEvent.ACTION_POINTER_UP:
+                hitTestView.touchesEnded(touches, ev);
+                break;
+            default:
                 break;
         }
     }
