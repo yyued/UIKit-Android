@@ -12,9 +12,7 @@ public class NSShadow {
     public double shadowBlurRadius = 1;
     public int    shadowColor = Color.BLACK;
 
-    public NSShadow() {
-
-    }
+    public NSShadow() {}
 
     public NSShadow(CGSize shadowOffset, double shadowBlurRadius, int shadowColor) {
         this.shadowOffset = shadowOffset;

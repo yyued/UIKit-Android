@@ -1,21 +1,24 @@
 package com.yy.codex.uikit;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 /**
  * Created by PonyCui_Home on 2017/1/11.
  */
 
 public class UIPanGestureRecognizer extends UIGestureRecognizer {
 
-    UITouch[] startTouches;
-    CGPoint translatePoint = new CGPoint(0, 0);
-    CGPoint velocityPoint = new CGPoint(0, 0);
+    @Nullable UITouch[] startTouches;
+    @NonNull CGPoint translatePoint = new CGPoint(0, 0);
+    @NonNull CGPoint velocityPoint = new CGPoint(0, 0);
 
-    public UIPanGestureRecognizer(Object target, String selector) {
+    public UIPanGestureRecognizer(@NonNull Object target, @NonNull String selector) {
         super(target, selector);
     }
 
     @Override
-    public void touchesBegan(UITouch[] touches, UIEvent event) {
+    public void touchesBegan(@NonNull UITouch[] touches, @NonNull UIEvent event) {
         super.touchesBegan(touches, event);
         if (touches.length > 1) {
             mState = UIGestureRecognizerState.Failed;
@@ -25,7 +28,7 @@ public class UIPanGestureRecognizer extends UIGestureRecognizer {
     }
 
     @Override
-    public void touchesMoved(UITouch[] touches, UIEvent event) {
+    public void touchesMoved(@NonNull UITouch[] touches, @NonNull UIEvent event) {
         if (mState == UIGestureRecognizerState.Began || mState == UIGestureRecognizerState.Changed) {
             resetVelocity(touches);
         }
@@ -47,7 +50,7 @@ public class UIPanGestureRecognizer extends UIGestureRecognizer {
     }
 
     @Override
-    public void touchesEnded(UITouch[] touches, UIEvent event) {
+    public void touchesEnded(@NonNull UITouch[] touches, @NonNull UIEvent event) {
         if (mState == UIGestureRecognizerState.Began || mState == UIGestureRecognizerState.Changed) {
             resetVelocity(touches);
         }
@@ -58,6 +61,7 @@ public class UIPanGestureRecognizer extends UIGestureRecognizer {
         }
     }
 
+    @NonNull
     public CGPoint translation() {
         if (lastPoints.length > 0 && translatePoint != null) {
             return new CGPoint(
@@ -68,7 +72,7 @@ public class UIPanGestureRecognizer extends UIGestureRecognizer {
         return new CGPoint(0, 0);
     }
 
-    public void setTranslation(CGPoint point) {
+    public void setTranslation(@NonNull CGPoint point) {
         if (lastPoints.length > 0) {
             translatePoint = new CGPoint(
                     lastPoints[0].getRelativePoint().getX() + point.getX(),
@@ -77,11 +81,12 @@ public class UIPanGestureRecognizer extends UIGestureRecognizer {
         }
     }
 
+    @NonNull
     public CGPoint velocity() {
         return velocityPoint;
     }
 
-    private void resetVelocity(UITouch[] nextTouches) {
+    private void resetVelocity(@NonNull UITouch[] nextTouches) {
         if (lastPoints.length > 0 && nextTouches.length > 0) {
             double vx = (nextTouches[0].getRelativePoint().getX() - lastPoints[0].getRelativePoint().getX()) / ((nextTouches[0].getTimestamp() - lastPoints[0].getTimestamp()) / 1000);
             double vy = (nextTouches[0].getRelativePoint().getY() - lastPoints[0].getRelativePoint().getY()) / ((nextTouches[0].getTimestamp() - lastPoints[0].getTimestamp()) / 1000);
@@ -89,16 +94,20 @@ public class UIPanGestureRecognizer extends UIGestureRecognizer {
         }
     }
 
-    private boolean moveOutOfBounds(UITouch[] touches) {
+    private boolean moveOutOfBounds(@NonNull UITouch[] touches) {
         if (startTouches == null) {
+            return true;
+        }
+        UIView view = getView();
+        if (view == null) {
             return true;
         }
         int accepted = 0;
         double allowableMovement = 22.0;
         for (int i = 0; i < touches.length; i++) {
-            CGPoint p0 = touches[i].locationInView(this.mView);
+            CGPoint p0 = touches[i].locationInView(view);
             for (int j = 0; j < startTouches.length; j++) {
-                CGPoint p1 = startTouches[j].locationInView(this.mView);
+                CGPoint p1 = startTouches[j].locationInView(view);
                 if (!p0.inRange(allowableMovement, allowableMovement, p1)) {
                     accepted++;
                     break;

@@ -2,20 +2,15 @@ package com.yy.codex.uikit;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.Rect;
-import android.graphics.Typeface;
 import android.os.Build;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.text.Layout;
-import android.text.SpannableString;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
 import android.text.SpannedString;
 import android.text.TextUtils;
-import android.text.style.AbsoluteSizeSpan;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.util.HashMap;
@@ -28,28 +23,28 @@ public class UILabel extends UIView {
 
     private TextView textView;
 
-    public UILabel(Context context, View view) {
+    public UILabel(@NonNull Context context, @NonNull View view) {
         super(context, view);
         init();
     }
 
-    public UILabel(Context context) {
+    public UILabel(@NonNull Context context) {
         super(context);
         init();
     }
 
-    public UILabel(Context context, AttributeSet attrs) {
+    public UILabel(@NonNull Context context, @NonNull AttributeSet attrs) {
         super(context, attrs);
         init();
     }
 
-    public UILabel(Context context, AttributeSet attrs, int defStyleAttr) {
+    public UILabel(@NonNull Context context, @NonNull AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public UILabel(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public UILabel(@NonNull Context context, @NonNull AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         init();
     }
@@ -70,15 +65,16 @@ public class UILabel extends UIView {
 
     /* Font */
 
-    private UIFont font = new UIFont(17);
+    @NonNull private UIFont font = new UIFont(17);
 
+    @NonNull
     public UIFont getFont() {
         return font;
     }
 
-    public void setFont(UIFont font) {
+    public void setFont(@NonNull UIFont font) {
         this.font = font;
-        updateTextAppearence();
+        updateTextAppearance();
     }
 
     /* TextColor */
@@ -91,7 +87,7 @@ public class UILabel extends UIView {
 
     public void setTextColor(int textColor) {
         this.textColor = textColor;
-        updateTextAppearence();
+        updateTextAppearance();
     }
 
     /* Number of lines */
@@ -134,7 +130,7 @@ public class UILabel extends UIView {
                 textView.setEllipsize(null);
                 break;
         }
-        updateTextAppearence();
+        updateTextAppearance();
     }
 
     private Layout.Alignment alignment = Layout.Alignment.ALIGN_NORMAL;
@@ -145,7 +141,7 @@ public class UILabel extends UIView {
 
     public void setAlignment(Layout.Alignment alignment) {
         this.alignment = alignment;
-        updateTextAppearence();
+        updateTextAppearance();
     }
 
     /* Text */
@@ -156,7 +152,10 @@ public class UILabel extends UIView {
         return getAttributedText() != null ? getAttributedText().toString() : null;
     }
 
-    public void setText(String text) {
+    public void setText(@Nullable String text) {
+        if (text == null) {
+            text = "";
+        }
         NSAttributedString attributedString = new NSAttributedString(text, new HashMap(){{
             if (getFont() != null) {
                 put(NSAttributedString.NSFontAttributeName, getFont());
@@ -171,13 +170,14 @@ public class UILabel extends UIView {
         needsUpdate = true;
     }
 
-    private void updateTextAppearence() {
+    private void updateTextAppearance() {
         if (needsUpdate && getText() != null) {
             String text = getText();
             setText(text);
         }
     }
 
+    @Nullable
     public NSAttributedString getAttributedText() {
         if (this.textView.getText() != null && SpannedString.class.isAssignableFrom(this.textView.getText().getClass())) {
             return new NSAttributedString((SpannedString) this.textView.getText());
@@ -185,7 +185,7 @@ public class UILabel extends UIView {
         return null;
     }
 
-    public void setAttributedText(NSAttributedString attributedText) {
+    public void setAttributedText(@Nullable NSAttributedString attributedText) {
         this.textView.setText(attributedText);
         resetTextViewStyles();
         if (getConstraint() != null) {
@@ -210,7 +210,7 @@ public class UILabel extends UIView {
         textView.setMaxWidth((int) (maxWidth * scaledDensity));
     }
 
-    @Override
+    @Override @NonNull
     public CGSize intrinsicContentSize() {
         textView.measure(0, 0);
         int width = textView.getMeasuredWidth();

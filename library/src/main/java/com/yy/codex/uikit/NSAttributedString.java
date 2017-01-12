@@ -9,6 +9,8 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Parcel;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.Layout;
 import android.text.ParcelableSpan;
 import android.text.Spannable;
@@ -54,28 +56,30 @@ public class NSAttributedString extends SpannableStringBuilder {
     public static String NSUnderlineColorAttributeName = "NSUnderlineColorAttributeName";// TODO: 2017/1/9 not implemented.
     public static String NSStrikethroughColorAttributeName = "NSStrikethroughColorAttributeName";// TODO: 2017/1/9 not implemented.
 
-    public NSAttributedString(String text) {
+    public NSAttributedString(@NonNull String text) {
         super(text);
         this.reset(new HashMap<String, Object>(), new NSRange(0, text.length()));
     }
 
-    public NSAttributedString(String text, HashMap<String, Object> attributes) {
+    public NSAttributedString(@NonNull String text, @NonNull HashMap<String, Object> attributes) {
         super(text);
         this.reset(attributes, new NSRange(0, text.length()));
     }
 
-    public NSAttributedString(NSAttributedString attributedString) {
+    public NSAttributedString(@NonNull NSAttributedString attributedString) {
         super(attributedString);
     }
 
-    public NSAttributedString(SpannedString spannableString) {
+    public NSAttributedString(@NonNull SpannedString spannableString) {
         super(spannableString);
     }
 
+    @NonNull
     public NSMutableAttributedString mutableCopy() {
         return new NSMutableAttributedString(this);
     }
 
+    @Nullable
     public Object getAttribute(String attrName, int atIndex) {
         NSAttributedSpan[] objects = getSpans(atIndex, 1, NSAttributedSpan.class);
         if (objects.length > 0) {
@@ -86,6 +90,7 @@ public class NSAttributedString extends SpannableStringBuilder {
         }
     }
 
+    @Nullable
     public HashMap<String, Object> getAttributes(int atIndex) {
         if (atIndex >= length()) {
             return null;
@@ -99,7 +104,7 @@ public class NSAttributedString extends SpannableStringBuilder {
         }
     }
 
-    protected void reset(final HashMap<String, Object> attrs,final NSRange range) {
+    protected void reset(@NonNull final HashMap<String, Object> attrs, @NonNull final NSRange range) {
         setSpan(new NSAttributedSpan(attrs), range.location, range.location + range.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         if (attrs.get(NSFontAttributeName) != null && UIFont.class.isAssignableFrom(attrs.get(NSFontAttributeName).getClass())) {
             UIFont font = (UIFont) attrs.get(NSFontAttributeName);

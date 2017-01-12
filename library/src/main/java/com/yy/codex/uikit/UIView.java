@@ -5,8 +5,12 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.os.Build;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
@@ -16,9 +20,15 @@ import com.facebook.rebound.SpringConfig;
 import com.facebook.rebound.SpringListener;
 import com.facebook.rebound.SpringSystem;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * Created by cuiminghui on 2016/12/30.
@@ -28,29 +38,29 @@ public class UIView extends UIResponder {
 
     /* FrameLayout initialize methods */
 
-    public UIView(Context context, View view) {
+    public UIView(@NonNull Context context, @NonNull View view) {
         super(context);
         setupProps();
         addView(view);
     }
 
-    public UIView(Context context) {
+    public UIView(@NonNull Context context) {
         super(context);
         setupProps();
     }
 
-    public UIView(Context context, AttributeSet attrs) {
+    public UIView(@NonNull Context context, @NonNull AttributeSet attrs) {
         super(context, attrs);
         setupProps();
     }
 
-    public UIView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public UIView(@NonNull Context context, @NonNull AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         setupProps();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public UIView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public UIView(@NonNull Context context, @NonNull AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         setupProps();
     }
@@ -62,14 +72,15 @@ public class UIView extends UIResponder {
 
     /* category UIView Layout */
 
-    private CGRect frame = new CGRect(0, 0, 0, 0);
-    private UIConstraint constraint = null;
+    @NonNull  private CGRect frame = new CGRect(0, 0, 0, 0);
+    @Nullable private UIConstraint constraint = null;
 
+    @NonNull
     public CGRect getFrame() {
         return frame;
     }
 
-    public void setFrame(CGRect frame) {
+    public void setFrame(@NonNull CGRect frame) {
         if (this.getFrame().equals(frame)) {
             return;
         }
@@ -98,15 +109,17 @@ public class UIView extends UIResponder {
         UIView.addAnimationState(this, "frame.size.height", oldValue.size.getHeight(), frame.size.getHeight());
     }
 
+    @NonNull
     public CGPoint getCenter() {
         return new CGPoint((frame.origin.getX() + frame.size.getWidth()) / 2.0, (frame.origin.getY() + frame.size.getHeight()) / 2.0);
     }
 
+    @Nullable
     public UIConstraint getConstraint() {
         return constraint;
     }
 
-    public void setConstraint(UIConstraint constraint) {
+    public void setConstraint(@Nullable UIConstraint constraint) {
         this.constraint = constraint;
         UIView superview = getSuperview();
         if (superview != null) {
@@ -160,6 +173,7 @@ public class UIView extends UIResponder {
 
     /* category UIView Hierarchy */
 
+    @Nullable
     public UIView getSuperview() {
         ViewParent parent = getParent();
         if (parent != null && UIView.class.isAssignableFrom(parent.getClass())) {
@@ -168,6 +182,7 @@ public class UIView extends UIResponder {
         return null;
     }
 
+    @NonNull
     public UIView[] getSubviews() {
         ArrayList<UIView> subviews = new ArrayList<>();
         for(int index = 0; index < getChildCount(); index++) {
@@ -187,7 +202,7 @@ public class UIView extends UIResponder {
         }
     }
 
-    public void insertSubview(UIView subview, int atIndex) {
+    public void insertSubview(@NonNull UIView subview, int atIndex) {
         subview.removeFromSuperview();
         if (atIndex < 0 || atIndex > getChildCount()) {
             return;
@@ -195,46 +210,46 @@ public class UIView extends UIResponder {
         addView(subview, atIndex, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
     }
 
-    public void addSubview(UIView subview) {
+    public void addSubview(@NonNull UIView subview) {
         subview.removeFromSuperview();
         subview.setNextResponder(this);
         addView(subview, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
     }
 
-    public void insertBelowSubview(UIView subview, UIView siblingSubview) {
+    public void insertBelowSubview(@NonNull UIView subview, @NonNull UIView siblingSubview) {
         if (siblingSubview.getSuperview() == this) {
             int atIndex = indexOfChild(siblingSubview);
             insertSubview(subview, atIndex);
         }
     }
 
-    public void insertAboveSubview(UIView subview, UIView siblingSubview) {
+    public void insertAboveSubview(@NonNull UIView subview, @NonNull UIView siblingSubview) {
         if (siblingSubview.getSuperview() == this) {
             int atIndex = indexOfChild(siblingSubview);
             insertSubview(subview, atIndex + 1);
         }
     }
 
-    public void bringSubviewToFront(UIView subview) {
+    public void bringSubviewToFront(@NonNull UIView subview) {
         bringChildToFront(subview);
     }
 
-    public void sendSubviewToBack(UIView subview) {
+    public void sendSubviewToBack(@NonNull UIView subview) {
         if (subview.getSuperview() == this) {
             subview.removeFromSuperview();
             addSubview(subview);
         }
     }
 
-    public void didAddSubview(UIView subview) {
+    public void didAddSubview(@NonNull UIView subview) {
 
     }
 
-    public void willRemoveSubview(UIView subview) {
+    public void willRemoveSubview(@NonNull UIView subview) {
 
     }
 
-    public void willMoveToSuperview(UIView newSuperview) {
+    public void willMoveToSuperview(@Nullable UIView newSuperview) {
 
     }
 
@@ -280,7 +295,7 @@ public class UIView extends UIResponder {
     /* category UIView Layer-Backed Service */
 
     private boolean wantsLayer = false;
-    private CALayer layer = new CALayer();
+    @NonNull private CALayer layer = new CALayer();
 
     public boolean isWantsLayer() {
         return wantsLayer;
@@ -296,15 +311,12 @@ public class UIView extends UIResponder {
         }
     }
 
+    @NonNull
     public CALayer getLayer() {
         return layer;
     }
 
-    public void setLayer(CALayer layer) {
-        this.layer = layer;
-    }
-
-    public void drawRect(Canvas canvas, CGRect rect) {
+    public void drawRect(@NonNull Canvas canvas, @NonNull CGRect rect) {
         // TODO: 2017/1/3 adi
         if (wantsLayer){
             layer.drawRect(canvas, rect);
@@ -312,15 +324,15 @@ public class UIView extends UIResponder {
     }
 
     @Override
-    protected void onDraw(Canvas canvas) {
+    protected void onDraw(@NonNull Canvas canvas) {
         super.onDraw(canvas);
         drawRect(canvas, new CGRect(0, 0, canvas.getWidth(), canvas.getHeight()));
     }
 
     /* category: UIView touch events */
 
-    private boolean userInteractionEnabled = false;
-    private ArrayList<UIGestureRecognizer> gestureRecognizers = new ArrayList<UIGestureRecognizer>();
+    private boolean userInteractionEnabled = true;
+    @NonNull private ArrayList<UIGestureRecognizer> gestureRecognizers = new ArrayList<>();
 
     public boolean isUserInteractionEnabled() {
         return userInteractionEnabled;
@@ -335,13 +347,221 @@ public class UIView extends UIResponder {
         gestureRecognizer.didAddToView(this);
     }
 
-    public ArrayList<UIGestureRecognizer> getGestureRecognizers() {
+    @NonNull public ArrayList<UIGestureRecognizer> getGestureRecognizers() {
         return gestureRecognizers;
+    }
+
+    private boolean multipleTouchEnabled = false;
+    public boolean isMultipleTouchEnabled() {
+        return multipleTouchEnabled;
+    }
+
+    public void setMultipleTouchEnabled(boolean multipleTouchEnabled) {
+        this.multipleTouchEnabled = multipleTouchEnabled;
+    }
+
+    @Override
+    public boolean onTouchEvent(@NonNull MotionEvent event) {
+        float scaledDensity = getContext().getResources().getDisplayMetrics().scaledDensity;
+        CGPoint touchPoint = new CGPoint(event.getX() / scaledDensity, event.getY() / scaledDensity);
+        UIView hitTestView = hitTest(touchPoint, event);
+        sendEvent(event, hitTestView);
+        return true;
+    }
+
+    @Override
+    public boolean onInterceptTouchEvent(@NonNull MotionEvent ev) {
+        return true;
+    }
+
+    @Nullable
+    public UIView hitTest(@NonNull CGPoint point, @NonNull MotionEvent event) {
+        UIView[] views = getSubviews();
+        if (!isUserInteractionEnabled() && !(getAlpha() > 0)) {
+            return null;
+        }
+
+        if (pointInside(point)) {
+            for (UIView subview: views) {
+                CGPoint convertedPoint = convertPoint(point, subview);
+                UIView hitTestView = subview.hitTest(convertedPoint, event);
+                if (hitTestView != null) {
+                    prepareTouch(convertedPoint, hitTestView, event);
+                    return hitTestView;
+                }
+            }
+            prepareTouch(point, this, event);
+            return this;
+        }
+        return null;
+    }
+
+    private int mTouchCount = 0;
+    @Nullable private Set<UITouch> touches = new HashSet<UITouch>();
+
+    private void prepareTouch(@NonNull CGPoint touchPoint, @NonNull UIView hitTestView, @NonNull MotionEvent event) {
+        final int action = event.getAction();
+        switch (action & MotionEvent.ACTION_MASK) {
+            case MotionEvent.ACTION_DOWN: {
+                mTouchCount++;
+                touches.clear();
+                UITouch touch = new UITouch(hitTestView, touchPoint);
+                touch.resetTapCount();
+                touches.add(touch);
+            }
+                break;
+            case MotionEvent.ACTION_MOVE: {
+                touches.clear();
+                for (int i = 0; i < event.getPointerCount(); i++) {
+                    double x = event.getX(i);
+                    double y = event.getY(i);
+
+                    UITouch touch = new UITouch(hitTestView, touchPoint);
+                    touches.add(touch);
+                }
+            }
+                break;
+            case MotionEvent.ACTION_UP:{
+                mTouchCount--;
+                touches.clear();
+                UITouch touch = new UITouch(hitTestView, touchPoint);
+                touch.resetTapCount();
+                touches.add(touch);
+            }
+                break;
+            case MotionEvent.ACTION_POINTER_DOWN: {
+                mTouchCount++;
+                UITouch touch = new UITouch(hitTestView, touchPoint);
+                touch.resetTapCount();
+                touches.add(touch);
+            }
+                break;
+            case MotionEvent.ACTION_POINTER_UP: {
+                mTouchCount--;
+            }
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void sendEvent(@NonNull MotionEvent event, @NonNull UIView hitTestView) {
+        final int action = event.getAction();
+        UIEvent ev = new UIEvent();
+        switch (action & MotionEvent.ACTION_MASK) {
+            case MotionEvent.ACTION_DOWN:
+                hitTestView.touchesBegan(touches, ev);
+                break;
+            case MotionEvent.ACTION_MOVE:
+                hitTestView.touchesMoved(touches, ev);
+                break;
+            case MotionEvent.ACTION_UP:
+                hitTestView.touchesEnded(touches, ev);
+                break;
+            case MotionEvent.ACTION_POINTER_DOWN:
+                hitTestView.touchesBegan(touches, ev);
+                break;
+            case MotionEvent.ACTION_POINTER_UP:
+                hitTestView.touchesEnded(touches, ev);
+                break;
+            default:
+                break;
+        }
+    }
+
+    public boolean pointInside(@NonNull CGPoint point) {
+        double h = getFrame().size.getHeight();
+        double w = getFrame().size.getWidth();
+
+        double touchX = point.getX();
+        double touchY = point.getY();
+
+        if (touchY <= h && touchX <= w && touchY >= 0 && touchX >= 0) {
+            return true;
+        }
+
+        return false;
+    }
+
+    @NonNull
+    public CGPoint convertPoint(@NonNull CGPoint point, @NonNull UIView toView) {
+        if (this == toView) {
+            return point;
+        }
+
+        CGPoint convertPoint = point;
+        List<UIView> listSubViews = Arrays.asList(this.getSubviews());
+        List<UIView> listToViewViews = Arrays.asList(toView.getSubviews());
+        UIView toViewSuperView = toView;
+        UIView superView = this;
+
+        if (listSubViews.contains(toView)) {
+            // toView is a subview in 'this'
+            do {
+                convertPoint = convertPointToSubView(point, toViewSuperView);
+                toViewSuperView = toViewSuperView.getSuperview();
+            }while (toViewSuperView != this && toViewSuperView != null);
+
+            return convertPoint;
+        }
+        else if (listToViewViews.contains(this)){
+            // 'this' is a subview in toView
+            do {
+                convertPoint = convertPointToSuperView(convertPoint, superView);
+                superView = superView.getSuperview();
+            }while (toViewSuperView != this);
+
+            return convertPoint;
+        }
+        else {
+            do {
+                UIView innerToViewSuperView = toViewSuperView.getSuperview();
+                UIView innerSuperView = superView.getSuperview();
+                if (innerToViewSuperView == superView) {
+                    break;
+                }
+
+                convertPoint = convertPointToSuperView(convertPoint, superView);
+
+                if (innerToViewSuperView != null) {
+                    toViewSuperView = innerToViewSuperView;
+                }
+
+                if (innerSuperView != null) {
+                    superView = innerSuperView;
+                }
+
+            }while (toViewSuperView != superView);
+
+            if (toViewSuperView != null && superView != null) {
+
+                double toX = toView.frame.origin.getX();
+                double toY = toView.frame.origin.getY();
+
+                return new CGPoint(convertPoint.getX() - toX, convertPoint.getY() - toY);
+            }
+        }
+
+        return new CGPoint(0, 0);
+    }
+
+    @NonNull
+    private CGPoint convertPointToSuperView(@NonNull CGPoint point, @NonNull UIView superView) {
+        double x = superView.frame.origin.getX();
+        double y = superView.frame.origin.getY();
+        return new CGPoint(point.getX() + x, point.getY() + y);
+    }
+
+    @NonNull
+    private CGPoint convertPointToSubView(@NonNull CGPoint point, @NonNull UIView subView) {
+        double x = subView.frame.origin.getX();
+        double y = subView.frame.origin.getY();
+        return new CGPoint(point.getX() - x, point.getY() - y);
     }
 
     /* UIView animation */
 
-    public void animate(String aKey, float aValue) {
+    public void animate(@NonNull String aKey, float aValue) {
         if (aKey.equalsIgnoreCase("frame.origin.x")) {
             setFrame(this.frame.setX(aValue));
         }
@@ -362,9 +582,9 @@ public class UIView extends UIResponder {
         }
     }
 
-    static private HashMap<UIView, HashMap<String, UIViewPropertiesLog>> animationState = null;
+    @Nullable static private HashMap<UIView, HashMap<String, UIViewPropertiesLog>> animationState = null;
 
-    static void addAnimationState(UIView view, String aKey, double originValue, double finalValue) {
+    static void addAnimationState(@NonNull UIView view, @NonNull String aKey, double originValue, double finalValue) {
         if (animationState == null) {
             return;
         }
@@ -385,7 +605,7 @@ public class UIView extends UIResponder {
         animationState = new HashMap<>();
     }
 
-    static public void animate(double duration, Runnable animations, final Runnable completion) {
+    static public void animate(double duration, @NonNull Runnable animations, @Nullable final Runnable completion) {
         resetAnimationState();
         animations.run();
         final int[] aniCount = {0};
@@ -433,10 +653,15 @@ public class UIView extends UIResponder {
                 }
             }
         }
+        if (aniCount[0] <= 0) {
+            if (completion != null) {
+                completion.run();
+            }
+        }
         animationState = null;
     }
 
-    static public void animateWithSpring(Runnable animations, final Runnable completion) {
+    static public void animateWithSpring(@NonNull Runnable animations, @Nullable final Runnable completion) {
         resetAnimationState();
         animations.run();
         final int[] aniCount = {0};
@@ -477,9 +702,15 @@ public class UIView extends UIResponder {
                 }
             }
         }
+        if (aniCount[0] <= 0) {
+            if (completion != null) {
+                completion.run();
+            }
+        }
+        animationState = null;
     }
 
-    static public void animateWithSpring(double tension, double friction, double velocity, Runnable animations, final Runnable completion) {
+    static public void animateWithSpring(double tension, double friction, double velocity, @NonNull Runnable animations, @Nullable final Runnable completion) {
         resetAnimationState();
         animations.run();
         final int[] aniCount = {0};
@@ -524,6 +755,12 @@ public class UIView extends UIResponder {
                 }
             }
         }
+        if (aniCount[0] <= 0) {
+            if (completion != null) {
+                completion.run();
+            }
+        }
+        animationState = null;
     }
 
 }

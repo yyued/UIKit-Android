@@ -5,6 +5,8 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.os.Build;
 import android.os.Looper;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
 import android.view.View;
@@ -17,28 +19,28 @@ public class UIImageView extends UIView {
 
     /* Constructor */
 
-    public UIImageView(Context context, View view) {
+    public UIImageView(@NonNull Context context, @NonNull View view) {
         super(context, view);
         init();
     }
 
-    public UIImageView(Context context) {
+    public UIImageView(@NonNull Context context) {
         super(context);
         init();
     }
 
-    public UIImageView(Context context, AttributeSet attrs) {
+    public UIImageView(@NonNull Context context, @NonNull AttributeSet attrs) {
         super(context, attrs);
         init();
     }
 
-    public UIImageView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public UIImageView(@NonNull Context context, @NonNull AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public UIImageView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public UIImageView(@NonNull Context context, @NonNull AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         init();
     }
@@ -52,13 +54,14 @@ public class UIImageView extends UIView {
 
     /* Image Source */
 
-    private UIImage image;
+    @Nullable private UIImage image;
 
+    @Nullable
     public UIImage getImage() {
         return image;
     }
 
-    public void setImage(UIImage image) {
+    public void setImage(@Nullable UIImage image) {
         if (this.image == image) {
             return;
         }
@@ -117,16 +120,17 @@ public class UIImageView extends UIView {
 
     /* Animated Image */
 
-    private ValueAnimator animator = null;
-    private UIImage[] animationImages = null;   // The array must contain UIImages. Setting hides the single image. default is nil
+    @Nullable private ValueAnimator animator = null;
+    @Nullable private UIImage[] animationImages = new UIImage[0];   // The array must contain UIImages. Setting hides the single image. default is nil
     private double animationDuration = 0.0;     // for one cycle of images. default is number of images * 1/30th of a second (i.e. 30 fps)
     private int animationRepeatCount = 0;       // 0 means infinite (default is 0)
 
+    @Nullable
     public UIImage[] getAnimationImages() {
         return animationImages;
     }
 
-    public void setAnimationImages(UIImage[] animationImages) {
+    public void setAnimationImages(@Nullable UIImage[] animationImages) {
         stopAnimating();
         this.animationImages = animationImages;
         this.animationDuration = this.animationImages.length * (1.0 / 30.0);
