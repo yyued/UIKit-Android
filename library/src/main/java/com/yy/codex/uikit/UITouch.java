@@ -12,18 +12,25 @@ public class UITouch {
 
     private long mTimestamp = 0;
     private int mTapCount = 1;
+    private boolean mTapCountSetted = false;
     @NonNull private UIView mRelativeView;
     @NonNull private CGPoint mRelativePoint;
+    @NonNull private CGPoint mAbsolutePoint;
 
-    public UITouch(@NonNull UIView relativeView, @NonNull CGPoint relativePoint) {
+    public UITouch(@NonNull UIView relativeView, @NonNull CGPoint relativePoint, @NonNull CGPoint absolutePoint) {
         mRelativeView = relativeView;
         mRelativePoint = relativePoint;
+        mAbsolutePoint = absolutePoint;
         mTimestamp = System.currentTimeMillis();
     }
 
     static ArrayList<UITouch> tapCountStore = new ArrayList<>();
 
     public void resetTapCount() {
+        if (mTapCountSetted) {
+            return;
+        }
+        mTapCountSetted = true;
         ArrayList<UITouch> newTapCountStore = new ArrayList<>();
         boolean found = false;
         for (int i = 0; i < tapCountStore.size(); i++) {
@@ -52,12 +59,26 @@ public class UITouch {
         return mRelativePoint;
     }
 
+    @NonNull
+    public CGPoint getAbsolutePoint() {
+        return mAbsolutePoint;
+    }
+
     public long getTimestamp() {
         return mTimestamp;
     }
 
     @NonNull
     public CGPoint locationInView(UIView view) {
+        UIView hitTestedView = getHitTestedView();
+        if (hitTestedView != null) {
+            if (hitTestedView == view) {
+                return getRelativePoint();
+            }
+            else {
+                hitTestedView.convertPoint(getRelativePoint(), view);
+            }
+        }
         return new CGPoint(0, 0);
     }
 

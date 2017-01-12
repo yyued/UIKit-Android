@@ -36,6 +36,8 @@ import java.util.Set;
 
 public class UIView extends UIResponder {
 
+    float scaledDensity = getContext().getResources().getDisplayMetrics().scaledDensity;
+
     /* FrameLayout initialize methods */
 
     public UIView(@NonNull Context context, @NonNull View view) {
@@ -360,12 +362,40 @@ public class UIView extends UIResponder {
         this.multipleTouchEnabled = multipleTouchEnabled;
     }
 
+    private UIView hitTestView;
+
     @Override
     public boolean onTouchEvent(@NonNull MotionEvent event) {
-        float scaledDensity = getContext().getResources().getDisplayMetrics().scaledDensity;
         CGPoint touchPoint = new CGPoint(event.getX() / scaledDensity, event.getY() / scaledDensity);
-        UIView hitTestView = hitTest(touchPoint, event);
-        sendEvent(event, hitTestView);
+
+        final int action = event.getAction();
+        switch (action & MotionEvent.ACTION_MASK) {
+            case MotionEvent.ACTION_DOWN:
+                hitTestView = hitTest(touchPoint, event);
+                sendEvent(event, hitTestView);
+                break;
+            case MotionEvent.ACTION_MOVE:
+                if (hitTestView != null) {
+                    CGPoint convertedPoint = convertPoint(touchPoint, hitTestView);
+                    prepareTouch(convertedPoint, hitTestView, event);
+                    sendEvent(event, hitTestView);
+                }
+                break;
+            case MotionEvent.ACTION_UP:
+                if (hitTestView != null) {
+                    CGPoint convertedPoint = convertPoint(touchPoint, hitTestView);
+                    prepareTouch(convertedPoint, hitTestView, event);
+                    sendEvent(event, hitTestView);
+                }
+                break;
+            case MotionEvent.ACTION_POINTER_DOWN:
+                break;
+            case MotionEvent.ACTION_POINTER_UP:
+                break;
+            default:
+                break;
+        }
+
         return true;
     }
 
@@ -390,7 +420,7 @@ public class UIView extends UIResponder {
                     return hitTestView;
                 }
             }
-//            prepareTouch(point, this, event);
+            prepareTouch(point, this, event);
             return this;
         }
         return null;
@@ -403,40 +433,34 @@ public class UIView extends UIResponder {
         final int action = event.getAction();
         switch (action & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_DOWN: {
-                mTouchCount++;
                 touches.clear();
-                UITouch touch = new UITouch(hitTestView, touchPoint);
-                touch.resetTapCount();
+                UITouch touch = new UITouch(hitTestView, touchPoint, new CGPoint(event.getRawX() / scaledDensity, event.getRawY() / scaledDensity));
                 touches.add(touch);
             }
                 break;
             case MotionEvent.ACTION_MOVE: {
                 touches.clear();
+                mTouchCount = event.getPointerCount();
                 for (int i = 0; i < event.getPointerCount(); i++) {
                     double x = event.getX(i);
                     double y = event.getY(i);
-
-                    UITouch touch = new UITouch(hitTestView, touchPoint);
+                    UITouch touch = new UITouch(hitTestView, touchPoint, new CGPoint(event.getRawX() / scaledDensity, event.getRawY() / scaledDensity));
                     touches.add(touch);
                 }
             }
                 break;
             case MotionEvent.ACTION_UP:{
-                mTouchCount--;
                 touches.clear();
-                UITouch touch = new UITouch(hitTestView, touchPoint);
+                UITouch touch = new UITouch(hitTestView, touchPoint, new CGPoint(event.getRawX() / scaledDensity, event.getRawY() / scaledDensity));
                 touches.add(touch);
             }
                 break;
             case MotionEvent.ACTION_POINTER_DOWN: {
-                mTouchCount++;
-                UITouch touch = new UITouch(hitTestView, touchPoint);
-                touch.resetTapCount();
+                UITouch touch = new UITouch(hitTestView, touchPoint, new CGPoint(event.getRawX() / scaledDensity, event.getRawY() / scaledDensity));
                 touches.add(touch);
             }
                 break;
             case MotionEvent.ACTION_POINTER_UP: {
-                mTouchCount--;
             }
                 break;
             default:
@@ -474,6 +498,9 @@ public class UIView extends UIResponder {
         if (this.userInteractionEnabled && this.gestureRecognizers.size() > 0 && touches.size() > 0) {
             UITouch[] arr = new UITouch[touches.size()];
             touches.toArray(arr);
+            for (int i = 0; i < arr.length; i++) {
+                arr[i].resetTapCount();
+            }
             if (arr[0].getHitTestedView() == this) {
                 UIGestureRecognizer.onTouchesBegan(UIGestureRecognizer.getGestureRecognizers(this), arr, event);
             }
@@ -544,11 +571,12 @@ public class UIView extends UIResponder {
             do {
                 convertPoint = convertPointToSuperView(convertPoint, superView);
                 superView = superView.getSuperview();
-            }while (toViewSuperView != this);
+            }while (superView != this && superView != null);
 
             return convertPoint;
         }
         else {
+            // 'this' and toView not in a same tree
             do {
                 UIView innerToViewSuperView = toViewSuperView.getSuperview();
                 UIView innerSuperView = superView.getSuperview();

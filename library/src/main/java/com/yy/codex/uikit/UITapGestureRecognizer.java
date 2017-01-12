@@ -1,5 +1,7 @@
 package com.yy.codex.uikit;
 
+import android.support.annotation.NonNull;
+
 /**
  * Created by cuiminghui on 2017/1/11.
  */
@@ -13,6 +15,10 @@ public class UITapGestureRecognizer extends UIGestureRecognizer {
 
     public UITapGestureRecognizer(Object target, String selector) {
         super(target, selector);
+    }
+
+    public UITapGestureRecognizer(@NonNull Runnable triggerBlock) {
+        super(triggerBlock);
     }
 
     @Override

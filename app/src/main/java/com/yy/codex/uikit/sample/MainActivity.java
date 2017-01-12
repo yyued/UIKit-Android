@@ -1,23 +1,21 @@
 package com.yy.codex.uikit.sample;
 
-import android.app.Activity;
 import android.content.Context;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.util.AttributeSet;
-import android.view.MotionEvent;
 import android.view.View;
 
-import com.yy.codex.uikit.CALayer;
+import com.yy.codex.uikit.CGPoint;
 import com.yy.codex.uikit.CGRect;
 import com.yy.codex.uikit.NSLog;
-import com.yy.codex.uikit.UILabel;
+import com.yy.codex.uikit.UIGestureRecognizerState;
+import com.yy.codex.uikit.UILongPressGestureRecognizer;
+import com.yy.codex.uikit.UIPanGestureRecognizer;
 import com.yy.codex.uikit.UITapGestureRecognizer;
 import com.yy.codex.uikit.UIView;
 
@@ -66,7 +64,16 @@ class TestView extends UIView {
         redView.getLayer().setBackgroundColor(Color.BLACK);
         redView.getLayer().setCornerRadius(44.0);
         redView.setUserInteractionEnabled(true);
-        redView.addGestureRecognizer(new UITapGestureRecognizer(this, "onTap:"));
+
+        UITapGestureRecognizer tapGestureRecognizer = new UITapGestureRecognizer(this, "onTap:");
+        redView.addGestureRecognizer(tapGestureRecognizer);
+
+//        UILongPressGestureRecognizer longPressGestureRecognizer = new UILongPressGestureRecognizer(this, "onLongPressed:");
+//        redView.addGestureRecognizer(longPressGestureRecognizer);
+
+        UIPanGestureRecognizer panGestureRecognizer = new UIPanGestureRecognizer(this, "onPan:");
+        redView.addGestureRecognizer(panGestureRecognizer);
+
         addSubview(redView);
     }
 
@@ -88,10 +95,38 @@ class TestView extends UIView {
         }
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        System.out.println(event);
-        return super.onTouchEvent(event);
+    public void onLongPressed(UILongPressGestureRecognizer longPressGestureRecognizer) {
+        final UIView redView = longPressGestureRecognizer.getView();
+        if (redView != null) {
+            if (longPressGestureRecognizer.getState() == UIGestureRecognizerState.Began) {
+                redView.getLayer().setBackgroundColor(Color.GRAY);
+            }
+            else if (longPressGestureRecognizer.getState() == UIGestureRecognizerState.Changed) {
+                redView.getLayer().setBackgroundColor(Color.GREEN);
+                NSLog.log(longPressGestureRecognizer.location());
+            }
+            else if (longPressGestureRecognizer.getState() == UIGestureRecognizerState.Ended) {
+                redView.getLayer().setBackgroundColor(Color.YELLOW);
+            }
+        }
+    }
+
+    public void onPan(UIPanGestureRecognizer panGestureRecognizer) {
+        final UIView redView = panGestureRecognizer.getView();
+        if (redView != null) {
+            if (panGestureRecognizer.getState() == UIGestureRecognizerState.Began) {
+                redView.getLayer().setBackgroundColor(Color.GRAY);
+            }
+            else if (panGestureRecognizer.getState() == UIGestureRecognizerState.Changed) {
+                redView.getLayer().setBackgroundColor(Color.GREEN);
+                CGPoint translation = panGestureRecognizer.translation();
+                redView.setFrame(new CGRect(88 + translation.getX(), 88 + translation.getY(), 88.0, 88.0));
+            }
+            else if (panGestureRecognizer.getState() == UIGestureRecognizerState.Ended) {
+                redView.getLayer().setBackgroundColor(Color.YELLOW);
+                NSLog.log((panGestureRecognizer.velocity()));
+            }
+        }
     }
 
 }
