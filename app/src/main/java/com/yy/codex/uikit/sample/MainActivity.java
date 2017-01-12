@@ -18,6 +18,7 @@ import com.yy.codex.uikit.CALayer;
 import com.yy.codex.uikit.CGRect;
 import com.yy.codex.uikit.NSLog;
 import com.yy.codex.uikit.UILabel;
+import com.yy.codex.uikit.UITapGestureRecognizer;
 import com.yy.codex.uikit.UIView;
 
 public class MainActivity extends AppCompatActivity {
@@ -64,10 +65,14 @@ class TestView extends UIView {
         redView.setFrame(new CGRect(88, 88, 88, 88));
         redView.getLayer().setBackgroundColor(Color.BLACK);
         redView.getLayer().setCornerRadius(44.0);
+        redView.setUserInteractionEnabled(true);
+        redView.addGestureRecognizer(new UITapGestureRecognizer(this, "onTap:"));
+        addSubview(redView);
+    }
 
-        postDelayed(new Runnable() {
-            @Override
-            public void run() {
+    public void onTap(UITapGestureRecognizer tapGestureRecognizer) {
+        final UIView redView = tapGestureRecognizer.getView();
+        if (redView != null) {
                 UIView.animateWithSpring(new Runnable() {
                     @Override
                     public void run() {
@@ -80,10 +85,7 @@ class TestView extends UIView {
                         NSLog.log(redView);
                     }
                 });
-            }
-        }, 3000);
-
-        addSubview(redView);
+        }
     }
 
     @Override

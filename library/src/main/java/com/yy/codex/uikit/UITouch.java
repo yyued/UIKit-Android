@@ -43,6 +43,11 @@ public class UITouch {
     }
 
     @NonNull
+    public UIView getHitTestedView() {
+        return mRelativeView;
+    }
+
+    @NonNull
     public CGPoint getRelativePoint() {
         return mRelativePoint;
     }
