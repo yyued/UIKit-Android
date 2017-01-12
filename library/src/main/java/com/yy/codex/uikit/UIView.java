@@ -390,7 +390,7 @@ public class UIView extends UIResponder {
                     return hitTestView;
                 }
             }
-            prepareTouch(point, this, event);
+//            prepareTouch(point, this, event);
             return this;
         }
         return null;
@@ -425,7 +425,6 @@ public class UIView extends UIResponder {
                 mTouchCount--;
                 touches.clear();
                 UITouch touch = new UITouch(hitTestView, touchPoint);
-                touch.resetTapCount();
                 touches.add(touch);
             }
                 break;
@@ -466,6 +465,42 @@ public class UIView extends UIResponder {
                 break;
             default:
                 break;
+        }
+    }
+
+    @Override
+    public void touchesBegan(@NonNull Set<UITouch> touches, @NonNull UIEvent event) {
+        super.touchesBegan(touches, event);
+        if (this.userInteractionEnabled && this.gestureRecognizers.size() > 0 && touches.size() > 0) {
+            UITouch[] arr = new UITouch[touches.size()];
+            touches.toArray(arr);
+            if (arr[0].getHitTestedView() == this) {
+                UIGestureRecognizer.onTouchesBegan(UIGestureRecognizer.getGestureRecognizers(this), arr, event);
+            }
+        }
+    }
+
+    @Override
+    public void touchesMoved(@NonNull Set<UITouch> touches, @NonNull UIEvent event) {
+        super.touchesMoved(touches, event);
+        if (this.userInteractionEnabled && this.gestureRecognizers.size() >= 0 && touches.size() > 0) {
+            UITouch[] arr = new UITouch[touches.size()];
+            touches.toArray(arr);
+            if (arr[0].getHitTestedView() == this) {
+                UIGestureRecognizer.onTouchesMove(UIGestureRecognizer.getGestureRecognizers(this), arr, event);
+            }
+        }
+    }
+
+    @Override
+    public void touchesEnded(@NonNull Set<UITouch> touches, @NonNull UIEvent event) {
+        super.touchesEnded(touches, event);
+        if (this.userInteractionEnabled && this.gestureRecognizers.size() >= 0 && touches.size() > 0) {
+            UITouch[] arr = new UITouch[touches.size()];
+            touches.toArray(arr);
+            if (arr[0].getHitTestedView() == this) {
+                UIGestureRecognizer.onTouchesEnded(UIGestureRecognizer.getGestureRecognizers(this), arr, event);
+            }
         }
     }
 
