@@ -6,8 +6,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
-import android.support.annotation.Nullable;
-import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -559,9 +557,13 @@ public class CALayer {
     }
 
     public CALayer setBorderWidth(double borderWidth) {
+        double oldValue = this.borderWidth;
         if (!doubleEqual(this.borderWidth, borderWidth * scaledDensity)){
             this.borderWidth = borderWidth * scaledDensity;
             this.setNeedDisplay(true);
+            if (this.requestRootLayer().view != null) {
+                UIView.addAnimationState(this.requestRootLayer().view, "layer.borderWidth", oldValue, borderWidth);
+            }
         }
         return this;
     }
@@ -676,6 +678,9 @@ public class CALayer {
     public void animate(String aKey, float aValue) {
         if (aKey.equalsIgnoreCase("layer.cornerRadius")) {
             setCornerRadius(aValue);
+        }
+        else if (aKey.equalsIgnoreCase("layer.borderWidth")){
+            setBorderWidth(aValue);
         }
     }
 
