@@ -11,10 +11,15 @@ import android.widget.Scroller;
 
 import com.yy.codex.uikit.CGPoint;
 import com.yy.codex.uikit.CGRect;
+import com.yy.codex.uikit.NSLog;
+import com.yy.codex.uikit.UIEvent;
 import com.yy.codex.uikit.UIGestureRecognizer;
 import com.yy.codex.uikit.UIScrollView;
 import com.yy.codex.uikit.UITapGestureRecognizer;
+import com.yy.codex.uikit.UITouch;
 import com.yy.codex.uikit.UIView;
+
+import java.util.Set;
 
 /**
  * Created by it on 17/1/10.
@@ -97,18 +102,15 @@ class MyTestView extends UIView {
     }
 
     @Override
-    public void touchesBegan() {
-        super.touchesBegan();
+    public void touchesBegan(Set<UITouch> touches, UIEvent event) {
+        super.touchesBegan(touches, event);
+        NSLog.log(touches);
     }
 
     @Override
-    public void touchesMoved() {
-        super.touchesMoved();
-    }
-
-    @Override
-    public void touchesEnded() {
-        super.touchesEnded();
+    public void touchesEnded(Set<UITouch> touches, UIEvent event) {
+        super.touchesEnded(touches, event);
+        NSLog.log(touches);
     }
 }
 
@@ -134,18 +136,18 @@ class MyTestView2 extends UIView {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 
-    @Override
-    public void touchesBegan() {
-        super.touchesBegan();
-    }
-
-    @Override
-    public void touchesMoved() {
-        super.touchesMoved();
-    }
-
-    @Override
-    public void touchesEnded() {
-        super.touchesEnded();
-    }
+//    @Override
+//    public void touchesBegan() {
+//        super.touchesBegan();
+//    }
+//
+//    @Override
+//    public void touchesMoved() {
+//        super.touchesMoved();
+//    }
+//
+//    @Override
+//    public void touchesEnded() {
+//        super.touchesEnded();
+//    }
 }
