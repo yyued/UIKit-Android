@@ -15,10 +15,12 @@ public class UITouch {
     private boolean mTapCountSetted = false;
     @NonNull private UIView mRelativeView;
     @NonNull private CGPoint mRelativePoint;
+    @NonNull private CGPoint mAbsolutePoint;
 
-    public UITouch(@NonNull UIView relativeView, @NonNull CGPoint relativePoint) {
+    public UITouch(@NonNull UIView relativeView, @NonNull CGPoint relativePoint, @NonNull CGPoint absolutePoint) {
         mRelativeView = relativeView;
         mRelativePoint = relativePoint;
+        mAbsolutePoint = absolutePoint;
         mTimestamp = System.currentTimeMillis();
     }
 

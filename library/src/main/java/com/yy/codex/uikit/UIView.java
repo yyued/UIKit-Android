@@ -36,6 +36,8 @@ import java.util.Set;
 
 public class UIView extends UIResponder {
 
+    float scaledDensity = getContext().getResources().getDisplayMetrics().scaledDensity;
+
     /* FrameLayout initialize methods */
 
     public UIView(@NonNull Context context, @NonNull View view) {
@@ -364,7 +366,6 @@ public class UIView extends UIResponder {
 
     @Override
     public boolean onTouchEvent(@NonNull MotionEvent event) {
-        float scaledDensity = getContext().getResources().getDisplayMetrics().scaledDensity;
         CGPoint touchPoint = new CGPoint(event.getX() / scaledDensity, event.getY() / scaledDensity);
 
         final int action = event.getAction();
@@ -433,7 +434,7 @@ public class UIView extends UIResponder {
         switch (action & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_DOWN: {
                 touches.clear();
-                UITouch touch = new UITouch(hitTestView, touchPoint);
+                UITouch touch = new UITouch(hitTestView, touchPoint, new CGPoint(event.getRawX() / scaledDensity, event.getRawY() / scaledDensity));
                 touches.add(touch);
             }
                 break;
@@ -443,19 +444,19 @@ public class UIView extends UIResponder {
                 for (int i = 0; i < event.getPointerCount(); i++) {
                     double x = event.getX(i);
                     double y = event.getY(i);
-                    UITouch touch = new UITouch(hitTestView, touchPoint);
+                    UITouch touch = new UITouch(hitTestView, touchPoint, new CGPoint(event.getRawX() / scaledDensity, event.getRawY() / scaledDensity));
                     touches.add(touch);
                 }
             }
                 break;
             case MotionEvent.ACTION_UP:{
                 touches.clear();
-                UITouch touch = new UITouch(hitTestView, touchPoint);
+                UITouch touch = new UITouch(hitTestView, touchPoint, new CGPoint(event.getRawX() / scaledDensity, event.getRawY() / scaledDensity));
                 touches.add(touch);
             }
                 break;
             case MotionEvent.ACTION_POINTER_DOWN: {
-                UITouch touch = new UITouch(hitTestView, touchPoint);
+                UITouch touch = new UITouch(hitTestView, touchPoint, new CGPoint(event.getRawX() / scaledDensity, event.getRawY() / scaledDensity));
                 touches.add(touch);
             }
                 break;
