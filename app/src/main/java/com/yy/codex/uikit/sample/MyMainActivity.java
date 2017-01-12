@@ -47,14 +47,14 @@ public class MyMainActivity extends AppCompatActivity {
 
         UIView testView = new MyTestView(this);
         testView.setBackgroundColor(Color.BLUE);
-        testView.setFrame(new CGRect(50, 50, 100, 100));
-
-        UIView testView2 = new MyTestView2(this);
-        testView2.setBackgroundColor(Color.YELLOW);
-        testView2.setFrame(new CGRect(50, 50, 50, 50));
-
+        testView.setFrame(new CGRect(0, 0, 300, 500));
+//
+//        UIView testView2 = new MyTestView2(this);
+//        testView2.setBackgroundColor(Color.YELLOW);
+//        testView2.setFrame(new CGRect(50, 50, 50, 50));
+//
         view.addSubview(testView);
-        testView.addSubview(testView2);
+//        testView.addSubview(testView2);
 
 //        scrollView = (UIScrollView)findViewById(R.id.testScrollView);
 //        button = (Button)findViewById(R.id.testButton);
@@ -104,13 +104,28 @@ class MyTestView extends UIView {
     @Override
     public void touchesBegan(Set<UITouch> touches, UIEvent event) {
         super.touchesBegan(touches, event);
-        NSLog.log(touches);
+        NSLog.log("=================touchesBegan==================");
+        for (UITouch touch: touches) {
+            NSLog.log(touch);
+        }
+    }
+
+    @Override
+    public void touchesMoved(Set<UITouch> touches, UIEvent event) {
+        super.touchesMoved(touches, event);
+        NSLog.log("=================touchesMoved==================");
+        for (UITouch touch: touches) {
+            NSLog.log(touch);
+        }
     }
 
     @Override
     public void touchesEnded(Set<UITouch> touches, UIEvent event) {
         super.touchesEnded(touches, event);
-        NSLog.log(touches);
+        NSLog.log("=================touchesEnded==================");
+        for (UITouch touch: touches) {
+            NSLog.log(touch);
+        }
     }
 }
 

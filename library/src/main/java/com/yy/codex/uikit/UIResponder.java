@@ -28,7 +28,7 @@ public class UIResponder extends FrameLayout {
 
     @Nullable
     public UIResponder getNextResponder() {
-        UIResponder nextResponder = this.mNextResponder.get();
+        UIResponder nextResponder = this.mNextResponder != null ? this.mNextResponder.get() : null;
         if (nextResponder != null) {
             return nextResponder;
         }

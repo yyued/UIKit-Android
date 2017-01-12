@@ -60,4 +60,8 @@ public class UITouch {
         return mTapCount;
     }
 
+    @Override
+    public String toString() {
+        return "UITouch { RelativeView=" + this.mRelativeView + " x=" + this.mRelativePoint.getX() + " y=" + this.mRelativePoint.getY();
+    }
 }

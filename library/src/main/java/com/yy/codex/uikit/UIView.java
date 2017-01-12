@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -330,8 +331,6 @@ public class UIView extends UIResponder {
 
     /* category: UIView touch events */
 
-    @Nullable private Set<UITouch> touches;
-
     private boolean userInteractionEnabled = true;
     @NonNull private ArrayList<UIGestureRecognizer> gestureRecognizers = new ArrayList<>();
 
@@ -391,46 +390,55 @@ public class UIView extends UIResponder {
                     return hitTestView;
                 }
             }
+            prepareTouch(point, this, event);
             return this;
         }
         return null;
     }
 
+    private int mTouchCount = 0;
+    @Nullable private Set<UITouch> touches = new HashSet<UITouch>();
+
     private void prepareTouch(@NonNull CGPoint touchPoint, @NonNull UIView hitTestView, @NonNull MotionEvent event) {
         final int action = event.getAction();
-        switch (action) {
+        switch (action & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_DOWN: {
-                touches = new HashSet<UITouch>();
+                mTouchCount++;
+                touches.clear();
                 UITouch touch = new UITouch(hitTestView, touchPoint);
                 touch.resetTapCount();
                 touches.add(touch);
             }
                 break;
             case MotionEvent.ACTION_MOVE: {
-//                int touchCount = touches.size();
-//                for (int i=0; i < touchCount; i++) {
-//                    double x = event.getX(i);
-//                    double y = event.getY(i);
-//
-//                    UITouch touch = new UITouch(hitTestView, touchPoint);
-//                    touches.add(touch);
-//                }
+                touches.clear();
+                for (int i = 0; i < event.getPointerCount(); i++) {
+                    double x = event.getX(i);
+                    double y = event.getY(i);
+
+                    UITouch touch = new UITouch(hitTestView, touchPoint);
+                    touches.add(touch);
+                }
             }
                 break;
             case MotionEvent.ACTION_UP:{
-                touches = new HashSet<UITouch>();
+                mTouchCount--;
+                touches.clear();
                 UITouch touch = new UITouch(hitTestView, touchPoint);
                 touch.resetTapCount();
                 touches.add(touch);
             }
                 break;
             case MotionEvent.ACTION_POINTER_DOWN: {
+                mTouchCount++;
                 UITouch touch = new UITouch(hitTestView, touchPoint);
                 touch.resetTapCount();
                 touches.add(touch);
             }
                 break;
-            case MotionEvent.ACTION_POINTER_UP:
+            case MotionEvent.ACTION_POINTER_UP: {
+                mTouchCount--;
+            }
                 break;
             default:
                 break;
@@ -440,7 +448,7 @@ public class UIView extends UIResponder {
     private void sendEvent(@NonNull MotionEvent event, @NonNull UIView hitTestView) {
         final int action = event.getAction();
         UIEvent ev = new UIEvent();
-        switch (action) {
+        switch (action & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_DOWN:
                 hitTestView.touchesBegan(touches, ev);
                 break;
