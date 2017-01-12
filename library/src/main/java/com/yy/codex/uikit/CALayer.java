@@ -214,7 +214,6 @@ public class CALayer {
             if (shadowRadius > 0){
                 paint.setShadowLayer((float) shadowRadius, (float) shadowX, (float) shadowY, shadowColor);
             }
-            Log.w("newContext", String.valueOf(frame.size.getHeight()));
             canvas.drawRoundRect(frame.shrinkToRectF(halfBorderW, calculatedOrigin), (float) cornerRadius, (float) cornerRadius, paint);
             if (borderWidth > 0){
                 paint.setStyle(Paint.Style.STROKE);

@@ -287,8 +287,13 @@ public class UIView extends UIResponder {
     }
 
     public void setWantsLayer(boolean wantsLayer) {
-        this.wantsLayer = wantsLayer;
-        invalidate();
+        if (this.wantsLayer != wantsLayer) {
+            this.wantsLayer = wantsLayer;
+            if (wantsLayer) {
+                setLayerType(LAYER_TYPE_SOFTWARE, null);
+            }
+            invalidate();
+        }
     }
 
     public CALayer getLayer() {
@@ -303,7 +308,6 @@ public class UIView extends UIResponder {
         // TODO: 2017/1/3 adi
         if (wantsLayer){
             layer.drawRect(canvas, rect);
-            setLayerType(LAYER_TYPE_SOFTWARE, null); // for PorterDuffXferMode
         }
     }
 
