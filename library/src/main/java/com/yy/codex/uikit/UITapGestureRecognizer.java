@@ -1,6 +1,10 @@
 package com.yy.codex.uikit;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by cuiminghui on 2017/1/11.
@@ -24,18 +28,7 @@ public class UITapGestureRecognizer extends UIGestureRecognizer {
     @Override
     public void touchesBegan(@NonNull UITouch[] touches, @NonNull UIEvent event) {
         super.touchesBegan(touches, event);
-        int acceptedTouches = 0;
-        for (int i = 0; i < touches.length; i++) {
-            if (touches[i].getTapCount() == numberOfTapsRequired) {
-                acceptedTouches++;
-            }
-        }
-        if (acceptedTouches >= numberOfTouchesRequired) {
-            startTouches = touches;
-        }
-        else {
-            mState = UIGestureRecognizerState.Failed;
-        }
+        startTouches = touches;
     }
 
     @Override
@@ -46,13 +39,48 @@ public class UITapGestureRecognizer extends UIGestureRecognizer {
         }
     }
 
+    @Nullable private Timer mWaitsTimer;
+
     @Override
     public void touchesEnded(@NonNull UITouch[] touches, @NonNull UIEvent event) {
         super.touchesEnded(touches, event);
+        if (mState == UIGestureRecognizerState.Failed) {
+            return;
+        }
+        if (numberOfTapsRequired > 1) {
+            if (mWaitsTimer != null) {
+                mWaitsTimer.cancel();
+                mWaitsTimer = null;
+            }
+            int acceptedTouches = 0;
+            for (int i = 0; i < touches.length; i++) {
+                if (touches[i].getTapCount() == numberOfTapsRequired) {
+                    acceptedTouches++;
+                }
+            }
+            if (acceptedTouches < numberOfTouchesRequired) {
+                mWaitsTimer = new Timer();
+                mWaitsTimer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        if (mState != UIGestureRecognizerState.Ended) {
+                            mState = UIGestureRecognizerState.Failed;
+                        }
+                    }
+                }, 300);
+                return;
+            }
+        }
         if (!moveOutOfBounds(touches)) {
-            mState = UIGestureRecognizerState.Ended;
-            markOtherGestureRecognizersFailed(this);
-            sendActions();
+            final UITapGestureRecognizer self = this;
+            waitOtherGesture(new Runnable() {
+                @Override
+                public void run() {
+                    mState = UIGestureRecognizerState.Ended;
+                    markOtherGestureRecognizersFailed(self);
+                    sendActions();
+                }
+            });
         }
     }
 

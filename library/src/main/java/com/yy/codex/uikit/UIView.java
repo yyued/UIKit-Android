@@ -9,7 +9,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
-import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,14 +19,10 @@ import com.facebook.rebound.SpringConfig;
 import com.facebook.rebound.SpringListener;
 import com.facebook.rebound.SpringSystem;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -587,7 +582,7 @@ public class UIView extends UIResponder {
             UITouch[] arr = new UITouch[touches.size()];
             touches.toArray(arr);
             for (int i = 0; i < arr.length; i++) {
-                arr[i].resetTapCount();
+                arr[i].addTapCount();
             }
             if (arr[0].getHitTestedView() == this) {
                 UIGestureRecognizer.onTouchesBegan(UIGestureRecognizer.getGestureRecognizers(this), arr, event);

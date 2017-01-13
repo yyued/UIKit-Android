@@ -61,6 +61,9 @@ public class UIPanGestureRecognizer extends UIGestureRecognizer {
             mState = UIGestureRecognizerState.Ended;
             sendActions();
         }
+        else {
+            mState = UIGestureRecognizerState.Failed;
+        }
     }
 
     @NonNull

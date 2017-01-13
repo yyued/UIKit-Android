@@ -66,10 +66,11 @@ class TestView extends UIView {
         redView.setUserInteractionEnabled(true);
 
         UITapGestureRecognizer tapGestureRecognizer = new UITapGestureRecognizer(this, "onTap:");
-//        redView.addGestureRecognizer(tapGestureRecognizer);
+        tapGestureRecognizer.numberOfTapsRequired = 2;
+        redView.addGestureRecognizer(tapGestureRecognizer);
 
-//        UILongPressGestureRecognizer longPressGestureRecognizer = new UILongPressGestureRecognizer(this, "onLongPressed:");
-//        redView.addGestureRecognizer(longPressGestureRecognizer);
+        UILongPressGestureRecognizer longPressGestureRecognizer = new UILongPressGestureRecognizer(this, "onLongPressed:");
+        redView.addGestureRecognizer(longPressGestureRecognizer);
 
         UIPanGestureRecognizer panGestureRecognizer = new UIPanGestureRecognizer(this, "onPan:");
 //        redView.addGestureRecognizer(panGestureRecognizer);
@@ -79,12 +80,14 @@ class TestView extends UIView {
         blueView.setFrame(new CGRect(0,0,44,44));
         blueView.setBackgroundColor(Color.BLUE);
         blueView.setUserInteractionEnabled(true);
-        blueView.addGestureRecognizer(new UITapGestureRecognizer(new Runnable() {
+        UITapGestureRecognizer blueTapGestureRecognizer = new UITapGestureRecognizer(new Runnable() {
             @Override
             public void run() {
                 blueView.setBackgroundColor(Color.LTGRAY);
             }
-        }));
+        });
+        blueTapGestureRecognizer.requireGestureRecognizerToFail(tapGestureRecognizer);
+        blueView.addGestureRecognizer(blueTapGestureRecognizer);
         redView.addSubview(blueView);
 
 

@@ -1,10 +1,13 @@
 package com.yy.codex.uikit;
 
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by it on 17/1/4.
@@ -281,6 +284,58 @@ public class UIGestureRecognizer {
 
     public int numberOfTouches() {
         return lastPoints != null ? lastPoints.length : 0;
+    }
+
+    /* Delegates */
+
+    @NonNull private UIGestureRecognizer[] mGestureRecognizersRequiresFailed = new UIGestureRecognizer[0];
+    @Nullable private Timer mGestureRecognizerReuqiresFailedTimer;
+
+    public void requireGestureRecognizerToFail(@NonNull UIGestureRecognizer otherGestureRecognizer) {
+        UIGestureRecognizer[] gestureRecognizersRequiresFailed = new UIGestureRecognizer[mGestureRecognizersRequiresFailed.length + 1];
+        for (int i = 0; i < mGestureRecognizersRequiresFailed.length; i++) {
+            gestureRecognizersRequiresFailed[i] = mGestureRecognizersRequiresFailed[i];
+        }
+        gestureRecognizersRequiresFailed[gestureRecognizersRequiresFailed.length - 1] = otherGestureRecognizer;
+        mGestureRecognizersRequiresFailed = gestureRecognizersRequiresFailed;
+    }
+
+    protected void waitOtherGesture(final Runnable runnable) {
+        final Handler handler = new Handler();
+        if (mGestureRecognizersRequiresFailed.length > 0) {
+            if (mGestureRecognizerReuqiresFailedTimer == null) {
+                mGestureRecognizerReuqiresFailedTimer = new Timer();
+                mGestureRecognizerReuqiresFailedTimer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        mGestureRecognizerReuqiresFailedTimer = null;
+                        if (mState == UIGestureRecognizerState.Failed) {
+                            return;
+                        }
+                        boolean allFailed = true;
+                        for (int i = 0; i < mGestureRecognizersRequiresFailed.length; i++) {
+                            if (mGestureRecognizersRequiresFailed[i].mState != UIGestureRecognizerState.Failed) {
+                                allFailed = false;
+                            }
+                        }
+                        if (allFailed) {
+                            handler.post(runnable);
+                        }
+                        else {
+                            handler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    waitOtherGesture(runnable);
+                                }
+                            });
+                        }
+                    }
+                }, 350);
+            }
+        }
+        else {
+            runnable.run();
+        }
     }
 
 }
