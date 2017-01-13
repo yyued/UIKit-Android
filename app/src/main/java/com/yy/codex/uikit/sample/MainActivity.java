@@ -16,8 +16,10 @@ import com.yy.codex.uikit.NSLog;
 import com.yy.codex.uikit.UIGestureRecognizerState;
 import com.yy.codex.uikit.UILongPressGestureRecognizer;
 import com.yy.codex.uikit.UIPanGestureRecognizer;
+import com.yy.codex.uikit.UIPinchGestureRecognizer;
 import com.yy.codex.uikit.UIScreen;
 import com.yy.codex.uikit.UIScreenEdgePanGestureRecognizer;
+import com.yy.codex.uikit.UISwipeGestureRecognizer;
 import com.yy.codex.uikit.UITapGestureRecognizer;
 import com.yy.codex.uikit.UIView;
 
@@ -61,15 +63,12 @@ class TestView extends UIView {
 
     private void init() {
         setUserInteractionEnabled(true);
-        UIScreenEdgePanGestureRecognizer screenEdgePanGestureRecognizer = new UIScreenEdgePanGestureRecognizer(this, "onPan:");
-        screenEdgePanGestureRecognizer.edge = UIScreenEdgePanGestureRecognizer.Edge.Bottom;
-        addGestureRecognizer(screenEdgePanGestureRecognizer);
+        UIPinchGestureRecognizer pinchGestureRecognizer = new UIPinchGestureRecognizer(this, "onPinch:");
+        addGestureRecognizer(pinchGestureRecognizer);
     }
 
-    public void onPan(UIScreenEdgePanGestureRecognizer screenEdgePanGestureRecognizer) {
-        if (screenEdgePanGestureRecognizer.getState() == UIGestureRecognizerState.Changed) {
-            NSLog.log(screenEdgePanGestureRecognizer.translation());
-        }
+    public void onPinch(UIPinchGestureRecognizer pinchGestureRecognizer) {
+//        NSLog.log(pinchGestureRecognizer.getState());
     }
 
 }
