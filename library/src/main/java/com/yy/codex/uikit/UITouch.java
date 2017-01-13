@@ -45,6 +45,7 @@ public class UITouch {
             }
         }
         if (!found) {
+            mTapCount = 1;
             newTapCountStore.add(this);
         }
         tapCountStore = newTapCountStore;

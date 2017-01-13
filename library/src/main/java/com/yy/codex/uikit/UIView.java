@@ -575,42 +575,43 @@ public class UIView extends UIResponder {
         return new CGPoint(point.getX() - x, point.getY() - y);
     }
 
+    @Nullable static private UIGestureRecognizerLooper sGestureRecognizerLooper = null;
+
     @Override
     public void touchesBegan(@NonNull Set<UITouch> touches, @NonNull UIEvent event) {
         super.touchesBegan(touches, event);
-        if (this.userInteractionEnabled && this.gestureRecognizers.size() > 0 && touches.size() > 0) {
+        if (UIGestureRecognizerLooper.isHitTestedView(touches, this)) {
             UITouch[] arr = new UITouch[touches.size()];
             touches.toArray(arr);
             for (int i = 0; i < arr.length; i++) {
                 arr[i].addTapCount();
             }
-            if (arr[0].getHitTestedView() == this) {
-                UIGestureRecognizer.onTouchesBegan(UIGestureRecognizer.getGestureRecognizers(this), arr, event);
+            if (sGestureRecognizerLooper == null || sGestureRecognizerLooper.isFinished() || sGestureRecognizerLooper.mGestureRecognizers.size() == 0) {
+                sGestureRecognizerLooper = new UIGestureRecognizerLooper(this);
             }
+            sGestureRecognizerLooper.onTouchesBegan(touches, event);
         }
     }
 
     @Override
     public void touchesMoved(@NonNull Set<UITouch> touches, @NonNull UIEvent event) {
         super.touchesMoved(touches, event);
-        if (this.userInteractionEnabled && this.gestureRecognizers.size() >= 0 && touches.size() > 0) {
-            UITouch[] arr = new UITouch[touches.size()];
-            touches.toArray(arr);
-            if (arr[0].getHitTestedView() == this) {
-                UIGestureRecognizer.onTouchesMove(UIGestureRecognizer.getGestureRecognizers(this), arr, event);
+        if (UIGestureRecognizerLooper.isHitTestedView(touches, this)) {
+            if (sGestureRecognizerLooper == null || sGestureRecognizerLooper.isFinished()) {
+                sGestureRecognizerLooper = new UIGestureRecognizerLooper(this);
             }
+            sGestureRecognizerLooper.onTouchesMoved(touches, event);
         }
     }
 
     @Override
     public void touchesEnded(@NonNull Set<UITouch> touches, @NonNull UIEvent event) {
         super.touchesEnded(touches, event);
-        if (this.userInteractionEnabled && this.gestureRecognizers.size() >= 0 && touches.size() > 0) {
-            UITouch[] arr = new UITouch[touches.size()];
-            touches.toArray(arr);
-            if (arr[0].getHitTestedView() == this) {
-                UIGestureRecognizer.onTouchesEnded(UIGestureRecognizer.getGestureRecognizers(this), arr, event);
+        if (UIGestureRecognizerLooper.isHitTestedView(touches, this)) {
+            if (sGestureRecognizerLooper == null || sGestureRecognizerLooper.isFinished()) {
+                sGestureRecognizerLooper = new UIGestureRecognizerLooper(this);
             }
+            sGestureRecognizerLooper.onTouchesEnded(touches, event);
         }
     }
 

@@ -73,7 +73,7 @@ class TestView extends UIView {
         redView.addGestureRecognizer(longPressGestureRecognizer);
 
         UIPanGestureRecognizer panGestureRecognizer = new UIPanGestureRecognizer(this, "onPan:");
-//        redView.addGestureRecognizer(panGestureRecognizer);
+        redView.addGestureRecognizer(panGestureRecognizer);
 
 
         final UIView blueView = new UIView(getContext());
@@ -83,7 +83,8 @@ class TestView extends UIView {
         UITapGestureRecognizer blueTapGestureRecognizer = new UITapGestureRecognizer(new Runnable() {
             @Override
             public void run() {
-                blueView.setBackgroundColor(Color.LTGRAY);
+//                blueView.setBackgroundColor(Color.LTGRAY);
+                NSLog.log("1");
             }
         });
         blueTapGestureRecognizer.requireGestureRecognizerToFail(tapGestureRecognizer);
@@ -95,21 +96,22 @@ class TestView extends UIView {
     }
 
     public void onTap(UITapGestureRecognizer tapGestureRecognizer) {
-        final UIView redView = tapGestureRecognizer.getView();
-        if (redView != null) {
-                UIView.animateWithSpring(new Runnable() {
-                    @Override
-                    public void run() {
-                        redView.setFrame(new CGRect(44, 44, 88 * 2, 88 * 2));
-                        redView.getLayer().setCornerRadius(88.0);
-                    }
-                }, new Runnable() {
-                    @Override
-                    public void run() {
-                        NSLog.log(redView);
-                    }
-                });
-        }
+        NSLog.log("2");
+//        final UIView redView = tapGestureRecognizer.getView();
+//        if (redView != null) {
+//                UIView.animateWithSpring(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        redView.setFrame(new CGRect(44, 44, 88 * 2, 88 * 2));
+//                        redView.getLayer().setCornerRadius(88.0);
+//                    }
+//                }, new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        NSLog.log(redView);
+//                    }
+//                });
+//        }
     }
 
     public void onLongPressed(UILongPressGestureRecognizer longPressGestureRecognizer) {

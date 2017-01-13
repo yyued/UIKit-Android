@@ -62,131 +62,6 @@ public class UIGestureRecognizer {
         mActions = actionsArray;
     }
 
-    /* UIView Helpers */
-
-    @NonNull
-    static ArrayList<UIGestureRecognizer> getGestureRecognizers(@NonNull UIView view) {
-        if (!view.isUserInteractionEnabled()) {
-            return new ArrayList<>();
-        }
-        else {
-            ArrayList<UIGestureRecognizer> gestureRecognizers = new ArrayList<>(view.getGestureRecognizers());
-            UIView superview = view.getSuperview();
-            if (superview != null) {
-                ArrayList<UIGestureRecognizer> superGestureRecognizers = getGestureRecognizers(superview);
-                gestureRecognizers.addAll(superGestureRecognizers);
-            }
-            return gestureRecognizers;
-        }
-    }
-
-    @Nullable static ArrayList<UIGestureRecognizer> mCurrentLoopGestureRecognizers = null;
-
-    static void resetCurrentLoopGestureRecognizersState() {
-        if (mCurrentLoopGestureRecognizers == null) {
-            return;
-        }
-        for (int i = 0; i < mCurrentLoopGestureRecognizers.size(); i++) {
-            mCurrentLoopGestureRecognizers.get(i).mState = UIGestureRecognizerState.Possible;
-        }
-    }
-
-    static void markOtherGestureRecognizersFailed(@Nullable UIGestureRecognizer excepts) {
-        if (mCurrentLoopGestureRecognizers == null) {
-            return;
-        }
-        for (int i = 0; i < mCurrentLoopGestureRecognizers.size(); i++) {
-            if (excepts != null && mCurrentLoopGestureRecognizers.get(i) == excepts) {
-                continue;
-            }
-            mCurrentLoopGestureRecognizers.get(i).mState = UIGestureRecognizerState.Failed;
-        }
-    }
-
-    static void onTouchesBegan(@NonNull ArrayList<UIGestureRecognizer> gestureRecognizers, @NonNull UITouch[] touches, @NonNull UIEvent event) {
-        if (mCurrentLoopGestureRecognizers == null) {
-            mCurrentLoopGestureRecognizers = gestureRecognizers;
-            for (int i = 0; i < gestureRecognizers.size(); i++) {
-                gestureRecognizers.get(i).mState = UIGestureRecognizerState.Possible;
-            }
-        }
-        else if (gestureRecognizersByTrimmingInvalid(mCurrentLoopGestureRecognizers).size() == 0) {
-            resetCurrentLoopGestureRecognizersState();
-            mCurrentLoopGestureRecognizers = null;
-            onTouchesBegan(gestureRecognizers, touches, event);
-            return;
-        }
-        if (mCurrentLoopGestureRecognizers == null) {
-            return;
-        }
-        ArrayList<UIGestureRecognizer> gestureRecognizersTrimmingInvalid = gestureRecognizersByTrimmingInvalid(mCurrentLoopGestureRecognizers);
-        for (int i = 0; i < gestureRecognizersTrimmingInvalid.size(); i++) {
-            if (gestureRecognizersTrimmingInvalid.get(i).mState == UIGestureRecognizerState.Ended) {
-                resetCurrentLoopGestureRecognizersState();
-                mCurrentLoopGestureRecognizers = null;
-                onTouchesBegan(gestureRecognizers, touches, event);
-                return;
-            }
-        }
-        for (int i = 0; i < gestureRecognizersTrimmingInvalid.size(); i++) {
-            gestureRecognizersTrimmingInvalid.get(i).touchesBegan(touches, event);
-            if (gestureRecognizersTrimmingInvalid.get(i).mState == UIGestureRecognizerState.Began || gestureRecognizersTrimmingInvalid.get(i).mState == UIGestureRecognizerState.Changed || gestureRecognizersTrimmingInvalid.get(i).mState == UIGestureRecognizerState.Ended) {
-                break;
-            }
-        }
-    }
-
-    static void onTouchesMove(@NonNull ArrayList<UIGestureRecognizer> gestureRecognizers, @NonNull UITouch[] touches, @NonNull UIEvent event) {
-        if (mCurrentLoopGestureRecognizers == null) {
-            return;
-        }
-        ArrayList<UIGestureRecognizer> gestureRecognizersTrimmingInvalid = gestureRecognizersByTrimmingInvalid(mCurrentLoopGestureRecognizers);
-        for (int i = 0; i < gestureRecognizersTrimmingInvalid.size(); i++) {
-            gestureRecognizersTrimmingInvalid.get(i).touchesMoved(touches, event);
-            if (gestureRecognizersTrimmingInvalid.get(i).mState == UIGestureRecognizerState.Began || gestureRecognizersTrimmingInvalid.get(i).mState == UIGestureRecognizerState.Changed || gestureRecognizersTrimmingInvalid.get(i).mState == UIGestureRecognizerState.Ended) {
-                break;
-            }
-        }
-    }
-
-    static void onTouchesEnded(@NonNull ArrayList<UIGestureRecognizer> gestureRecognizers, @NonNull UITouch[] touches, @NonNull UIEvent event) {
-        if (mCurrentLoopGestureRecognizers == null) {
-            return;
-        }
-        ArrayList<UIGestureRecognizer> gestureRecognizersTrimmingInvalid = gestureRecognizersByTrimmingInvalid(mCurrentLoopGestureRecognizers);
-        for (int i = 0; i < gestureRecognizersTrimmingInvalid.size(); i++) {
-            gestureRecognizersTrimmingInvalid.get(i).touchesEnded(touches, event);
-            if (gestureRecognizersTrimmingInvalid.get(i).mState == UIGestureRecognizerState.Began || gestureRecognizersTrimmingInvalid.get(i).mState == UIGestureRecognizerState.Changed || gestureRecognizersTrimmingInvalid.get(i).mState == UIGestureRecognizerState.Ended) {
-                break;
-            }
-        }
-    }
-
-    static void onTouchesCancelled(@NonNull ArrayList<UIGestureRecognizer> gestureRecognizers, @NonNull UITouch[] touches, @NonNull UIEvent event) {
-        if (mCurrentLoopGestureRecognizers == null) {
-            return;
-        }
-        ArrayList<UIGestureRecognizer> gestureRecognizersTrimmingInvalid = gestureRecognizersByTrimmingInvalid(mCurrentLoopGestureRecognizers);
-        for (int i = 0; i < gestureRecognizersTrimmingInvalid.size(); i++) {
-            gestureRecognizersTrimmingInvalid.get(i).touchesCancelled(touches, event);
-        }
-    }
-
-    @NonNull
-    static ArrayList<UIGestureRecognizer> gestureRecognizersByTrimmingInvalid(@NonNull ArrayList<UIGestureRecognizer> gestureRecognizers) {
-        ArrayList<UIGestureRecognizer> filtered = new ArrayList<>();
-        for (int i = 0; i < gestureRecognizers.size(); i++) {
-            if(gestureRecognizers.get(i).mState == UIGestureRecognizerState.Began || gestureRecognizers.get(i).mState == UIGestureRecognizerState.Changed || gestureRecognizers.get(i).mState == UIGestureRecognizerState.Ended) {
-                filtered.add(gestureRecognizers.get(i));
-                break;
-            }
-            else if (gestureRecognizers.get(i).mState != UIGestureRecognizerState.Failed) {
-                filtered.add(gestureRecognizers.get(i));
-            }
-        }
-        return filtered;
-    }
-
     /* Props */
 
     void didAddToView(@NonNull UIView view) {
@@ -288,8 +163,12 @@ public class UIGestureRecognizer {
 
     /* Delegates */
 
-    @NonNull private UIGestureRecognizer[] mGestureRecognizersRequiresFailed = new UIGestureRecognizer[0];
-    @Nullable private Timer mGestureRecognizerReuqiresFailedTimer;
+    int gesturePriority() {
+        return 0;
+    }
+
+    @NonNull protected UIGestureRecognizer[] mGestureRecognizersRequiresFailed = new UIGestureRecognizer[0];
+    @Nullable protected Timer mGestureRecognizerRequiresFailedTimer;
 
     public void requireGestureRecognizerToFail(@NonNull UIGestureRecognizer otherGestureRecognizer) {
         UIGestureRecognizer[] gestureRecognizersRequiresFailed = new UIGestureRecognizer[mGestureRecognizersRequiresFailed.length + 1];
@@ -303,12 +182,12 @@ public class UIGestureRecognizer {
     protected void waitOtherGesture(final Runnable runnable) {
         final Handler handler = new Handler();
         if (mGestureRecognizersRequiresFailed.length > 0) {
-            if (mGestureRecognizerReuqiresFailedTimer == null) {
-                mGestureRecognizerReuqiresFailedTimer = new Timer();
-                mGestureRecognizerReuqiresFailedTimer.schedule(new TimerTask() {
+            if (mGestureRecognizerRequiresFailedTimer == null) {
+                mGestureRecognizerRequiresFailedTimer = new Timer();
+                mGestureRecognizerRequiresFailedTimer.schedule(new TimerTask() {
                     @Override
                     public void run() {
-                        mGestureRecognizerReuqiresFailedTimer = null;
+                        mGestureRecognizerRequiresFailedTimer = null;
                         if (mState == UIGestureRecognizerState.Failed) {
                             return;
                         }
