@@ -376,25 +376,25 @@ public class UIView extends UIResponder {
                 hitTestView = hitTest(touchPoint, event);
                 sendEvent(event, hitTestView);
                 break;
-            case MotionEvent.ACTION_MOVE:
-                if (hitTestView != null) {
-                    CGPoint convertedPoint = convertPoint(touchPoint, hitTestView);
-                    prepareTouch(convertedPoint, hitTestView, event);
-                    sendEvent(event, hitTestView);
-                }
-                break;
             case MotionEvent.ACTION_UP:
                 if (hitTestView != null) {
                     CGPoint convertedPoint = convertPoint(touchPoint, hitTestView);
                     prepareTouch(convertedPoint, hitTestView, event);
                     sendEvent(event, hitTestView);
                 }
-                break;
-            case MotionEvent.ACTION_POINTER_DOWN:
+                hitTestView = null;
                 break;
             case MotionEvent.ACTION_POINTER_UP:
+            case MotionEvent.ACTION_MOVE:
+            case MotionEvent.ACTION_POINTER_DOWN:
+                if (hitTestView != null) {
+                    CGPoint convertedPoint = convertPoint(touchPoint, hitTestView);
+                    prepareTouch(convertedPoint, hitTestView, event);
+                    sendEvent(event, hitTestView);
+                }
                 break;
             default:
+
                 break;
         }
 
@@ -494,6 +494,92 @@ public class UIView extends UIResponder {
         }
     }
 
+    public boolean pointInside(@NonNull CGPoint point) {
+        double h = getFrame().size.getHeight();
+        double w = getFrame().size.getWidth();
+
+        double touchX = point.getX();
+        double touchY = point.getY();
+
+        if (touchY <= h && touchX <= w && touchY >= 0 && touchX >= 0) {
+            return true;
+        }
+
+        return false;
+    }
+
+    @NonNull
+    public CGPoint convertPoint(@NonNull CGPoint point, @NonNull UIView toView) {
+        if (this == toView) {
+            return point;
+        }
+
+        CGPoint convertPoint = point;
+        UIView toViewSuperView = toView;
+        UIView superView = this;
+
+        // toView is a subview in 'this'
+        do {
+            convertPoint = convertPointToSubView(point, toViewSuperView);
+            toViewSuperView = toViewSuperView.getSuperview();
+        }while (toViewSuperView != this && toViewSuperView != null);
+
+        // 'this' is a subview in toView
+        if (toViewSuperView == null) {
+            do {
+                convertPoint = convertPointToSubView(point, superView);
+                superView = superView.getSuperview();
+            }while (superView != toViewSuperView && superView != null);
+        }
+
+        if (superView == null) {
+            toViewSuperView = toView;
+            superView = this;
+            // 'this' and toView not in a same tree
+            do {
+                UIView innerToViewSuperView = toViewSuperView.getSuperview();
+                UIView innerSuperView = superView.getSuperview();
+                if (innerToViewSuperView == superView) {
+                    break;
+                }
+
+                convertPoint = convertPointToSuperView(convertPoint, superView);
+
+                if (innerToViewSuperView != null) {
+                    toViewSuperView = innerToViewSuperView;
+                }
+
+                if (innerSuperView != null) {
+                    superView = innerSuperView;
+                }
+
+            }while (toViewSuperView != superView);
+
+            if (toViewSuperView != null && superView != null) {
+
+                double toX = toView.frame.origin.getX();
+                double toY = toView.frame.origin.getY();
+
+                return new CGPoint(convertPoint.getX() - toX, convertPoint.getY() - toY);
+            }
+        }
+        return convertPoint;
+    }
+
+    @NonNull
+    private CGPoint convertPointToSuperView(@NonNull CGPoint point, @NonNull UIView superView) {
+        double x = superView.frame.origin.getX();
+        double y = superView.frame.origin.getY();
+        return new CGPoint(point.getX() + x, point.getY() + y);
+    }
+
+    @NonNull
+    private CGPoint convertPointToSubView(@NonNull CGPoint point, @NonNull UIView subView) {
+        double x = subView.frame.origin.getX();
+        double y = subView.frame.origin.getY();
+        return new CGPoint(point.getX() - x, point.getY() - y);
+    }
+
     @Override
     public void touchesBegan(@NonNull Set<UITouch> touches, @NonNull UIEvent event) {
         super.touchesBegan(touches, event);
@@ -531,97 +617,6 @@ public class UIView extends UIResponder {
                 UIGestureRecognizer.onTouchesEnded(UIGestureRecognizer.getGestureRecognizers(this), arr, event);
             }
         }
-    }
-
-    public boolean pointInside(@NonNull CGPoint point) {
-        double h = getFrame().size.getHeight();
-        double w = getFrame().size.getWidth();
-
-        double touchX = point.getX();
-        double touchY = point.getY();
-
-        if (touchY <= h && touchX <= w && touchY >= 0 && touchX >= 0) {
-            return true;
-        }
-
-        return false;
-    }
-
-    @NonNull
-    public CGPoint convertPoint(@NonNull CGPoint point, @NonNull UIView toView) {
-        if (this == toView) {
-            return point;
-        }
-
-        CGPoint convertPoint = point;
-        List<UIView> listSubViews = Arrays.asList(this.getSubviews());
-        List<UIView> listToViewViews = Arrays.asList(toView.getSubviews());
-        UIView toViewSuperView = toView;
-        UIView superView = this;
-
-        if (listSubViews.contains(toView)) {
-            // toView is a subview in 'this'
-            do {
-                convertPoint = convertPointToSubView(point, toViewSuperView);
-                toViewSuperView = toViewSuperView.getSuperview();
-            }while (toViewSuperView != this && toViewSuperView != null);
-
-            return convertPoint;
-        }
-        else if (listToViewViews.contains(this)){
-            // 'this' is a subview in toView
-            do {
-                convertPoint = convertPointToSuperView(convertPoint, superView);
-                superView = superView.getSuperview();
-            }while (superView != this && superView != null);
-
-            return convertPoint;
-        }
-        else {
-            // 'this' and toView not in a same tree
-            do {
-                UIView innerToViewSuperView = toViewSuperView.getSuperview();
-                UIView innerSuperView = superView.getSuperview();
-                if (innerToViewSuperView == superView) {
-                    break;
-                }
-
-                convertPoint = convertPointToSuperView(convertPoint, superView);
-
-                if (innerToViewSuperView != null) {
-                    toViewSuperView = innerToViewSuperView;
-                }
-
-                if (innerSuperView != null) {
-                    superView = innerSuperView;
-                }
-
-            }while (toViewSuperView != superView);
-
-            if (toViewSuperView != null && superView != null) {
-
-                double toX = toView.frame.origin.getX();
-                double toY = toView.frame.origin.getY();
-
-                return new CGPoint(convertPoint.getX() - toX, convertPoint.getY() - toY);
-            }
-        }
-
-        return new CGPoint(0, 0);
-    }
-
-    @NonNull
-    private CGPoint convertPointToSuperView(@NonNull CGPoint point, @NonNull UIView superView) {
-        double x = superView.frame.origin.getX();
-        double y = superView.frame.origin.getY();
-        return new CGPoint(point.getX() + x, point.getY() + y);
-    }
-
-    @NonNull
-    private CGPoint convertPointToSubView(@NonNull CGPoint point, @NonNull UIView subView) {
-        double x = subView.frame.origin.getX();
-        double y = subView.frame.origin.getY();
-        return new CGPoint(point.getX() - x, point.getY() - y);
     }
 
     /* UIView animation */
