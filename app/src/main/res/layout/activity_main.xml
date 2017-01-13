@@ -20,17 +20,17 @@
 
     <!--</com.yy.codex.uikit.sample.TestLayout>-->
 
-    <com.yy.codex.uikit.UIView
-        android:id="@+id/testUIView"
-        android:layout_height="match_parent"
-        android:layout_width="match_parent"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="10dp"
-        android:background="@color/colorAccent">
+    <!--<com.yy.codex.uikit.UIView-->
+        <!--android:id="@+id/testUIView"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_marginTop="10dp"-->
+        <!--android:layout_marginLeft="10dp"-->
+        <!--android:background="@color/colorAccent">-->
 
 
 
-    </com.yy.codex.uikit.UIView>
+    <!--</com.yy.codex.uikit.UIView>-->
     <!--<Button-->
         <!--android:layout_width="100dp"-->
         <!--android:layout_height="100dp"-->

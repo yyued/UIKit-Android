@@ -1,6 +1,10 @@
 package com.yy.codex.uikit;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by cuiminghui on 2017/1/11.
@@ -24,18 +28,7 @@ public class UITapGestureRecognizer extends UIGestureRecognizer {
     @Override
     public void touchesBegan(@NonNull UITouch[] touches, @NonNull UIEvent event) {
         super.touchesBegan(touches, event);
-        int acceptedTouches = 0;
-        for (int i = 0; i < touches.length; i++) {
-            if (touches[i].getTapCount() == numberOfTapsRequired) {
-                acceptedTouches++;
-            }
-        }
-        if (acceptedTouches >= numberOfTouchesRequired) {
-            startTouches = touches;
-        }
-        else {
-            mState = UIGestureRecognizerState.Failed;
-        }
+        startTouches = touches;
     }
 
     @Override
@@ -46,13 +39,54 @@ public class UITapGestureRecognizer extends UIGestureRecognizer {
         }
     }
 
+    private Timer multiTapTimer;
+
     @Override
     public void touchesEnded(@NonNull UITouch[] touches, @NonNull UIEvent event) {
         super.touchesEnded(touches, event);
-        if (!moveOutOfBounds(touches)) {
-            mState = UIGestureRecognizerState.Ended;
-            markOtherGestureRecognizersFailed(this);
-            sendActions();
+        if (mState == UIGestureRecognizerState.Failed) {
+            return;
+        }
+        int acceptedTouches = 0;
+        for (int i = 0; i < touches.length; i++) {
+            if (touches[i].getTapCount() == numberOfTapsRequired) {
+                acceptedTouches++;
+            }
+        }
+        if (acceptedTouches >= numberOfTouchesRequired) {
+            if (multiTapTimer != null) {
+                multiTapTimer.cancel();
+            }
+            if (mGestureRecognizersRequiresFailed.length > 0) {
+                waitOtherGesture(new Runnable() {
+                    @Override
+                    public void run() {
+                        mState = UIGestureRecognizerState.Ended;
+                        sendActions();
+                    }
+                });
+            }
+            else {
+                mState = UIGestureRecognizerState.Ended;
+                sendActions();
+            }
+        }
+        else {
+            if (numberOfTapsRequired > 1) {
+                if (multiTapTimer != null) {
+                    multiTapTimer.cancel();
+                }
+                multiTapTimer = new Timer();
+                multiTapTimer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        mState = UIGestureRecognizerState.Failed;
+                    }
+                }, 300);
+            }
+            else {
+                mState = UIGestureRecognizerState.Failed;
+            }
         }
     }
 
@@ -77,6 +111,11 @@ public class UITapGestureRecognizer extends UIGestureRecognizer {
             }
         }
         return accepted < startTouches.length;
+    }
+
+    @Override
+    int gesturePriority() {
+        return numberOfTapsRequired;
     }
 
 }

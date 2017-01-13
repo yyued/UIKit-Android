@@ -12,7 +12,7 @@ public class UITouch {
 
     private long mTimestamp = 0;
     private int mTapCount = 1;
-    private boolean mTapCountSetted = false;
+    private boolean mTapCountAdded = false;
     @NonNull private UIView mRelativeView;
     @NonNull private CGPoint mRelativePoint;
     @NonNull private CGPoint mAbsolutePoint;
@@ -22,21 +22,21 @@ public class UITouch {
         mRelativePoint = relativePoint;
         mAbsolutePoint = absolutePoint;
         mTimestamp = System.currentTimeMillis();
+        resetTapCount();
     }
 
     @NonNull
     static ArrayList<UITouch> tapCountStore = new ArrayList<>();
 
-    public void resetTapCount() {
-        if (mTapCountSetted) {
+    public void addTapCount() {
+        if (mTapCountAdded) {
             return;
         }
-        mTapCountSetted = true;
+        mTapCountAdded = true;
         ArrayList<UITouch> newTapCountStore = new ArrayList<>();
         boolean found = false;
         for (int i = 0; i < tapCountStore.size(); i++) {
-            if (tapCountStore.get(i).mRelativeView == this.mRelativeView &&
-                tapCountStore.get(i).mRelativePoint.inRange(22.0, 22.0, this.mRelativePoint) &&
+            if (tapCountStore.get(i).mAbsolutePoint.inRange(22.0, 22.0, this.mAbsolutePoint) &&
                 tapCountStore.get(i).mTimestamp > System.currentTimeMillis() - 300) {
                 mTapCount = tapCountStore.get(i).mTapCount + 1;
                 newTapCountStore.add(this);
@@ -45,9 +45,19 @@ public class UITouch {
             }
         }
         if (!found) {
+            mTapCount = 1;
             newTapCountStore.add(this);
         }
         tapCountStore = newTapCountStore;
+    }
+
+    protected void resetTapCount() {
+        for (int i = 0; i < tapCountStore.size(); i++) {
+            if (tapCountStore.get(i).mAbsolutePoint.inRange(22.0, 22.0, this.mAbsolutePoint)) {
+                mTapCount = tapCountStore.get(i).mTapCount;
+                break;
+            }
+        }
     }
 
     @NonNull
