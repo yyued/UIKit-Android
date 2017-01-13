@@ -42,51 +42,21 @@ public class MyMainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        view = new UIView(this);
         setContentView(R.layout.activity_main);
-        view = (UIView)findViewById(R.id.testUIView);
 
-        testView = new MyTestView(this);
-        testView.setBackgroundColor(Color.BLUE);
-        testView.setFrame(new CGRect(48, 238, 279, 247));
-//
-        testView2 = new MyTestView2(this);
-        testView2.setBackgroundColor(Color.YELLOW);
-        testView2.setFrame(new CGRect(76, 84, 240, 128));
 
-        UIView testView3 = new MyTestView2(this);
-        testView3.setBackgroundColor(Color.BLACK);
-        testView3.setFrame(new CGRect(50, 50, 50, 50));
-//
-        view.addSubview(testView);
-        view.addSubview(testView2);
-        testView2.addSubview(testView3);
-
-        CGPoint testPoint = testView.convertPoint(new CGPoint(10, 10), view);
-        NSLog.log(testPoint);
-
-//        scrollView = (UIScrollView)findViewById(R.id.testScrollView);
+        scrollView = (UIScrollView)findViewById(R.id.testScrollView);
 //        button = (Button)findViewById(R.id.testButton);
 //        moveButton = (Button)findViewById(R.id.testMoveButton);
 //
 //        mScroller=new Scroller(this);
 //
-//        testLayout = (TestLayout)findViewById(R.id.testMyLayout);
-//
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-            }
-        });
-//
-        view.addGestureRecognizer(new UITapGestureRecognizer(this, "ttt:"));
-        view.setUserInteractionEnabled(true);
+
     }
 
     public void ttt(UIGestureRecognizer gestureRecognizer) {
-        CGPoint testPoint = testView2.convertPoint(new CGPoint(20, 20), testView);
-        NSLog.log(testPoint);
+
     }
 }
 

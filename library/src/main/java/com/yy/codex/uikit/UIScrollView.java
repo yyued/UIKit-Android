@@ -48,38 +48,14 @@ public class UIScrollView extends UIView {
     }
 
     private void initScrollView() {
-        overScroller = new OverScroller(getContext());
+        UIPanGestureRecognizer pan = new UIPanGestureRecognizer(this, "pan:");
+        this.addGestureRecognizer(pan);
     }
 
-    @Override
-    public void computeScroll() {
-        super.computeScroll();
-        if (overScroller.computeScrollOffset()) {
-            scrollBy(overScroller.getCurrX(), overScroller.getCurrY());
-            postInvalidate();
-        }
+    public void pan(UIPanGestureRecognizer panGestureRecognizer) {
+        CGPoint point = panGestureRecognizer.location(panGestureRecognizer.getView());
+        NSLog.log(point);
     }
 
-    public void scroll() {
-        overScroller.startScroll(0, 0, 0, -20);
-        invalidate();
-    }
 
-    @Override
-    public boolean onTouchEvent(@NonNull MotionEvent event) {
-        Log.i(null, ""+event.getAction());
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                y = event.getY();
-                break;
-            case MotionEvent.ACTION_MOVE:
-                float deltaY = (float) ((event.getY() - y) * 0.05);
-                System.out.print((event.getY() - y));
-                scrollBy(0, (int)deltaY);
-                break;
-            default:
-                break;
-        }
-        return true;
-    }
 }
