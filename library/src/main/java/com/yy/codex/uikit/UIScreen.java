@@ -20,7 +20,8 @@ public class UIScreen {
 
     public double scale() {
         if (mContext != null) {
-            return mContext.getResources().getDisplayMetrics().scaledDensity;
+            double scale = mContext.getResources().getDisplayMetrics().scaledDensity;
+            return scale != 0.0 ? scale : 1.0;
         }
         else {
             return 1.0;

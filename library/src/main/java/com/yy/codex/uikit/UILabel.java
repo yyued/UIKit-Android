@@ -209,8 +209,7 @@ public class UILabel extends UIView {
     @Override
     public void setMaxWidth(double maxWidth) {
         super.setMaxWidth(maxWidth);
-        float scaledDensity = getContext().getResources().getDisplayMetrics().scaledDensity;
-        textView.setMaxWidth((int) (maxWidth * scaledDensity));
+        textView.setMaxWidth((int) (maxWidth * UIScreen.mainScreen.scale()));
     }
 
     @Override @NonNull
@@ -218,14 +217,12 @@ public class UILabel extends UIView {
         textView.measure(0, 0);
         int width = textView.getMeasuredWidth();
         int height = textView.getMeasuredHeight();
-        float scaledDensity = getContext().getResources().getDisplayMetrics().scaledDensity;
-        return new CGSize(width / scaledDensity, height / scaledDensity);
+        return new CGSize(width / UIScreen.mainScreen.scale(), height / UIScreen.mainScreen.scale());
     }
 
     private void resetTextView() {
         removeView(textView);
-        float scaledDensity = getContext().getResources().getDisplayMetrics().scaledDensity;
-        addView(textView, new LayoutParams((int)(this.getFrame().size.getWidth() * scaledDensity), (int)(this.getFrame().size.getHeight() * scaledDensity)));
+        addView(textView, new LayoutParams((int)(this.getFrame().size.getWidth() * UIScreen.mainScreen.scale()), (int)(this.getFrame().size.getHeight() * UIScreen.mainScreen.scale())));
     }
 
 }
