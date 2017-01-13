@@ -45,7 +45,6 @@ public class UIPanGestureRecognizer extends UIGestureRecognizer {
         if (mState == UIGestureRecognizerState.Possible && moveOutOfBounds(touches)) {
             setTranslation(new CGPoint(-translation().getX(), -translation().getY()));
             mState = UIGestureRecognizerState.Began;
-//            markOtherGestureRecognizersFailed(this);
             sendActions();
         }
         else if (mState == UIGestureRecognizerState.Began || mState == UIGestureRecognizerState.Changed) {

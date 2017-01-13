@@ -63,6 +63,7 @@ public class UIView extends UIResponder {
     }
 
     private void setupProps(){
+        UIScreen.mainScreen.setContext(getContext());
         this.layer.bindView(this);
         setWillNotDraw(false);
     }

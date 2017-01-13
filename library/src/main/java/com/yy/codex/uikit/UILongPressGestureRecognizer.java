@@ -41,7 +41,6 @@ public class UILongPressGestureRecognizer extends UIGestureRecognizer {
                     public void run() {
                         if (mState != UIGestureRecognizerState.Failed) {
                             mState = UIGestureRecognizerState.Began;
-//                            markOtherGestureRecognizersFailed(self);
                             sendActions();
                         }
                     }
