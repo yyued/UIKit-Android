@@ -8,6 +8,14 @@ import java.util.ArrayList;
  * Created by cuiminghui on 2017/1/11.
  */
 
+enum UITouchPhase {
+    UITouchPhaseBegan,             // whenever a finger touches the surface.
+    UITouchPhaseMoved,             // whenever a finger moves on the surface.
+    UITouchPhaseStationary,        // whenever a finger is touching the surface but hasn't moved since the previous event.
+    UITouchPhaseEnded,             // whenever a finger leaves the surface.
+    UITouchPhaseCancelled,         // whenever a touch doesn't end but we need to stop tracking (e.g. putting device to face)
+}
+
 public class UITouch {
 
     private long mTimestamp = 0;
@@ -17,11 +25,14 @@ public class UITouch {
     @NonNull private CGPoint mRelativePoint;
     @NonNull private CGPoint mAbsolutePoint;
 
-    public UITouch(@NonNull UIView relativeView, @NonNull CGPoint relativePoint, @NonNull CGPoint absolutePoint) {
+    private UITouchPhase mPhase;
+
+    public UITouch(@NonNull UIView relativeView, @NonNull CGPoint relativePoint, @NonNull CGPoint absolutePoint, UITouchPhase phase) {
         mRelativeView = relativeView;
         mRelativePoint = relativePoint;
         mAbsolutePoint = absolutePoint;
         mTimestamp = System.currentTimeMillis();
+        mPhase = phase;
         resetTapCount();
     }
 
@@ -100,6 +111,6 @@ public class UITouch {
     @NonNull
     @Override
     public String toString() {
-        return "UITouch { RelativeView=" + this.mRelativeView + " x=" + this.mRelativePoint.getX() + " y=" + this.mRelativePoint.getY();
+        return "UITouch { RelativeView=" + this.mRelativeView + " x=" + this.mRelativePoint.getX() + " y=" + this.mRelativePoint.getY() + " Phase=" + this.mPhase;
     }
 }

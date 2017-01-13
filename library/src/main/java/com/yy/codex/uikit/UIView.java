@@ -360,7 +360,8 @@ public class UIView extends UIResponder {
 
     @Override
     public boolean onTouchEvent(@NonNull MotionEvent event) {
-        CGPoint touchPoint = new CGPoint(event.getX() / UIScreen.mainScreen.scale(), event.getY() / UIScreen.mainScreen.scale());
+        mTouchCount = event.getPointerCount();
+        CGPoint touchPoint = new CGPoint(event.getX(mTouchCount - 1) / UIScreen.mainScreen.scale(), event.getY(mTouchCount - 1) / UIScreen.mainScreen.scale());
 
         final int action = event.getAction();
         switch (action & MotionEvent.ACTION_MASK) {
@@ -380,8 +381,12 @@ public class UIView extends UIResponder {
             case MotionEvent.ACTION_MOVE:
             case MotionEvent.ACTION_POINTER_DOWN:
                 if (hitTestView != null) {
-                    CGPoint convertedPoint = convertPoint(touchPoint, hitTestView);
-                    prepareTouch(convertedPoint, hitTestView, event);
+                    for (int i = 0; i < event.getPointerCount(); i++) {
+                        double x = event.getX(i);
+                        double y = event.getY(i);
+                        CGPoint convertedPoint = convertPoint(new CGPoint(x, y), hitTestView);
+                        prepareTouch(convertedPoint, hitTestView, event);
+                    }
                     sendEvent(event, hitTestView);
                 }
                 break;
@@ -425,36 +430,38 @@ public class UIView extends UIResponder {
 
     private void prepareTouch(@NonNull CGPoint touchPoint, @NonNull UIView hitTestView, @NonNull MotionEvent event) {
         final int action = event.getAction();
+
+        CGPoint absolutePoint = new CGPoint(event.getRawX() / UIScreen.mainScreen.scale(), event.getRawY() / UIScreen.mainScreen.scale());
+
         switch (action & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_DOWN: {
                 touches.clear();
-                UITouch touch = new UITouch(hitTestView, touchPoint, new CGPoint(event.getRawX() / UIScreen.mainScreen.scale(), event.getRawY() / UIScreen.mainScreen.scale()));
+                UITouch touch = new UITouch(hitTestView, touchPoint, absolutePoint, UITouchPhase.UITouchPhaseBegan);
                 touches.add(touch);
             }
                 break;
             case MotionEvent.ACTION_MOVE: {
                 touches.clear();
-                mTouchCount = event.getPointerCount();
-                for (int i = 0; i < event.getPointerCount(); i++) {
-                    double x = event.getX(i);
-                    double y = event.getY(i);
-                    UITouch touch = new UITouch(hitTestView, touchPoint, new CGPoint(event.getRawX() / UIScreen.mainScreen.scale(), event.getRawY() / UIScreen.mainScreen.scale()));
-                    touches.add(touch);
-                }
+                UITouch touch = new UITouch(hitTestView, touchPoint, absolutePoint, UITouchPhase.UITouchPhaseMoved);
+                touches.add(touch);
+
             }
                 break;
             case MotionEvent.ACTION_UP:{
                 touches.clear();
-                UITouch touch = new UITouch(hitTestView, touchPoint, new CGPoint(event.getRawX() / UIScreen.mainScreen.scale(), event.getRawY() / UIScreen.mainScreen.scale()));
+                UITouch touch = new UITouch(hitTestView, touchPoint, absolutePoint, UITouchPhase.UITouchPhaseEnded);
                 touches.add(touch);
             }
                 break;
             case MotionEvent.ACTION_POINTER_DOWN: {
-                UITouch touch = new UITouch(hitTestView, touchPoint, new CGPoint(event.getRawX() / UIScreen.mainScreen.scale(), event.getRawY() / UIScreen.mainScreen.scale()));
+                UITouch touch = new UITouch(hitTestView, touchPoint, absolutePoint, UITouchPhase.UITouchPhaseBegan);
                 touches.add(touch);
             }
                 break;
             case MotionEvent.ACTION_POINTER_UP: {
+                touches.clear();
+                UITouch touch = new UITouch(hitTestView, touchPoint, absolutePoint, UITouchPhase.UITouchPhaseEnded);
+                touches.add(touch);
             }
                 break;
             default:
