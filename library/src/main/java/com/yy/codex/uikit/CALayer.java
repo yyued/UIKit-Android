@@ -53,7 +53,7 @@ public class CALayer {
 
     /* scaledDensityProp */
 
-    public static float scaledDensity = 2;
+    public static float scaledDensity = 0;
 
     /* imageGravity const */
 
@@ -198,7 +198,7 @@ public class CALayer {
         }
     }
 
-    private void drawInCanvas(@NonNull Canvas canvas){
+    protected void drawInCanvas(@NonNull Canvas canvas){
         // normalize layer's prop
         CGPoint calculatedOrigin = calcOrigin(this);
         CGRect frame = this.frame;

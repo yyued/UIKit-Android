@@ -4,6 +4,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.support.annotation.NonNull;
+import android.graphics.Rect;
 
 /**
  * Created by adi on 17/1/10.
@@ -14,16 +15,19 @@ public class CATextLayer extends CALayer {
     private String string;
     private float fontSize = 14;
     private int fontColor = Color.BLACK;
+    private int alignMode = ALIGN_LEFT;
+    private Paint.Align _alignMode = Paint.Align.LEFT;
+    private int truncateMode; // not support
+    private Boolean wrapped; // not support
 
-    private int alignMode = CATextLayerAlignmentLeft;
-    private int truncateMode; //@Td
-    private Boolean wrapped; //@Td
+    /* Const alignMode */
 
-    /* const alignMode */
-    public static final int CATextLayerAlignmentLeft = 0x01;
-    public static final int CATextLayerAlignmentRight = 0x02;
-    public static final int CATextLayerAlignmentCenter = 0x03;
-    public static final int CATextLayerAlignmentJustify = 0x04; // not support
+    public static final int ALIGN_LEFT = 0x01;
+    public static final int ALIGN_RIGHT = 0x02;
+    public static final int ALIGN_CENTER = 0x03;
+    public static final int ALIGN_JUSTIFY = 0x04; // not support
+
+    /* category CATextLayer Constructor */
 
     public CATextLayer(@NonNull CGRect frame) {
         super(frame);
@@ -32,20 +36,29 @@ public class CATextLayer extends CALayer {
     @Override
     protected void drawLayer(@NonNull Canvas canvas, CGRect rect, boolean inNewCanvas) {
         super.drawLayer(canvas, rect, inNewCanvas);
+    }
 
+    @Override
+    protected void drawInCanvas(Canvas canvas) {
+        super.drawInCanvas(canvas);
+        Rect rect = this.getFrame().toRect();
         Paint paint = new Paint();
         paint.setAntiAlias(true);
         paint.setColor(fontColor);
         paint.setTextSize(fontSize);
-        paint.setTextAlign(Paint.Align.CENTER);
-//        switch (alignMode){
-//            case CATextLayerAlignmentLeft: paint.setTextAlign(Paint.Align.RIGHT);break;
-//            case CATextLayerAlignmentRight: paint.setTextAlign(Paint.Align.LEFT);break;
-//            case CATextLayerAlignmentCenter: paint.setTextAlign(Paint.Align.CENTER);break;
-//        }
-        canvas.drawText(string, (float) getFrame().origin.getX(), (float) getFrame().origin.getY() + fontSize, paint);
-//        canvas.drawText("xxxJjox", 20, 20 + 14 * 2, paint);
+        paint.setTextAlign(_alignMode);
+        Paint.FontMetricsInt fontMetrics = paint.getFontMetricsInt();
+        int baseline = (rect.bottom + rect.top - fontMetrics.bottom - fontMetrics.top) / 2;
+        int drawX = rect.left;
+        switch (alignMode){
+            case ALIGN_CENTER: drawX = rect.centerX(); break;
+            case ALIGN_RIGHT: drawX = rect.right; break;
+            case ALIGN_LEFT: drawX = rect.left; break;
+        }
+        canvas.drawText(string, drawX, baseline, paint);
     }
+
+    /* category CATextLayer Getter&Setter */
 
     public String getString() {
         return string;
@@ -76,4 +89,22 @@ public class CATextLayer extends CALayer {
         this.fontColor = fontColor;
         return this;
     }
+
+    public int getAlignMode() {
+        return alignMode;
+    }
+
+    public CATextLayer setAlignMode(int alignMode) {
+        this.alignMode = alignMode;
+        switch (alignMode){
+            case ALIGN_LEFT: _alignMode = Paint.Align.LEFT; break;
+            case ALIGN_RIGHT: _alignMode = Paint.Align.RIGHT; break;
+            case ALIGN_CENTER: _alignMode = Paint.Align.CENTER; break;
+            default: _alignMode = Paint.Align.LEFT; break;
+        }
+        return this;
+    }
+
+
+
 }
