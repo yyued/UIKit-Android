@@ -2,6 +2,7 @@ package com.yy.codex.uikit;
 
 import android.support.annotation.NonNull;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -29,6 +30,9 @@ class UIGestureRecognizerLooper {
     UIGestureRecognizerLooper(UIView hitTestedView) {
         mHitTestedView = hitTestedView;
         mGestureRecognizers = getGestureRecognizers(hitTestedView);
+        for (int i = 0; i < mGestureRecognizers.size(); i++) {
+            mGestureRecognizers.get(i).mLooper = new WeakReference<>(this);
+        }
         Collections.sort(mGestureRecognizers, new Comparator<UIGestureRecognizer>() {
             @Override
             public int compare(UIGestureRecognizer gestureRecognizer, UIGestureRecognizer t1) {
@@ -92,7 +96,7 @@ class UIGestureRecognizerLooper {
         return true;
     }
 
-    private void markFailed() {
+    void markFailed() {
         boolean hasRecognized = false;
         for (int i = 0; i < mGestureRecognizers.size(); i++) {
             hasRecognized = mGestureRecognizers.get(i).mState == UIGestureRecognizerState.Began || mGestureRecognizers.get(i).mState == UIGestureRecognizerState.Changed || mGestureRecognizers.get(i).mState == UIGestureRecognizerState.Ended;

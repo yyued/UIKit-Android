@@ -16,6 +16,7 @@ import java.util.TimerTask;
 public class UIGestureRecognizer {
 
     @Nullable protected WeakReference<UIView> weakView;
+    @Nullable WeakReference<UIGestureRecognizerLooper> mLooper;
     private boolean mEnabled = true;
     @Nullable private NSInvocation[] mActions;
     @Nullable private Runnable mTriggerBlock;
