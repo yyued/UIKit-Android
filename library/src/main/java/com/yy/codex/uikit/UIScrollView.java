@@ -2,6 +2,7 @@ package com.yy.codex.uikit;
 
 import android.content.Context;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -21,27 +22,27 @@ public class UIScrollView extends UIView {
     OverScroller overScroller;
     float y;
 
-    public UIScrollView(Context context, View view) {
+    public UIScrollView(@NonNull Context context, @NonNull View view) {
         super(context, view);
     }
 
-    public UIScrollView(Context context) {
+    public UIScrollView(@NonNull Context context) {
         super(context);
         initScrollView();
     }
 
-    public UIScrollView(Context context, AttributeSet attrs) {
+    public UIScrollView(@NonNull Context context, @NonNull AttributeSet attrs) {
         super(context, attrs);
         initScrollView();
     }
 
-    public UIScrollView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public UIScrollView(@NonNull Context context, @NonNull AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initScrollView();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public UIScrollView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public UIScrollView(@NonNull Context context, @NonNull AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         initScrollView();
     }
@@ -65,7 +66,7 @@ public class UIScrollView extends UIView {
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
+    public boolean onTouchEvent(@NonNull MotionEvent event) {
         Log.i(null, ""+event.getAction());
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:

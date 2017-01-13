@@ -16,6 +16,7 @@ public class UIGestureRecognizer {
     private boolean mEnabled = true;
     @Nullable private NSInvocation[] mActions;
     @Nullable private Runnable mTriggerBlock;
+    @NonNull
     protected UIGestureRecognizerState mState = UIGestureRecognizerState.Possible;
 
     public UIGestureRecognizer(@NonNull Object target, @NonNull String selector) {
@@ -168,6 +169,7 @@ public class UIGestureRecognizer {
         }
     }
 
+    @NonNull
     static ArrayList<UIGestureRecognizer> gestureRecognizersByTrimmingInvalid(@NonNull ArrayList<UIGestureRecognizer> gestureRecognizers) {
         ArrayList<UIGestureRecognizer> filtered = new ArrayList<>();
         for (int i = 0; i < gestureRecognizers.size(); i++) {
@@ -197,6 +199,7 @@ public class UIGestureRecognizer {
         return null;
     }
 
+    @NonNull
     public UIGestureRecognizerState getState() {
         return mState;
     }
@@ -264,12 +267,12 @@ public class UIGestureRecognizer {
     }
 
     @NonNull
-    public CGPoint location(UIView inView) {
+    public CGPoint location(@NonNull UIView inView) {
         return location(inView, 0);
     }
 
     @NonNull
-    public CGPoint location(UIView inView, int touchIndex) {
+    public CGPoint location(@NonNull UIView inView, int touchIndex) {
         if (lastPoints != null && touchIndex < lastPoints.length) {
             return lastPoints[touchIndex].locationInView(inView);
         }

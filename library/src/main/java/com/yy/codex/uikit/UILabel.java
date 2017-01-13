@@ -108,13 +108,15 @@ public class UILabel extends UIView {
 
     /* Line-Break Mode */
 
+    @NonNull
     private NSLineBreakMode linebreakMode = NSLineBreakMode.ByWordWrapping;
 
+    @NonNull
     public NSLineBreakMode getLinebreakMode() {
         return linebreakMode;
     }
 
-    public void setLinebreakMode(NSLineBreakMode linebreakMode) {
+    public void setLinebreakMode(@NonNull NSLineBreakMode linebreakMode) {
         this.linebreakMode = linebreakMode;
         switch (linebreakMode) {
             case ByTruncatingHead:
@@ -148,6 +150,7 @@ public class UILabel extends UIView {
 
     private boolean needsUpdate = false;
 
+    @Nullable
     public String getText() {
         return getAttributedText() != null ? getAttributedText().toString() : null;
     }

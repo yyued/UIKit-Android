@@ -3,6 +3,7 @@ package com.yy.codex.uikit;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.support.annotation.NonNull;
 
 /**
  * Created by adi on 17/1/10.
@@ -24,12 +25,12 @@ public class CATextLayer extends CALayer {
     public static final int CATextLayerAlignmentCenter = 0x03;
     public static final int CATextLayerAlignmentJustify = 0x04; // not support
 
-    public CATextLayer(CGRect frame) {
+    public CATextLayer(@NonNull CGRect frame) {
         super(frame);
     }
 
     @Override
-    protected void drawLayer(Canvas canvas, CGRect rect, boolean inNewCanvas) {
+    protected void drawLayer(@NonNull Canvas canvas, CGRect rect, boolean inNewCanvas) {
         super.drawLayer(canvas, rect, inNewCanvas);
 
         Paint paint = new Paint();
@@ -58,16 +59,19 @@ public class CATextLayer extends CALayer {
         return fontColor;
     }
 
+    @NonNull
     public CATextLayer setString(String string) {
         this.string = string;
         return this;
     }
 
+    @NonNull
     public CATextLayer setFontSize(float fontSize) {
         this.fontSize = fontSize * scaledDensity;
         return this;
     }
 
+    @NonNull
     public CATextLayer setFontColor(int fontColor) {
         this.fontColor = fontColor;
         return this;

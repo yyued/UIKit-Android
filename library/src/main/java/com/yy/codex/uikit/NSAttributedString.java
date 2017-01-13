@@ -40,20 +40,35 @@ import java.util.HashMap;
 
 public class NSAttributedString extends SpannableStringBuilder {
 
+    @NonNull
     public static String NSFontAttributeName = "NSFontAttributeName"; // NSFont, default System 17
+    @NonNull
     public static String NSParagraphStyleAttributeName = "NSParagraphStyleAttributeName"; // NSParagraphStyle, default nil
+    @NonNull
     public static String NSForegroundColorAttributeName = "NSForegroundColorAttributeName"; // int, default Color.BLACK
+    @NonNull
     public static String NSBackgroundColorAttributeName = "NSBackgroundColorAttributeName"; // int, default Color.TRANSPARENT: no background
+    @NonNull
     public static String NSKernAttributeName = "NSKernAttributeName"; // double containing floating point value, in points; amount to modify default kerning. 0 means kerning is disabled.
+    @NonNull
     public static String NSStrikethroughStyleAttributeName = "NSStrikethroughStyleAttributeName"; // int containing integer, default 0: no strikethrough
+    @NonNull
     public static String NSUnderlineStyleAttributeName = "NSUnderlineStyleAttributeName"; // int containing integer, default 0: no underline
+    @NonNull
     public static String NSStrokeColorAttributeName = "NSStrokeColorAttributeName";// TODO: 2017/1/9 not implemented.
+    @NonNull
     public static String NSStrokeWidthAttributeName = "NSStrokeWidthAttributeName";// TODO: 2017/1/9 not implemented.
+    @NonNull
     public static String NSShadowAttributeName = "NSShadowAttributeName"; // NSShadow, default nil: no shadow
+    @NonNull
     public static String NSAttachmentAttributeName = "NSAttachmentAttributeName";// TODO: 2017/1/9 not implemented.
+    @NonNull
     public static String NSLinkAttributeName = "NSLinkAttributeName";// TODO: 2017/1/9 not implemented.
+    @NonNull
     public static String NSBaselineOffsetAttributeName = "NSBaselineOffsetAttributeName";// TODO: 2017/1/9 not implemented.
+    @NonNull
     public static String NSUnderlineColorAttributeName = "NSUnderlineColorAttributeName";// TODO: 2017/1/9 not implemented.
+    @NonNull
     public static String NSStrikethroughColorAttributeName = "NSStrikethroughColorAttributeName";// TODO: 2017/1/9 not implemented.
 
     public NSAttributedString(@NonNull String text) {
@@ -130,7 +145,7 @@ public class NSAttributedString extends SpannableStringBuilder {
             if ((float)attrs.get(NSKernAttributeName) != 0) {
                 setSpan(new CharacterStyle() {
                     @Override
-                    public void updateDrawState(TextPaint textPaint) {
+                    public void updateDrawState(@NonNull TextPaint textPaint) {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                             textPaint.setLetterSpacing((float)attrs.get(NSKernAttributeName));
                         }
@@ -152,7 +167,7 @@ public class NSAttributedString extends SpannableStringBuilder {
             final NSShadow shadow = (NSShadow) attrs.get(NSShadowAttributeName);
             setSpan(new CharacterStyle() {
                 @Override
-                public void updateDrawState(TextPaint textPaint) {
+                public void updateDrawState(@NonNull TextPaint textPaint) {
                     textPaint.setShadowLayer((float) shadow.shadowBlurRadius, (float) shadow.shadowOffset.getWidth(), (float) shadow.shadowOffset.getHeight(), shadow.shadowColor);
                 }
             }, range.location, range.location + range.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);

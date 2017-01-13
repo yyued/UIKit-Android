@@ -13,7 +13,7 @@ public class UITapGestureRecognizer extends UIGestureRecognizer {
     public int numberOfTapsRequired = 1;
     public int numberOfTouchesRequired = 1;
 
-    public UITapGestureRecognizer(Object target, String selector) {
+    public UITapGestureRecognizer(@NonNull Object target, @NonNull String selector) {
         super(target, selector);
     }
 
@@ -22,7 +22,7 @@ public class UITapGestureRecognizer extends UIGestureRecognizer {
     }
 
     @Override
-    public void touchesBegan(UITouch[] touches, UIEvent event) {
+    public void touchesBegan(@NonNull UITouch[] touches, @NonNull UIEvent event) {
         super.touchesBegan(touches, event);
         int acceptedTouches = 0;
         for (int i = 0; i < touches.length; i++) {
@@ -39,7 +39,7 @@ public class UITapGestureRecognizer extends UIGestureRecognizer {
     }
 
     @Override
-    public void touchesMoved(UITouch[] touches, UIEvent event) {
+    public void touchesMoved(@NonNull UITouch[] touches, @NonNull UIEvent event) {
         super.touchesMoved(touches, event);
         if (moveOutOfBounds(touches)) {
             mState = UIGestureRecognizerState.Failed;
@@ -47,7 +47,7 @@ public class UITapGestureRecognizer extends UIGestureRecognizer {
     }
 
     @Override
-    public void touchesEnded(UITouch[] touches, UIEvent event) {
+    public void touchesEnded(@NonNull UITouch[] touches, @NonNull UIEvent event) {
         super.touchesEnded(touches, event);
         if (!moveOutOfBounds(touches)) {
             mState = UIGestureRecognizerState.Ended;
@@ -56,7 +56,7 @@ public class UITapGestureRecognizer extends UIGestureRecognizer {
         }
     }
 
-    private boolean moveOutOfBounds(UITouch[] touches) {
+    private boolean moveOutOfBounds(@NonNull UITouch[] touches) {
         if (startTouches == null) {
             return true;
         }

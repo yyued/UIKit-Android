@@ -6,6 +6,8 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import java.util.ArrayList;
 
@@ -18,6 +20,7 @@ public class CALayer {
 
     /* layoutProps */
 
+    @NonNull
     private CGRect frame = new CGRect(0, 0, 0, 0);
 
     /* styleProps */
@@ -30,6 +33,7 @@ public class CALayer {
     private double shadowY = 2.0;
     private double shadowRadius = 0.0;
     private int shadowColor = Color.BLACK;
+    @Nullable
     private Bitmap bitmap = null;
     private int bitmapGravity = GRAVITY_SCALE_ASCEPT_FIT;
     private boolean clipToBounds = false;
@@ -44,6 +48,7 @@ public class CALayer {
 
     private UIView view;
     private CALayer superLayer;
+    @NonNull
     private ArrayList<CALayer> subLayers = new ArrayList<CALayer>();
 
     /* scaledDensityProp */
@@ -69,7 +74,7 @@ public class CALayer {
 
     public CALayer() {}
 
-    public CALayer(CGRect frame) {
+    public CALayer(@NonNull CGRect frame) {
         float x = (float) frame.origin.getX() * scaledDensity;
         float y = (float) frame.origin.getY() * scaledDensity;
         float w = (float) frame.size.getWidth() * scaledDensity;
@@ -83,6 +88,7 @@ public class CALayer {
         return superLayer;
     }
 
+    @NonNull
     public CALayer[] getSubLayers() { return subLayers.toArray(new CALayer[subLayers.size()]); }
 
     public void removeFromSuperLayer(){
@@ -91,13 +97,13 @@ public class CALayer {
         }
     }
 
-    public void addSubLayer(CALayer layer){
+    public void addSubLayer(@NonNull CALayer layer){
         layer.removeFromSuperLayer();
         layer.superLayer = this;
         subLayers.add(layer);
     }
 
-    public void insertSubLayerAtIndex(CALayer subLayer, int index){
+    public void insertSubLayerAtIndex(@NonNull CALayer subLayer, int index){
         subLayer.removeFromSuperLayer();
         if (index < 1){
             this.subLayers.add(0, subLayer);
@@ -110,7 +116,7 @@ public class CALayer {
         }
     }
 
-    public void insertBelowSubLayer(CALayer subLayer, CALayer siblingSubview){
+    public void insertBelowSubLayer(@NonNull CALayer subLayer, CALayer siblingSubview){
         int idx = subLayers.indexOf(siblingSubview);
         if (idx > -1){
             subLayer.removeFromSuperLayer();
@@ -118,7 +124,7 @@ public class CALayer {
         }
     }
 
-    public void insertAboveSubLayer(CALayer subLayer, CALayer siblingSubview){
+    public void insertAboveSubLayer(@NonNull CALayer subLayer, CALayer siblingSubview){
         int idx = subLayers.indexOf(siblingSubview);
         if (idx > -1){
             subLayer.removeFromSuperLayer();
@@ -126,7 +132,7 @@ public class CALayer {
         }
     }
 
-    public void replaceSubLayer(CALayer subLayer, CALayer newLayer){
+    public void replaceSubLayer(@NonNull CALayer subLayer, @NonNull CALayer newLayer){
         int idx = subLayers.indexOf(subLayer);
         if (idx > -1){
             subLayer.removeFromSuperLayer();
@@ -136,14 +142,14 @@ public class CALayer {
 
     /* category CALayer Appearance */
 
-    public void drawRect(Canvas canvas, CGRect rect){
+    public void drawRect(@NonNull Canvas canvas, CGRect rect){
         if(this.askIfNeedDispaly()){
             this.resetNeedDisplayToFalse();
             drawAllLayers(canvas, rect);
         }
     }
 
-    private void drawAllLayers(Canvas canvas, CGRect rect){
+    private void drawAllLayers(@NonNull Canvas canvas, CGRect rect){
         if (hidden){
             return;
         }
@@ -158,7 +164,7 @@ public class CALayer {
         }
     }
 
-    protected void drawLayer(Canvas canvas, CGRect rect, boolean isDrawInNewCanvas){
+    protected void drawLayer(@NonNull Canvas canvas, CGRect rect, boolean isDrawInNewCanvas){
         if (isDrawInNewCanvas){
             // create srcBitmap
             CGPoint origin = calcOrigin(this);
@@ -185,14 +191,14 @@ public class CALayer {
         }
     }
 
-    private void drawLayersInCanvas(Canvas canvas){
+    private void drawLayersInCanvas(@NonNull Canvas canvas){
         drawInCanvas(canvas);
         for (CALayer item : subLayers){
             item.drawLayersInCanvas(canvas);
         }
     }
 
-    private void drawInCanvas(Canvas canvas){
+    private void drawInCanvas(@NonNull Canvas canvas){
         // normalize layer's prop
         CGPoint calculatedOrigin = calcOrigin(this);
         CGRect frame = this.frame;
@@ -252,7 +258,7 @@ public class CALayer {
         }
     }
 
-    private Bitmap createRadiusMask(CGRect rect, double radius){
+    private Bitmap createRadiusMask(@NonNull CGRect rect, double radius){
         Bitmap maskBitmap = Bitmap.createBitmap((int)(rect.size.getWidth()+rect.origin.getX()), (int)(rect.size.getHeight()+rect.origin.getY()), Bitmap.Config.ARGB_8888);
         Canvas canvasB = new Canvas(maskBitmap);
         Paint p3 = new Paint();
@@ -272,7 +278,7 @@ public class CALayer {
         }
     }
 
-    private void drawBitmap(Canvas canvas, CGRect rect, Bitmap bitmap, int bitmapGravity, Paint paint){
+    private void drawBitmap(@NonNull Canvas canvas, @NonNull CGRect rect, @NonNull Bitmap bitmap, int bitmapGravity, Paint paint){
         double imageW = bitmap.getWidth();
         double imageH = bitmap.getHeight();
         double imageRatio = imageW / imageH;
@@ -494,6 +500,7 @@ public class CALayer {
         return shadowColor;
     }
 
+    @NonNull
     public CGRect getFrame() {
         return frame;
     }
@@ -511,7 +518,8 @@ public class CALayer {
         this.newCanvasContext = newCanvasContext;
     }
 
-    public CALayer setFrame(CGRect frame) {
+    @NonNull
+    public CALayer setFrame(@NonNull CGRect frame) {
         float x = (float) frame.origin.getX() * scaledDensity;
         float y = (float) frame.origin.getY() * scaledDensity;
         float w = (float) frame.size.getWidth() * scaledDensity;
@@ -524,6 +532,7 @@ public class CALayer {
         return this;
     }
 
+    @NonNull
     public CALayer setBitmap(Bitmap bitmap) {
         if (this.bitmap != bitmap){
             this.bitmap = bitmap;
@@ -532,6 +541,7 @@ public class CALayer {
         return this;
     }
 
+    @NonNull
     public CALayer setBitmapGravity(int bitmapGravity) {
         if (this.bitmapGravity != bitmapGravity){
             this.bitmapGravity = bitmapGravity;
@@ -540,6 +550,7 @@ public class CALayer {
         return this;
     }
 
+    @NonNull
     public CALayer setClipToBounds(Boolean clipToBounds) {
         if (this.clipToBounds != clipToBounds){
             this.clipToBounds = clipToBounds;
@@ -548,6 +559,7 @@ public class CALayer {
         return this;
     }
 
+    @NonNull
     public CALayer setHidden(boolean hidden) {
         if (this.hidden != hidden){
             this.hidden = hidden;
@@ -556,6 +568,7 @@ public class CALayer {
         return this;
     }
 
+    @NonNull
     public CALayer setBorderWidth(double borderWidth) {
         double oldValue = this.borderWidth;
         if (!doubleEqual(this.borderWidth, borderWidth * scaledDensity)){
@@ -568,6 +581,7 @@ public class CALayer {
         return this;
     }
 
+    @NonNull
     public CALayer setBorderColor(int borderColor) {
         if (this.borderColor != borderColor){
             this.borderColor = borderColor;
@@ -576,6 +590,7 @@ public class CALayer {
         return this;
     }
 
+    @NonNull
     public CALayer setCornerRadius(double cornerRadius) {
         if (!doubleEqual(this.cornerRadius, cornerRadius * scaledDensity)){
             double oldValue = this.cornerRadius;
@@ -588,6 +603,7 @@ public class CALayer {
         return this;
     }
 
+    @NonNull
     public CALayer setBackgroundColor(int backgroundColor) {
         if (this.backgroundColor != backgroundColor){
             this.backgroundColor = backgroundColor;
@@ -596,6 +612,7 @@ public class CALayer {
         return this;
     }
 
+    @NonNull
     public CALayer setShadowX(double shadowX) {
         if (!doubleEqual(this.shadowX, shadowX * scaledDensity)){
             this.shadowX = shadowX * scaledDensity;
@@ -604,6 +621,7 @@ public class CALayer {
         return this;
     }
 
+    @NonNull
     public CALayer setShadowY(double shadowY) {
         if (!doubleEqual(this.shadowY, shadowY * scaledDensity)){
             this.shadowY = shadowY * scaledDensity;
@@ -612,6 +630,7 @@ public class CALayer {
         return this;
     }
 
+    @NonNull
     public CALayer setShadowRadius(double shadowRadius) {
         if (!doubleEqual(this.shadowRadius, shadowRadius * scaledDensity)){
             this.shadowRadius = shadowRadius * scaledDensity;
@@ -620,6 +639,7 @@ public class CALayer {
         return this;
     }
 
+    @NonNull
     public CALayer setShadowColor(int shadowColor) {
         if (this.shadowColor != shadowColor){
             this.shadowColor = shadowColor;
@@ -640,7 +660,8 @@ public class CALayer {
 
     /* category CALayer support method */
 
-    private CGPoint calcOrigin(CALayer layer){
+    @NonNull
+    private CGPoint calcOrigin(@NonNull CALayer layer){
         double oriX = layer.frame.origin.getX();
         double oriY = layer.frame.origin.getY();
         CALayer p = layer.getSuperLayer();
@@ -675,7 +696,7 @@ public class CALayer {
 
     /* Animation */
 
-    public void animate(String aKey, float aValue) {
+    public void animate(@NonNull String aKey, float aValue) {
         if (aKey.equalsIgnoreCase("layer.cornerRadius")) {
             setCornerRadius(aValue);
         }

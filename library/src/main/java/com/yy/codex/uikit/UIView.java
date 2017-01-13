@@ -151,6 +151,7 @@ public class UIView extends UIResponder {
         this.maxWidth = maxWidth;
     }
 
+    @NonNull
     public CGSize intrinsicContentSize() {
         return new CGSize(0, 0);
     }
@@ -268,7 +269,7 @@ public class UIView extends UIResponder {
     }
 
     @Override
-    public void onViewAdded(View child) {
+    public void onViewAdded(@NonNull View child) {
         if (UIView.class.isAssignableFrom(child.getClass())) {
             ((UIView) child).willMoveToSuperview(this);
         }
@@ -280,7 +281,7 @@ public class UIView extends UIResponder {
     }
 
     @Override
-    public void onViewRemoved(View child) {
+    public void onViewRemoved(@NonNull View child) {
         super.onViewRemoved(child);
         if (UIView.class.isAssignableFrom(child.getClass())) {
             willRemoveSubview((UIView) child);
@@ -344,7 +345,7 @@ public class UIView extends UIResponder {
         this.userInteractionEnabled = userInteractionEnabled;
     }
 
-    public void addGestureRecognizer(UIGestureRecognizer gestureRecognizer) {
+    public void addGestureRecognizer(@NonNull UIGestureRecognizer gestureRecognizer) {
         gestureRecognizers.add(gestureRecognizer);
         gestureRecognizer.didAddToView(this);
     }
@@ -362,6 +363,7 @@ public class UIView extends UIResponder {
         this.multipleTouchEnabled = multipleTouchEnabled;
     }
 
+    @Nullable
     private UIView hitTestView;
 
     @Override
@@ -682,7 +684,7 @@ public class UIView extends UIResponder {
                     animator.setDuration((long) (duration * 1000));
                     animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                         @Override
-                        public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                        public void onAnimationUpdate(@NonNull ValueAnimator valueAnimator) {
                             float currentValue = (float)valueAnimator.getAnimatedValue();
                             viewProps.getKey().animate(animateProp.getKey(), currentValue);
                         }
@@ -739,13 +741,13 @@ public class UIView extends UIResponder {
                     spring.setCurrentValue((float)((double)log.originValue));
                     spring.addListener(new SpringListener() {
                         @Override
-                        public void onSpringUpdate(Spring spring) {
+                        public void onSpringUpdate(@NonNull Spring spring) {
                             float currentValue = (float)spring.getCurrentValue();
                             viewProps.getKey().animate(animateProp.getKey(), currentValue);
                         }
 
                         @Override
-                        public void onSpringAtRest(Spring spring) {
+                        public void onSpringAtRest(@NonNull Spring spring) {
                             float currentValue = (float)spring.getCurrentValue();
                             viewProps.getKey().animate(animateProp.getKey(), currentValue);
                             aniCount[0]--;
@@ -791,13 +793,13 @@ public class UIView extends UIResponder {
                     spring.setVelocity(velocity);
                     spring.addListener(new SpringListener() {
                         @Override
-                        public void onSpringUpdate(Spring spring) {
+                        public void onSpringUpdate(@NonNull Spring spring) {
                             float currentValue = (float)spring.getCurrentValue();
                             viewProps.getKey().animate(animateProp.getKey(), currentValue);
                         }
 
                         @Override
-                        public void onSpringAtRest(Spring spring) {
+                        public void onSpringAtRest(@NonNull Spring spring) {
                             float currentValue = (float)spring.getCurrentValue();
                             viewProps.getKey().animate(animateProp.getKey(), currentValue);
                             aniCount[0]--;

@@ -1,5 +1,7 @@
 package com.yy.codex.uikit;
 
+import android.support.annotation.NonNull;
+
 /**
  * Created by cuiminghui on 2017/1/3.
  */
@@ -22,10 +24,11 @@ public final class CGPoint {
         return this.y;
     }
 
-    public boolean inRange(double xRange, double yRange, CGPoint toPoint) {
+    public boolean inRange(double xRange, double yRange, @NonNull CGPoint toPoint) {
         return Math.abs(toPoint.x - this.x) < xRange && Math.abs(toPoint.y - this.y) < yRange;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "CGPoint{x=" + x + ",y=" + y + "}";

@@ -49,7 +49,7 @@ public class NSInvocation {
         }
     }
 
-    public void invoke(Object target, Object[] arguments) throws Exception {
+    public void invoke(@Nullable Object target, @Nullable Object[] arguments) throws Exception {
         if (target == null || mSelector == null) {
             throw new Exception("Null target or null selector.");
         }

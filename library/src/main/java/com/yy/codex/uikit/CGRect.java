@@ -25,7 +25,7 @@ public final class CGRect {
     }
 
     @NonNull
-    public RectF toRectF(CGPoint point) {
+    public RectF toRectF(@NonNull CGPoint point) {
         float top = (float) point.getY();
         float left = (float) point.getX();
         float right = (float) size.getWidth() + left;
@@ -48,7 +48,7 @@ public final class CGRect {
     }
 
     @NonNull
-    public RectF shrinkToRectF(float offset, CGPoint point){
+    public RectF shrinkToRectF(float offset, @NonNull CGPoint point){
         float top = (float) point.getY() + offset;
         float left = (float) point.getX() + offset;
         float right = (float) size.getWidth() + left - 2 * offset;

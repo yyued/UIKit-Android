@@ -1,5 +1,8 @@
 package com.yy.codex.uikit;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
 
@@ -16,29 +19,41 @@ public class UIConstraint {
 
     public boolean disabled = false;
 
+    @NonNull
     public UIConstraintLayoutRelate aligmentRelate = UIConstraintLayoutRelate.RelateToGroup;
     public boolean centerHorizontally = false;
     public boolean centerVertically = false;
 
+    @NonNull
     public UIConstraintLayoutRelate sizeRelate = UIConstraintLayoutRelate.RelateToGroup;
+    @Nullable
     public String width = null;
+    @Nullable
     public String height = null;
 
+    @NonNull
     public UIConstraintLayoutRelate pinRelate = UIConstraintLayoutRelate.RelateToGroup;
+    @Nullable
     public String top = null;
+    @Nullable
     public String left = null;
+    @Nullable
     public String right = null;
+    @Nullable
     public String bottom = null;
 
     private boolean needsLayout = true;
+    @NonNull
     private CGRect lastSuperviewFrame = new CGRect(0, 0, 0, 0);
+    @NonNull
     private CGRect lastPreviousViewFrame = new CGRect(0, 0, 0, 0);
 
     public void setNeedsLayout() {
         needsLayout = true;
     }
 
-    public CGRect requestFrame(UIView myView, UIView superView, UIView previousView) {
+    @NonNull
+    public CGRect requestFrame(@NonNull UIView myView, @Nullable UIView superView, @Nullable UIView previousView) {
         if (disabled) {
             return myView.getFrame();
         }

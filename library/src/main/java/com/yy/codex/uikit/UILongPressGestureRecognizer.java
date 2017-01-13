@@ -76,7 +76,7 @@ public class UILongPressGestureRecognizer extends UIGestureRecognizer {
         }
     }
 
-    private boolean moveOutOfBounds(UITouch[] touches) {
+    private boolean moveOutOfBounds(@NonNull UITouch[] touches) {
         if (startTouches == null) {
             return true;
         }

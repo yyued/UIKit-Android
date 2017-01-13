@@ -24,6 +24,7 @@ public class UITouch {
         mTimestamp = System.currentTimeMillis();
     }
 
+    @NonNull
     static ArrayList<UITouch> tapCountStore = new ArrayList<>();
 
     public void resetTapCount() {
@@ -69,7 +70,7 @@ public class UITouch {
     }
 
     @NonNull
-    public CGPoint locationInView(UIView view) {
+    public CGPoint locationInView(@NonNull UIView view) {
         UIView hitTestedView = getHitTestedView();
         if (hitTestedView != null) {
             if (hitTestedView == view) {
@@ -86,6 +87,7 @@ public class UITouch {
         return mTapCount;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "UITouch { RelativeView=" + this.mRelativeView + " x=" + this.mRelativePoint.getX() + " y=" + this.mRelativePoint.getY();

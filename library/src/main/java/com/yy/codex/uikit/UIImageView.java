@@ -165,7 +165,7 @@ public class UIImageView extends UIView {
             }
             valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
-                public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                public void onAnimationUpdate(@NonNull ValueAnimator valueAnimator) {
                     int currentIndex = (int)valueAnimator.getAnimatedValue();
                     if (currentIndex < animationImages.length) {
                         setImage(animationImages[currentIndex]);

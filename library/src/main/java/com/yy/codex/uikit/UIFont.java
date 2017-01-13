@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 
 public class UIFont {
 
+    @Nullable
     public String fontFamily = "";
     public float  fontSize = 17;
 
