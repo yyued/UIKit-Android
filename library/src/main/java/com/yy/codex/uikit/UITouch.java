@@ -8,48 +8,54 @@ import java.util.ArrayList;
  * Created by cuiminghui on 2017/1/11.
  */
 
-enum UITouchPhase {
-    UITouchPhaseBegan,             // whenever a finger touches the surface.
-    UITouchPhaseMoved,             // whenever a finger moves on the surface.
-    UITouchPhaseStationary,        // whenever a finger is touching the surface but hasn't moved since the previous event.
-    UITouchPhaseEnded,             // whenever a finger leaves the surface.
-    UITouchPhaseCancelled,         // whenever a touch doesn't end but we need to stop tracking (e.g. putting device to face)
-}
-
 public class UITouch {
+
+    public enum Phase {
+        Began,             // whenever a finger touches the surface.
+        Moved,             // whenever a finger moves on the surface.
+        Stationary,        // whenever a finger is touching the surface but hasn't moved since the previous event.
+        Ended,             // whenever a finger leaves the surface.
+        Cancelled,         // whenever a touch doesn't end but we need to stop tracking (e.g. putting device to face)
+    }
 
     private long mTimestamp = 0;
     private int mTapCount = 1;
-    private boolean mTapCountAdded = false;
+    private long mEventID = 0;
     @NonNull private UIView mRelativeView;
     @NonNull private CGPoint mRelativePoint;
     @NonNull private CGPoint mAbsolutePoint;
 
-    private UITouchPhase mPhase;
+    private Phase mPhase;
 
-    public UITouch(@NonNull UIView relativeView, @NonNull CGPoint relativePoint, @NonNull CGPoint absolutePoint, UITouchPhase phase) {
+    public UITouch(@NonNull UIView relativeView, @NonNull CGPoint relativePoint, @NonNull CGPoint absolutePoint, Phase phase, long eventID) {
         mRelativeView = relativeView;
         mRelativePoint = relativePoint;
         mAbsolutePoint = absolutePoint;
         mTimestamp = System.currentTimeMillis();
         mPhase = phase;
-        resetTapCount();
+        mEventID = eventID;
+        if (phase == Phase.Began) {
+            addTapCount();
+        }
+        else {
+            resetTapCount();
+        }
     }
 
     @NonNull
     static ArrayList<UITouch> tapCountStore = new ArrayList<>();
 
     public void addTapCount() {
-        if (mTapCountAdded) {
-            return;
-        }
-        mTapCountAdded = true;
         ArrayList<UITouch> newTapCountStore = new ArrayList<>();
         boolean found = false;
         for (int i = 0; i < tapCountStore.size(); i++) {
-            if (tapCountStore.get(i).mAbsolutePoint.inRange(22.0, 22.0, this.mAbsolutePoint) &&
-                tapCountStore.get(i).mTimestamp > System.currentTimeMillis() - 300) {
-                mTapCount = tapCountStore.get(i).mTapCount + 1;
+            if (tapCountStore.get(i).mAbsolutePoint.inRange(22.0, 22.0, this.mAbsolutePoint)) {
+                if (tapCountStore.get(i).mEventID != this.mEventID && tapCountStore.get(i).mTimestamp > System.currentTimeMillis() - 300) {
+                    mTapCount = tapCountStore.get(i).mTapCount + 1;
+                }
+                else {
+                    mTapCount = tapCountStore.get(i).mTapCount;
+                }
                 newTapCountStore.add(this);
                 found = true;
                 break;
@@ -64,7 +70,9 @@ public class UITouch {
 
     protected void resetTapCount() {
         for (int i = 0; i < tapCountStore.size(); i++) {
-            if (tapCountStore.get(i).mAbsolutePoint.inRange(22.0, 22.0, this.mAbsolutePoint)) {
+            if (tapCountStore.get(i).mAbsolutePoint.inRange(22.0, 22.0, this.mAbsolutePoint) &&
+                tapCountStore.get(i).mEventID == this.mEventID) {
+                NSLog.log(tapCountStore.get(i).mTapCount);
                 mTapCount = tapCountStore.get(i).mTapCount;
                 break;
             }

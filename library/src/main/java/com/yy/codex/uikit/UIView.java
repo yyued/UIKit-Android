@@ -425,42 +425,42 @@ public class UIView extends UIResponder {
         return null;
     }
 
+    static long sTouchEventID = 0;
     private int mTouchCount = 0;
     @Nullable private Set<UITouch> touches = new HashSet<UITouch>();
 
     private void prepareTouch(@NonNull CGPoint touchPoint, @NonNull UIView hitTestView, @NonNull MotionEvent event) {
         final int action = event.getAction();
-
         CGPoint absolutePoint = new CGPoint(event.getRawX() / UIScreen.mainScreen.scale(), event.getRawY() / UIScreen.mainScreen.scale());
-
         switch (action & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_DOWN: {
+                sTouchEventID = System.currentTimeMillis();
                 touches.clear();
-                UITouch touch = new UITouch(hitTestView, touchPoint, absolutePoint, UITouchPhase.UITouchPhaseBegan);
+                UITouch touch = new UITouch(hitTestView, touchPoint, absolutePoint, UITouch.Phase.Began, sTouchEventID);
                 touches.add(touch);
             }
                 break;
             case MotionEvent.ACTION_MOVE: {
                 touches.clear();
-                UITouch touch = new UITouch(hitTestView, touchPoint, absolutePoint, UITouchPhase.UITouchPhaseMoved);
+                UITouch touch = new UITouch(hitTestView, touchPoint, absolutePoint, UITouch.Phase.Moved, sTouchEventID);
                 touches.add(touch);
 
             }
                 break;
             case MotionEvent.ACTION_UP:{
                 touches.clear();
-                UITouch touch = new UITouch(hitTestView, touchPoint, absolutePoint, UITouchPhase.UITouchPhaseEnded);
+                UITouch touch = new UITouch(hitTestView, touchPoint, absolutePoint, UITouch.Phase.Ended, sTouchEventID);
                 touches.add(touch);
             }
                 break;
             case MotionEvent.ACTION_POINTER_DOWN: {
-                UITouch touch = new UITouch(hitTestView, touchPoint, absolutePoint, UITouchPhase.UITouchPhaseBegan);
+                UITouch touch = new UITouch(hitTestView, touchPoint, absolutePoint, UITouch.Phase.Began, sTouchEventID);
                 touches.add(touch);
             }
                 break;
             case MotionEvent.ACTION_POINTER_UP: {
                 touches.clear();
-                UITouch touch = new UITouch(hitTestView, touchPoint, absolutePoint, UITouchPhase.UITouchPhaseEnded);
+                UITouch touch = new UITouch(hitTestView, touchPoint, absolutePoint, UITouch.Phase.Ended, sTouchEventID);
                 touches.add(touch);
             }
                 break;
@@ -585,11 +585,6 @@ public class UIView extends UIResponder {
     public void touchesBegan(@NonNull Set<UITouch> touches, @NonNull UIEvent event) {
         super.touchesBegan(touches, event);
         if (UIGestureRecognizerLooper.isHitTestedView(touches, this)) {
-            UITouch[] arr = new UITouch[touches.size()];
-            touches.toArray(arr);
-            for (int i = 0; i < arr.length; i++) {
-                arr[i].addTapCount();
-            }
             if (sGestureRecognizerLooper == null || sGestureRecognizerLooper.isFinished() || sGestureRecognizerLooper.mGestureRecognizers.size() == 0) {
                 sGestureRecognizerLooper = new UIGestureRecognizerLooper(this);
             }

@@ -13,6 +13,7 @@ import android.view.View;
 import com.yy.codex.uikit.CGRect;
 import com.yy.codex.uikit.UIControl;
 import com.yy.codex.uikit.UIPinchGestureRecognizer;
+import com.yy.codex.uikit.UITapGestureRecognizer;
 import com.yy.codex.uikit.UIView;
 
 public class MainActivity extends AppCompatActivity {
@@ -54,15 +55,31 @@ class TestView extends UIView {
     }
 
     private void init() {
-        UIControl control = new UIControl(getContext());
-        control.setFrame(new CGRect(88, 88, 44, 44));
-        control.setBackgroundColor(Color.BLACK);
-        control.addTarget(this, "onTouchUpInside:", UIControl.Event.TouchUpInside);
-        addSubview(control);
+//        UIControl control = new UIControl(getContext());
+//        control.setFrame(new CGRect(88, 88, 44, 44));
+//        control.setBackgroundColor(Color.BLACK);
+//        control.addTarget(this, "onTouchUpInside:", UIControl.Event.TouchUpInside);
+//        addSubview(control);
+
+        final UIView view = new UIView(getContext());
+        view.setFrame(new CGRect(88,88,160,160));
+        view.setBackgroundColor(Color.BLACK);
+        view.setUserInteractionEnabled(true);
+        UITapGestureRecognizer tapGestureRecognizer = new UITapGestureRecognizer(new Runnable() {
+            @Override
+            public void run() {
+                view.setBackgroundColor(Color.RED);
+            }
+        });
+        tapGestureRecognizer.numberOfTouchesRequired = 2;
+        tapGestureRecognizer.numberOfTapsRequired = 3;
+        view.addGestureRecognizer(tapGestureRecognizer);
+        addSubview(view);
+
     }
 
-    public void onTouchUpInside(UIControl control) {
-        control.setBackgroundColor(Color.GRAY);
-    }
+//    public void onTouchUpInside(UIControl control) {
+//        control.setBackgroundColor(Color.GRAY);
+//    }
 
 }
