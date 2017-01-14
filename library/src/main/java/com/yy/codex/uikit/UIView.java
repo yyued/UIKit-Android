@@ -366,6 +366,7 @@ public class UIView extends UIResponder {
         final int action = event.getAction();
         switch (action & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_DOWN:
+                sTouchEventID = System.currentTimeMillis();
                 hitTestView = hitTest(touchPoint, event);
                 sendEvent(event, hitTestView);
                 break;
@@ -382,8 +383,8 @@ public class UIView extends UIResponder {
             case MotionEvent.ACTION_POINTER_DOWN:
                 if (hitTestView != null) {
                     for (int i = 0; i < event.getPointerCount(); i++) {
-                        double x = event.getX(i);
-                        double y = event.getY(i);
+                        double x = event.getX(i) / UIScreen.mainScreen.scale();
+                        double y = event.getY(i) / UIScreen.mainScreen.scale();
                         CGPoint convertedPoint = convertPoint(new CGPoint(x, y), hitTestView);
                         prepareTouch(convertedPoint, hitTestView, event);
                     }
@@ -434,7 +435,6 @@ public class UIView extends UIResponder {
         CGPoint absolutePoint = new CGPoint(event.getRawX() / UIScreen.mainScreen.scale(), event.getRawY() / UIScreen.mainScreen.scale());
         switch (action & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_DOWN: {
-                sTouchEventID = System.currentTimeMillis();
                 touches.clear();
                 UITouch touch = new UITouch(hitTestView, touchPoint, absolutePoint, UITouch.Phase.Began, sTouchEventID);
                 touches.add(touch);

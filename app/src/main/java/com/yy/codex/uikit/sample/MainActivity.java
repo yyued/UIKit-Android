@@ -71,7 +71,7 @@ class TestView extends UIView {
                 view.setBackgroundColor(Color.RED);
             }
         });
-        tapGestureRecognizer.numberOfTouchesRequired = 2;
+//        tapGestureRecognizer.numberOfTouchesRequired = 2;
         tapGestureRecognizer.numberOfTapsRequired = 3;
         view.addGestureRecognizer(tapGestureRecognizer);
         addSubview(view);

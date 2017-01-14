@@ -34,24 +34,29 @@ public class UITouch {
         mTimestamp = System.currentTimeMillis();
         mPhase = phase;
         mEventID = eventID;
-        if (phase == Phase.Began) {
-            addTapCount();
-        }
-        else {
-            resetTapCount();
-        }
+        resetTapCount();
     }
 
     @NonNull
     static ArrayList<UITouch> tapCountStore = new ArrayList<>();
 
-    public void addTapCount() {
+    public void resetTapCount() {
         ArrayList<UITouch> newTapCountStore = new ArrayList<>();
         boolean found = false;
         for (int i = 0; i < tapCountStore.size(); i++) {
             if (tapCountStore.get(i).mAbsolutePoint.inRange(22.0, 22.0, this.mAbsolutePoint)) {
-                if (tapCountStore.get(i).mEventID != this.mEventID && tapCountStore.get(i).mTimestamp > System.currentTimeMillis() - 300) {
-                    mTapCount = tapCountStore.get(i).mTapCount + 1;
+                if (mPhase == Phase.Began) {
+                    if (tapCountStore.get(i).mEventID != this.mEventID) {
+                        if (tapCountStore.get(i).mTimestamp <= System.currentTimeMillis() - 300) {
+                            mTapCount = 1;
+                        }
+                        else {
+                            mTapCount = tapCountStore.get(i).mTapCount + 1;
+                        }
+                    }
+                    else {
+                        mTapCount = tapCountStore.get(i).mTapCount;
+                    }
                 }
                 else {
                     mTapCount = tapCountStore.get(i).mTapCount;
@@ -66,17 +71,6 @@ public class UITouch {
             newTapCountStore.add(this);
         }
         tapCountStore = newTapCountStore;
-    }
-
-    protected void resetTapCount() {
-        for (int i = 0; i < tapCountStore.size(); i++) {
-            if (tapCountStore.get(i).mAbsolutePoint.inRange(22.0, 22.0, this.mAbsolutePoint) &&
-                tapCountStore.get(i).mEventID == this.mEventID) {
-                NSLog.log(tapCountStore.get(i).mTapCount);
-                mTapCount = tapCountStore.get(i).mTapCount;
-                break;
-            }
-        }
     }
 
     @NonNull
