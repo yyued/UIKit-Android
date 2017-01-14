@@ -18,11 +18,9 @@ class UIGestureRecognizerLooper {
     @NonNull ArrayList<UIGestureRecognizer> mGestureRecognizers;
     boolean mFinished = false;
 
-    static boolean isHitTestedView(@NonNull Set<UITouch> touches ,UIView theView) {
-        if (touches.size() > 0) {
-            UITouch[] arr = new UITouch[touches.size()];
-            touches.toArray(arr);
-            return arr[0].getHitTestedView() == theView;
+    static boolean isHitTestedView(@NonNull UITouch[] touches ,UIView theView) {
+        if (touches.length > 0) {
+            return touches[0].getHitTestedView() == theView;
         }
         return false;
     }
@@ -46,39 +44,33 @@ class UIGestureRecognizerLooper {
         return mFinished;
     }
 
-    void onTouchesBegan(@NonNull Set<UITouch> touches, @NonNull UIEvent event) {
+    void onTouchesBegan(@NonNull UITouch[] touches, @NonNull UIEvent event) {
         ArrayList<UIGestureRecognizer> copyList = new ArrayList<>(mGestureRecognizers);
         for (int i = 0; i < copyList.size(); i++) {
             if (checkState(copyList.get(i))) {
-                UITouch[] arr = new UITouch[touches.size()];
-                touches.toArray(arr);
-                copyList.get(i).touchesBegan(arr, event);
+                copyList.get(i).touchesBegan(touches, event);
                 checkState(copyList.get(i));
             }
         }
         markFailed();
     }
 
-    void onTouchesMoved(@NonNull Set<UITouch> touches, @NonNull UIEvent event) {
+    void onTouchesMoved(@NonNull UITouch[] touches, @NonNull UIEvent event) {
         ArrayList<UIGestureRecognizer> copyList = new ArrayList<>(mGestureRecognizers);
         for (int i = 0; i < copyList.size(); i++) {
             if (checkState(copyList.get(i))) {
-                UITouch[] arr = new UITouch[touches.size()];
-                touches.toArray(arr);
-                copyList.get(i).touchesMoved(arr, event);
+                copyList.get(i).touchesMoved(touches, event);
                 checkState(copyList.get(i));
             }
         }
         markFailed();
     }
 
-    void onTouchesEnded(@NonNull Set<UITouch> touches, @NonNull UIEvent event) {
+    void onTouchesEnded(@NonNull UITouch[] touches, @NonNull UIEvent event) {
         ArrayList<UIGestureRecognizer> copyList = new ArrayList<>(mGestureRecognizers);
         for (int i = 0; i < copyList.size(); i++) {
             if (checkState(copyList.get(i))) {
-                UITouch[] arr = new UITouch[touches.size()];
-                touches.toArray(arr);
-                copyList.get(i).touchesEnded(arr, event);
+                copyList.get(i).touchesEnded(touches, event);
                 checkState(copyList.get(i));
             }
         }

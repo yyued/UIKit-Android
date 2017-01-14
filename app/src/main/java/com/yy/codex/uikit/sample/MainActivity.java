@@ -62,7 +62,7 @@ class TestView extends UIView {
 //        addSubview(control);
 
         final UIView view = new UIView(getContext());
-        view.setFrame(new CGRect(88,88,160,160));
+        view.setFrame(new CGRect(20,20,300,300));
         view.setBackgroundColor(Color.BLACK);
         view.setUserInteractionEnabled(true);
         UITapGestureRecognizer tapGestureRecognizer = new UITapGestureRecognizer(new Runnable() {

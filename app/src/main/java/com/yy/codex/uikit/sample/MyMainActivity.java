@@ -2,7 +2,9 @@ package com.yy.codex.uikit.sample;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.util.AttributeSet;
 import android.view.View;
@@ -78,36 +80,11 @@ class MyTestView extends UIView {
         super(context, attrs, defStyleAttr);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public MyTestView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 
-    @Override
-    public void touchesBegan(Set<UITouch> touches, UIEvent event) {
-        super.touchesBegan(touches, event);
-        NSLog.log("=================touchesBegan==================");
-        for (UITouch touch: touches) {
-            NSLog.log(touch);
-        }
-    }
-
-    @Override
-    public void touchesMoved(Set<UITouch> touches, UIEvent event) {
-        super.touchesMoved(touches, event);
-        NSLog.log("=================touchesMoved==================");
-        for (UITouch touch: touches) {
-            NSLog.log(touch);
-        }
-    }
-
-    @Override
-    public void touchesEnded(Set<UITouch> touches, UIEvent event) {
-        super.touchesEnded(touches, event);
-        NSLog.log("=================touchesEnded==================");
-        for (UITouch touch: touches) {
-            NSLog.log(touch);
-        }
-    }
 }
 
 class MyTestView2 extends UIView {
@@ -128,6 +105,7 @@ class MyTestView2 extends UIView {
         super(context, attrs, defStyleAttr);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public MyTestView2(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
     }

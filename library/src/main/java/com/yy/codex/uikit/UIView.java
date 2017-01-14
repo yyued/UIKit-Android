@@ -355,47 +355,18 @@ public class UIView extends UIResponder {
         this.multipleTouchEnabled = multipleTouchEnabled;
     }
 
+
+    protected UIViewTouchHandler mTouchHandler;
+
     @Nullable
     private UIView hitTestView;
 
     @Override
     public boolean onTouchEvent(@NonNull MotionEvent event) {
-        mTouchCount = event.getPointerCount();
-        CGPoint touchPoint = new CGPoint(event.getX(mTouchCount - 1) / UIScreen.mainScreen.scale(), event.getY(mTouchCount - 1) / UIScreen.mainScreen.scale());
-
-        final int action = event.getAction();
-        switch (action & MotionEvent.ACTION_MASK) {
-            case MotionEvent.ACTION_DOWN:
-                sTouchEventID = System.currentTimeMillis();
-                hitTestView = hitTest(touchPoint, event);
-                sendEvent(event, hitTestView);
-                break;
-            case MotionEvent.ACTION_UP:
-                if (hitTestView != null) {
-                    CGPoint convertedPoint = convertPoint(touchPoint, hitTestView);
-                    prepareTouch(convertedPoint, hitTestView, event);
-                    sendEvent(event, hitTestView);
-                }
-                hitTestView = null;
-                break;
-            case MotionEvent.ACTION_POINTER_UP:
-            case MotionEvent.ACTION_MOVE:
-            case MotionEvent.ACTION_POINTER_DOWN:
-                if (hitTestView != null) {
-                    for (int i = 0; i < event.getPointerCount(); i++) {
-                        double x = event.getX(i) / UIScreen.mainScreen.scale();
-                        double y = event.getY(i) / UIScreen.mainScreen.scale();
-                        CGPoint convertedPoint = convertPoint(new CGPoint(x, y), hitTestView);
-                        prepareTouch(convertedPoint, hitTestView, event);
-                    }
-                    sendEvent(event, hitTestView);
-                }
-                break;
-            default:
-
-                break;
+        if (mTouchHandler == null) {
+            mTouchHandler = new UIViewTouchHandler(this);
         }
-
+        mTouchHandler.onTouchEvent(event);
         return true;
     }
 
@@ -410,87 +381,17 @@ public class UIView extends UIResponder {
         if (!isUserInteractionEnabled() && !(getAlpha() > 0)) {
             return null;
         }
-
         if (pointInside(point)) {
             for (UIView subview: views) {
                 CGPoint convertedPoint = convertPoint(point, subview);
                 UIView hitTestView = subview.hitTest(convertedPoint, event);
                 if (hitTestView != null) {
-                    prepareTouch(convertedPoint, hitTestView, event);
                     return hitTestView;
                 }
             }
-            prepareTouch(point, this, event);
             return this;
         }
         return null;
-    }
-
-    static long sTouchEventID = 0;
-    private int mTouchCount = 0;
-    @Nullable private Set<UITouch> touches = new HashSet<UITouch>();
-
-    private void prepareTouch(@NonNull CGPoint touchPoint, @NonNull UIView hitTestView, @NonNull MotionEvent event) {
-        final int action = event.getAction();
-        CGPoint absolutePoint = new CGPoint(event.getRawX() / UIScreen.mainScreen.scale(), event.getRawY() / UIScreen.mainScreen.scale());
-        switch (action & MotionEvent.ACTION_MASK) {
-            case MotionEvent.ACTION_DOWN: {
-                touches.clear();
-                UITouch touch = new UITouch(hitTestView, touchPoint, absolutePoint, UITouch.Phase.Began, sTouchEventID);
-                touches.add(touch);
-            }
-                break;
-            case MotionEvent.ACTION_MOVE: {
-                touches.clear();
-                UITouch touch = new UITouch(hitTestView, touchPoint, absolutePoint, UITouch.Phase.Moved, sTouchEventID);
-                touches.add(touch);
-
-            }
-                break;
-            case MotionEvent.ACTION_UP:{
-                touches.clear();
-                UITouch touch = new UITouch(hitTestView, touchPoint, absolutePoint, UITouch.Phase.Ended, sTouchEventID);
-                touches.add(touch);
-            }
-                break;
-            case MotionEvent.ACTION_POINTER_DOWN: {
-                UITouch touch = new UITouch(hitTestView, touchPoint, absolutePoint, UITouch.Phase.Began, sTouchEventID);
-                touches.add(touch);
-            }
-                break;
-            case MotionEvent.ACTION_POINTER_UP: {
-                touches.clear();
-                UITouch touch = new UITouch(hitTestView, touchPoint, absolutePoint, UITouch.Phase.Ended, sTouchEventID);
-                touches.add(touch);
-            }
-                break;
-            default:
-                break;
-        }
-    }
-
-    private void sendEvent(@NonNull MotionEvent event, @NonNull UIView hitTestView) {
-        final int action = event.getAction();
-        UIEvent ev = new UIEvent();
-        switch (action & MotionEvent.ACTION_MASK) {
-            case MotionEvent.ACTION_DOWN:
-                hitTestView.touchesBegan(touches, ev);
-                break;
-            case MotionEvent.ACTION_MOVE:
-                hitTestView.touchesMoved(touches, ev);
-                break;
-            case MotionEvent.ACTION_UP:
-                hitTestView.touchesEnded(touches, ev);
-                break;
-            case MotionEvent.ACTION_POINTER_DOWN:
-                hitTestView.touchesBegan(touches, ev);
-                break;
-            case MotionEvent.ACTION_POINTER_UP:
-                hitTestView.touchesEnded(touches, ev);
-                break;
-            default:
-                break;
-        }
     }
 
     public boolean pointInside(@NonNull CGPoint point) {
@@ -582,7 +483,7 @@ public class UIView extends UIResponder {
     @Nullable static private UIGestureRecognizerLooper sGestureRecognizerLooper = null;
 
     @Override
-    public void touchesBegan(@NonNull Set<UITouch> touches, @NonNull UIEvent event) {
+    public void touchesBegan(@NonNull UITouch[] touches, @NonNull UIEvent event) {
         super.touchesBegan(touches, event);
         if (UIGestureRecognizerLooper.isHitTestedView(touches, this)) {
             if (sGestureRecognizerLooper == null || sGestureRecognizerLooper.isFinished() || sGestureRecognizerLooper.mGestureRecognizers.size() == 0) {
@@ -593,7 +494,7 @@ public class UIView extends UIResponder {
     }
 
     @Override
-    public void touchesMoved(@NonNull Set<UITouch> touches, @NonNull UIEvent event) {
+    public void touchesMoved(@NonNull UITouch[] touches, @NonNull UIEvent event) {
         super.touchesMoved(touches, event);
         if (UIGestureRecognizerLooper.isHitTestedView(touches, this)) {
             if (sGestureRecognizerLooper == null || sGestureRecognizerLooper.isFinished()) {
@@ -604,7 +505,7 @@ public class UIView extends UIResponder {
     }
 
     @Override
-    public void touchesEnded(@NonNull Set<UITouch> touches, @NonNull UIEvent event) {
+    public void touchesEnded(@NonNull UITouch[] touches, @NonNull UIEvent event) {
         super.touchesEnded(touches, event);
         if (UIGestureRecognizerLooper.isHitTestedView(touches, this)) {
             if (sGestureRecognizerLooper == null || sGestureRecognizerLooper.isFinished()) {
