@@ -45,17 +45,12 @@ public class UITouch {
         boolean found = false;
         for (int i = 0; i < tapCountStore.size(); i++) {
             if (tapCountStore.get(i).mAbsolutePoint.inRange(22.0, 22.0, this.mAbsolutePoint)) {
-                if (mPhase == Phase.Began) {
-                    if (tapCountStore.get(i).mEventID != this.mEventID) {
-                        if (tapCountStore.get(i).mTimestamp <= System.currentTimeMillis() - 300) {
-                            mTapCount = 1;
-                        }
-                        else {
-                            mTapCount = tapCountStore.get(i).mTapCount + 1;
-                        }
+                if (tapCountStore.get(i).mEventID != this.mEventID) {
+                    if (tapCountStore.get(i).mTimestamp <= System.currentTimeMillis() - 300) {
+                        mTapCount = 1;
                     }
                     else {
-                        mTapCount = tapCountStore.get(i).mTapCount;
+                        mTapCount = tapCountStore.get(i).mTapCount + 1;
                     }
                 }
                 else {

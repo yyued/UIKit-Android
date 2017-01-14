@@ -34,6 +34,9 @@ public class UITapGestureRecognizer extends UIGestureRecognizer {
     @Override
     public void touchesMoved(@NonNull UITouch[] touches, @NonNull UIEvent event) {
         super.touchesMoved(touches, event);
+        if (touches.length > startTouches.length) {
+            startTouches = touches;
+        }
         if (moveOutOfBounds(touches)) {
             mState = UIGestureRecognizerState.Failed;
         }
@@ -47,13 +50,18 @@ public class UITapGestureRecognizer extends UIGestureRecognizer {
         if (mState == UIGestureRecognizerState.Failed) {
             return;
         }
-        int acceptedTouches = 0;
+        boolean tapCountPass = false;
+        boolean touchCountPass = false;
         for (int i = 0; i < touches.length; i++) {
             if (touches[i].getTapCount() == numberOfTapsRequired) {
-                acceptedTouches++;
+                tapCountPass = true;
             }
         }
-        if (acceptedTouches >= numberOfTouchesRequired) {
+        if (startTouches.length >= numberOfTouchesRequired) {
+            touchCountPass = true;
+        }
+
+        if (tapCountPass && touchCountPass) {
             if (multiTapTimer != null) {
                 multiTapTimer.cancel();
             }
@@ -98,7 +106,7 @@ public class UITapGestureRecognizer extends UIGestureRecognizer {
         if (view == null) {
             return true;
         }
-        double allowableMovement = 22.0;
+        double allowableMovement = 12.0;
         int accepted = 0;
         for (int i = 0; i < touches.length; i++) {
             CGPoint p0 = touches[i].locationInView(view);
@@ -110,7 +118,7 @@ public class UITapGestureRecognizer extends UIGestureRecognizer {
                 }
             }
         }
-        return accepted < startTouches.length;
+        return accepted < numberOfTouchesRequired;
     }
 
     @Override
