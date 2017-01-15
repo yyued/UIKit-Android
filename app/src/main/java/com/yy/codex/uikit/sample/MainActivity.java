@@ -11,6 +11,7 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.yy.codex.uikit.CGRect;
+import com.yy.codex.uikit.NSLog;
 import com.yy.codex.uikit.UIControl;
 import com.yy.codex.uikit.UILongPressGestureRecognizer;
 import com.yy.codex.uikit.UIPinchGestureRecognizer;
@@ -66,20 +67,14 @@ class TestView extends UIView {
         view.setFrame(new CGRect(20,20,300,300));
         view.setBackgroundColor(Color.BLACK);
         view.setUserInteractionEnabled(true);
-        UILongPressGestureRecognizer longPressGestureRecognizer = new UILongPressGestureRecognizer(new Runnable() {
-            @Override
-            public void run() {
-                view.setBackgroundColor(Color.RED);
-            }
-        });
-        longPressGestureRecognizer.numberOfTouchesRequired = 3;
-        view.addGestureRecognizer(longPressGestureRecognizer);
+        final UIPinchGestureRecognizer pinchGestureRecognizer = new UIPinchGestureRecognizer(this, "onPinch:");
+        view.addGestureRecognizer(pinchGestureRecognizer);
         addSubview(view);
 
     }
 
-//    public void onTouchUpInside(UIControl control) {
-//        control.setBackgroundColor(Color.GRAY);
-//    }
+    public void onPinch(UIPinchGestureRecognizer pinchGestureRecognizer) {
+        NSLog.log(pinchGestureRecognizer.getScale());
+    }
 
 }

@@ -57,11 +57,13 @@ public class UIViewTouchHandler {
     UITouch[] requestTouches(MotionEvent event) {
         int pointerCount = event.getPointerCount();
         UITouch[] touches = new UITouch[pointerCount];
+        double offsetX = (event.getRawX() - event.getX(0)) / UIScreen.mainScreen.scale();
+        double offsetY = (event.getRawY() - event.getY(0)) / UIScreen.mainScreen.scale();
         for (int i = 0; i < pointerCount; i++) {
             double x = event.getX(i) / UIScreen.mainScreen.scale();
-            double y = event.getX(i) / UIScreen.mainScreen.scale();
+            double y = event.getY(i) / UIScreen.mainScreen.scale();
             CGPoint convertedPoint = mHitTestedView.convertPoint(new CGPoint(x, y), mHitTestedView);
-            CGPoint rawPoint = new CGPoint(event.getRawX() / UIScreen.mainScreen.scale(), event.getRawY() / UIScreen.mainScreen.scale());
+            CGPoint rawPoint = new CGPoint(x + offsetX, y + offsetY);
             touches[i] = new UITouch(mHitTestedView, convertedPoint, rawPoint, requestPhase(event), mEventID);
         }
         return touches;
