@@ -169,14 +169,43 @@ public class UIControl extends UIView {
     protected void init() {
         setUserInteractionEnabled(true);
         UILongPressGestureRecognizer longPressGestureRecognizer = new UILongPressGestureRecognizer(this, "onLongPressed:");
-        longPressGestureRecognizer.minimumPressDuration = 0.15;
+        longPressGestureRecognizer.minimumPressDuration = 0.10;
         addGestureRecognizer(longPressGestureRecognizer);
         UITapGestureRecognizer tapGestureRecognizer = new UITapGestureRecognizer(this, "onTapped:");
         addGestureRecognizer(tapGestureRecognizer);
     }
 
+    private boolean mInside = true;
+
     protected void onLongPressed(UILongPressGestureRecognizer sender) {
-        setBackgroundColor(Color.RED);
+        if (sender.mState == UIGestureRecognizerState.Began) {
+            mInside = true;
+            onEvent(Event.TouchDown);
+        }
+        else if (sender.mState == UIGestureRecognizerState.Changed) {
+            if (isPointInside(sender.location(this))) {
+                onEvent(Event.TouchDragInside);
+                if (!mInside) {
+                    onEvent(Event.TouchDragEnter);
+                    mInside = true;
+                }
+            }
+            else {
+                onEvent(Event.TouchDragOutside);
+                if (mInside) {
+                    onEvent(Event.TouchDragExit);
+                    mInside = false;
+                }
+            }
+        }
+        else if (sender.mState == UIGestureRecognizerState.Ended) {
+            if (isPointInside(sender.location(this))) {
+                onEvent(Event.TouchUpInside);
+            }
+            else {
+                onEvent(Event.TouchUpOutside);
+            }
+        }
     }
 
     protected void onTapped(UITapGestureRecognizer sender) {
@@ -200,6 +229,12 @@ public class UIControl extends UIView {
                 runnables[i].run();
             }
         }
+    }
+
+    protected boolean isPointInside(CGPoint point) {
+        double xRange = this.getFrame().getWidth() / 2.0;
+        double yRange = this.getFrame().getHeight() / 2.0;
+        return point.inRange(xRange * 2, yRange * 2, new CGPoint(xRange, yRange));
     }
 
 }

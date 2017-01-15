@@ -79,7 +79,7 @@ public final class CGRect {
         return new CGRect(this.origin.getX(), this.origin.getY(), width, this.size.getHeight());
     }
 
-    public double getWidht() {
+    public double getWidth() {
         return size.getWidth();
     }
 

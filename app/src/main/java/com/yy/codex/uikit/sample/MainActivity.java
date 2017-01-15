@@ -57,24 +57,30 @@ class TestView extends UIView {
     }
 
     private void init() {
-//        UIControl control = new UIControl(getContext());
-//        control.setFrame(new CGRect(88, 88, 44, 44));
-//        control.setBackgroundColor(Color.BLACK);
-//        control.addTarget(this, "onTouchUpInside:", UIControl.Event.TouchUpInside);
-//        addSubview(control);
-
-        final UIView view = new UIView(getContext());
-        view.setFrame(new CGRect(20,20,300,300));
-        view.setBackgroundColor(Color.BLACK);
-        view.setUserInteractionEnabled(true);
-        final UIPinchGestureRecognizer pinchGestureRecognizer = new UIPinchGestureRecognizer(this, "onPinch:");
-        view.addGestureRecognizer(pinchGestureRecognizer);
-        addSubview(view);
-
+        UIControl control = new UIControl(getContext());
+        control.setFrame(new CGRect(88, 88, 88, 88));
+        control.setBackgroundColor(Color.BLACK);
+        control.addTarget(this, "onTouchUpInside:", UIControl.Event.TouchUpInside);
+        control.addTarget(this, "onTouchUpOutside:", UIControl.Event.TouchUpOutside);
+        control.addTarget(this, "onTouchDragExit:", UIControl.Event.TouchDragExit);
+        control.addTarget(this, "onTouchDragEnter:", UIControl.Event.TouchDragEnter);
+        addSubview(control);
     }
 
-    public void onPinch(UIPinchGestureRecognizer pinchGestureRecognizer) {
-        NSLog.log(pinchGestureRecognizer.getScale());
+    public void onTouchDragExit(UIControl control) {
+        control.setBackgroundColor(Color.GRAY);
+    }
+
+    public void onTouchDragEnter(UIControl control) {
+        control.setBackgroundColor(Color.GREEN);
+    }
+
+    public void onTouchUpInside(UIControl control) {
+        control.setBackgroundColor(Color.RED);
+    }
+
+    public void onTouchUpOutside(UIControl control) {
+        control.setBackgroundColor(Color.YELLOW);
     }
 
 }

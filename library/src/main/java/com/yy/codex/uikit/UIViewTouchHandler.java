@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.view.MotionEvent;
 
 import java.lang.ref.WeakReference;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -15,7 +16,7 @@ public class UIViewTouchHandler {
     WeakReference<UIView> viewWeakReference = null;
     UIView mHitTestedView;
     long mEventID;
-    int mTouchCount;
+    double[] mHash;
 
     UIViewTouchHandler(UIView view) {
         viewWeakReference = new WeakReference<UIView>(view);
@@ -34,6 +35,7 @@ public class UIViewTouchHandler {
         if (mHitTestedView != null) {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
+                    mHash = null;
                     mHitTestedView.touchesBegan(requestTouches(event), new UIEvent());
                     break;
                 case MotionEvent.ACTION_UP:
@@ -42,11 +44,14 @@ public class UIViewTouchHandler {
                 case MotionEvent.ACTION_POINTER_UP:
                     mHitTestedView.touchesEnded(requestTouches(event), new UIEvent());
                     break;
-
                 case MotionEvent.ACTION_MOVE:
+                    double[] cHash = requestHash(event);
+                    if (mHash != null && isHashSame(mHash, cHash)) {
+                        break;
+                    }
+                    mHash = cHash;
                     mHitTestedView.touchesMoved(requestTouches(event), new UIEvent());
                     break;
-
                 case MotionEvent.ACTION_POINTER_DOWN:
                     mHitTestedView.touchesBegan(requestTouches(event), new UIEvent());
                     break;
@@ -55,6 +60,10 @@ public class UIViewTouchHandler {
     }
 
     UITouch[] requestTouches(MotionEvent event) {
+        UIView view = viewWeakReference.get();
+        if (view == null) {
+            return new UITouch[0];
+        }
         int pointerCount = event.getPointerCount();
         UITouch[] touches = new UITouch[pointerCount];
         double offsetX = (event.getRawX() - event.getX(0)) / UIScreen.mainScreen.scale();
@@ -62,7 +71,7 @@ public class UIViewTouchHandler {
         for (int i = 0; i < pointerCount; i++) {
             double x = event.getX(i) / UIScreen.mainScreen.scale();
             double y = event.getY(i) / UIScreen.mainScreen.scale();
-            CGPoint convertedPoint = mHitTestedView.convertPoint(new CGPoint(x, y), mHitTestedView);
+            CGPoint convertedPoint = view.convertPoint(new CGPoint(x, y), mHitTestedView);
             CGPoint rawPoint = new CGPoint(x + offsetX, y + offsetY);
             touches[i] = new UITouch(mHitTestedView, convertedPoint, rawPoint, requestPhase(event), mEventID);
         }
@@ -84,6 +93,28 @@ public class UIViewTouchHandler {
             default:
                 return UITouch.Phase.Ended;
         }
+    }
+
+    double[] requestHash(MotionEvent event) {
+        int count = event.getPointerCount();
+        double[] hash = new double[count * 2];
+        for (int i = 0; i < count; i++) {
+            hash[i] = (double)event.getX(i);
+            hash[i + 1] = (double)event.getY(i);
+        }
+        return hash;
+    }
+
+    boolean isHashSame(double[] hashA, double[] hashB) {
+        if (hashA.length == hashB.length) {
+            for (int i = 0; i < hashA.length; i++) {
+                if (Double.compare(hashA[i], hashB[i]) != 0) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
     }
 
 }
