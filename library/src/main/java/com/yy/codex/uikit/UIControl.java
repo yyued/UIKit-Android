@@ -234,7 +234,7 @@ public class UIControl extends UIView {
     protected boolean isPointInside(CGPoint point) {
         double xRange = this.getFrame().getWidth() / 2.0;
         double yRange = this.getFrame().getHeight() / 2.0;
-        return point.inRange(xRange * 2, yRange * 2, new CGPoint(xRange, yRange));
+        return point.inRange(xRange + 22, yRange + 22, new CGPoint(xRange, yRange));
     }
 
 }
