@@ -12,6 +12,7 @@ import android.view.View;
 
 import com.yy.codex.uikit.CGRect;
 import com.yy.codex.uikit.UIControl;
+import com.yy.codex.uikit.UILongPressGestureRecognizer;
 import com.yy.codex.uikit.UIPinchGestureRecognizer;
 import com.yy.codex.uikit.UITapGestureRecognizer;
 import com.yy.codex.uikit.UIView;
@@ -65,15 +66,14 @@ class TestView extends UIView {
         view.setFrame(new CGRect(20,20,300,300));
         view.setBackgroundColor(Color.BLACK);
         view.setUserInteractionEnabled(true);
-        UITapGestureRecognizer tapGestureRecognizer = new UITapGestureRecognizer(new Runnable() {
+        UILongPressGestureRecognizer longPressGestureRecognizer = new UILongPressGestureRecognizer(new Runnable() {
             @Override
             public void run() {
                 view.setBackgroundColor(Color.RED);
             }
         });
-        tapGestureRecognizer.numberOfTouchesRequired = 1;
-        tapGestureRecognizer.numberOfTapsRequired = 4;
-        view.addGestureRecognizer(tapGestureRecognizer);
+        longPressGestureRecognizer.numberOfTouchesRequired = 3;
+        view.addGestureRecognizer(longPressGestureRecognizer);
         addSubview(view);
 
     }
