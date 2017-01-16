@@ -42,18 +42,14 @@ public class UIViewTouchHandler {
                     mHitTestedView.touchesEnded(requestTouches(event), new UIEvent());
                     break;
                 case MotionEvent.ACTION_POINTER_UP:
-                    mHitTestedView.touchesEnded(requestTouches(event), new UIEvent());
-                    break;
                 case MotionEvent.ACTION_MOVE:
+                case MotionEvent.ACTION_POINTER_DOWN:
                     double[] cHash = requestHash(event);
                     if (mHash != null && isHashSame(mHash, cHash)) {
                         break;
                     }
                     mHash = cHash;
                     mHitTestedView.touchesMoved(requestTouches(event), new UIEvent());
-                    break;
-                case MotionEvent.ACTION_POINTER_DOWN:
-                    mHitTestedView.touchesBegan(requestTouches(event), new UIEvent());
                     break;
             }
         }
