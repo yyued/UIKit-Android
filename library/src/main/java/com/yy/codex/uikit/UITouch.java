@@ -95,7 +95,7 @@ public class UITouch {
                 return getRelativePoint();
             }
             else {
-                hitTestedView.convertPoint(getRelativePoint(), view);
+                return hitTestedView.convertPoint(getRelativePoint(), view);
             }
         }
         return new CGPoint(0, 0);

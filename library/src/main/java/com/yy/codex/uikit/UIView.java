@@ -164,21 +164,21 @@ public class UIView extends UIResponder {
         UIView.addAnimationState(this, "alpha", oldValue, alpha);
     }
 
-    private int mTintColor = 0;
+    private UIColor mTintColor = null;
 
-    public void setTintColor(int tintColor) {
+    public void setTintColor(UIColor tintColor) {
         this.mTintColor = tintColor;
     }
 
-    public int getTintColor() {
-        int tintColor = mTintColor;
+    public UIColor getTintColor() {
+        UIColor tintColor = mTintColor;
         UIView superview = getSuperview();
-        while (tintColor == 0 && superview != null) {
+        while (tintColor == null && superview != null) {
             tintColor = superview.mTintColor;
             superview = superview.getSuperview();
         }
-        if (tintColor == 0) {
-            tintColor = 0xFF007AFF;
+        if (tintColor == null) {
+            tintColor = new UIColor(0x00/255.0, 0x7a/255.0, 0xff/255.0, 1.0);
         }
         return tintColor;
     }

@@ -132,14 +132,14 @@ public class NSAttributedString extends SpannableStringBuilder {
                 setSpan(new AlignmentSpan.Standard(style.alignment), range.location, range.location + range.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
         }
-        if (attrs.get(NSForegroundColorAttributeName) != null && Number.class.isAssignableFrom(attrs.get(NSForegroundColorAttributeName).getClass())) {
-            setSpan(new ForegroundColorSpan((int)attrs.get(NSForegroundColorAttributeName)), range.location, range.location + range.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        if (attrs.get(NSForegroundColorAttributeName) != null && UIColor.class.isAssignableFrom(attrs.get(NSForegroundColorAttributeName).getClass())) {
+            setSpan(new ForegroundColorSpan(((UIColor)(attrs.get(NSForegroundColorAttributeName))).toInt()), range.location, range.location + range.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
         else {
             setSpan(new ForegroundColorSpan(Color.BLACK), range.location, range.location + range.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
-        if (attrs.get(NSBackgroundColorAttributeName) != null && Number.class.isAssignableFrom(attrs.get(NSBackgroundColorAttributeName).getClass())) {
-            setSpan(new BackgroundColorSpan((int)attrs.get(NSBackgroundColorAttributeName)), range.location, range.location + range.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        if (attrs.get(NSBackgroundColorAttributeName) != null && UIColor.class.isAssignableFrom(attrs.get(NSBackgroundColorAttributeName).getClass())) {
+            setSpan(new BackgroundColorSpan(((UIColor)(attrs.get(NSBackgroundColorAttributeName))).toInt()), range.location, range.location + range.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
         if (attrs.get(NSKernAttributeName) != null && Number.class.isAssignableFrom(attrs.get(NSKernAttributeName).getClass())) {
             if ((float)attrs.get(NSKernAttributeName) != 0) {
