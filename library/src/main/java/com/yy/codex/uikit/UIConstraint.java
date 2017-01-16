@@ -20,7 +20,7 @@ public class UIConstraint {
     public boolean disabled = false;
 
     @NonNull
-    public LayoutRelate aligmentRelate = LayoutRelate.RelateToGroup;
+    public LayoutRelate alignmentRelate = LayoutRelate.RelateToGroup;
     public boolean centerHorizontally = false;
     public boolean centerVertically = false;
 
@@ -101,16 +101,16 @@ public class UIConstraint {
                 h = Math.ceil(iSize.getHeight());
             }
         }
-        if (centerHorizontally && aligmentRelate == LayoutRelate.RelateToGroup) {
+        if (centerHorizontally && alignmentRelate == LayoutRelate.RelateToGroup) {
             cx = superView != null ? superView.getFrame().size.getWidth() / 2.0 : 0.0;
         }
-        else if (centerHorizontally && aligmentRelate == LayoutRelate.RelateToPrevious) {
+        else if (centerHorizontally && alignmentRelate == LayoutRelate.RelateToPrevious) {
             cx = previousView != null ? previousView.getCenter().getX() : 0.0;
         }
-        if (centerVertically && aligmentRelate == LayoutRelate.RelateToGroup) {
+        if (centerVertically && alignmentRelate == LayoutRelate.RelateToGroup) {
             cy = superView != null ? superView.getFrame().size.getHeight() / 2.0 : 0.0;
         }
-        else if (centerVertically && aligmentRelate == LayoutRelate.RelateToPrevious) {
+        else if (centerVertically && alignmentRelate == LayoutRelate.RelateToPrevious) {
             cy = previousView != null ? previousView.getCenter().getY() : 0.0;
         }
         if (top != null) {

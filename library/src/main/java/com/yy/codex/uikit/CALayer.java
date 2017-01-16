@@ -2,6 +2,8 @@ package com.yy.codex.uikit;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
@@ -41,6 +43,7 @@ public class CALayer {
     @Nullable
     private Bitmap bitmap = null;
     private int bitmapGravity = CALayerBitmapPainter.GRAVITY_SCALE_ASCEPT_FIT;
+    private UIColor bitmapColor = null;
     private boolean clipToBounds = false;
     private boolean hidden = false;
 
@@ -248,13 +251,24 @@ public class CALayer {
                 paint.setShadowLayer((float) shadowRadius * scaledDensity, (float) shadowX * scaledDensity, (float) shadowY * scaledDensity, shadowColor.toInt());
             }
             canvas.drawRect(frameFormatted.toRectF(origin), paint);
-
+            
             if (bitmap != null){
                 paint.reset();
                 CGRect bitmapFrame = new CGRect(origin.getX(), origin.getY(), frameFormatted.size.getWidth(), frameFormatted.size.getHeight());
+                if (bitmapColor != null) {
+                    float[] colorTransform = {
+                            0, (float)bitmapColor.getR(), 0, 0, 0,
+                            0, 0, (float)bitmapColor.getG(), 0, 0,
+                            0, 0, 0, (float)bitmapColor.getB(), 0,
+                            0, 0, 0, (float)bitmapColor.getA(), 0};
+                    ColorMatrix colorMatrix = new ColorMatrix();
+                    colorMatrix.set(colorTransform);
+                    ColorMatrixColorFilter colorFilter = new ColorMatrixColorFilter(colorMatrix);
+                    paint.setColorFilter(colorFilter);
+                }
                 bitmapPainter.drawBitmap(canvas, bitmapFrame, bitmap, bitmapGravity, paint);
+                paint.setColorFilter(null);
             }
-
             if (borderWidth > 0){
                 paint.setStyle(Paint.Style.STROKE);
                 paint.setStrokeWidth((float) borderWidth * scaledDensity);
@@ -412,6 +426,10 @@ public class CALayer {
         return this;
     }
 
+    public void setBitmapColor(UIColor bitmapColor) {
+        this.bitmapColor = bitmapColor;
+    }
+
     @NonNull
     public CALayer setBitmapGravity(int bitmapGravity) {
         if (this.bitmapGravity != bitmapGravity){
@@ -446,7 +464,7 @@ public class CALayer {
             this.borderWidth = borderWidth;
             this.setNeedDisplay(true);
             if (this.requestRootLayer().view != null) {
-                UIView.animator.addAnimationState(this.requestRootLayer().view, "layer.borderWidth", oldValue, borderWidth);
+                UIView.sAnimator.addAnimationState(this.requestRootLayer().view, "layer.borderWidth", oldValue, borderWidth);
             }
         }
         return this;
@@ -468,7 +486,7 @@ public class CALayer {
             this.cornerRadius = cornerRadius;
             this.setNeedDisplay(true);
             if (this.requestRootLayer().view != null) {
-                UIView.animator.addAnimationState(this.requestRootLayer().view, "layer.cornerRadius", oldValue, cornerRadius);
+                UIView.sAnimator.addAnimationState(this.requestRootLayer().view, "layer.cornerRadius", oldValue, cornerRadius);
             }
         }
         return this;

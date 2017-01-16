@@ -8,29 +8,29 @@ import android.support.annotation.NonNull;
 
 public final class CGPoint {
 
-    private double x = 0.0;
-    private double y = 0.0;
+    private double mX = 0.0;
+    private double mY = 0.0;
 
     public CGPoint(double x, double y) {
-        this.x = x;
-        this.y = y;
+        this.mX = x;
+        this.mY = y;
     }
 
     public double getX() {
-        return this.x;
+        return this.mX;
     }
 
     public double getY() {
-        return this.y;
+        return this.mY;
     }
 
     public boolean inRange(double xRange, double yRange, @NonNull CGPoint toPoint) {
-        return Math.abs(toPoint.x - this.x) < xRange && Math.abs(toPoint.y - this.y) < yRange;
+        return Math.abs(toPoint.mX - this.mX) < xRange && Math.abs(toPoint.mY - this.mY) < yRange;
     }
 
     @NonNull
     @Override
     public String toString() {
-        return "CGPoint{x=" + x + ",y=" + y + "}";
+        return "CGPoint{x=" + mX + ",y=" + mY + "}";
     }
 }

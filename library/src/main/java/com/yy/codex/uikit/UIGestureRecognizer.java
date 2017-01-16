@@ -15,7 +15,7 @@ import java.util.TimerTask;
 
 public class UIGestureRecognizer {
 
-    @Nullable protected WeakReference<UIView> weakView;
+    @Nullable protected WeakReference<UIView> mWeakView;
     @Nullable WeakReference<UIGestureRecognizerLooper> mLooper;
     private boolean mEnabled = true;
     @Nullable private NSInvocation[] mActions;
@@ -66,12 +66,12 @@ public class UIGestureRecognizer {
     /* Props */
 
     void didAddToView(@NonNull UIView view) {
-        this.weakView = new WeakReference<UIView>(view);
+        this.mWeakView = new WeakReference<UIView>(view);
     }
 
     @Nullable
     public UIView getView() {
-        UIView view = this.weakView != null ? this.weakView.get() : null;
+        UIView view = this.mWeakView != null ? this.mWeakView.get() : null;
         if (view != null) {
             return view;
         }
@@ -97,25 +97,25 @@ public class UIGestureRecognizer {
         if (!mEnabled) {
             mState = UIGestureRecognizerState.Failed;
         }
-        lastPoints = touches;
+        mLastPoints = touches;
     }
 
     public void touchesMoved(@NonNull UITouch[] touches, @NonNull UIEvent event) {
         if (!mEnabled) {
             mState = UIGestureRecognizerState.Failed;
         }
-        lastPoints = touches;
+        mLastPoints = touches;
     }
 
     public void touchesEnded(@NonNull UITouch[] touches, @NonNull UIEvent event) {
         if (!mEnabled) {
             mState = UIGestureRecognizerState.Failed;
         }
-        lastPoints = touches;
+        mLastPoints = touches;
     }
 
     public void touchesCancelled(@NonNull UITouch[] touches, @NonNull UIEvent event) {
-        lastPoints = touches;
+        mLastPoints = touches;
         mState = UIGestureRecognizerState.Cancelled;
     }
 
@@ -136,7 +136,7 @@ public class UIGestureRecognizer {
 
     /* Points */
 
-    @Nullable protected UITouch[] lastPoints;
+    @Nullable protected UITouch[] mLastPoints;
 
     @NonNull
     public CGPoint location() {
@@ -154,14 +154,14 @@ public class UIGestureRecognizer {
 
     @NonNull
     public CGPoint location(@NonNull UIView inView, int touchIndex) {
-        if (lastPoints != null && touchIndex < lastPoints.length) {
-            return lastPoints[touchIndex].locationInView(inView);
+        if (mLastPoints != null && touchIndex < mLastPoints.length) {
+            return mLastPoints[touchIndex].locationInView(inView);
         }
         return new CGPoint(0, 0);
     }
 
     public int numberOfTouches() {
-        return lastPoints != null ? lastPoints.length : 0;
+        return mLastPoints != null ? mLastPoints.length : 0;
     }
 
     /* Delegates */

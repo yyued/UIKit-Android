@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.util.LruCache;
 
 /**
  * Created by cuiminghui on 2017/1/10.
@@ -12,48 +13,74 @@ import android.support.annotation.Nullable;
 
 public class UIImage {
 
+    public enum RenderingMode {
+        Automatic,
+        AlwaysOriginal,
+        AlwaysTemplate
+    }
+
+    private static LruCache<Number, Bitmap> sResCache = new LruCache<>(8 * 1024 * 1024);
+
     public UIImage() {
-        bitmap = Bitmap.createBitmap(0, 0, Bitmap.Config.ARGB_8888);
+        mBitmap = Bitmap.createBitmap(0, 0, Bitmap.Config.ARGB_8888);
     }
 
     public UIImage(@NonNull Context context, int resID) {
-        bitmap = BitmapFactory.decodeResource(context.getResources(), resID);
+        if (sResCache.get(resID) instanceof Bitmap) {
+            mBitmap = sResCache.get(resID);
+        }
+        else {
+            mBitmap = BitmapFactory.decodeResource(context.getResources(), resID);
+            sResCache.put(resID, mBitmap);
+        }
     }
 
     public UIImage(@NonNull byte[] data) {
-        bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+        mBitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
     }
 
     public UIImage(@NonNull Bitmap bitmap) {
-        this.bitmap = bitmap;
+        this.mBitmap = bitmap;
     }
 
     /* Scale */
 
-    private double scale = UIScreen.mainScreen.scale();
+    private double mScale = UIScreen.mainScreen.scale();
 
     public double getScale() {
-        return scale;
+        return mScale;
     }
 
     public void setScale(double scale) {
-        this.scale = scale;
+        this.mScale = scale;
+    }
+
+    /* RenderingMode */
+
+    private RenderingMode mRenderingMode = RenderingMode.Automatic;
+
+    public RenderingMode getRenderingMode() {
+        return mRenderingMode;
+    }
+
+    public void setRenderingMode(RenderingMode renderingMode) {
+        this.mRenderingMode = renderingMode;
     }
 
     /* Bitmap instance */
 
-    @Nullable private Bitmap bitmap = null;
+    @Nullable private Bitmap mBitmap = null;
 
     @Nullable
     public Bitmap getBitmap() {
-        return bitmap;
+        return mBitmap;
     }
 
     public CGSize getSize() {
-        if (bitmap == null) {
+        if (mBitmap == null) {
             return new CGSize(0, 0);
         }
-        return new CGSize(bitmap.getWidth() / scale, bitmap.getHeight() / scale);
+        return new CGSize(mBitmap.getWidth() / mScale, mBitmap.getHeight() / mScale);
     }
 
 }

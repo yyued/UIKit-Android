@@ -56,6 +56,7 @@ public class UIButton extends UIControl {
     protected void resetState() {
         super.resetState();
         resetTitleLabel();
+        resetImageView();
     }
 
     @Override
@@ -208,7 +209,18 @@ public class UIButton extends UIControl {
     }
 
     private void resetImageView() {
-        mImageView.setImage(currentImage());
+        UIImage image = currentImage();
+        if (image == null) {
+            return;
+        }
+        if (image.getRenderingMode() != UIImage.RenderingMode.AlwaysOriginal) {
+            mImageView.getLayer().setBitmapColor(currentTitleColor());
+        }
+        else {
+            mImageView.getLayer().setBitmapColor(null);
+        }
+        mImageView.setImage(image);
+        mImageView.invalidate();
         layoutSubviews();
     }
 

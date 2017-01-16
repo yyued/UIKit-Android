@@ -5,13 +5,9 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.OverScroller;
-import android.widget.ScrollView;
 
 /**
  * Created by it on 17/1/6.
@@ -76,17 +72,23 @@ public class UIScrollView extends UIView {
         double originX = (double) this.getScrollX();
         double originY = (double) this.getScrollY();
         super.scrollTo(x, y);
-        UIView.animator.addAnimationState(this, "contentOffset.x", originX, (double) x);
-        UIView.animator.addAnimationState(this, "contentOffset.y", originY, (double) y);
+        UIView.sAnimator.addAnimationState(this, "contentOffset.x", originX, (double) x);
+        UIView.sAnimator.addAnimationState(this, "contentOffset.y", originY, (double) y);
     }
 
-    boolean test = false;
-    UIViewAnimation viewAnimation;
+    private UIViewAnimation mViewAnimation;
+    private boolean tracking = false;
+    public boolean getTracking() {
+        return tracking;
+    }
+
     public void pan(UIPanGestureRecognizer panGestureRecognizer) {
-        if (!test) {
-            test = true;
+        if (!tracking) {
+            tracking = true;
             panGestureRecognizer.setTranslation(mContentOffset);
-            viewAnimation.cancel();
+            if (mViewAnimation != null) {
+                mViewAnimation.cancel();
+            }
         }
 
         double scrollY = -(panGestureRecognizer.translation().getY());
@@ -98,13 +100,15 @@ public class UIScrollView extends UIView {
 
 
         if (panGestureRecognizer.getState() == UIGestureRecognizerState.Ended) {
-            test = false;
-            viewAnimation = UIView.animator.spring(new Runnable() {
-                @Override
-                public void run() {
-                    scrollTo(0, 0);
-                }
-            }, null);
+            tracking = false;
+//            if (mContentOffset.getY() < 0) {
+//                viewAnimation = UIView.sAnimator.linear(0.25, new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        scrollTo(0, 0);
+//                    }
+//                }, null);
+//            }
         }
 
     }
