@@ -15,6 +15,7 @@ import com.yy.codex.uikit.NSLog;
 import com.yy.codex.uikit.UIButton;
 import com.yy.codex.uikit.UIConstraint;
 import com.yy.codex.uikit.UIControl;
+import com.yy.codex.uikit.UIFont;
 import com.yy.codex.uikit.UILongPressGestureRecognizer;
 import com.yy.codex.uikit.UIPinchGestureRecognizer;
 import com.yy.codex.uikit.UITapGestureRecognizer;
@@ -66,16 +67,10 @@ class TestView extends UIView {
         constraint.width = "200";
         constraint.height = "44";
         button.setConstraint(constraint);
-//        button.setWantsLayer(true);
-//        button.getLayer().setBackgroundColor(Color.RED);
-//        button.getLayer().setBorderColor(Color.BLACK);
-//        button.getLayer().setBorderWidth(1);
-//        button.getLayer().setCornerRadius(22.0);
-//        button.setFrame(new CGRect(88, 88, 88, 88));
-//        control.addTarget(this, "onTouchUpInside:", UIControl.Event.TouchUpInside);
-//        control.addTarget(this, "onTouchUpOutside:", UIControl.Event.TouchUpOutside);
-//        control.addTarget(this, "onTouchDragExit:", UIControl.Event.TouchDragExit);
-//        control.addTarget(this, "onTouchDragEnter:", UIControl.Event.TouchDragEnter);
+        button.setFont(new UIFont(34));
+        button.setTitle("Hello", UIControl.State.Normal);
+
+
         addSubview(button);
     }
 

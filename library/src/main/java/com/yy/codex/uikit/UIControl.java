@@ -203,6 +203,8 @@ public class UIControl extends UIView {
             mInside = true;
             onEvent(Event.TouchDown);
             mTracking = true;
+            mHighlighted = true;
+            resetState();
         }
         else if (sender.mState == UIGestureRecognizerState.Changed) {
             if (isPointInside(sender.location(this))) {
@@ -210,7 +212,8 @@ public class UIControl extends UIView {
                 if (!mInside) {
                     onEvent(Event.TouchDragEnter);
                     mInside = true;
-                    setHighlighted(true);
+                    mHighlighted = true;
+                    resetState();
                 }
             }
             else {
@@ -218,7 +221,8 @@ public class UIControl extends UIView {
                 if (mInside) {
                     onEvent(Event.TouchDragExit);
                     mInside = false;
-                    setHighlighted(false);
+                    mHighlighted = false;
+                    resetState();
                 }
             }
         }
@@ -230,8 +234,9 @@ public class UIControl extends UIView {
                 onEvent(Event.TouchUpOutside);
             }
             mTracking = false;
+            mHighlighted = false;
+            resetState();
         }
-        resetState();
     }
 
     protected void onTapped(UITapGestureRecognizer sender) {
@@ -296,10 +301,6 @@ public class UIControl extends UIView {
 
     private boolean mHighlighted = false;
 
-    protected void setHighlighted(boolean highlighted) {
-        this.mHighlighted = highlighted;
-    }
-
     public boolean isHighlighted() {
         return mHighlighted;
     }
@@ -310,19 +311,17 @@ public class UIControl extends UIView {
 
     protected void resetState() {
         EnumSet<State> state = EnumSet.of(State.Normal);
-        state.clear();
         if (isTracking() && isHighlighted()) {
             state.add(State.Highlighted);
         }
-        else {
-            state.add(State.Normal);
-        }
         if (isSelected()) {
+            state.remove(State.Normal);
             state.add(State.Selected);
         }
         if (!isEnabled()) {
             state.add(State.Disabled);
         }
+        mState = state;
     }
 
     public EnumSet<State> getState() {
