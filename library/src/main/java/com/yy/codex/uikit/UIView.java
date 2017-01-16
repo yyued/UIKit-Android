@@ -172,6 +172,7 @@ public class UIView extends UIResponder {
 
     public void setTintColor(UIColor tintColor) {
         this.mTintColor = tintColor;
+        tintColorDidChanged();
     }
 
     public UIColor getTintColor() {
@@ -185,6 +186,13 @@ public class UIView extends UIResponder {
             tintColor = new UIColor(0x00/255.0, 0x7a/255.0, 0xff/255.0, 1.0);
         }
         return tintColor;
+    }
+
+    public void tintColorDidChanged() {
+        UIView[] subviews = getSubviews();
+        for (int i = 0; i < subviews.length; i++) {
+            subviews[i].tintColorDidChanged();
+        }
     }
 
     /* category UIView Hierarchy */
@@ -266,7 +274,7 @@ public class UIView extends UIResponder {
     }
 
     public void willMoveToSuperview(@Nullable UIView newSuperview) {
-
+        tintColorDidChanged();
     }
 
     public void didMoveToSuperview() {

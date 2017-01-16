@@ -190,7 +190,7 @@ public class UIControl extends UIView {
     protected void init() {
         setUserInteractionEnabled(true);
         UILongPressGestureRecognizer longPressGestureRecognizer = new UILongPressGestureRecognizer(this, "onLongPressed:");
-        longPressGestureRecognizer.minimumPressDuration = 0.10;
+        longPressGestureRecognizer.minimumPressDuration = 0.05;
         addGestureRecognizer(longPressGestureRecognizer);
         UITapGestureRecognizer tapGestureRecognizer = new UITapGestureRecognizer(this, "onTapped:");
         addGestureRecognizer(tapGestureRecognizer);

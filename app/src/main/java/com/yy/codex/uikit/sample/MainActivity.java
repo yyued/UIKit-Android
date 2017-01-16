@@ -11,6 +11,7 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.yy.codex.uikit.CGRect;
+import com.yy.codex.uikit.NSAttributedString;
 import com.yy.codex.uikit.NSLog;
 import com.yy.codex.uikit.UIButton;
 import com.yy.codex.uikit.UIColor;
@@ -21,6 +22,11 @@ import com.yy.codex.uikit.UILongPressGestureRecognizer;
 import com.yy.codex.uikit.UIPinchGestureRecognizer;
 import com.yy.codex.uikit.UITapGestureRecognizer;
 import com.yy.codex.uikit.UIView;
+
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -61,25 +67,22 @@ class TestView extends UIView {
     }
 
     private void init() {
+
+        setTintColor(UIColor.redColor);
+
         UIButton button = new UIButton(getContext());
         UIConstraint constraint = new UIConstraint();
         constraint.centerVertically = true;
         constraint.centerHorizontally = true;
         constraint.width = "200";
         constraint.height = "44";
-        button.setSelected(true);
+        button.setSelected(false);
         button.setConstraint(constraint);
-        button.setFont(new UIFont(17));
-        button.setTitle("Hello", UIControl.State.Normal);
-        button.setTitleColor(UIColor.redColor, UIControl.State.Selected);
-
-
-
-
         button.setWantsLayer(true);
         button.getLayer().setCornerRadius(22);
         button.getLayer().setBorderWidth(1.0);
         button.getLayer().setBorderColor(Color.BLACK);
+        button.setTitle("Hello", UIControl.State.Normal);
 
         addSubview(button);
     }

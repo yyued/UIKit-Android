@@ -67,9 +67,16 @@ public class UIButton extends UIControl {
         super.onTapped(sender);
     }
 
+    /* UIView */
+
+    @Override
+    public void tintColorDidChanged() {
+        super.tintColorDidChanged();
+        resetTitleLabel();
+    }
+
     /* Title */
 
-    @NonNull private HashMap<EnumSet<State>, NSAttributedString> mAttributedTitles = new HashMap<>();
     @NonNull private UILabel mTitleLabel;
 
     private void initTitleLabel() {
@@ -83,7 +90,7 @@ public class UIButton extends UIControl {
 
     private void resetTitleLabel() {
         if (mAttributedTitles.size() > 0) {
-
+            mTitleLabel.setAttributedText(currentAttributedTitle());
         }
         else {
             NSAttributedString attributedString = new NSAttributedString(currentTitle(), new HashMap(){{
@@ -110,11 +117,11 @@ public class UIButton extends UIControl {
         }
     }
 
-    public void setTitle(@Nullable String title, State state) {
+    public void setTitle(@NonNull String title, State state) {
         setTitle(title, EnumSet.of(State.Normal, state));
     }
 
-    public void setTitle(@Nullable String title, EnumSet<State> state) {
+    public void setTitle(@NonNull String title, EnumSet<State> state) {
         if (state.contains(State.Selected)) {
             state.remove(State.Normal);
         }
@@ -160,6 +167,34 @@ public class UIButton extends UIControl {
 
     public void setFont(@NonNull final UIFont font) {
         mFont = font;
+        resetTitleLabel();
+    }
+
+    @NonNull private HashMap<EnumSet<State>, NSAttributedString> mAttributedTitles = new HashMap<>();
+
+    @Nullable
+    public NSAttributedString currentAttributedTitle() {
+        EnumSet<State> state = getState();
+        if (mAttributedTitles.get(state) != null) {
+            return mAttributedTitles.get(state);
+        }
+        else if (mAttributedTitles.get(EnumSet.of(State.Normal)) != null){
+            return mAttributedTitles.get(EnumSet.of(State.Normal));
+        }
+        else {
+            return null;
+        }
+    }
+
+    public void setAttributedTitle(@NonNull NSAttributedString attributedString, State state) {
+        setAttributedTitle(attributedString, EnumSet.of(State.Normal, state));
+    }
+
+    public void setAttributedTitle(@NonNull NSAttributedString attributedString, EnumSet<State> state) {
+        if (state.contains(State.Selected)) {
+            state.remove(State.Normal);
+        }
+        mAttributedTitles.put(state, attributedString);
         resetTitleLabel();
     }
 
