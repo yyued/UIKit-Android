@@ -43,6 +43,10 @@ public class UIViewAnimator {
         animationState = new HashMap<>();
     }
 
+    static public UIViewAnimation linear(@NonNull Runnable animations) {
+        return linear(0.25, animations, null);
+    }
+
     static public UIViewAnimation linear(double duration, @NonNull Runnable animations, @Nullable final Runnable completion) {
         final UIViewAnimation animation = new UIViewAnimation();
         resetAnimationState();
@@ -109,6 +113,10 @@ public class UIViewAnimator {
         }
         animationState = null;
         return animation;
+    }
+
+    static public UIViewAnimation spring(@NonNull Runnable animations) {
+        return spring(animations, null);
     }
 
     static public UIViewAnimation spring(@NonNull Runnable animations, @Nullable final Runnable completion) {
