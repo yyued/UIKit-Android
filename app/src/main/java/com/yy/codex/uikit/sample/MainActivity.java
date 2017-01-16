@@ -17,7 +17,9 @@ import com.yy.codex.uikit.UIButton;
 import com.yy.codex.uikit.UIColor;
 import com.yy.codex.uikit.UIConstraint;
 import com.yy.codex.uikit.UIControl;
+import com.yy.codex.uikit.UIEdgeInsets;
 import com.yy.codex.uikit.UIFont;
+import com.yy.codex.uikit.UIImage;
 import com.yy.codex.uikit.UILongPressGestureRecognizer;
 import com.yy.codex.uikit.UIPinchGestureRecognizer;
 import com.yy.codex.uikit.UITapGestureRecognizer;
@@ -67,9 +69,6 @@ class TestView extends UIView {
     }
 
     private void init() {
-
-        setTintColor(UIColor.redColor);
-
         UIButton button = new UIButton(getContext());
         UIConstraint constraint = new UIConstraint();
         constraint.centerVertically = true;
@@ -82,8 +81,14 @@ class TestView extends UIView {
         button.getLayer().setCornerRadius(22);
         button.getLayer().setBorderWidth(1.0);
         button.getLayer().setBorderColor(Color.BLACK);
-        button.setTitle("Hello", UIControl.State.Normal);
-
+        button.setTitle("Hello, World!", UIControl.State.Normal);
+        UIImage image = new UIImage(getContext(), R.drawable.ani_16);
+        image.setScale(3.0);
+        button.setImage(image, UIControl.State.Normal);
+        button.setContentHorizontalAlignment(UIControl.ContentHorizontalAlignment.Center);
+        button.setContentVerticalAlignment(UIControl.ContentVerticalAlignment.Center);
+        button.setImageEdgeInsets(new UIEdgeInsets(0, 0, 0, 4));
+        button.setTitleEdgeInsets(new UIEdgeInsets(0, 4, 0, 0));
         addSubview(button);
     }
 

@@ -47,9 +47,10 @@ public class UIButton extends UIControl {
     protected void init() {
         super.init();
         initTitleLabel();
+        initImageView();
     }
 
-    /* State Handler */
+    /* UIControl */
 
     @Override
     protected void resetState() {
@@ -81,10 +82,8 @@ public class UIButton extends UIControl {
 
     private void initTitleLabel() {
         mTitleLabel = new UILabel(getContext());
-        UIConstraint constraint = new UIConstraint();
-        constraint.centerHorizontally = true;
-        constraint.centerVertically = true;
-        mTitleLabel.setConstraint(constraint);
+        mTitleLabel.setNumberOfLines(1);
+        mTitleLabel.setLinebreakMode(NSLineBreakMode.ByTruncatingMiddle);
         addSubview(mTitleLabel);
     }
 
@@ -99,6 +98,7 @@ public class UIButton extends UIControl {
             }});
             mTitleLabel.setAttributedText(attributedString);
         }
+        layoutSubviews();
     }
 
     private HashMap<EnumSet<State>, String> mTitleTexts = new HashMap<>();
@@ -198,4 +198,126 @@ public class UIButton extends UIControl {
         resetTitleLabel();
     }
 
+    /* ImageView */
+
+    @NonNull UIImageView mImageView;
+
+    private void initImageView() {
+        mImageView = new UIImageView(getContext());
+        addSubview(mImageView);
+    }
+
+    private void resetImageView() {
+        mImageView.setImage(currentImage());
+        layoutSubviews();
+    }
+
+    @NonNull private HashMap<EnumSet<State>, UIImage> mImages = new HashMap<>();
+
+    @Nullable
+    public UIImage currentImage() {
+        EnumSet<State> state = getState();
+        if (mImages.get(state) != null) {
+            return mImages.get(state);
+        }
+        else if (mImages.get(EnumSet.of(State.Normal)) != null){
+            return mImages.get(EnumSet.of(State.Normal));
+        }
+        else {
+            return null;
+        }
+    }
+
+    public void setImage(UIImage image, State state) {
+        setImage(image, EnumSet.of(state));
+    }
+
+    public void setImage(@NonNull UIImage image, EnumSet<State> state) {
+        if (state.contains(State.Selected)) {
+            state.remove(State.Normal);
+        }
+        mImages.put(state, image);
+        resetImageView();
+    }
+
+    /* Layouts */
+
+    private UIEdgeInsets mContentEdgeInsets = new UIEdgeInsets(0, 0, 0, 0);
+    private UIEdgeInsets mTitleEdgeInsets = new UIEdgeInsets(0, 0, 0, 0);
+    private UIEdgeInsets mImageEdgeInsets = new UIEdgeInsets(0, 0, 0, 0);
+
+    public void setContentEdgeInsets(UIEdgeInsets contentEdgeInsets) {
+        this.mContentEdgeInsets = contentEdgeInsets;
+        layoutSubviews();
+    }
+
+    public void setTitleEdgeInsets(UIEdgeInsets titleEdgeInsets) {
+        this.mTitleEdgeInsets = titleEdgeInsets;
+        layoutSubviews();
+    }
+
+    public void setImageEdgeInsets(UIEdgeInsets imageEdgeInsets) {
+        this.mImageEdgeInsets = imageEdgeInsets;
+        layoutSubviews();
+    }
+
+    @Override
+    public void layoutSubviews() {
+        super.layoutSubviews();
+        mTitleLabel.setMaxWidth(getFrame().getWidth() - mImageView.intrinsicContentSize().getWidth() - (mContentEdgeInsets.getLeft() + mContentEdgeInsets.getRight() + mImageEdgeInsets.getLeft() + mImageEdgeInsets.getRight() + mTitleEdgeInsets.getLeft() + mTitleEdgeInsets.getRight()));
+        double contentWidth = mTitleLabel.intrinsicContentSize().getWidth() + mImageView.intrinsicContentSize().getWidth();
+        contentWidth += mContentEdgeInsets.getLeft() + mContentEdgeInsets.getRight() + mImageEdgeInsets.getLeft() + mImageEdgeInsets.getRight() + mTitleEdgeInsets.getLeft() + mTitleEdgeInsets.getRight();
+        double imageViewOriginY = 0;
+        double titleLabelOriginY = 0;
+        if (getContentVerticalAlignment() == ContentVerticalAlignment.Center) {
+            imageViewOriginY = (getFrame().getHeight() - mImageView.intrinsicContentSize().getHeight()) / 2.0;
+            titleLabelOriginY = (getFrame().getHeight() - mTitleLabel.intrinsicContentSize().getHeight()) / 2.0;
+        }
+        else if (getContentVerticalAlignment() == ContentVerticalAlignment.Bottom) {
+            imageViewOriginY = getFrame().getHeight() - mImageView.intrinsicContentSize().getHeight();
+            titleLabelOriginY = getFrame().getHeight() - mTitleLabel.intrinsicContentSize().getHeight();
+        }
+        if (getContentHorizontalAlignment() == ContentHorizontalAlignment.Left) {
+            mImageView.setFrame(new CGRect(
+                    mContentEdgeInsets.getLeft() + mImageEdgeInsets.getLeft(),
+                    imageViewOriginY,
+                    mImageView.intrinsicContentSize().getWidth(),
+                    mImageView.intrinsicContentSize().getHeight())
+            );
+            mTitleLabel.setFrame(new CGRect(
+                    mContentEdgeInsets.getLeft() + mImageEdgeInsets.getLeft() + mImageView.getFrame().getWidth() + mImageEdgeInsets.getRight() + mTitleEdgeInsets.getLeft(),
+                    titleLabelOriginY,
+                    mTitleLabel.intrinsicContentSize().getWidth(),
+                    mTitleLabel.intrinsicContentSize().getHeight())
+            );
+        }
+        else if (getContentHorizontalAlignment() == ContentHorizontalAlignment.Center) {
+            mImageView.setFrame(new CGRect(
+                    ((getFrame().getWidth() - contentWidth) / 2.0) + mContentEdgeInsets.getLeft() + mImageEdgeInsets.getLeft(),
+                    imageViewOriginY,
+                    mImageView.intrinsicContentSize().getWidth(),
+                    mImageView.intrinsicContentSize().getHeight())
+            );
+            mTitleLabel.setFrame(new CGRect(
+                    ((getFrame().getWidth() - contentWidth) / 2.0) + mContentEdgeInsets.getLeft() + mImageEdgeInsets.getLeft() + mImageView.getFrame().getWidth() + mImageEdgeInsets.getRight() + mTitleEdgeInsets.getLeft(),
+                    titleLabelOriginY,
+                    mTitleLabel.intrinsicContentSize().getWidth(),
+                    mTitleLabel.intrinsicContentSize().getHeight())
+            );
+        }
+        else if (getContentHorizontalAlignment() == ContentHorizontalAlignment.Right) {
+            mImageView.setFrame(new CGRect(
+                    (getFrame().getWidth() - contentWidth) + mContentEdgeInsets.getLeft() + mImageEdgeInsets.getLeft(),
+                    imageViewOriginY,
+                    mImageView.intrinsicContentSize().getWidth(),
+                    mImageView.intrinsicContentSize().getHeight())
+            );
+            mTitleLabel.setFrame(new CGRect(
+                    (getFrame().getWidth() - contentWidth) + mContentEdgeInsets.getLeft() + mImageEdgeInsets.getLeft() + mImageView.getFrame().getWidth() + mImageEdgeInsets.getRight() + mTitleEdgeInsets.getLeft(),
+                    titleLabelOriginY,
+                    mTitleLabel.intrinsicContentSize().getWidth(),
+                    mTitleLabel.intrinsicContentSize().getHeight())
+            );
+        }
+    }
 }

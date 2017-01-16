@@ -50,6 +50,17 @@ public class UIImageView extends UIView {
         setContentMode(UIViewContentMode.ScaleToFill);
     }
 
+    /* UIView */
+
+    @NonNull
+    @Override
+    public CGSize intrinsicContentSize() {
+        if (image == null) {
+            return new CGSize(0, 0);
+        }
+        return new CGSize(image.getSize().getWidth(), image.getSize().getHeight());
+    }
+
     /* UIImageView Props */
 
     /* Image Source */
