@@ -13,6 +13,7 @@ import android.view.View;
 import com.yy.codex.uikit.CGRect;
 import com.yy.codex.uikit.NSLog;
 import com.yy.codex.uikit.UIButton;
+import com.yy.codex.uikit.UIColor;
 import com.yy.codex.uikit.UIConstraint;
 import com.yy.codex.uikit.UIControl;
 import com.yy.codex.uikit.UIFont;
@@ -66,12 +67,18 @@ class TestView extends UIView {
         constraint.centerHorizontally = true;
         constraint.width = "200";
         constraint.height = "44";
+        button.setSelected(true);
         button.setConstraint(constraint);
         button.setFont(new UIFont(17));
         button.setTitle("Hello", UIControl.State.Normal);
+        button.setTitleColor(UIColor.redColor, UIControl.State.Selected);
+
+
+
+
         button.setWantsLayer(true);
         button.getLayer().setCornerRadius(22);
-        button.getLayer().setBorderWidth(1);
+        button.getLayer().setBorderWidth(1.0);
         button.getLayer().setBorderColor(Color.BLACK);
 
         addSubview(button);

@@ -96,10 +96,10 @@ public class UIView extends UIResponder {
         this.setMinimumHeight((int) mHeight);
         CALayer.scaledDensity = (float) UIScreen.mainScreen.scale();
         this.layer.setFrame(new CGRect(0, 0, frame.size.getWidth(), frame.size.getHeight()));
-        UIView.addAnimationState(this, "frame.origin.x", oldValue.origin.getX(), frame.origin.getX());
-        UIView.addAnimationState(this, "frame.origin.y", oldValue.origin.getY(), frame.origin.getY());
-        UIView.addAnimationState(this, "frame.size.width", oldValue.size.getWidth(), frame.size.getWidth());
-        UIView.addAnimationState(this, "frame.size.height", oldValue.size.getHeight(), frame.size.getHeight());
+        UIView.animator.addAnimationState(this, "frame.origin.x", oldValue.origin.getX(), frame.origin.getX());
+        UIView.animator.addAnimationState(this, "frame.origin.y", oldValue.origin.getY(), frame.origin.getY());
+        UIView.animator.addAnimationState(this, "frame.size.width", oldValue.size.getWidth(), frame.size.getWidth());
+        UIView.animator.addAnimationState(this, "frame.size.height", oldValue.size.getHeight(), frame.size.getHeight());
     }
 
     @NonNull
@@ -157,11 +157,15 @@ public class UIView extends UIResponder {
 
     /* category UIView Rendering */
 
+    public void setBackgroundColor(UIColor color) {
+        setBackgroundColor(color.toInt());
+    }
+
     @Override
     public void setAlpha(float alpha) {
         float oldValue = this.getAlpha();
         super.setAlpha(alpha);
-        UIView.addAnimationState(this, "alpha", oldValue, alpha);
+        UIView.animator.addAnimationState(this, "alpha", oldValue, alpha);
     }
 
     private UIColor mTintColor = null;
@@ -534,6 +538,8 @@ public class UIView extends UIResponder {
 
     /* UIView animation */
 
+    static UIViewAnimator animator = new UIViewAnimator();
+
     public void animate(@NonNull String aKey, float aValue) {
         if (aKey.equalsIgnoreCase("frame.origin.x")) {
             setFrame(this.frame.setX(aValue));
@@ -554,194 +560,5 @@ public class UIView extends UIResponder {
             getLayer().animate(aKey, aValue);
         }
     }
-
-    @Nullable static private HashMap<UIView, HashMap<String, UIViewPropertiesLog>> animationState = null;
-
-    static void addAnimationState(@NonNull UIView view, @NonNull String aKey, double originValue, double finalValue) {
-        if (animationState == null) {
-            return;
-        }
-        if (originValue == finalValue) {
-            return;
-        }
-        if (animationState.get(view) == null) {
-            animationState.put(view, new HashMap<String, UIViewPropertiesLog>());
-        }
-        UIViewPropertiesLog<Number> log = new UIViewPropertiesLog<>();
-        log.valueType = 1;
-        log.originValue = originValue;
-        log.finalValue = finalValue;
-        animationState.get(view).put(aKey, log);
-    }
-
-    static private void resetAnimationState() {
-        animationState = new HashMap<>();
-    }
-
-    static public void animate(double duration, @NonNull Runnable animations, @Nullable final Runnable completion) {
-        resetAnimationState();
-        animations.run();
-        final int[] aniCount = {0};
-        for (final Map.Entry<UIView, HashMap<String, UIViewPropertiesLog>> viewProps: animationState.entrySet()) {
-            for (final Map.Entry<String, UIViewPropertiesLog> animateProp: viewProps.getValue().entrySet()) {
-                UIViewPropertiesLog log = animateProp.getValue();
-                if (log.valueType == 1) {
-                    aniCount[0]++;
-                    viewProps.getKey().animate(animateProp.getKey(), (float)((double)log.originValue));
-                    ValueAnimator animator = ValueAnimator.ofFloat((float)((double)log.originValue), (float)((double)log.finalValue));
-                    animator.setDuration((long) (duration * 1000));
-                    animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                        @Override
-                        public void onAnimationUpdate(@NonNull ValueAnimator valueAnimator) {
-                            float currentValue = (float)valueAnimator.getAnimatedValue();
-                            viewProps.getKey().animate(animateProp.getKey(), currentValue);
-                        }
-                    });
-                    animator.addListener(new Animator.AnimatorListener() {
-                        @Override
-                        public void onAnimationStart(Animator animator) {
-
-                        }
-
-                        @Override
-                        public void onAnimationEnd(Animator animator) {
-                            aniCount[0]--;
-                            if (aniCount[0] <= 0 && completion != null) {
-                                completion.run();
-                            }
-                        }
-
-                        @Override
-                        public void onAnimationCancel(Animator animator) {
-
-                        }
-
-                        @Override
-                        public void onAnimationRepeat(Animator animator) {
-
-                        }
-                    });
-                    animator.setTarget(viewProps.getKey());
-                    animator.start();
-                }
-            }
-        }
-        if (aniCount[0] <= 0) {
-            if (completion != null) {
-                completion.run();
-            }
-        }
-        animationState = null;
-    }
-
-    static public void animateWithSpring(@NonNull Runnable animations, @Nullable final Runnable completion) {
-        resetAnimationState();
-        animations.run();
-        final int[] aniCount = {0};
-        SpringSystem system = SpringSystem.create();
-        for (final Map.Entry<UIView, HashMap<String, UIViewPropertiesLog>> viewProps: animationState.entrySet()) {
-            for (final Map.Entry<String, UIViewPropertiesLog> animateProp: viewProps.getValue().entrySet()) {
-                final UIViewPropertiesLog log = animateProp.getValue();
-                if (log.valueType == 1) {
-                    aniCount[0]++;
-                    viewProps.getKey().animate(animateProp.getKey(), (float)((double)log.originValue));
-                    Spring spring = system.createSpring();
-                    spring.setCurrentValue((float)((double)log.originValue));
-                    spring.addListener(new SpringListener() {
-                        @Override
-                        public void onSpringUpdate(@NonNull Spring spring) {
-                            float currentValue = (float)spring.getCurrentValue();
-                            viewProps.getKey().animate(animateProp.getKey(), currentValue);
-                        }
-
-                        @Override
-                        public void onSpringAtRest(@NonNull Spring spring) {
-                            float currentValue = (float)spring.getCurrentValue();
-                            viewProps.getKey().animate(animateProp.getKey(), currentValue);
-                            aniCount[0]--;
-                            if (aniCount[0] <= 0 && completion != null) {
-                                completion.run();
-                            }
-                        }
-                        @Override
-                        public void onSpringActivate(Spring spring) {
-                        }
-
-                        @Override
-                        public void onSpringEndStateChange(Spring spring) {
-                        }
-                    });
-                    spring.setEndValue((float)((double)log.finalValue));
-                }
-            }
-        }
-        if (aniCount[0] <= 0) {
-            if (completion != null) {
-                completion.run();
-            }
-        }
-        animationState = null;
-    }
-
-    static public void animateWithSpring(double tension, double friction, double velocity, @NonNull Runnable animations, @Nullable final Runnable completion) {
-        resetAnimationState();
-        animations.run();
-        final int[] aniCount = {0};
-        SpringSystem system = SpringSystem.create();
-        for (final Map.Entry<UIView, HashMap<String, UIViewPropertiesLog>> viewProps: animationState.entrySet()) {
-            for (final Map.Entry<String, UIViewPropertiesLog> animateProp: viewProps.getValue().entrySet()) {
-                UIViewPropertiesLog log = animateProp.getValue();
-                if (log.valueType == 1) {
-                    aniCount[0]++;
-                    viewProps.getKey().animate(animateProp.getKey(), (float)((double)log.originValue));
-                    Spring spring = system.createSpring();
-                    spring.setCurrentValue((float)((double)log.originValue));
-                    SpringConfig config = new SpringConfig(tension, friction);
-                    spring.setSpringConfig(config);
-                    spring.setVelocity(velocity);
-                    spring.addListener(new SpringListener() {
-                        @Override
-                        public void onSpringUpdate(@NonNull Spring spring) {
-                            float currentValue = (float)spring.getCurrentValue();
-                            viewProps.getKey().animate(animateProp.getKey(), currentValue);
-                        }
-
-                        @Override
-                        public void onSpringAtRest(@NonNull Spring spring) {
-                            float currentValue = (float)spring.getCurrentValue();
-                            viewProps.getKey().animate(animateProp.getKey(), currentValue);
-                            aniCount[0]--;
-                            if (aniCount[0] <= 0 && completion != null) {
-                                completion.run();
-                            }
-                        }
-
-                        @Override
-                        public void onSpringActivate(Spring spring) {
-                        }
-
-                        @Override
-                        public void onSpringEndStateChange(Spring spring) {
-                        }
-                    });
-                    spring.setEndValue((float)((double)log.finalValue));
-                }
-            }
-        }
-        if (aniCount[0] <= 0) {
-            if (completion != null) {
-                completion.run();
-            }
-        }
-        animationState = null;
-    }
-
-}
-
-class UIViewPropertiesLog<T> {
-
-    int valueType = 0;
-    T originValue;
-    T finalValue;
 
 }

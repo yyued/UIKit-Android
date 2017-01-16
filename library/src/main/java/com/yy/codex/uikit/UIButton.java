@@ -1,9 +1,9 @@
 package com.yy.codex.uikit;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
 import android.view.View;
@@ -71,7 +71,6 @@ public class UIButton extends UIControl {
 
     @NonNull private HashMap<EnumSet<State>, NSAttributedString> mAttributedTitles = new HashMap<>();
     @NonNull private UILabel mTitleLabel;
-    @NonNull private UIFont mFont = new UIFont(17);
 
     private void initTitleLabel() {
         mTitleLabel = new UILabel(getContext());
@@ -83,77 +82,85 @@ public class UIButton extends UIControl {
     }
 
     private void resetTitleLabel() {
+        if (mAttributedTitles.size() > 0) {
+
+        }
+        else {
+            NSAttributedString attributedString = new NSAttributedString(currentTitle(), new HashMap(){{
+                put(NSAttributedString.NSForegroundColorAttributeName, currentTitleColor());
+                put(NSAttributedString.NSFontAttributeName, mFont);
+            }});
+            mTitleLabel.setAttributedText(attributedString);
+        }
+    }
+
+    private HashMap<EnumSet<State>, String> mTitleTexts = new HashMap<>();
+
+    @NonNull
+    protected String currentTitle() {
         EnumSet<State> state = getState();
-        NSAttributedString attributedTitle = mAttributedTitles.get(state);
-        if (attributedTitle != null) {
-            mTitleLabel.setAttributedText(attributedTitle);
+        if (mTitleTexts.get(state) != null) {
+            return mTitleTexts.get(state);
+        }
+        else if (mTitleTexts.get(EnumSet.of(State.Normal)) != null){
+            return mTitleTexts.get(EnumSet.of(State.Normal));
         }
         else {
-            if (state.contains(State.Highlighted)) {
-                NSAttributedString defaultAttributedTitle = null;
-                if (state.contains(State.Selected)) {
-                    defaultAttributedTitle = mAttributedTitles.get(EnumSet.of(State.Selected));
-                }
-                if (defaultAttributedTitle == null) {
-                    defaultAttributedTitle = mAttributedTitles.get(EnumSet.of(State.Normal));
-                }
-                if (defaultAttributedTitle != null) {
-                    NSMutableAttributedString mutableAttributedString = defaultAttributedTitle.mutableCopy();
-                    final Object vColor = mutableAttributedString.getAttribute(NSAttributedString.NSForegroundColorAttributeName, 0);
-                    if (vColor != null && vColor instanceof UIColor) {
-                        mutableAttributedString.setAttributes(new HashMap<String, Object>(){{
-                            put(NSAttributedString.NSForegroundColorAttributeName, ((UIColor) vColor).colorWithAlpha(0.3));
-                        }}, new NSRange(0, mutableAttributedString.length()));
-                        defaultAttributedTitle = mutableAttributedString.copy();
-                    }
-                    mTitleLabel.setAttributedText(defaultAttributedTitle);
-                }
+            return "";
+        }
+    }
+
+    public void setTitle(@Nullable String title, State state) {
+        setTitle(title, EnumSet.of(State.Normal, state));
+    }
+
+    public void setTitle(@Nullable String title, EnumSet<State> state) {
+        if (state.contains(State.Selected)) {
+            state.remove(State.Normal);
+        }
+        mTitleTexts.put(state, title);
+        resetTitleLabel();
+    }
+
+    private HashMap<EnumSet<State>, UIColor> mTitleColors = new HashMap<>();
+
+    @NonNull
+    protected UIColor currentTitleColor() {
+        EnumSet<State> state = getState();
+        if (mTitleColors.get(state) != null) {
+            return mTitleColors.get(state);
+        }
+        else if (mTitleColors.get(EnumSet.of(State.Normal)) != null){
+            return mTitleColors.get(EnumSet.of(State.Normal));
+        }
+        else {
+            if (state.contains(State.Disabled)) {
+                return UIColor.blackColor.colorWithAlpha(0.3);
             }
+            if (state.contains(State.Highlighted) && state.contains(State.Normal)) {
+                return getTintColor().colorWithAlpha(0.3);
+            }
+            return getTintColor();
         }
     }
 
-    public void setTitle(String title, State state) {
-        setTitle(title, EnumSet.of(state));
+    public void setTitleColor(@NonNull UIColor color, State state) {
+        setTitleColor(color, EnumSet.of(State.Normal, state));
     }
 
-    public void setTitle(String title, EnumSet<State> state) {
-        NSAttributedString attributedString = mAttributedTitles.get(state);
-        if (attributedString == null) {
-            attributedString = new NSAttributedString(title, new HashMap(){{
-                put(NSAttributedString.NSForegroundColorAttributeName, getTintColor());
-                put(NSAttributedString.NSFontAttributeName, mFont);
-            }});
+    public void setTitleColor(@NonNull final UIColor color, EnumSet<State> state) {
+        if (state.contains(State.Selected)) {
+            state.remove(State.Normal);
         }
-        else {
-            attributedString = new NSAttributedString(title, attributedString.getAttributes(0));
-        }
-        mAttributedTitles.put(state, attributedString);
+        mTitleColors.put(state, color);
         resetTitleLabel();
     }
 
-    public void setTitleColor(int color, State state) {
-        setTitleColor(color, EnumSet.of(state));
-    }
+    private UIFont mFont = new UIFont(17);
 
-    public void setTitleColor(final int color, EnumSet<State> state) {
-        NSAttributedString attributedString = mAttributedTitles.get(state);
-        if (attributedString == null) {
-            attributedString = new NSAttributedString("", new HashMap(){{
-                put(NSAttributedString.NSForegroundColorAttributeName, color);
-                put(NSAttributedString.NSFontAttributeName, mFont);
-            }});
-        }
-        else {
-            NSMutableAttributedString mutableAttributedString = attributedString.mutableCopy();
-            mutableAttributedString.addAttribute(NSAttributedString.NSForegroundColorAttributeName, color, new NSRange(0, mutableAttributedString.length()));
-            attributedString = mutableAttributedString.copy();
-        }
-        mAttributedTitles.put(state, attributedString);
+    public void setFont(@NonNull final UIFont font) {
+        mFont = font;
         resetTitleLabel();
-    }
-
-    public void setFont(@NonNull UIFont font) {
-        this.mFont = font;
     }
 
 }

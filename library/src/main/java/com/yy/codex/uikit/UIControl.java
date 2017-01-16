@@ -276,6 +276,7 @@ public class UIControl extends UIView {
     public void setEnabled(boolean enabled) {
         this.mEnabled = enabled;
         setUserInteractionEnabled(enabled);
+        resetState();
     }
 
     @Override
@@ -290,6 +291,7 @@ public class UIControl extends UIView {
     @Override
     public void setSelected(boolean selected) {
         this.mSelected = selected;
+        resetState();
     }
 
     @Override
