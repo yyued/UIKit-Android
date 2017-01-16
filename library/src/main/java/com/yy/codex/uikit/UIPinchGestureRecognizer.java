@@ -77,9 +77,9 @@ public class UIPinchGestureRecognizer extends UIGestureRecognizer {
     }
 
     private void resetScale() {
-        if (lastPoints.length >= 2) {
-            mScaleCurrentPoints[0] = lastPoints[0].getAbsolutePoint();
-            mScaleCurrentPoints[1] = lastPoints[1].getAbsolutePoint();
+        if (mLastPoints.length >= 2) {
+            mScaleCurrentPoints[0] = mLastPoints[0].getAbsolutePoint();
+            mScaleCurrentPoints[1] = mLastPoints[1].getAbsolutePoint();
         }
         double initialLength = Math.sqrt(Math.pow(mScaleInitialPoints[0].getX() - mScaleInitialPoints[1].getX(), 2) + Math.pow(mScaleInitialPoints[0].getY() - mScaleInitialPoints[1].getY(), 2));
         double currentLength = Math.sqrt(Math.pow(mScaleCurrentPoints[0].getX() - mScaleCurrentPoints[1].getX(), 2) + Math.pow(mScaleCurrentPoints[0].getY() - mScaleCurrentPoints[1].getY(), 2));
@@ -88,9 +88,9 @@ public class UIPinchGestureRecognizer extends UIGestureRecognizer {
     }
 
     private void resetScaleInitialPoints() {
-        if (lastPoints.length >= 2) {
-            mScaleInitialPoints[0] = lastPoints[0].getAbsolutePoint();
-            mScaleInitialPoints[1] = lastPoints[1].getAbsolutePoint();
+        if (mLastPoints.length >= 2) {
+            mScaleInitialPoints[0] = mLastPoints[0].getAbsolutePoint();
+            mScaleInitialPoints[1] = mLastPoints[1].getAbsolutePoint();
         }
     }
 

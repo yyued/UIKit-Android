@@ -6,20 +6,20 @@ package com.yy.codex.uikit;
 
 public final class CGSize {
 
-    private double width = 0.0;
-    private double height = 0.0;
+    private double mWidth = 0.0;
+    private double mHeight = 0.0;
 
     public CGSize(double width, double height) {
-        this.width = width;
-        this.height = height;
+        this.mWidth = width;
+        this.mHeight = height;
     }
 
     public double getWidth() {
-        return width;
+        return mWidth;
     }
 
     public double getHeight() {
-        return height;
+        return mHeight;
     }
 
 }

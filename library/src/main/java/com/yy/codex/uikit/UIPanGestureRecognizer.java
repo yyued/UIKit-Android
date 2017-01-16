@@ -9,9 +9,9 @@ import android.support.annotation.Nullable;
 
 public class UIPanGestureRecognizer extends UIGestureRecognizer {
 
-    @Nullable UITouch[] startTouches;
-    @NonNull CGPoint translatePoint = new CGPoint(0, 0);
-    @NonNull CGPoint velocityPoint = new CGPoint(0, 0);
+    @Nullable UITouch[] mStartTouches;
+    @NonNull CGPoint mTranslatePoint = new CGPoint(0, 0);
+    @NonNull CGPoint mVelocityPoint = new CGPoint(0, 0);
 
     public UIPanGestureRecognizer(@NonNull Object target, @NonNull String selector) {
         super(target, selector);
@@ -28,7 +28,7 @@ public class UIPanGestureRecognizer extends UIGestureRecognizer {
             mState = UIGestureRecognizerState.Failed;
             return;
         }
-        startTouches = touches;
+        mStartTouches = touches;
         setTranslation(new CGPoint(0, 0));
     }
 
@@ -38,7 +38,7 @@ public class UIPanGestureRecognizer extends UIGestureRecognizer {
             resetVelocity(touches);
         }
         super.touchesMoved(touches, event);
-        if (startTouches == null) {
+        if (mStartTouches == null) {
             mState = UIGestureRecognizerState.Failed;
             return;
         }
@@ -67,43 +67,43 @@ public class UIPanGestureRecognizer extends UIGestureRecognizer {
 
     @NonNull
     public CGPoint translation() {
-        if (lastPoints.length > 0 && translatePoint != null) {
+        if (mLastPoints.length > 0 && mTranslatePoint != null) {
             return new CGPoint(
-                    lastPoints[0].getAbsolutePoint().getX() - translatePoint.getX(),
-                    lastPoints[0].getAbsolutePoint().getY() - translatePoint.getY()
+                    mLastPoints[0].getAbsolutePoint().getX() - mTranslatePoint.getX(),
+                    mLastPoints[0].getAbsolutePoint().getY() - mTranslatePoint.getY()
             );
         }
         return new CGPoint(0, 0);
     }
 
     public void setTranslation(@NonNull CGPoint point) {
-        if (lastPoints.length > 0) {
-            translatePoint = new CGPoint(
-                    lastPoints[0].getAbsolutePoint().getX() + point.getX(),
-                    lastPoints[0].getAbsolutePoint().getY() + point.getY()
+        if (mLastPoints.length > 0) {
+            mTranslatePoint = new CGPoint(
+                    mLastPoints[0].getAbsolutePoint().getX() + point.getX(),
+                    mLastPoints[0].getAbsolutePoint().getY() + point.getY()
             );
         }
     }
 
     @NonNull
     public CGPoint velocity() {
-        return velocityPoint;
+        return mVelocityPoint;
     }
 
     private void resetVelocity(@NonNull UITouch[] nextTouches) {
-        if (lastPoints.length > 0 && nextTouches.length > 0) {
-            double ts = ((double)(nextTouches[0].getTimestamp() - lastPoints[0].getTimestamp()) / 1000.0);
+        if (mLastPoints.length > 0 && nextTouches.length > 0) {
+            double ts = ((double)(nextTouches[0].getTimestamp() - mLastPoints[0].getTimestamp()) / 1000.0);
             if (ts == 0.0) { }
             else {
-                double vx = (nextTouches[0].getAbsolutePoint().getX() - lastPoints[0].getAbsolutePoint().getX()) / ts;
-                double vy = (nextTouches[0].getAbsolutePoint().getY() - lastPoints[0].getAbsolutePoint().getY()) / ts;
-                velocityPoint = new CGPoint(vx, vy);
+                double vx = (nextTouches[0].getAbsolutePoint().getX() - mLastPoints[0].getAbsolutePoint().getX()) / ts;
+                double vy = (nextTouches[0].getAbsolutePoint().getY() - mLastPoints[0].getAbsolutePoint().getY()) / ts;
+                mVelocityPoint = new CGPoint(vx, vy);
             }
         }
     }
 
     private boolean moveOutOfBounds(@NonNull UITouch[] touches) {
-        if (startTouches == null) {
+        if (mStartTouches == null) {
             return true;
         }
         UIView view = getView();
@@ -114,8 +114,8 @@ public class UIPanGestureRecognizer extends UIGestureRecognizer {
         double allowableMovement = 8.0;
         for (int i = 0; i < touches.length; i++) {
             CGPoint p0 = touches[i].locationInView(view);
-            for (int j = 0; j < startTouches.length; j++) {
-                CGPoint p1 = startTouches[j].locationInView(view);
+            for (int j = 0; j < mStartTouches.length; j++) {
+                CGPoint p1 = mStartTouches[j].locationInView(view);
                 if (!p0.inRange(allowableMovement, allowableMovement, p1)) {
                     accepted++;
                     break;

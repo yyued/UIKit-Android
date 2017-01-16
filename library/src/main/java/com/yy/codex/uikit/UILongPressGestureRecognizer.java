@@ -12,12 +12,12 @@ import java.util.TimerTask;
 
 public class UILongPressGestureRecognizer extends UIGestureRecognizer {
 
-    private UITouch[] startTouches;
-    private Timer startTimer;
+    private UITouch[] mStartTouches;
+    private Timer mStartTimer;
 
-    public double minimumPressDuration = 0.5;
-    public double allowableMovement = 10.0;
-    public int numberOfTouchesRequired = 1;
+    public double mMinimumPressDuration = 0.5;
+    public double mAllowableMovement = 10.0;
+    public int mNumberOfTouchesRequired = 1;
 
     public UILongPressGestureRecognizer(@NonNull Object target, @NonNull String selector) {
         super(target, selector);
@@ -30,8 +30,8 @@ public class UILongPressGestureRecognizer extends UIGestureRecognizer {
     @Override
     public void touchesBegan(@NonNull UITouch[] touches, @NonNull UIEvent event) {
         super.touchesBegan(touches, event);
-        startTouches = touches;
-        if (touches.length >= numberOfTouchesRequired) {
+        mStartTouches = touches;
+        if (touches.length >= mNumberOfTouchesRequired) {
             setupTimer();
         }
     }
@@ -39,8 +39,8 @@ public class UILongPressGestureRecognizer extends UIGestureRecognizer {
     private void setupTimer() {
         final UILongPressGestureRecognizer self = this;
         final Handler handler = new Handler();
-        startTimer = new Timer();
-        startTimer.schedule(new TimerTask() {
+        mStartTimer = new Timer();
+        mStartTimer.schedule(new TimerTask() {
             @Override
             public void run() {
                 handler.post(new Runnable() {
@@ -58,20 +58,20 @@ public class UILongPressGestureRecognizer extends UIGestureRecognizer {
                     }
                 });
             }
-        }, (long)(minimumPressDuration * 1000));
+        }, (long)(mMinimumPressDuration * 1000));
     }
 
     @Override
     public void touchesMoved(@NonNull UITouch[] touches, @NonNull UIEvent event) {
         super.touchesMoved(touches, event);
-        if (mState == UIGestureRecognizerState.Possible && touches.length > startTouches.length && touches.length >= numberOfTouchesRequired) {
-            startTouches = touches;
+        if (mState == UIGestureRecognizerState.Possible && touches.length > mStartTouches.length && touches.length >= mNumberOfTouchesRequired) {
+            mStartTouches = touches;
             setupTimer();
         }
-        else if (mState == UIGestureRecognizerState.Possible && startTouches.length >= numberOfTouchesRequired && moveOutOfBounds(touches)) {
+        else if (mState == UIGestureRecognizerState.Possible && mStartTouches.length >= mNumberOfTouchesRequired && moveOutOfBounds(touches)) {
             mState = UIGestureRecognizerState.Failed;
-            if (startTimer != null) {
-                startTimer.cancel();
+            if (mStartTimer != null) {
+                mStartTimer.cancel();
             }
         }
         else if (mState == UIGestureRecognizerState.Began || mState == UIGestureRecognizerState.Changed) {
@@ -83,8 +83,8 @@ public class UILongPressGestureRecognizer extends UIGestureRecognizer {
     @Override
     public void touchesEnded(@NonNull UITouch[] touches, @NonNull UIEvent event) {
         super.touchesEnded(touches, event);
-        if (startTimer != null) {
-            startTimer.cancel();
+        if (mStartTimer != null) {
+            mStartTimer.cancel();
         }
         if (mState == UIGestureRecognizerState.Began || mState == UIGestureRecognizerState.Changed) {
             mState = UIGestureRecognizerState.Ended;
@@ -96,7 +96,7 @@ public class UILongPressGestureRecognizer extends UIGestureRecognizer {
     }
 
     private boolean moveOutOfBounds(@NonNull UITouch[] touches) {
-        if (startTouches == null) {
+        if (mStartTouches == null) {
             return true;
         }
         UIView view = getView();
@@ -106,15 +106,15 @@ public class UILongPressGestureRecognizer extends UIGestureRecognizer {
         int accepted = 0;
         for (int i = 0; i < touches.length; i++) {
             CGPoint p0 = touches[i].locationInView(view);
-            for (int j = 0; j < startTouches.length; j++) {
-                CGPoint p1 = startTouches[j].locationInView(view);
-                if (p0.inRange(allowableMovement, allowableMovement, p1)) {
+            for (int j = 0; j < mStartTouches.length; j++) {
+                CGPoint p1 = mStartTouches[j].locationInView(view);
+                if (p0.inRange(mAllowableMovement, mAllowableMovement, p1)) {
                     accepted++;
                     break;
                 }
             }
         }
-        return accepted < numberOfTouchesRequired;
+        return accepted < mNumberOfTouchesRequired;
     }
 
 }

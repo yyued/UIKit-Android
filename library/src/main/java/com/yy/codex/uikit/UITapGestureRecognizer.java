@@ -1,7 +1,6 @@
 package com.yy.codex.uikit;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -12,7 +11,7 @@ import java.util.TimerTask;
 
 public class UITapGestureRecognizer extends UIGestureRecognizer {
 
-    private UITouch[] startTouches;
+    private UITouch[] mStartTouches;
 
     public int numberOfTapsRequired = 1;
     public int numberOfTouchesRequired = 1;
@@ -28,14 +27,14 @@ public class UITapGestureRecognizer extends UIGestureRecognizer {
     @Override
     public void touchesBegan(@NonNull UITouch[] touches, @NonNull UIEvent event) {
         super.touchesBegan(touches, event);
-        startTouches = touches;
+        mStartTouches = touches;
     }
 
     @Override
     public void touchesMoved(@NonNull UITouch[] touches, @NonNull UIEvent event) {
         super.touchesMoved(touches, event);
-        if (touches.length > startTouches.length) {
-            startTouches = touches;
+        if (touches.length > mStartTouches.length) {
+            mStartTouches = touches;
         }
         if (moveOutOfBounds(touches)) {
             mState = UIGestureRecognizerState.Failed;
@@ -57,7 +56,7 @@ public class UITapGestureRecognizer extends UIGestureRecognizer {
                 tapCountPass = true;
             }
         }
-        if (startTouches.length >= numberOfTouchesRequired) {
+        if (mStartTouches.length >= numberOfTouchesRequired) {
             touchCountPass = true;
         }
 
@@ -99,7 +98,7 @@ public class UITapGestureRecognizer extends UIGestureRecognizer {
     }
 
     private boolean moveOutOfBounds(@NonNull UITouch[] touches) {
-        if (startTouches == null) {
+        if (mStartTouches == null) {
             return true;
         }
         UIView view = getView();
@@ -110,8 +109,8 @@ public class UITapGestureRecognizer extends UIGestureRecognizer {
         int accepted = 0;
         for (int i = 0; i < touches.length; i++) {
             CGPoint p0 = touches[i].locationInView(view);
-            for (int j = 0; j < startTouches.length; j++) {
-                CGPoint p1 = startTouches[j].locationInView(view);
+            for (int j = 0; j < mStartTouches.length; j++) {
+                CGPoint p1 = mStartTouches[j].locationInView(view);
                 if (p0.inRange(allowableMovement, allowableMovement, p1)) {
                     accepted++;
                     break;

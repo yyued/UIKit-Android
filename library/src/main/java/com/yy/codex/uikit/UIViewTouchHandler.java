@@ -4,8 +4,6 @@ import android.support.annotation.NonNull;
 import android.view.MotionEvent;
 
 import java.lang.ref.WeakReference;
-import java.util.List;
-import java.util.Set;
 
 /**
  * Created by saiakirahui on 2017/1/14.
@@ -13,17 +11,17 @@ import java.util.Set;
 
 public class UIViewTouchHandler {
 
-    WeakReference<UIView> viewWeakReference = null;
+    WeakReference<UIView> mViewWeakReference = null;
     UIView mHitTestedView;
     long mEventID;
     double[] mHash;
 
     UIViewTouchHandler(UIView view) {
-        viewWeakReference = new WeakReference<UIView>(view);
+        mViewWeakReference = new WeakReference<UIView>(view);
     }
 
     void onTouchEvent(@NonNull MotionEvent event) {
-        UIView view = viewWeakReference.get();
+        UIView view = mViewWeakReference.get();
         if (view == null) {
             return;
         }
@@ -56,7 +54,7 @@ public class UIViewTouchHandler {
     }
 
     UITouch[] requestTouches(MotionEvent event) {
-        UIView view = viewWeakReference.get();
+        UIView view = mViewWeakReference.get();
         if (view == null) {
             return new UITouch[0];
         }

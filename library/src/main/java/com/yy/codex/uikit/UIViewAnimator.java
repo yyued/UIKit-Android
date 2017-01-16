@@ -20,27 +20,27 @@ import java.util.Map;
 public class UIViewAnimator {
 
     @Nullable
-    static private HashMap<UIView, HashMap<String, UIViewAnimatorState>> animationState = null;
+    static private HashMap<UIView, HashMap<String, UIViewAnimatorState>> sAnimationState = null;
 
     static void addAnimationState(@NonNull UIView view, @NonNull String aKey, double originValue, double finalValue) {
-        if (animationState == null) {
+        if (sAnimationState == null) {
             return;
         }
         if (originValue == finalValue) {
             return;
         }
-        if (animationState.get(view) == null) {
-            animationState.put(view, new HashMap<String, UIViewAnimatorState>());
+        if (sAnimationState.get(view) == null) {
+            sAnimationState.put(view, new HashMap<String, UIViewAnimatorState>());
         }
         UIViewAnimatorState<Number> log = new UIViewAnimatorState<>();
         log.valueType = 1;
         log.originValue = originValue;
         log.finalValue = finalValue;
-        animationState.get(view).put(aKey, log);
+        sAnimationState.get(view).put(aKey, log);
     }
 
     static private void resetAnimationState() {
-        animationState = new HashMap<>();
+        sAnimationState = new HashMap<>();
     }
 
     static public UIViewAnimation linear(@NonNull Runnable animations) {
@@ -52,7 +52,7 @@ public class UIViewAnimator {
         resetAnimationState();
         animations.run();
         final int[] aniCount = {0};
-        for (final Map.Entry<UIView, HashMap<String, UIViewAnimatorState>> viewProps: animationState.entrySet()) {
+        for (final Map.Entry<UIView, HashMap<String, UIViewAnimatorState>> viewProps: sAnimationState.entrySet()) {
             for (final Map.Entry<String, UIViewAnimatorState> animateProp: viewProps.getValue().entrySet()) {
                 UIViewAnimatorState log = animateProp.getValue();
                 if (log.valueType == 1) {
@@ -111,7 +111,7 @@ public class UIViewAnimator {
                 completion.run();
             }
         }
-        animationState = null;
+        sAnimationState = null;
         return animation;
     }
 
@@ -125,7 +125,7 @@ public class UIViewAnimator {
         animations.run();
         final int[] aniCount = {0};
         SpringSystem system = SpringSystem.create();
-        for (final Map.Entry<UIView, HashMap<String, UIViewAnimatorState>> viewProps: animationState.entrySet()) {
+        for (final Map.Entry<UIView, HashMap<String, UIViewAnimatorState>> viewProps: sAnimationState.entrySet()) {
             for (final Map.Entry<String, UIViewAnimatorState> animateProp: viewProps.getValue().entrySet()) {
                 final UIViewAnimatorState log = animateProp.getValue();
                 if (log.valueType == 1) {
@@ -173,7 +173,7 @@ public class UIViewAnimator {
                 completion.run();
             }
         }
-        animationState = null;
+        sAnimationState = null;
         return animation;
     }
 
@@ -183,7 +183,7 @@ public class UIViewAnimator {
         animations.run();
         final int[] aniCount = {0};
         SpringSystem system = SpringSystem.create();
-        for (final Map.Entry<UIView, HashMap<String, UIViewAnimatorState>> viewProps: animationState.entrySet()) {
+        for (final Map.Entry<UIView, HashMap<String, UIViewAnimatorState>> viewProps: sAnimationState.entrySet()) {
             for (final Map.Entry<String, UIViewAnimatorState> animateProp: viewProps.getValue().entrySet()) {
                 UIViewAnimatorState log = animateProp.getValue();
                 if (log.valueType == 1) {
@@ -238,7 +238,7 @@ public class UIViewAnimator {
                 completion.run();
             }
         }
-        animationState = null;
+        sAnimationState = null;
         return animation;
     }
 

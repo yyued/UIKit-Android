@@ -1,10 +1,8 @@
 package com.yy.codex.uikit;
 
-import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.os.Build;
-import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
@@ -55,42 +53,42 @@ public class UIImageView extends UIView {
     @NonNull
     @Override
     public CGSize intrinsicContentSize() {
-        if (image == null) {
+        if (mImage == null) {
             return new CGSize(0, 0);
         }
-        return new CGSize(image.getSize().getWidth(), image.getSize().getHeight());
+        return new CGSize(mImage.getSize().getWidth(), mImage.getSize().getHeight());
     }
 
     /* UIImageView Props */
 
     /* Image Source */
 
-    @Nullable private UIImage image;
+    @Nullable private UIImage mImage;
 
     @Nullable
     public UIImage getImage() {
-        return image;
+        return mImage;
     }
 
     public void setImage(@Nullable UIImage image) {
-        if (this.image == image) {
+        if (this.mImage == image) {
             return;
         }
-        this.image = image;
+        this.mImage = image;
         this.getLayer().setBitmap(image.getBitmap());
         invalidate();
     }
 
     /* Content Mode */
 
-    private UIViewContentMode contentMode = UIViewContentMode.ScaleToFill;
+    private UIViewContentMode mContentMode = UIViewContentMode.ScaleToFill;
 
     public UIViewContentMode getContentMode() {
-        return contentMode;
+        return mContentMode;
     }
 
     public void setContentMode(UIViewContentMode contentMode) {
-        this.contentMode = contentMode;
+        this.mContentMode = contentMode;
         if (contentMode == UIViewContentMode.ScaleToFill) {
             this.getLayer().setBitmapGravity(CALayer.GRAVITY_SCALE_TO_FILL);
         }
@@ -131,70 +129,70 @@ public class UIImageView extends UIView {
 
     /* Animated Image */
 
-    @Nullable private ValueAnimator animator = null;
-    @Nullable private UIImage[] animationImages = new UIImage[0];   // The array must contain UIImages. Setting hides the single image. default is nil
-    private double animationDuration = 0.0;     // for one cycle of images. default is number of images * 1/30th of a second (i.e. 30 fps)
-    private int animationRepeatCount = 0;       // 0 means infinite (default is 0)
+    @Nullable private ValueAnimator mAnimator = null;
+    @Nullable private UIImage[] mAnimationImages = new UIImage[0];   // The array must contain UIImages. Setting hides the single mImage. default is nil
+    private double mAnimationDuration = 0.0;     // for one cycle of images. default is number of images * 1/30th of a second (i.e. 30 fps)
+    private int mAnimationRepeatCount = 0;       // 0 means infinite (default is 0)
 
     @Nullable
     public UIImage[] getAnimationImages() {
-        return animationImages;
+        return mAnimationImages;
     }
 
     public void setAnimationImages(@Nullable UIImage[] animationImages) {
         stopAnimating();
-        this.animationImages = animationImages;
-        this.animationDuration = this.animationImages.length * (1.0 / 30.0);
+        this.mAnimationImages = animationImages;
+        this.mAnimationDuration = this.mAnimationImages.length * (1.0 / 30.0);
     }
 
     public double getAnimationDuration() {
-        return animationDuration;
+        return mAnimationDuration;
     }
 
     public void setAnimationDuration(double animationDuration) {
-        this.animationDuration = animationDuration;
+        this.mAnimationDuration = animationDuration;
     }
 
     public int getAnimationRepeatCount() {
-        return animationRepeatCount;
+        return mAnimationRepeatCount;
     }
 
     public void setAnimationRepeatCount(int animationRepeatCount) {
-        this.animationRepeatCount = animationRepeatCount;
+        this.mAnimationRepeatCount = animationRepeatCount;
     }
 
     public void startAnimating() {
         stopAnimating();
-        if (animationImages != null && animationImages.length > 0) {
-            ValueAnimator valueAnimator = new ValueAnimator().ofInt(0, animationImages.length);
-            valueAnimator.setDuration((long)(animationDuration * 1000));
-            if (animationRepeatCount == 0) {
+        if (mAnimationImages != null && mAnimationImages.length > 0) {
+            ValueAnimator valueAnimator = new ValueAnimator().ofInt(0, mAnimationImages.length);
+            valueAnimator.setDuration((long)(mAnimationDuration * 1000));
+            if (mAnimationRepeatCount == 0) {
                 valueAnimator.setRepeatCount(99999);
             }
             else {
-                valueAnimator.setRepeatCount(animationRepeatCount);
+                valueAnimator.setRepeatCount(mAnimationRepeatCount);
             }
             valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(@NonNull ValueAnimator valueAnimator) {
                     int currentIndex = (int)valueAnimator.getAnimatedValue();
-                    if (currentIndex < animationImages.length) {
-                        setImage(animationImages[currentIndex]);
+                    if (currentIndex < mAnimationImages.length) {
+                        setImage(mAnimationImages[currentIndex]);
                     }
                 }
             });
             valueAnimator.start();
-            this.animator = valueAnimator;
+            this.mAnimator = valueAnimator;
         }
     }
 
     public void stopAnimating() {
-        if (this.animator != null){
-            this.animator.cancel();
+        if (this.mAnimator != null){
+            this.mAnimator.cancel();
         }
     }
 
     public boolean isAnimating() {
-        return this.animator != null && this.animator.isRunning();
+        return this.mAnimator != null && this.mAnimator.isRunning();
     }
 }

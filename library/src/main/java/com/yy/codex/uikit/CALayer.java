@@ -2,14 +2,11 @@ package com.yy.codex.uikit;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
-import android.graphics.LightingColorFilter;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
 import android.support.annotation.NonNull;
@@ -657,7 +654,7 @@ public class CALayer {
             this.borderWidth = borderWidth;
             this.setNeedDisplay(true);
             if (this.requestRootLayer().view != null) {
-                UIView.animator.addAnimationState(this.requestRootLayer().view, "layer.borderWidth", oldValue, borderWidth);
+                UIView.sAnimator.addAnimationState(this.requestRootLayer().view, "layer.borderWidth", oldValue, borderWidth);
             }
         }
         return this;
@@ -679,7 +676,7 @@ public class CALayer {
             this.cornerRadius = cornerRadius;
             this.setNeedDisplay(true);
             if (this.requestRootLayer().view != null) {
-                UIView.animator.addAnimationState(this.requestRootLayer().view, "layer.cornerRadius", oldValue, cornerRadius);
+                UIView.sAnimator.addAnimationState(this.requestRootLayer().view, "layer.cornerRadius", oldValue, cornerRadius);
             }
         }
         return this;

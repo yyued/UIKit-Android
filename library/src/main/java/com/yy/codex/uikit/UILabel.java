@@ -21,7 +21,7 @@ import java.util.HashMap;
 
 public class UILabel extends UIView {
 
-    private TextView textView;
+    private TextView mTextView;
 
     public UILabel(@NonNull Context context, @NonNull View view) {
         super(context, view);
@@ -50,8 +50,8 @@ public class UILabel extends UIView {
     }
 
     private void init() {
-        textView = new TextView(getContext());
-        textView.setMaxLines(1);
+        mTextView = new TextView(getContext());
+        mTextView.setMaxLines(1);
         resetTextView();
     }
 
@@ -65,90 +65,90 @@ public class UILabel extends UIView {
 
     /* Font */
 
-    @NonNull private UIFont font = new UIFont(17);
+    @NonNull private UIFont mFont = new UIFont(17);
 
     @NonNull
     public UIFont getFont() {
-        return font;
+        return mFont;
     }
 
     public void setFont(@NonNull UIFont font) {
-        this.font = font;
+        this.mFont = font;
         updateTextAppearance();
     }
 
     /* TextColor */
 
-    private int textColor = Color.BLACK;
+    private int mTextColor = Color.BLACK;
 
     public int getTextColor() {
-        return textColor;
+        return mTextColor;
     }
 
     public void setTextColor(int textColor) {
-        this.textColor = textColor;
+        this.mTextColor = textColor;
         updateTextAppearance();
     }
 
     /* Number of lines */
 
-    private int numberOfLines = 1;
+    private int mNumberOfLines = 1;
 
     public int getNumberOfLines() {
-        return numberOfLines;
+        return mNumberOfLines;
     }
 
     public void setNumberOfLines(int numberOfLines) {
-        this.numberOfLines = numberOfLines;
+        this.mNumberOfLines = numberOfLines;
         if (numberOfLines <= 0) {
             numberOfLines = 99999;
         }
-        textView.setMaxLines(numberOfLines);
+        mTextView.setMaxLines(numberOfLines);
     }
 
     /* Line-Break Mode */
 
     @NonNull
-    private NSLineBreakMode linebreakMode = NSLineBreakMode.ByWordWrapping;
+    private NSLineBreakMode mLinebreakMode = NSLineBreakMode.ByWordWrapping;
 
     @NonNull
     public NSLineBreakMode getLinebreakMode() {
-        return linebreakMode;
+        return mLinebreakMode;
     }
 
     public void setLinebreakMode(@NonNull NSLineBreakMode linebreakMode) {
-        this.linebreakMode = linebreakMode;
+        this.mLinebreakMode = linebreakMode;
         switch (linebreakMode) {
             case ByTruncatingHead:
-                textView.setEllipsize(TextUtils.TruncateAt.START);
+                mTextView.setEllipsize(TextUtils.TruncateAt.START);
                 break;
             case ByTruncatingMiddle:
-                textView.setEllipsize(TextUtils.TruncateAt.MIDDLE);
+                mTextView.setEllipsize(TextUtils.TruncateAt.MIDDLE);
                 break;
             case ByTruncatingTail:
-                textView.setEllipsize(TextUtils.TruncateAt.END);
+                mTextView.setEllipsize(TextUtils.TruncateAt.END);
                 break;
             default:
-                textView.setEllipsize(null);
+                mTextView.setEllipsize(null);
                 break;
         }
         updateTextAppearance();
     }
 
-    private Layout.Alignment alignment = Layout.Alignment.ALIGN_NORMAL;
+    private Layout.Alignment mAlignment = Layout.Alignment.ALIGN_NORMAL;
 
     public Layout.Alignment getAlignment() {
-        return alignment;
+        return mAlignment;
     }
 
     public void setAlignment(Layout.Alignment alignment) {
-        this.alignment = alignment;
+        this.mAlignment = alignment;
         updateTextAppearance();
     }
 
     /* Text */
 
-    private boolean needsUpdate = false;
+    private boolean mNeedsUpdate = false;
 
     @Nullable
     public String getText() {
@@ -170,11 +170,11 @@ public class UILabel extends UIView {
             put(NSAttributedString.NSParagraphStyleAttributeName, paragraphStyle);
         }});
         setAttributedText(attributedString);
-        needsUpdate = true;
+        mNeedsUpdate = true;
     }
 
     private void updateTextAppearance() {
-        if (needsUpdate && getText() != null) {
+        if (mNeedsUpdate && getText() != null) {
             String text = getText();
             setText(text);
         }
@@ -182,14 +182,14 @@ public class UILabel extends UIView {
 
     @Nullable
     public NSAttributedString getAttributedText() {
-        if (this.textView.getText() != null && SpannedString.class.isAssignableFrom(this.textView.getText().getClass())) {
-            return new NSAttributedString((SpannedString) this.textView.getText());
+        if (this.mTextView.getText() != null && SpannedString.class.isAssignableFrom(this.mTextView.getText().getClass())) {
+            return new NSAttributedString((SpannedString) this.mTextView.getText());
         }
         return null;
     }
 
     public void setAttributedText(@Nullable NSAttributedString attributedText) {
-        this.textView.setText(attributedText);
+        this.mTextView.setText(attributedText);
         resetTextViewStyles();
         if (getConstraint() != null) {
             getConstraint().setNeedsLayout();
@@ -209,20 +209,20 @@ public class UILabel extends UIView {
     @Override
     public void setMaxWidth(double maxWidth) {
         super.setMaxWidth(maxWidth);
-        textView.setMaxWidth((int) (maxWidth * UIScreen.mainScreen.scale()));
+        mTextView.setMaxWidth((int) (maxWidth * UIScreen.mainScreen.scale()));
     }
 
     @Override @NonNull
     public CGSize intrinsicContentSize() {
-        textView.measure(0, 0);
-        int width = textView.getMeasuredWidth();
-        int height = textView.getMeasuredHeight();
+        mTextView.measure(0, 0);
+        int width = mTextView.getMeasuredWidth();
+        int height = mTextView.getMeasuredHeight();
         return new CGSize(width / UIScreen.mainScreen.scale(), height / UIScreen.mainScreen.scale());
     }
 
     private void resetTextView() {
-        removeView(textView);
-        addView(textView, new LayoutParams((int)(this.getFrame().size.getWidth() * UIScreen.mainScreen.scale()), (int)(this.getFrame().size.getHeight() * UIScreen.mainScreen.scale())));
+        removeView(mTextView);
+        addView(mTextView, new LayoutParams((int)(this.getFrame().size.getWidth() * UIScreen.mainScreen.scale()), (int)(this.getFrame().size.getHeight() * UIScreen.mainScreen.scale())));
     }
 
 }

@@ -1,20 +1,11 @@
 package com.yy.codex.uikit;
 
-import android.annotation.SuppressLint;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.os.Parcel;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.Layout;
-import android.text.ParcelableSpan;
 import android.text.Spannable;
-import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.SpannedString;
 import android.text.TextPaint;
@@ -22,12 +13,7 @@ import android.text.style.AbsoluteSizeSpan;
 import android.text.style.AlignmentSpan;
 import android.text.style.BackgroundColorSpan;
 import android.text.style.CharacterStyle;
-import android.text.style.DynamicDrawableSpan;
 import android.text.style.ForegroundColorSpan;
-import android.text.style.ImageSpan;
-import android.text.style.LineHeightSpan;
-import android.text.style.ParagraphStyle;
-import android.text.style.ReplacementSpan;
 import android.text.style.StrikethroughSpan;
 import android.text.style.TypefaceSpan;
 import android.text.style.UnderlineSpan;
@@ -98,7 +84,7 @@ public class NSAttributedString extends SpannableStringBuilder {
     public Object getAttribute(String attrName, int atIndex) {
         NSAttributedSpan[] objects = getSpans(atIndex, 1, NSAttributedSpan.class);
         if (objects.length > 0) {
-            return objects[0].attrs.get(attrName);
+            return objects[0].mAttrs.get(attrName);
         }
         else {
             return null;
@@ -112,7 +98,7 @@ public class NSAttributedString extends SpannableStringBuilder {
         }
         NSAttributedSpan[] objects = getSpans(atIndex, 1, NSAttributedSpan.class);
         if (objects.length > 0) {
-            return objects[0].attrs;
+            return objects[0].mAttrs;
         }
         else {
             return null;
@@ -178,10 +164,10 @@ public class NSAttributedString extends SpannableStringBuilder {
 
 class NSAttributedSpan extends CharacterStyle {
 
-    public HashMap<String, Object> attrs;
+    public HashMap<String, Object> mAttrs;
 
     public NSAttributedSpan(HashMap<String, Object> attrs) {
-        this.attrs = attrs;
+        this.mAttrs = attrs;
     }
 
     @Override
