@@ -5,6 +5,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.util.LruCache;
+
+import java.util.HashMap;
 
 /**
  * Created by cuiminghui on 2017/1/10.
@@ -12,12 +15,26 @@ import android.support.annotation.Nullable;
 
 public class UIImage {
 
+    public enum RenderingMode {
+        Automatic,
+        AlwaysOriginal,
+        AlwaysTemplate
+    }
+
+    private static LruCache<Number, Bitmap> resCache = new LruCache<>(8 * 1024 * 1024);
+
     public UIImage() {
         bitmap = Bitmap.createBitmap(0, 0, Bitmap.Config.ARGB_8888);
     }
 
     public UIImage(@NonNull Context context, int resID) {
-        bitmap = BitmapFactory.decodeResource(context.getResources(), resID);
+        if (resCache.get(resID) instanceof Bitmap) {
+            bitmap = resCache.get(resID);
+        }
+        else {
+            bitmap = BitmapFactory.decodeResource(context.getResources(), resID);
+            resCache.put(resID, bitmap);
+        }
     }
 
     public UIImage(@NonNull byte[] data) {
@@ -38,6 +55,18 @@ public class UIImage {
 
     public void setScale(double scale) {
         this.scale = scale;
+    }
+
+    /* RenderingMode */
+
+    private RenderingMode renderingMode = RenderingMode.Automatic;
+
+    public RenderingMode getRenderingMode() {
+        return renderingMode;
+    }
+
+    public void setRenderingMode(RenderingMode renderingMode) {
+        this.renderingMode = renderingMode;
     }
 
     /* Bitmap instance */

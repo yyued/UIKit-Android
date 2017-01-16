@@ -27,6 +27,22 @@ public class UIColor {
         this.a = a;
     }
 
+    public double getR() {
+        return r;
+    }
+
+    public double getG() {
+        return g;
+    }
+
+    public double getB() {
+        return b;
+    }
+
+    public double getA() {
+        return a;
+    }
+
     public UIColor colorWithAlpha(double alpha) {
         return new UIColor(r, g, b, a * alpha);
     }

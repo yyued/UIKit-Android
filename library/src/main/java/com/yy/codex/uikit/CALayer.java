@@ -3,8 +3,12 @@ package com.yy.codex.uikit;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
+import android.graphics.LightingColorFilter;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.graphics.PorterDuffXfermode;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -35,6 +39,7 @@ public class CALayer {
     private int shadowColor = Color.BLACK;
     @Nullable
     private Bitmap bitmap = null;
+    private UIColor bitmapColor = null;
     private int bitmapGravity = GRAVITY_SCALE_ASCEPT_FIT;
     private boolean clipToBounds = false;
     private boolean hidden = false;
@@ -245,8 +250,20 @@ public class CALayer {
             canvas.drawRect(frame.toRectF(calculatedOrigin), paint);
 
             if (bitmap != null){
-                CGRect newFrame = new CGRect(calculatedOrigin.getX(), calculatedOrigin.getY(), frame.size.getWidth(), frame.size.getHeight());;
+                CGRect newFrame = new CGRect(calculatedOrigin.getX(), calculatedOrigin.getY(), frame.size.getWidth(), frame.size.getHeight());
+                if (bitmapColor != null) {
+                    float[] colorTransform = {
+                            0, (float)bitmapColor.getR(), 0, 0, 0,
+                            0, 0, (float)bitmapColor.getG(), 0, 0,
+                            0, 0, 0, (float)bitmapColor.getB(), 0,
+                            0, 0, 0, (float)bitmapColor.getA(), 0};
+                    ColorMatrix colorMatrix = new ColorMatrix();
+                    colorMatrix.set(colorTransform);
+                    ColorMatrixColorFilter colorFilter = new ColorMatrixColorFilter(colorMatrix);
+                    paint.setColorFilter(colorFilter);
+                }
                 drawBitmap(canvas, newFrame, bitmap, bitmapGravity, paint);
+                paint.setColorFilter(null);
             }
 
             if (borderWidth > 0){
@@ -539,6 +556,10 @@ public class CALayer {
             this.setNeedDisplay(true);
         }
         return this;
+    }
+
+    public void setBitmapColor(UIColor bitmapColor) {
+        this.bitmapColor = bitmapColor;
     }
 
     @NonNull
