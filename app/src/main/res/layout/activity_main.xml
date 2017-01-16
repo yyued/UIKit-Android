@@ -160,10 +160,27 @@
         android:layout_height="match_parent"
         android:id="@+id/testScrollView">
 
-        <Button
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:text = "测试"></Button>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <Button
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:text = "测试"></Button>
+            <Button
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:text = "测试"></Button>
+            <Button
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:text = "测试"></Button>
+
+        </LinearLayout>
+
+
 
     </com.yy.codex.uikit.UIScrollView>
 
