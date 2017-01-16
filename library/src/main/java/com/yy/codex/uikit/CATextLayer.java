@@ -13,7 +13,7 @@ import android.graphics.Rect;
 public class CATextLayer extends CALayer {
 
     private String string;
-    private float fontSize = 14;
+    private float fontSize = 14 * (float)scaledDensity;
     private int fontColor = Color.BLACK;
     private int alignMode = ALIGN_LEFT;
     private Paint.Align _alignMode = Paint.Align.LEFT;
@@ -80,7 +80,7 @@ public class CATextLayer extends CALayer {
 
     @NonNull
     public CATextLayer setFontSize(float fontSize) {
-        this.fontSize = fontSize * scaledDensity;
+        this.fontSize = (float) (fontSize * scaledDensity);
         return this;
     }
 

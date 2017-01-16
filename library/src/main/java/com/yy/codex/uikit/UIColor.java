@@ -8,12 +8,12 @@ import android.graphics.Color;
 
 public class UIColor {
 
-    static public UIColor blackColor = new UIColor(0, 0, 0, 1);
-    static public UIColor whiteColor = new UIColor(1, 1, 1, 1);
-    static public UIColor clearColor = new UIColor(0, 0, 0, 0);
-    static public UIColor redColor = new UIColor(1, 0, 0, 1);
-    static public UIColor greenColor = new UIColor(0, 1, 0, 1);
-    static public UIColor blueColor = new UIColor(0, 0, 1, 1);
+    public static final UIColor blackColor = new UIColor(0, 0, 0, 1);
+    public static final UIColor whiteColor = new UIColor(1, 1, 1, 1);
+    public static final UIColor clearColor = new UIColor(0, 0, 0, 0);
+    public static final UIColor redColor = new UIColor(1, 0, 0, 1);
+    public static final UIColor greenColor = new UIColor(0, 1, 0, 1);
+    public static final UIColor blueColor = new UIColor(0, 0, 1, 1);
 
     private double r = 0.0;
     private double g = 0.0;

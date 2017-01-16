@@ -10,25 +10,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.yy.codex.uikit.CGRect;
-import com.yy.codex.uikit.NSAttributedString;
-import com.yy.codex.uikit.NSLog;
 import com.yy.codex.uikit.UIButton;
 import com.yy.codex.uikit.UIColor;
 import com.yy.codex.uikit.UIConstraint;
 import com.yy.codex.uikit.UIControl;
 import com.yy.codex.uikit.UIEdgeInsets;
-import com.yy.codex.uikit.UIFont;
 import com.yy.codex.uikit.UIImage;
-import com.yy.codex.uikit.UILongPressGestureRecognizer;
-import com.yy.codex.uikit.UIPinchGestureRecognizer;
-import com.yy.codex.uikit.UITapGestureRecognizer;
 import com.yy.codex.uikit.UIView;
-
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -80,7 +68,7 @@ class TestView extends UIView {
         button.setWantsLayer(true);
         button.getLayer().setCornerRadius(22);
         button.getLayer().setBorderWidth(1.0);
-        button.getLayer().setBorderColor(Color.BLACK);
+        button.getLayer().setBorderColor(UIColor.blackColor);
         button.setTitle("Hello, World!", UIControl.State.Normal);
         UIImage image = new UIImage(getContext(), R.drawable.ani_16);
         image.setScale(3.0);
