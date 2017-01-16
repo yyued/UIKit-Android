@@ -10,35 +10,52 @@ import java.util.ArrayList;
 
 public class UITouch {
 
+    public enum Phase {
+        Began,             // whenever a finger touches the surface.
+        Moved,             // whenever a finger moves on the surface.
+        Stationary,        // whenever a finger is touching the surface but hasn't moved since the previous event.
+        Ended,             // whenever a finger leaves the surface.
+        Cancelled,         // whenever a touch doesn't end but we need to stop tracking (e.g. putting device to face)
+    }
+
     private long mTimestamp = 0;
     private int mTapCount = 1;
-    private boolean mTapCountAdded = false;
+    private long mEventID = 0;
     @NonNull private UIView mRelativeView;
     @NonNull private CGPoint mRelativePoint;
     @NonNull private CGPoint mAbsolutePoint;
 
-    public UITouch(@NonNull UIView relativeView, @NonNull CGPoint relativePoint, @NonNull CGPoint absolutePoint) {
+    private Phase mPhase;
+
+    public UITouch(@NonNull UIView relativeView, @NonNull CGPoint relativePoint, @NonNull CGPoint absolutePoint, Phase phase, long eventID) {
         mRelativeView = relativeView;
         mRelativePoint = relativePoint;
         mAbsolutePoint = absolutePoint;
         mTimestamp = System.currentTimeMillis();
+        mPhase = phase;
+        mEventID = eventID;
         resetTapCount();
     }
 
     @NonNull
     static ArrayList<UITouch> tapCountStore = new ArrayList<>();
 
-    public void addTapCount() {
-        if (mTapCountAdded) {
-            return;
-        }
-        mTapCountAdded = true;
+    public void resetTapCount() {
         ArrayList<UITouch> newTapCountStore = new ArrayList<>();
         boolean found = false;
         for (int i = 0; i < tapCountStore.size(); i++) {
-            if (tapCountStore.get(i).mAbsolutePoint.inRange(22.0, 22.0, this.mAbsolutePoint) &&
-                tapCountStore.get(i).mTimestamp > System.currentTimeMillis() - 300) {
-                mTapCount = tapCountStore.get(i).mTapCount + 1;
+            if (tapCountStore.get(i).mAbsolutePoint.inRange(22.0, 22.0, this.mAbsolutePoint)) {
+                if (tapCountStore.get(i).mEventID != this.mEventID) {
+                    if (tapCountStore.get(i).mTimestamp <= System.currentTimeMillis() - 300) {
+                        mTapCount = 1;
+                    }
+                    else {
+                        mTapCount = tapCountStore.get(i).mTapCount + 1;
+                    }
+                }
+                else {
+                    mTapCount = tapCountStore.get(i).mTapCount;
+                }
                 newTapCountStore.add(this);
                 found = true;
                 break;
@@ -49,15 +66,6 @@ public class UITouch {
             newTapCountStore.add(this);
         }
         tapCountStore = newTapCountStore;
-    }
-
-    protected void resetTapCount() {
-        for (int i = 0; i < tapCountStore.size(); i++) {
-            if (tapCountStore.get(i).mAbsolutePoint.inRange(22.0, 22.0, this.mAbsolutePoint)) {
-                mTapCount = tapCountStore.get(i).mTapCount;
-                break;
-            }
-        }
     }
 
     @NonNull
@@ -100,6 +108,6 @@ public class UITouch {
     @NonNull
     @Override
     public String toString() {
-        return "UITouch { RelativeView=" + this.mRelativeView + " x=" + this.mRelativePoint.getX() + " y=" + this.mRelativePoint.getY();
+        return "UITouch { RelativeView=" + this.mRelativeView + " x=" + this.mRelativePoint.getX() + " y=" + this.mRelativePoint.getY() + " Phase=" + this.mPhase;
     }
 }

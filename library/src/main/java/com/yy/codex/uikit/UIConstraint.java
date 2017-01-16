@@ -10,29 +10,29 @@ import net.objecthunter.exp4j.ExpressionBuilder;
  * Created by cuiminghui on 2017/1/4.
  */
 
-enum UIConstraintLayoutRelate {
-    RelateToGroup,
-    RelateToPrevious,
-}
-
 public class UIConstraint {
+
+    public enum LayoutRelate {
+        RelateToGroup,
+        RelateToPrevious,
+    }
 
     public boolean disabled = false;
 
     @NonNull
-    public UIConstraintLayoutRelate aligmentRelate = UIConstraintLayoutRelate.RelateToGroup;
+    public LayoutRelate aligmentRelate = LayoutRelate.RelateToGroup;
     public boolean centerHorizontally = false;
     public boolean centerVertically = false;
 
     @NonNull
-    public UIConstraintLayoutRelate sizeRelate = UIConstraintLayoutRelate.RelateToGroup;
+    public LayoutRelate sizeRelate = LayoutRelate.RelateToGroup;
     @Nullable
     public String width = null;
     @Nullable
     public String height = null;
 
     @NonNull
-    public UIConstraintLayoutRelate pinRelate = UIConstraintLayoutRelate.RelateToGroup;
+    public LayoutRelate pinRelate = LayoutRelate.RelateToGroup;
     @Nullable
     public String top = null;
     @Nullable
@@ -70,7 +70,7 @@ public class UIConstraint {
         boolean xorw = false, yorh = false;
         if (width != null) {
             String formula = width;
-            if (sizeRelate == UIConstraintLayoutRelate.RelateToPrevious) {
+            if (sizeRelate == LayoutRelate.RelateToPrevious) {
                 w = requestValue(0, previousView != null ? previousView.getFrame().size.getWidth() : 0.0, formula);
             }
             else {
@@ -85,7 +85,7 @@ public class UIConstraint {
         }
         if (height != null) {
             String formula = height;
-            if (sizeRelate == UIConstraintLayoutRelate.RelateToPrevious) {
+            if (sizeRelate == LayoutRelate.RelateToPrevious) {
                 h = requestValue(0, previousView != null ? previousView.getFrame().size.getHeight() : 0.0, formula);
             }
             else {
@@ -101,25 +101,25 @@ public class UIConstraint {
                 h = Math.ceil(iSize.getHeight());
             }
         }
-        if (centerHorizontally && aligmentRelate == UIConstraintLayoutRelate.RelateToGroup) {
+        if (centerHorizontally && aligmentRelate == LayoutRelate.RelateToGroup) {
             cx = superView != null ? superView.getFrame().size.getWidth() / 2.0 : 0.0;
         }
-        else if (centerHorizontally && aligmentRelate == UIConstraintLayoutRelate.RelateToPrevious) {
+        else if (centerHorizontally && aligmentRelate == LayoutRelate.RelateToPrevious) {
             cx = previousView != null ? previousView.getCenter().getX() : 0.0;
         }
-        if (centerVertically && aligmentRelate == UIConstraintLayoutRelate.RelateToGroup) {
+        if (centerVertically && aligmentRelate == LayoutRelate.RelateToGroup) {
             cy = superView != null ? superView.getFrame().size.getHeight() / 2.0 : 0.0;
         }
-        else if (centerVertically && aligmentRelate == UIConstraintLayoutRelate.RelateToPrevious) {
+        else if (centerVertically && aligmentRelate == LayoutRelate.RelateToPrevious) {
             cy = previousView != null ? previousView.getCenter().getY() : 0.0;
         }
         if (top != null) {
             String formula = top;
             double t = 0.0;
-            if (pinRelate == UIConstraintLayoutRelate.RelateToGroup) {
+            if (pinRelate == LayoutRelate.RelateToGroup) {
                 t = requestValue(0, superView != null ? superView.getFrame().size.getHeight() : 0.0, formula);
             }
-            else if (pinRelate == UIConstraintLayoutRelate.RelateToPrevious) {
+            else if (pinRelate == LayoutRelate.RelateToPrevious) {
                 t = requestValue(0, previousView != null ? previousView.getFrame().size.getHeight() : 0.0, formula);
                 if (previousView != null) {
                     t = previousView.getFrame().origin.getY() + t;
@@ -135,10 +135,10 @@ public class UIConstraint {
         if (bottom != null) {
             String formula = bottom;
             double t = 0.0;
-            if (pinRelate == UIConstraintLayoutRelate.RelateToGroup) {
+            if (pinRelate == LayoutRelate.RelateToGroup) {
                 t = requestValue(0, superView != null ? superView.getFrame().size.getHeight() : 0.0, formula);
             }
-            else if (pinRelate == UIConstraintLayoutRelate.RelateToPrevious) {
+            else if (pinRelate == LayoutRelate.RelateToPrevious) {
                 t = requestValue(0, previousView != null ? previousView.getFrame().size.getHeight() : 0.0, formula);
                 if (previousView != null) {
                     t = previousView.getFrame().origin.getY() + previousView.getFrame().size.getHeight() - t;
@@ -147,7 +147,7 @@ public class UIConstraint {
             if (centerVertically) {
                 cy -= t;
             }
-            else if (pinRelate == UIConstraintLayoutRelate.RelateToPrevious) {
+            else if (pinRelate == LayoutRelate.RelateToPrevious) {
                 y = t;
                 yorh = true;
             }
@@ -158,10 +158,10 @@ public class UIConstraint {
         if (left != null) {
             String formula = left;
             double t = 0.0;
-            if (pinRelate == UIConstraintLayoutRelate.RelateToGroup) {
+            if (pinRelate == LayoutRelate.RelateToGroup) {
                 t = requestValue(0, superView != null ? superView.getFrame().size.getWidth() : 0.0, formula);
             }
-            else if (pinRelate == UIConstraintLayoutRelate.RelateToPrevious) {
+            else if (pinRelate == LayoutRelate.RelateToPrevious) {
                 t = requestValue(0, previousView != null ? previousView.getFrame().size.getWidth() : 0.0, formula);
                 if (previousView != null) {
                     t = previousView.getFrame().origin.getX() + t;
@@ -177,10 +177,10 @@ public class UIConstraint {
         if (right != null) {
             String formula = right;
             double t = 0.0;
-            if (pinRelate == UIConstraintLayoutRelate.RelateToGroup) {
+            if (pinRelate == LayoutRelate.RelateToGroup) {
                 t = requestValue(0, superView != null ? superView.getFrame().size.getWidth() : 0.0, formula);
             }
-            else if (pinRelate == UIConstraintLayoutRelate.RelateToPrevious) {
+            else if (pinRelate == LayoutRelate.RelateToPrevious) {
                 t = requestValue(0, previousView != null ? previousView.getFrame().size.getWidth() : 0.0, formula);
                 if (previousView != null) {
                     t = previousView.getFrame().origin.getX() + previousView.getFrame().size.getWidth() - t;
@@ -189,7 +189,7 @@ public class UIConstraint {
             if (centerHorizontally) {
                 cx -= t;
             }
-            else if (pinRelate == UIConstraintLayoutRelate.RelateToPrevious) {
+            else if (pinRelate == LayoutRelate.RelateToPrevious) {
                 x = t;
                 xorw = true;
             }
@@ -210,7 +210,7 @@ public class UIConstraint {
             newFrame = newFrame.setY(newFrame.origin.getY() - newFrame.size.getHeight() / 2.0);
         }
         if (!Double.isNaN(mx) && Double.isNaN(x)) {
-            if (pinRelate == UIConstraintLayoutRelate.RelateToGroup) {
+            if (pinRelate == LayoutRelate.RelateToGroup) {
                 newFrame = newFrame.setX((superView != null ? superView.getFrame().size.getWidth() : 0.0) - mx - newFrame.size.getWidth());
             }
             else {
@@ -218,7 +218,7 @@ public class UIConstraint {
             }
         }
         if (!Double.isNaN(my) && Double.isNaN(y)) {
-            if (pinRelate == UIConstraintLayoutRelate.RelateToGroup) {
+            if (pinRelate == LayoutRelate.RelateToGroup) {
                 newFrame = newFrame.setY((superView != null ? superView.getFrame().size.getHeight() : 0.0) - my - newFrame.size.getHeight());
             }
             else {
@@ -226,7 +226,7 @@ public class UIConstraint {
             }
         }
         if (!Double.isNaN(mx) && !Double.isNaN(x)) {
-            if (pinRelate == UIConstraintLayoutRelate.RelateToGroup) {
+            if (pinRelate == LayoutRelate.RelateToGroup) {
                 newFrame = newFrame.setWidth((superView != null ? superView.getFrame().size.getWidth() : 0.0) - mx - x);
             }
             else {
@@ -234,7 +234,7 @@ public class UIConstraint {
             }
         }
         if (!Double.isNaN(my) && !Double.isNaN(y)) {
-            if (pinRelate == UIConstraintLayoutRelate.RelateToGroup) {
+            if (pinRelate == LayoutRelate.RelateToGroup) {
                 newFrame = newFrame.setHeight((superView != null ? superView.getFrame().size.getHeight() : 0.0) - my - y);
             }
             else {

@@ -21,9 +21,7 @@ import com.facebook.rebound.SpringSystem;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Created by cuiminghui on 2016/12/30.
@@ -164,6 +162,25 @@ public class UIView extends UIResponder {
         float oldValue = this.getAlpha();
         super.setAlpha(alpha);
         UIView.addAnimationState(this, "alpha", oldValue, alpha);
+    }
+
+    private int mTintColor = 0;
+
+    public void setTintColor(int tintColor) {
+        this.mTintColor = tintColor;
+    }
+
+    public int getTintColor() {
+        int tintColor = mTintColor;
+        UIView superview = getSuperview();
+        while (tintColor == 0 && superview != null) {
+            tintColor = superview.mTintColor;
+            superview = superview.getSuperview();
+        }
+        if (tintColor == 0) {
+            tintColor = 0xFF007AFF;
+        }
+        return tintColor;
     }
 
     /* category UIView Hierarchy */
@@ -355,41 +372,18 @@ public class UIView extends UIResponder {
         this.multipleTouchEnabled = multipleTouchEnabled;
     }
 
+
+    protected UIViewTouchHandler mTouchHandler;
+
     @Nullable
     private UIView hitTestView;
 
     @Override
     public boolean onTouchEvent(@NonNull MotionEvent event) {
-        CGPoint touchPoint = new CGPoint(event.getX() / UIScreen.mainScreen.scale(), event.getY() / UIScreen.mainScreen.scale());
-
-        final int action = event.getAction();
-        switch (action & MotionEvent.ACTION_MASK) {
-            case MotionEvent.ACTION_DOWN:
-                hitTestView = hitTest(touchPoint, event);
-                sendEvent(event, hitTestView);
-                break;
-            case MotionEvent.ACTION_UP:
-                if (hitTestView != null) {
-                    CGPoint convertedPoint = convertPoint(touchPoint, hitTestView);
-                    prepareTouch(convertedPoint, hitTestView, event);
-                    sendEvent(event, hitTestView);
-                }
-                hitTestView = null;
-                break;
-            case MotionEvent.ACTION_POINTER_UP:
-            case MotionEvent.ACTION_MOVE:
-            case MotionEvent.ACTION_POINTER_DOWN:
-                if (hitTestView != null) {
-                    CGPoint convertedPoint = convertPoint(touchPoint, hitTestView);
-                    prepareTouch(convertedPoint, hitTestView, event);
-                    sendEvent(event, hitTestView);
-                }
-                break;
-            default:
-
-                break;
+        if (mTouchHandler == null) {
+            mTouchHandler = new UIViewTouchHandler(this);
         }
-
+        mTouchHandler.onTouchEvent(event);
         return true;
     }
 
@@ -404,86 +398,17 @@ public class UIView extends UIResponder {
         if (!isUserInteractionEnabled() && !(getAlpha() > 0)) {
             return null;
         }
-
         if (pointInside(point)) {
             for (UIView subview: views) {
                 CGPoint convertedPoint = convertPoint(point, subview);
                 UIView hitTestView = subview.hitTest(convertedPoint, event);
                 if (hitTestView != null) {
-                    prepareTouch(convertedPoint, hitTestView, event);
                     return hitTestView;
                 }
             }
-            prepareTouch(point, this, event);
             return this;
         }
         return null;
-    }
-
-    private int mTouchCount = 0;
-    @Nullable private Set<UITouch> touches = new HashSet<UITouch>();
-
-    private void prepareTouch(@NonNull CGPoint touchPoint, @NonNull UIView hitTestView, @NonNull MotionEvent event) {
-        final int action = event.getAction();
-        switch (action & MotionEvent.ACTION_MASK) {
-            case MotionEvent.ACTION_DOWN: {
-                touches.clear();
-                UITouch touch = new UITouch(hitTestView, touchPoint, new CGPoint(event.getRawX() / UIScreen.mainScreen.scale(), event.getRawY() / UIScreen.mainScreen.scale()));
-                touches.add(touch);
-            }
-                break;
-            case MotionEvent.ACTION_MOVE: {
-                touches.clear();
-                mTouchCount = event.getPointerCount();
-                for (int i = 0; i < event.getPointerCount(); i++) {
-                    double x = event.getX(i);
-                    double y = event.getY(i);
-                    UITouch touch = new UITouch(hitTestView, touchPoint, new CGPoint(event.getRawX() / UIScreen.mainScreen.scale(), event.getRawY() / UIScreen.mainScreen.scale()));
-                    touches.add(touch);
-                }
-            }
-                break;
-            case MotionEvent.ACTION_UP:{
-                touches.clear();
-                UITouch touch = new UITouch(hitTestView, touchPoint, new CGPoint(event.getRawX() / UIScreen.mainScreen.scale(), event.getRawY() / UIScreen.mainScreen.scale()));
-                touches.add(touch);
-            }
-                break;
-            case MotionEvent.ACTION_POINTER_DOWN: {
-                UITouch touch = new UITouch(hitTestView, touchPoint, new CGPoint(event.getRawX() / UIScreen.mainScreen.scale(), event.getRawY() / UIScreen.mainScreen.scale()));
-                touches.add(touch);
-            }
-                break;
-            case MotionEvent.ACTION_POINTER_UP: {
-            }
-                break;
-            default:
-                break;
-        }
-    }
-
-    private void sendEvent(@NonNull MotionEvent event, @NonNull UIView hitTestView) {
-        final int action = event.getAction();
-        UIEvent ev = new UIEvent();
-        switch (action & MotionEvent.ACTION_MASK) {
-            case MotionEvent.ACTION_DOWN:
-                hitTestView.touchesBegan(touches, ev);
-                break;
-            case MotionEvent.ACTION_MOVE:
-                hitTestView.touchesMoved(touches, ev);
-                break;
-            case MotionEvent.ACTION_UP:
-                hitTestView.touchesEnded(touches, ev);
-                break;
-            case MotionEvent.ACTION_POINTER_DOWN:
-                hitTestView.touchesBegan(touches, ev);
-                break;
-            case MotionEvent.ACTION_POINTER_UP:
-                hitTestView.touchesEnded(touches, ev);
-                break;
-            default:
-                break;
-        }
     }
 
     public boolean pointInside(@NonNull CGPoint point) {
@@ -575,14 +500,9 @@ public class UIView extends UIResponder {
     @Nullable static private UIGestureRecognizerLooper sGestureRecognizerLooper = null;
 
     @Override
-    public void touchesBegan(@NonNull Set<UITouch> touches, @NonNull UIEvent event) {
+    public void touchesBegan(@NonNull UITouch[] touches, @NonNull UIEvent event) {
         super.touchesBegan(touches, event);
         if (UIGestureRecognizerLooper.isHitTestedView(touches, this)) {
-            UITouch[] arr = new UITouch[touches.size()];
-            touches.toArray(arr);
-            for (int i = 0; i < arr.length; i++) {
-                arr[i].addTapCount();
-            }
             if (sGestureRecognizerLooper == null || sGestureRecognizerLooper.isFinished() || sGestureRecognizerLooper.mGestureRecognizers.size() == 0) {
                 sGestureRecognizerLooper = new UIGestureRecognizerLooper(this);
             }
@@ -591,7 +511,7 @@ public class UIView extends UIResponder {
     }
 
     @Override
-    public void touchesMoved(@NonNull Set<UITouch> touches, @NonNull UIEvent event) {
+    public void touchesMoved(@NonNull UITouch[] touches, @NonNull UIEvent event) {
         super.touchesMoved(touches, event);
         if (UIGestureRecognizerLooper.isHitTestedView(touches, this)) {
             if (sGestureRecognizerLooper == null || sGestureRecognizerLooper.isFinished()) {
@@ -602,7 +522,7 @@ public class UIView extends UIResponder {
     }
 
     @Override
-    public void touchesEnded(@NonNull Set<UITouch> touches, @NonNull UIEvent event) {
+    public void touchesEnded(@NonNull UITouch[] touches, @NonNull UIEvent event) {
         super.touchesEnded(touches, event);
         if (UIGestureRecognizerLooper.isHitTestedView(touches, this)) {
             if (sGestureRecognizerLooper == null || sGestureRecognizerLooper.isFinished()) {

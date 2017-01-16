@@ -17,6 +17,7 @@ public class UILongPressGestureRecognizer extends UIGestureRecognizer {
 
     public double minimumPressDuration = 0.5;
     public double allowableMovement = 10.0;
+    public int numberOfTouchesRequired = 1;
 
     public UILongPressGestureRecognizer(@NonNull Object target, @NonNull String selector) {
         super(target, selector);
@@ -30,6 +31,12 @@ public class UILongPressGestureRecognizer extends UIGestureRecognizer {
     public void touchesBegan(@NonNull UITouch[] touches, @NonNull UIEvent event) {
         super.touchesBegan(touches, event);
         startTouches = touches;
+        if (touches.length >= numberOfTouchesRequired) {
+            setupTimer();
+        }
+    }
+
+    private void setupTimer() {
         final UILongPressGestureRecognizer self = this;
         final Handler handler = new Handler();
         startTimer = new Timer();
@@ -42,6 +49,11 @@ public class UILongPressGestureRecognizer extends UIGestureRecognizer {
                         if (mState != UIGestureRecognizerState.Failed) {
                             mState = UIGestureRecognizerState.Began;
                             sendActions();
+                            UIGestureRecognizerLooper looper = mLooper.get();
+                            if (looper != null) {
+                                looper.checkState(self);
+                                looper.markFailed();
+                            }
                         }
                     }
                 });
@@ -52,9 +64,15 @@ public class UILongPressGestureRecognizer extends UIGestureRecognizer {
     @Override
     public void touchesMoved(@NonNull UITouch[] touches, @NonNull UIEvent event) {
         super.touchesMoved(touches, event);
-        if (mState == UIGestureRecognizerState.Possible && moveOutOfBounds(touches)) {
+        if (mState == UIGestureRecognizerState.Possible && touches.length > startTouches.length && touches.length >= numberOfTouchesRequired) {
+            startTouches = touches;
+            setupTimer();
+        }
+        else if (mState == UIGestureRecognizerState.Possible && startTouches.length >= numberOfTouchesRequired && moveOutOfBounds(touches)) {
             mState = UIGestureRecognizerState.Failed;
-            startTimer.cancel();
+            if (startTimer != null) {
+                startTimer.cancel();
+            }
         }
         else if (mState == UIGestureRecognizerState.Began || mState == UIGestureRecognizerState.Changed) {
             mState = UIGestureRecognizerState.Changed;
@@ -65,13 +83,15 @@ public class UILongPressGestureRecognizer extends UIGestureRecognizer {
     @Override
     public void touchesEnded(@NonNull UITouch[] touches, @NonNull UIEvent event) {
         super.touchesEnded(touches, event);
+        if (startTimer != null) {
+            startTimer.cancel();
+        }
         if (mState == UIGestureRecognizerState.Began || mState == UIGestureRecognizerState.Changed) {
             mState = UIGestureRecognizerState.Ended;
             sendActions();
         }
         else {
             mState = UIGestureRecognizerState.Failed;
-            startTimer.cancel();
         }
     }
 
@@ -94,7 +114,7 @@ public class UILongPressGestureRecognizer extends UIGestureRecognizer {
                 }
             }
         }
-        return accepted == 0;
+        return accepted < numberOfTouchesRequired;
     }
 
 }

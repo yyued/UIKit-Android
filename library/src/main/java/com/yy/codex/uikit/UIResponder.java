@@ -53,21 +53,21 @@ public class UIResponder extends FrameLayout {
     }
 
 
-    public void touchesBegan(@NonNull Set<UITouch> touches, @NonNull UIEvent event) {
+    public void touchesBegan(@NonNull UITouch[] touches, @NonNull UIEvent event) {
         UIResponder nextResponder = getNextResponder();
         if (nextResponder != null) {
             nextResponder.touchesBegan(touches, event);
         }
     }
 
-    public void touchesMoved(@NonNull Set<UITouch> touches, @NonNull UIEvent event) {
+    public void touchesMoved(@NonNull UITouch[] touches, @NonNull UIEvent event) {
         UIResponder nextResponder = getNextResponder();
         if (nextResponder != null) {
             nextResponder.touchesMoved(touches, event);
         }
     }
 
-    public void touchesEnded(@NonNull Set<UITouch> touches, @NonNull UIEvent event) {
+    public void touchesEnded(@NonNull UITouch[] touches, @NonNull UIEvent event) {
         UIResponder nextResponder = getNextResponder();
         if (nextResponder != null) {
             nextResponder.touchesEnded(touches, event);

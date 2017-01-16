@@ -11,7 +11,6 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.yy.codex.uikit.CALayer;
-import com.yy.codex.uikit.CATextLayer;
 import com.yy.codex.uikit.CGRect;
 import com.yy.codex.uikit.CGTransform;
 import com.yy.codex.uikit.CGTransformRotation;
@@ -103,13 +102,13 @@ class TestView extends UIView {
         CALayer layer = view.getLayer();
         layer.setFrame(new CGRect(10, 10, 100, 100));
         CGTransform[] tfs = {new CGTransformTranslation(-14, -14), new CGTransformRotation(45), new CGTransformScale(1.5, 1.5)};
-//        layer.setTransforms(tfs);
+        layer.setTransforms(tfs);
         layer.setBackgroundColor(Color.BLACK);
 
-        CATextLayer textLayer = new CATextLayer(new CGRect(10, 10, 60, 60));
-        textLayer.setString("xoxJj");
-        textLayer.setFontColor(Color.RED);
-        layer.addSubLayer(textLayer);
+//        CATextLayer textLayer = new CATextLayer(new CGRect(10, 10, 60, 60));
+//        textLayer.setString("xoxJj");  // @BUG TextLayer's alignment
+//        textLayer.setFontColor(Color.RED);
+//        layer.addSubLayer(textLayer);
 
 //        Path path = new Path();
 //        path.addCircle(150, 100, 25, Path.Direction.CW);
@@ -135,8 +134,6 @@ class TestView extends UIView {
 
         CGTransform transform = new CGTransform();
         NSLog.log(transform);
-
-
     }
 
 //    public void onTap(UITapGestureRecognizer tapGestureRecognizer) {

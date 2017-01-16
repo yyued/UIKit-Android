@@ -47,7 +47,7 @@ public class UIScreenEdgePanGestureRecognizer extends UIPanGestureRecognizer {
             if (edge == Edge.Left && firstPoint.getX() < edgeLength) {
                 return true;
             }
-            else if (edge == Edge.Right && UIScreen.mainScreen.bounds().getWidht() - firstPoint.getX() < edgeLength) {
+            else if (edge == Edge.Right && UIScreen.mainScreen.bounds().getWidth() - firstPoint.getX() < edgeLength) {
                 return true;
             }
             else if (edge == Edge.Top && firstPoint.getY() < edgeLength) {

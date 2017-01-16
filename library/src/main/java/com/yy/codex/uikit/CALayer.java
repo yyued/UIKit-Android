@@ -3,6 +3,7 @@ package com.yy.codex.uikit;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
@@ -181,19 +182,27 @@ public class CALayer {
             // create maskBitmap
             Bitmap maskBitmap = Bitmap.createBitmap((int)(frame.size.getWidth()+origin.getX()), (int)(frame.size.getHeight()+origin.getY()), Bitmap.Config.ARGB_8888);
             Canvas canvasB = new Canvas(maskBitmap);
-            Paint p3 = new Paint();
-            p3.setAntiAlias(true);
+            Paint p3 = new Paint(Paint.ANTI_ALIAS_FLAG);
             canvasB.drawRoundRect(new CGRect(origin.getX(), origin.getY(), frame.size.getWidth(), frame.size.getHeight()).toRectF(), (float) cornerRadius, (float) cornerRadius, p3);
 
-            // apply maskBitmap on srcBitmap
-            Paint p2 = new Paint();
-            p2.setAntiAlias(true);
-            canvas.drawBitmap(maskBitmap, 0, 0, p2);
-            p2.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-            canvas.drawBitmap(srcBitmap, 0, 0, p2);
-
-//            Matrix matrix = new Matrix();
-//            matrix.setRotate();
+            // draw srcBitmap, and apply maskBitmap ifNeed
+            Paint p2 = new Paint(Paint.ANTI_ALIAS_FLAG);
+            if (this.transforms != null & this.transforms.length > 0){
+                RectF rectF = frame.toRectF();
+                Matrix matrix = new Matrix();
+                matrix.postRotate(45, rectF.centerX() + 20, rectF.centerY() - 20);
+//                matrix.postTranslate(100, 0);
+                if (this.clipToBounds){
+                    canvas.drawBitmap(maskBitmap, matrix, p2);
+                    p2.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+                }
+                canvas.drawBitmap(srcBitmap, matrix, p2);
+            }
+            else {
+                canvas.drawBitmap(maskBitmap, 0, 0, p2);
+                p2.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+                canvas.drawBitmap(srcBitmap, 0, 0, p2);
+            }
         }
         else {
             drawTransformLayerInCanvas(canvas);
@@ -279,32 +288,6 @@ public class CALayer {
         }
     }
 
-    private void unapplyTransform(@NonNull Canvas canvas){
-        if (transforms == null || transforms.length == 0){
-            return;
-        }
-        for (CGTransform transform : transforms){
-            if (!transform.enable){
-                continue;
-            }
-            RectF rectF = frame.toRectF();
-            if (transform instanceof CGTransformRotation){
-                canvas.rotate(-(float)((CGTransformRotation) transform).angle, rectF.centerX(), rectF.centerY());
-            }
-            else if (transform instanceof CGTransformTranslation){
-                CGTransformTranslation translation = (CGTransformTranslation) transform;
-                canvas.translate(-(float) translation.tx, -(float) translation.ty);
-            }
-            else if (transform instanceof CGTransformScale){
-                CGTransformScale scale = (CGTransformScale)transform;
-                canvas.scale((float) (1.0/scale.sx), (float) (1.0/scale.sy), rectF.centerX(), rectF.centerY());
-            }
-            else if (transform instanceof CGTransformMatrix){
-                // @TODO
-            }
-        }
-    }
-
     private void applyTransform(@NonNull Canvas canvas){
         if (transforms == null || transforms.length == 0){
             return;
@@ -324,6 +307,32 @@ public class CALayer {
             else if (transform instanceof CGTransformScale){
                 CGTransformScale scale = (CGTransformScale)transform;
                 canvas.scale((float) scale.sx, (float) scale.sy, rectF.centerX(), rectF.centerY());
+            }
+            else if (transform instanceof CGTransformMatrix){
+                // @TODO
+            }
+        }
+    }
+
+    private void unapplyTransform(@NonNull Canvas canvas){
+        if (transforms == null || transforms.length == 0){
+            return;
+        }
+        for (CGTransform transform : transforms){
+            if (!transform.enable){
+                continue;
+            }
+            RectF rectF = frame.toRectF();
+            if (transform instanceof CGTransformRotation){
+                canvas.rotate(-(float)((CGTransformRotation) transform).angle, rectF.centerX(), rectF.centerY());
+            }
+            else if (transform instanceof CGTransformTranslation){
+                CGTransformTranslation translation = (CGTransformTranslation) transform;
+                canvas.translate(-(float) translation.tx, -(float) translation.ty);
+            }
+            else if (transform instanceof CGTransformScale){
+                CGTransformScale scale = (CGTransformScale)transform;
+                canvas.scale((float) (1.0/scale.sx), (float) (1.0/scale.sy), rectF.centerX(), rectF.centerY());
             }
             else if (transform instanceof CGTransformMatrix){
                 // @TODO
