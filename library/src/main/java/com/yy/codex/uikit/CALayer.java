@@ -290,6 +290,7 @@ public class CALayer {
             }
             canvas.drawRect(frameScaled.toRectF(originScaled), paint);
             if (bitmap != null){
+                paint.reset();
                 CGRect newFrame = new CGRect(originScaled.getX(), originScaled.getY(), frameScaled.size.getWidth(), frameScaled.size.getHeight());
                 if (bitmapColor != null) {
                     float[] colorTransform = {
