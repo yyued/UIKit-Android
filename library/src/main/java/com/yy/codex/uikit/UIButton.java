@@ -100,9 +100,9 @@ public class UIButton extends UIControl {
                 if (defaultAttributedTitle != null) {
                     NSMutableAttributedString mutableAttributedString = defaultAttributedTitle.mutableCopy();
                     final Object vColor = mutableAttributedString.getAttribute(NSAttributedString.NSForegroundColorAttributeName, 0);
-                    if (vColor != null && vColor instanceof Number) {
+                    if (vColor != null && vColor instanceof UIColor) {
                         mutableAttributedString.setAttributes(new HashMap<String, Object>(){{
-                            put(NSAttributedString.NSForegroundColorAttributeName, 0x50007AFF);
+                            put(NSAttributedString.NSForegroundColorAttributeName, ((UIColor) vColor).colorWithAlpha(0.3));
                         }}, new NSRange(0, mutableAttributedString.length()));
                         defaultAttributedTitle = mutableAttributedString.copy();
                     }

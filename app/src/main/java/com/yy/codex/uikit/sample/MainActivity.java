@@ -67,9 +67,12 @@ class TestView extends UIView {
         constraint.width = "200";
         constraint.height = "44";
         button.setConstraint(constraint);
-        button.setFont(new UIFont(34));
+        button.setFont(new UIFont(17));
         button.setTitle("Hello", UIControl.State.Normal);
-
+        button.setWantsLayer(true);
+        button.getLayer().setCornerRadius(22);
+        button.getLayer().setBorderWidth(1);
+        button.getLayer().setBorderColor(Color.BLACK);
 
         addSubview(button);
     }
