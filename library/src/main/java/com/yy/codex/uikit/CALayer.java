@@ -19,6 +19,10 @@ import java.util.ArrayList;
 
 public class CALayer {
 
+    /* painter */
+
+    private CALayerBitmapPainter bitmapPainter = CALayerBitmapPainter.getSharedInstance();
+
     /* layoutProps */
 
     @NonNull
@@ -36,7 +40,7 @@ public class CALayer {
     private UIColor shadowColor = UIColor.blackColor;
     @Nullable
     private Bitmap bitmap = null;
-    private int bitmapGravity = GRAVITY_SCALE_ASCEPT_FIT;
+    private int bitmapGravity = CALayerBitmapPainter.GRAVITY_SCALE_ASCEPT_FIT;
     private boolean clipToBounds = false;
     private boolean hidden = false;
 
@@ -55,26 +59,12 @@ public class CALayer {
     private ArrayList<CALayer> subLayers = new ArrayList<CALayer>();
 
     /* transformProp */
+
     private CGTransform[] transforms = null;
 
     /* scaledDensityProp */
 
     public static float scaledDensity = (float) UIScreen.mainScreen.scale();
-
-    /* imageGravity const */
-
-    public static final int GRAVITY_SCALE_TO_FILL = 0x01;
-    public static final int GRAVITY_SCALE_ASCEPT_FIT = 0x02;
-    public static final int GRAVITY_SCALE_ASCEPT_FILL = 0x03;
-    public static final int GRAVITY_CENRER = 0x04;
-    public static final int GRAVITY_TOP = 0x05;
-    public static final int GRAVITY_TOP_LEFT = 0x06;
-    public static final int GRAVITY_TOP_RIGHT = 0x07;
-    public static final int GRAVITY_BOTTOM = 0x08;
-    public static final int GRAVITY_BOTTOM_LEFT = 0x09;
-    public static final int GRAVITY_BOTTOM_RIGHT = 0x0a;
-    public static final int GRAVITY_LEFT = 0x0b;
-    public static final int GRAVITY_RIGHT = 0x0c;
 
     /* category CALayer Constructor */
 
@@ -172,39 +162,113 @@ public class CALayer {
 
     protected void drawLayer(@NonNull Canvas canvas, CGRect rect, boolean isDrawInNewCanvas){
         if (isDrawInNewCanvas){
+            double frameW = frame.size.getWidth() * scaledDensity;
+            double frameH = frame.size.getHeight() * scaledDensity;
+            CGPoint origin = calcOriginInSuperCoordinate(this);
+
             // create srcBitmap
-            CGPoint origin = calcOrigin(this);
-            Bitmap srcBitmap = Bitmap.createBitmap((int)(scaledDensity * (frame.size.getWidth()+origin.getX())), (int)(scaledDensity * (frame.size.getHeight()+origin.getY())), Bitmap.Config.ARGB_8888);
-            Canvas canvasA = new Canvas(srcBitmap);
-            drawLayersInCanvas(canvasA);
+            Bitmap srcBitmap = Bitmap.createBitmap((int)( frameW + origin.getX()), (int)(frameH + origin.getY()), Bitmap.Config.ARGB_8888);
+            Canvas srcCanvas = new Canvas(srcBitmap);
+            drawLayersInCanvas(srcCanvas);
 
             // create maskBitmap
-            Bitmap maskBitmap = Bitmap.createBitmap((int)(scaledDensity * (frame.size.getWidth()+origin.getX())), (int)(scaledDensity * (frame.size.getHeight()+origin.getY())), Bitmap.Config.ARGB_8888);
-            Canvas canvasB = new Canvas(maskBitmap);
-            Paint p3 = new Paint(Paint.ANTI_ALIAS_FLAG);
-            canvasB.drawRoundRect(new CGRect(scaledDensity * origin.getX(), scaledDensity *origin.getY(), scaledDensity * frame.size.getWidth(), scaledDensity * frame.size.getHeight()).toRectF(), (float) cornerRadius, (float) cornerRadius, p3);
+            Bitmap maskBitmap = Bitmap.createBitmap((int)( frameW + origin.getX()), (int)(frameH + origin.getY()), Bitmap.Config.ARGB_8888);
+            Canvas maskCanvas = new Canvas(maskBitmap);
+            Paint maskPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+            RectF maskRectF = new CGRect(origin.getX(), origin.getY(), frameW, frameH).toRectF();
+            maskCanvas.drawRoundRect(maskRectF, (float) cornerRadius * scaledDensity, (float) cornerRadius * scaledDensity, maskPaint);
 
-            // draw srcBitmap, and apply maskBitmap ifNeed
-            Paint p2 = new Paint(Paint.ANTI_ALIAS_FLAG);
+            // draw srcBitmap, and apply maskBitmap if need
+            Paint mixPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
             if (this.transforms != null & this.transforms.length > 0){
-                Matrix matrix = createMatrixFromTransforms(this.transforms);
+                Matrix matrix = createMatrix(this.transforms);
                 if (this.clipToBounds){
-                    canvas.drawBitmap(maskBitmap, matrix, p2);
-                    p2.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+                    canvas.drawBitmap(maskBitmap, matrix, mixPaint);
+                    mixPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
                 }
-                canvas.drawBitmap(srcBitmap, matrix, p2);
+                canvas.drawBitmap(srcBitmap, matrix, mixPaint);
             }
             else {
-                canvas.drawBitmap(maskBitmap, 0, 0, p2);
-                p2.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-                canvas.drawBitmap(srcBitmap, 0, 0, p2);
+                canvas.drawBitmap(maskBitmap, 0, 0, mixPaint);
+                mixPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+                canvas.drawBitmap(srcBitmap, 0, 0, mixPaint);
             }
         }
         else {
             drawInCanvas(canvas);
         }
     }
-    private Matrix createMatrixFromTransforms(CGTransform[] transforms){
+
+    private void drawLayersInCanvas(@NonNull Canvas canvas){
+        drawInCanvas(canvas);
+        for (CALayer item : subLayers){
+            item.drawLayersInCanvas(canvas);
+        }
+    }
+
+    protected void drawInCanvas(@NonNull Canvas canvas){
+        CGPoint origin = calcOriginInSuperCoordinate(this);
+        CGRect frameFormatted = new CGRect(this.frame.getX() * scaledDensity, this.frame.getY() * scaledDensity, this.frame.getWidth() * scaledDensity, this.frame.getHeight() * scaledDensity);
+        float halfBorderW = (float) borderWidth * scaledDensity / 2.0f;
+
+        // background
+        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        paint.setColor(this.backgroundColor.toInt());
+
+        // visible
+        if (hidden){
+            return;
+        }
+
+        // background bitmap border
+        if (cornerRadius > 0){
+            if (shadowRadius > 0){
+                paint.setShadowLayer((float) shadowRadius * scaledDensity, (float) shadowX * scaledDensity, (float) shadowY * scaledDensity, shadowColor.toInt());
+            }
+            canvas.drawRoundRect(frameFormatted.shrinkToRectF(halfBorderW, origin), (float) cornerRadius * scaledDensity, (float) cornerRadius * scaledDensity, paint);
+
+            if (bitmap != null){
+                Paint mixPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+                CGRect maskFrame = new CGRect(origin.getX(), origin.getY(), frameFormatted.size.getWidth(), frameFormatted.size.getHeight());
+                Bitmap maskBitmap = createRadiusMask(maskFrame, cornerRadius * scaledDensity);
+                canvas.drawBitmap(maskBitmap, 0, 0, mixPaint);
+                mixPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+                bitmapPainter.drawBitmap(canvas, maskFrame, bitmap, bitmapGravity, mixPaint);
+            }
+
+            if (borderWidth > 0){
+                paint.setStyle(Paint.Style.STROKE);
+                paint.setStrokeWidth((float) borderWidth * scaledDensity);
+                paint.setColor(borderColor.toInt());
+                canvas.drawRoundRect(frameFormatted.shrinkToRectF(halfBorderW, origin), (float) cornerRadius * scaledDensity, (float) cornerRadius * scaledDensity, paint);
+            }
+        }
+        else {
+            if (shadowRadius > 0){
+                paint.setShadowLayer((float) shadowRadius * scaledDensity, (float) shadowX * scaledDensity, (float) shadowY * scaledDensity, shadowColor.toInt());
+            }
+            canvas.drawRect(frameFormatted.toRectF(origin), paint);
+
+            if (bitmap != null){
+                paint.reset();
+                CGRect bitmapFrame = new CGRect(origin.getX(), origin.getY(), frameFormatted.size.getWidth(), frameFormatted.size.getHeight());
+                bitmapPainter.drawBitmap(canvas, bitmapFrame, bitmap, bitmapGravity, paint);
+            }
+
+            if (borderWidth > 0){
+                paint.setStyle(Paint.Style.STROKE);
+                paint.setStrokeWidth((float) borderWidth * scaledDensity);
+                paint.setColor(borderColor.toInt());
+                canvas.drawRect(frameFormatted.shrinkToRectF(halfBorderW, origin), paint);
+            }
+        }
+
+        if (mask != null){
+            // @TODO
+        }
+    }
+
+    private Matrix createMatrix(CGTransform[] transforms){
         Matrix matrix = new Matrix();
         if (transforms == null || transforms.length == 0){
             return matrix;
@@ -232,76 +296,6 @@ public class CALayer {
         return matrix;
     }
 
-    private void drawLayersInCanvas(@NonNull Canvas canvas){
-        drawInCanvas(canvas);
-        for (CALayer item : subLayers){
-            item.drawLayersInCanvas(canvas);
-        }
-    }
-
-    protected void drawInCanvas(@NonNull Canvas canvas){
-        // normalize layer's prop
-        CGPoint calculatedOrigin = calcOrigin(this);
-        CGPoint originScaled = new CGPoint(calculatedOrigin.getX() * scaledDensity, calculatedOrigin.getY() * scaledDensity);
-        CGRect frameScaled = new CGRect(this.frame.getX() * scaledDensity, this.frame.getY() * scaledDensity, this.frame.getWidth() * scaledDensity, this.frame.getHeight() * scaledDensity);
-        float halfBorderW = (float) borderWidth * scaledDensity / 2.0f;
-
-        // background & shadow
-        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        paint.setColor(this.backgroundColor.toInt());
-
-        // visible
-        if (hidden){
-            return;
-        }
-
-        // background bitmap border
-        if (cornerRadius > 0){
-            if (shadowRadius > 0){
-                paint.setShadowLayer((float) shadowRadius * scaledDensity, (float) shadowX * scaledDensity, (float) shadowY * scaledDensity, shadowColor.toInt());
-            }
-            canvas.drawRoundRect(frameScaled.shrinkToRectF(halfBorderW, originScaled), (float) cornerRadius * scaledDensity, (float) cornerRadius * scaledDensity, paint);
-
-            if (bitmap != null){
-                CGRect newFrame = new CGRect(originScaled.getX(), originScaled.getY(), frameScaled.size.getWidth(), frameScaled.size.getHeight());
-                Paint p2 = new Paint(Paint.ANTI_ALIAS_FLAG);
-                Bitmap maskBitmap = createRadiusMask(newFrame, cornerRadius * scaledDensity);
-                canvas.drawBitmap(maskBitmap, 0, 0, p2);
-                p2.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-                drawBitmap(canvas, newFrame, bitmap, bitmapGravity, p2);
-            }
-
-            if (borderWidth > 0){
-                paint.setStyle(Paint.Style.STROKE);
-                paint.setStrokeWidth((float) borderWidth * scaledDensity);
-                paint.setColor(borderColor.toInt());
-                canvas.drawRoundRect(frameScaled.shrinkToRectF(halfBorderW, originScaled), (float) cornerRadius * scaledDensity, (float) cornerRadius * scaledDensity, paint);
-            }
-        }
-        else {
-            if (shadowRadius > 0){
-                paint.setShadowLayer((float) shadowRadius * scaledDensity, (float) shadowX * scaledDensity, (float) shadowY * scaledDensity, shadowColor.toInt());
-            }
-            canvas.drawRect(frameScaled.toRectF(originScaled), paint);
-
-            if (bitmap != null){
-                CGRect newFrame = new CGRect(originScaled.getX(), originScaled.getY(), frameScaled.size.getWidth(), frameScaled.size.getHeight());
-                drawBitmap(canvas, newFrame, bitmap, bitmapGravity, paint);
-            }
-
-            if (borderWidth > 0){
-                paint.setStyle(Paint.Style.STROKE);
-                paint.setStrokeWidth((float) borderWidth * scaledDensity);
-                paint.setColor(borderColor.toInt());
-                canvas.drawRect(frameScaled.shrinkToRectF(halfBorderW, originScaled), paint);
-            }
-        }
-
-        if (mask != null){
-            // @TODO
-        }
-    }
-
     private Bitmap createRadiusMask(@NonNull CGRect rect, double radius){
         Bitmap maskBitmap = Bitmap.createBitmap((int)(rect.size.getWidth()+rect.origin.getX()), (int)(rect.size.getHeight()+rect.origin.getY()), Bitmap.Config.ARGB_8888);
         Canvas canvasB = new Canvas(maskBitmap);
@@ -327,190 +321,6 @@ public class CALayer {
         for (CALayer item : subLayers){
             item.resetNeedDisplayToFalse();
         }
-    }
-
-    private void drawBitmap(@NonNull Canvas canvas, @NonNull CGRect rect, @NonNull Bitmap bitmap, int bitmapGravity, Paint paint){
-        double imageW = bitmap.getWidth();
-        double imageH = bitmap.getHeight();
-        double imageRatio = imageW / imageH;
-        double frameW = rect.size.getWidth();
-        double frameH = rect.size.getHeight();
-        double frameRatio = frameW / frameH;
-        double frameX = rect.origin.getX();
-        double frameY = rect.origin.getY();
-        CGRect imageRect = new CGRect(0, 0, imageW, imageH);
-        CGRect frameRect = rect;
-
-        switch (bitmapGravity){
-            case GRAVITY_SCALE_TO_FILL:
-                break;
-            case GRAVITY_SCALE_ASCEPT_FIT:
-                if (frameRatio > imageRatio){
-                    double scaledFrameW = frameH * imageRatio;
-                    frameRect = new CGRect(frameX + (frameW - scaledFrameW) / 2, frameY, scaledFrameW, frameH);
-                }
-                else {
-                    double scaledH = frameW / imageRatio;
-                    frameRect = new CGRect(frameX, frameY + (frameH - scaledH)/2, frameW, scaledH);
-                }
-                break;
-            case GRAVITY_SCALE_ASCEPT_FILL:
-                if (frameRatio > imageRatio){
-                    double clipedImageH = imageW / frameRatio;
-                    imageRect = new CGRect(0, (imageH - clipedImageH)/2, imageW, clipedImageH);
-                }
-                else {
-                    double clipedImageW = imageH * frameRatio;
-                    imageRect = new CGRect((imageW - clipedImageW) / 2, 0, clipedImageW, imageH);
-                }
-                break;
-            case GRAVITY_CENRER:
-                if (frameW >= imageW && frameH >= imageH){
-                    frameRect = new CGRect(frameX + (frameW - imageW) / 2, frameY + (frameH - imageH) / 2, imageW, imageH);
-                }
-                else if (frameW < imageW && frameH >= imageH ){
-                    imageRect = new CGRect((imageW - frameW)/2, 0, frameW, imageH);
-                    frameRect = new CGRect(frameX, frameY+(frameH - imageH)/2, frameW, imageH);
-                }
-                else if (frameH < imageH && frameW >= imageW) {
-                    imageRect = new CGRect(0, (imageH - frameH)/2, imageW, frameH);
-                    frameRect = new CGRect(frameX+(frameW - imageW)/2, frameY, imageW, frameH);
-                }
-                else {
-                    imageRect = new CGRect((imageW - frameW)/2, (imageH - frameH)/2, frameW, frameH);
-                }
-                break;
-            case GRAVITY_TOP:
-                if (frameW >= imageW && frameH >= imageH){
-                    frameRect = new CGRect(frameX+(frameW-imageW)/2, frameY, imageW, imageH);
-                }
-                else if (frameW < imageW && frameH >= imageH ){
-                    imageRect = new CGRect((imageW-frameW)/2, 0, frameW, imageH);
-                    frameRect = new CGRect(frameX, frameY, frameW, imageH);
-                }
-                else if (frameH < imageH && frameW >= imageW) {
-                    imageRect = new CGRect(0, 0, imageW, frameH);
-                    frameRect = new CGRect(frameX+(imageW-frameW)/2, frameY, imageW, frameH);
-                }
-                else {
-                    imageRect = new CGRect((imageW-frameW)/2, 0, frameW, frameH);
-                }
-                break;
-            case GRAVITY_TOP_LEFT:
-                if (frameW >= imageW && frameH >= imageH){
-                    frameRect = new CGRect(frameX, frameY, imageW, imageH);
-                }
-                else if (frameW < imageW && frameH >= imageH ){
-                    imageRect = new CGRect(0, 0, frameW, imageH);
-                    frameRect = new CGRect(frameX, frameY, frameW, imageH);
-                }
-                else if (frameH < imageH && frameW >= imageW) {
-                    imageRect = new CGRect(0, 0, imageW, frameH);
-                    frameRect = new CGRect(frameX, frameY, imageW, frameH);
-                }
-                else {
-                    imageRect = new CGRect(0, 0, frameW, frameH);
-                }
-                break;
-            case GRAVITY_TOP_RIGHT:
-                if (frameW >= imageW && frameH >= imageH){
-                    frameRect = new CGRect(frameX+(frameW-imageW), frameY, imageW, imageH);
-                }
-                else if (frameW < imageW && frameH >= imageH ){
-                    imageRect = new CGRect((imageW-frameW), 0, frameW, imageH);
-                    frameRect = new CGRect(frameX, frameY, frameW, imageH);
-                }
-                else if (frameH < imageH && frameW >= imageW) {
-                    imageRect = new CGRect(0, 0, imageW, frameH);
-                    frameRect = new CGRect(frameX+(frameW-imageW), frameY, imageW, frameH);
-                }
-                else {
-                    imageRect = new CGRect((imageW-frameW), 0, frameW, frameH);
-                }
-                break;
-            case GRAVITY_BOTTOM:
-                if (frameW >= imageW && frameH >= imageH){
-                    frameRect = new CGRect(frameX+(frameW-imageW)/2, frameY+(frameH-imageH), imageW, imageH);
-                }
-                else if (frameW < imageW && frameH >= imageH ){
-                    imageRect = new CGRect((imageW-frameW)/2, 0, frameW, imageH);
-                    frameRect = new CGRect(frameX, frameY+(frameH-imageH), frameW, imageH);
-                }
-                else if (frameH < imageH && frameW >= imageW) {
-                    imageRect = new CGRect(0, (imageH-frameH), imageW, frameH);
-                    frameRect = new CGRect(frameX+(frameW-imageW)/2, frameY, imageW, frameH);
-                }
-                else {
-                    imageRect = new CGRect((imageW-frameW)/2, (imageH-frameH), frameW, frameH);
-                }
-                break;
-            case GRAVITY_BOTTOM_LEFT:
-                if (frameW >= imageW && frameH >= imageH){
-                    frameRect = new CGRect(frameX, frameY+(frameH-imageH), imageW, imageH);
-                }
-                else if (frameW < imageW && frameH >= imageH ){
-                    imageRect = new CGRect(0, 0, frameW, imageH);
-                    frameRect = new CGRect(frameX, frameY+(frameH-imageH), frameW, imageH);
-                }
-                else if (frameH < imageH && frameW >= imageW) {
-                    imageRect = new CGRect(0, (imageH-frameH), imageW, frameH);
-                    frameRect = new CGRect(frameX, frameY, imageW, frameH);
-                }
-                else {
-                    imageRect = new CGRect(0, (imageH-frameH), frameW, frameH);
-                }
-                break;
-            case GRAVITY_BOTTOM_RIGHT:
-                if (frameW >= imageW && frameH >= imageH){
-                    frameRect = new CGRect(frameX+(frameW-imageW), frameY+(frameH-imageH), imageW, imageH);
-                }
-                else if (frameW < imageW && frameH >= imageH ){
-                    imageRect = new CGRect((imageW-frameW), 0, frameW, imageH);
-                    frameRect = new CGRect(frameX, frameY+(frameH-imageH), frameW, imageH);
-                }
-                else if (frameH < imageH && frameW >= imageW) {
-                    imageRect = new CGRect(0, (imageH-frameH), imageW, frameH);
-                    frameRect = new CGRect(frameX+(frameW-imageW), frameY, imageW, frameH);
-                }
-                else {
-                    imageRect = new CGRect((imageW-frameW), (imageH-frameH), frameW, frameH);
-                }
-                break;
-            case GRAVITY_LEFT:
-                if (frameW >= imageW && frameH >= imageH){
-                    frameRect = new CGRect(frameX, frameY+(frameH-imageH)/2, imageW, imageH);
-                }
-                else if (frameW < imageW && frameH >= imageH ){
-                    imageRect = new CGRect(0, 0, frameW, imageH);
-                    frameRect = new CGRect(frameX, frameY+(frameH-imageH)/2, frameW, imageH);
-                }
-                else if (frameH < imageH && frameW >= imageW) {
-                    imageRect = new CGRect(0, (imageH-frameH)/2, imageW, frameH);
-                    frameRect = new CGRect(frameX, frameY, imageW, frameH);
-                }
-                else {
-                    imageRect = new CGRect(0, 0, frameW, frameH);
-                }
-                break;
-            case GRAVITY_RIGHT:
-                if (frameW >= imageW && frameH >= imageH){
-                    frameRect = new CGRect(frameX+(frameW-imageW), frameY+(frameH-imageH)/2, imageW, imageH);
-                }
-                else if (frameW < imageW && frameH >= imageH ){
-                    imageRect = new CGRect((imageW-frameW), 0, frameW, imageH);
-                    frameRect = new CGRect(frameX, frameY+(frameH-imageH)/2, frameW, imageH);
-                }
-                else if (frameH < imageH && frameW >= imageW) {
-                    imageRect = new CGRect(0, (imageH-frameH)/2, imageW, frameH);
-                    frameRect = new CGRect(frameX+(frameW-imageW), frameY, imageW, frameH);
-                }
-                else {
-                    imageRect = new CGRect((imageW-frameW), (imageH-frameH)/2, frameW, frameH);
-                }
-                break;
-        }
-
-        canvas.drawBitmap(bitmap, imageRect.toRect(), frameRect.toRect(), paint);
     }
 
     /* category CALayer Getter&Setter */
@@ -740,7 +550,7 @@ public class CALayer {
     /* category CALayer support method */
 
     @NonNull
-    private CGPoint calcOrigin(@NonNull CALayer layer){
+    private CGPoint calcOriginInSuperCoordinate(@NonNull CALayer layer){
         double oriX = layer.frame.origin.getX();
         double oriY = layer.frame.origin.getY();
         CALayer p = layer.getSuperLayer();
@@ -752,7 +562,7 @@ public class CALayer {
             oriY += p.frame.origin.getY();
             p = p.getSuperLayer();
         }
-        return new CGPoint(oriX, oriY);
+        return new CGPoint(oriX * scaledDensity, oriY * scaledDensity);
     }
 
     private CALayer requestRootLayer(){
