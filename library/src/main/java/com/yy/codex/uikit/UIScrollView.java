@@ -76,13 +76,19 @@ public class UIScrollView extends UIView {
         UIView.sAnimator.addAnimationState(this, "contentOffset.y", originY, (double) y);
     }
 
-    boolean test = false;
-    UIViewAnimation viewAnimation;
+    private UIViewAnimation mViewAnimation;
+    private boolean tracking = false;
+    public boolean getTracking() {
+        return tracking;
+    }
+
     public void pan(UIPanGestureRecognizer panGestureRecognizer) {
-        if (!test) {
-            test = true;
+        if (!tracking) {
+            tracking = true;
             panGestureRecognizer.setTranslation(mContentOffset);
-            viewAnimation.cancel();
+            if (mViewAnimation != null) {
+                mViewAnimation.cancel();
+            }
         }
 
         double scrollY = -(panGestureRecognizer.translation().getY());
@@ -94,13 +100,15 @@ public class UIScrollView extends UIView {
 
 
         if (panGestureRecognizer.getState() == UIGestureRecognizerState.Ended) {
-            test = false;
-            viewAnimation = UIView.sAnimator.spring(new Runnable() {
-                @Override
-                public void run() {
-                    scrollTo(0, 0);
-                }
-            }, null);
+            tracking = false;
+            if (mContentOffset.getY() < 0) {
+                viewAnimation = UIView.sAnimator.linear(0.25, new Runnable() {
+                    @Override
+                    public void run() {
+                        scrollTo(0, 0);
+                    }
+                }, null);
+            }
         }
 
     }
