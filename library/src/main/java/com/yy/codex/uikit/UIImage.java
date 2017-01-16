@@ -28,6 +28,18 @@ public class UIImage {
         this.bitmap = bitmap;
     }
 
+    /* Scale */
+
+    private double scale = UIScreen.mainScreen.scale();
+
+    public double getScale() {
+        return scale;
+    }
+
+    public void setScale(double scale) {
+        this.scale = scale;
+    }
+
     /* Bitmap instance */
 
     @Nullable private Bitmap bitmap = null;
@@ -35,6 +47,13 @@ public class UIImage {
     @Nullable
     public Bitmap getBitmap() {
         return bitmap;
+    }
+
+    public CGSize getSize() {
+        if (bitmap == null) {
+            return new CGSize(0, 0);
+        }
+        return new CGSize(bitmap.getWidth() / scale, bitmap.getHeight() / scale);
     }
 
 }

@@ -124,7 +124,9 @@ public class UIGestureRecognizer {
             for (int i = 0; i < mActions.length; i++) {
                 try {
                     mActions[i].invoke(new Object[]{this});
-                } catch (Exception e) {}
+                } catch (Exception e) {
+                    System.out.print(e);
+                }
             }
         }
         if (mTriggerBlock != null) {

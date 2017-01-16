@@ -190,7 +190,7 @@ public class UIControl extends UIView {
     protected void init() {
         setUserInteractionEnabled(true);
         UILongPressGestureRecognizer longPressGestureRecognizer = new UILongPressGestureRecognizer(this, "onLongPressed:");
-        longPressGestureRecognizer.minimumPressDuration = 0.10;
+        longPressGestureRecognizer.minimumPressDuration = 0.05;
         addGestureRecognizer(longPressGestureRecognizer);
         UITapGestureRecognizer tapGestureRecognizer = new UITapGestureRecognizer(this, "onTapped:");
         addGestureRecognizer(tapGestureRecognizer);
@@ -276,6 +276,7 @@ public class UIControl extends UIView {
     public void setEnabled(boolean enabled) {
         this.mEnabled = enabled;
         setUserInteractionEnabled(enabled);
+        resetState();
     }
 
     @Override
@@ -290,6 +291,7 @@ public class UIControl extends UIView {
     @Override
     public void setSelected(boolean selected) {
         this.mSelected = selected;
+        resetState();
     }
 
     @Override
