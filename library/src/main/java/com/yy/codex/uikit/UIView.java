@@ -21,9 +21,7 @@ import com.facebook.rebound.SpringSystem;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Created by cuiminghui on 2016/12/30.
@@ -164,6 +162,25 @@ public class UIView extends UIResponder {
         float oldValue = this.getAlpha();
         super.setAlpha(alpha);
         UIView.addAnimationState(this, "alpha", oldValue, alpha);
+    }
+
+    private int mTintColor = 0;
+
+    public void setTintColor(int tintColor) {
+        this.mTintColor = tintColor;
+    }
+
+    public int getTintColor() {
+        int tintColor = mTintColor;
+        UIView superview = getSuperview();
+        while (tintColor == 0 && superview != null) {
+            tintColor = superview.mTintColor;
+            superview = superview.getSuperview();
+        }
+        if (tintColor == 0) {
+            tintColor = 0xFF007AFF;
+        }
+        return tintColor;
     }
 
     /* category UIView Hierarchy */

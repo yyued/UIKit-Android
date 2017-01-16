@@ -12,6 +12,8 @@ import android.view.View;
 
 import com.yy.codex.uikit.CGRect;
 import com.yy.codex.uikit.NSLog;
+import com.yy.codex.uikit.UIButton;
+import com.yy.codex.uikit.UIConstraint;
 import com.yy.codex.uikit.UIControl;
 import com.yy.codex.uikit.UILongPressGestureRecognizer;
 import com.yy.codex.uikit.UIPinchGestureRecognizer;
@@ -57,14 +59,24 @@ class TestView extends UIView {
     }
 
     private void init() {
-        UIControl control = new UIControl(getContext());
-        control.setFrame(new CGRect(88, 88, 88, 88));
-        control.setBackgroundColor(Color.BLACK);
-        control.addTarget(this, "onTouchUpInside:", UIControl.Event.TouchUpInside);
-        control.addTarget(this, "onTouchUpOutside:", UIControl.Event.TouchUpOutside);
-        control.addTarget(this, "onTouchDragExit:", UIControl.Event.TouchDragExit);
-        control.addTarget(this, "onTouchDragEnter:", UIControl.Event.TouchDragEnter);
-        addSubview(control);
+        UIButton button = new UIButton(getContext());
+        UIConstraint constraint = new UIConstraint();
+        constraint.centerVertically = true;
+        constraint.centerHorizontally = true;
+        constraint.width = "200";
+        constraint.height = "44";
+        button.setConstraint(constraint);
+//        button.setWantsLayer(true);
+//        button.getLayer().setBackgroundColor(Color.RED);
+//        button.getLayer().setBorderColor(Color.BLACK);
+//        button.getLayer().setBorderWidth(1);
+//        button.getLayer().setCornerRadius(22.0);
+//        button.setFrame(new CGRect(88, 88, 88, 88));
+//        control.addTarget(this, "onTouchUpInside:", UIControl.Event.TouchUpInside);
+//        control.addTarget(this, "onTouchUpOutside:", UIControl.Event.TouchUpOutside);
+//        control.addTarget(this, "onTouchDragExit:", UIControl.Event.TouchDragExit);
+//        control.addTarget(this, "onTouchDragEnter:", UIControl.Event.TouchDragEnter);
+        addSubview(button);
     }
 
     public void onTouchDragExit(UIControl control) {

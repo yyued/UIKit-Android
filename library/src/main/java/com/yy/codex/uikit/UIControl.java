@@ -1,7 +1,6 @@
 package com.yy.codex.uikit;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,6 +9,7 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,6 +30,27 @@ public class UIControl extends UIView {
         TouchUpOutside,
         TouchCancel,
         ValueChanged
+    }
+
+    public enum State {
+        Normal,
+        Highlighted,
+        Disabled,
+        Selected,
+    }
+
+    public enum ContentVerticalAlignment {
+        Center,
+        Top,
+        Bottom,
+        Fill,
+    }
+
+    public enum ContentHorizontalAlignment {
+        Center,
+        Left,
+        Right,
+        Fill,
     }
 
     public UIControl(@NonNull Context context, @NonNull View view) {
@@ -181,6 +202,7 @@ public class UIControl extends UIView {
         if (sender.mState == UIGestureRecognizerState.Began) {
             mInside = true;
             onEvent(Event.TouchDown);
+            mTracking = true;
         }
         else if (sender.mState == UIGestureRecognizerState.Changed) {
             if (isPointInside(sender.location(this))) {
@@ -188,6 +210,7 @@ public class UIControl extends UIView {
                 if (!mInside) {
                     onEvent(Event.TouchDragEnter);
                     mInside = true;
+                    setHighlighted(true);
                 }
             }
             else {
@@ -195,6 +218,7 @@ public class UIControl extends UIView {
                 if (mInside) {
                     onEvent(Event.TouchDragExit);
                     mInside = false;
+                    setHighlighted(false);
                 }
             }
         }
@@ -205,7 +229,9 @@ public class UIControl extends UIView {
             else {
                 onEvent(Event.TouchUpOutside);
             }
+            mTracking = false;
         }
+        resetState();
     }
 
     protected void onTapped(UITapGestureRecognizer sender) {
@@ -235,6 +261,106 @@ public class UIControl extends UIView {
         double xRange = this.getFrame().getWidth() / 2.0;
         double yRange = this.getFrame().getHeight() / 2.0;
         return point.inRange(xRange + 22, yRange + 22, new CGPoint(xRange, yRange));
+    }
+
+    /* Enabled */
+
+    private boolean mEnabled = true;
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        this.mEnabled = enabled;
+        setUserInteractionEnabled(enabled);
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return mEnabled;
+    }
+
+    /* Selected */
+
+    private boolean mSelected = false;
+
+    @Override
+    public void setSelected(boolean selected) {
+        this.mSelected = selected;
+    }
+
+    @Override
+    public boolean isSelected() {
+        return mSelected;
+    }
+
+    /* Highlighted */
+
+    private boolean mHighlighted = false;
+
+    protected void setHighlighted(boolean highlighted) {
+        this.mHighlighted = highlighted;
+    }
+
+    public boolean isHighlighted() {
+        return mHighlighted;
+    }
+
+    /* State */
+
+    private EnumSet<State> mState = EnumSet.of(State.Normal);
+
+    protected void resetState() {
+        EnumSet<State> state = EnumSet.of(State.Normal);
+        state.clear();
+        if (isTracking() && isHighlighted()) {
+            state.add(State.Highlighted);
+        }
+        else {
+            state.add(State.Normal);
+        }
+        if (isSelected()) {
+            state.add(State.Selected);
+        }
+        if (!isEnabled()) {
+            state.add(State.Disabled);
+        }
+    }
+
+    public EnumSet<State> getState() {
+        return mState;
+    }
+
+    /* Tracking */
+
+    private boolean mTracking = false;
+
+    public boolean isTracking() {
+        return mTracking;
+    }
+
+    public boolean isTouchInside() {
+        return mInside;
+    }
+
+    /* ContentAlignment */
+
+    private ContentVerticalAlignment mContentVerticalAlignment = ContentVerticalAlignment.Center;
+
+    public void setContentVerticalAlignment(ContentVerticalAlignment contentVerticalAlignment) {
+        this.mContentVerticalAlignment = contentVerticalAlignment;
+    }
+
+    public ContentVerticalAlignment getContentVerticalAlignment() {
+        return mContentVerticalAlignment;
+    }
+
+    private ContentHorizontalAlignment mContentHorizontalAlignment = ContentHorizontalAlignment.Center;
+
+    public void setContentHorizontalAlignment(ContentHorizontalAlignment contentHorizontalAlignment) {
+        this.mContentHorizontalAlignment = contentHorizontalAlignment;
+    }
+
+    public ContentHorizontalAlignment getContentHorizontalAlignment() {
+        return mContentHorizontalAlignment;
     }
 
 }
