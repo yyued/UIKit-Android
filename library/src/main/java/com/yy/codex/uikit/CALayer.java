@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
+import android.graphics.RectF;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -44,7 +45,7 @@ public class CALayer {
     private boolean needDisplay = false;
     private boolean newCanvasContext = false;
     @Nullable
-    private CALayer mask = null;
+    private CALayer mask = null; // not support
 
     /* hierarchyProps */
 
@@ -54,11 +55,11 @@ public class CALayer {
     private ArrayList<CALayer> subLayers = new ArrayList<CALayer>();
 
     /* transformProp */
-    private ArrayList<CGTransform> transforms;
+    private CGTransform[] transforms = null;
 
     /* scaledDensityProp */
 
-    public static float scaledDensity = 0;
+    public static double scaledDensity = UIScreen.mainScreen.scale();
 
     /* imageGravity const */
 
@@ -80,10 +81,10 @@ public class CALayer {
     public CALayer() {}
 
     public CALayer(@NonNull CGRect frame) {
-        float x = (float) frame.origin.getX() * scaledDensity;
-        float y = (float) frame.origin.getY() * scaledDensity;
-        float w = (float) frame.size.getWidth() * scaledDensity;
-        float h = (float) frame.size.getHeight() * scaledDensity;
+        float x = (float) (frame.origin.getX() * scaledDensity);
+        float y = (float) (frame.origin.getY() * scaledDensity);
+        float w = (float) (frame.size.getWidth() * scaledDensity);
+        float h = (float) (frame.size.getHeight() * scaledDensity);
         this.frame = new CGRect(x, y, w, h);
     }
 
@@ -190,17 +191,26 @@ public class CALayer {
             canvas.drawBitmap(maskBitmap, 0, 0, p2);
             p2.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
             canvas.drawBitmap(srcBitmap, 0, 0, p2);
+
+//            Matrix matrix = new Matrix();
+//            matrix.setRotate();
         }
         else {
-            drawInCanvas(canvas);
+            drawTransformLayerInCanvas(canvas);
         }
     }
 
     private void drawLayersInCanvas(@NonNull Canvas canvas){
-        drawInCanvas(canvas);
+        drawTransformLayerInCanvas(canvas);
         for (CALayer item : subLayers){
             item.drawLayersInCanvas(canvas);
         }
+    }
+
+    private void drawTransformLayerInCanvas(@NonNull Canvas canvas){
+//        applyTransform(canvas);
+        drawInCanvas(canvas);
+//        unapplyTransform(canvas);
     }
 
     protected void drawInCanvas(@NonNull Canvas canvas){
@@ -269,6 +279,58 @@ public class CALayer {
         }
     }
 
+    private void unapplyTransform(@NonNull Canvas canvas){
+        if (transforms == null || transforms.length == 0){
+            return;
+        }
+        for (CGTransform transform : transforms){
+            if (!transform.enable){
+                continue;
+            }
+            RectF rectF = frame.toRectF();
+            if (transform instanceof CGTransformRotation){
+                canvas.rotate(-(float)((CGTransformRotation) transform).angle, rectF.centerX(), rectF.centerY());
+            }
+            else if (transform instanceof CGTransformTranslation){
+                CGTransformTranslation translation = (CGTransformTranslation) transform;
+                canvas.translate(-(float) translation.tx, -(float) translation.ty);
+            }
+            else if (transform instanceof CGTransformScale){
+                CGTransformScale scale = (CGTransformScale)transform;
+                canvas.scale((float) (1.0/scale.sx), (float) (1.0/scale.sy), rectF.centerX(), rectF.centerY());
+            }
+            else if (transform instanceof CGTransformMatrix){
+                // @TODO
+            }
+        }
+    }
+
+    private void applyTransform(@NonNull Canvas canvas){
+        if (transforms == null || transforms.length == 0){
+            return;
+        }
+        RectF rectF = frame.toRectF();
+        for (CGTransform transform : transforms){
+            if (!transform.enable){
+                continue;
+            }
+            if (transform instanceof CGTransformRotation){
+                canvas.rotate((float) ((CGTransformRotation) transform).angle, rectF.centerX(), rectF.centerY());
+            }
+            else if (transform instanceof CGTransformTranslation){
+                CGTransformTranslation translation = (CGTransformTranslation) transform;
+                canvas.translate((float) translation.tx, (float) translation.ty);
+            }
+            else if (transform instanceof CGTransformScale){
+                CGTransformScale scale = (CGTransformScale)transform;
+                canvas.scale((float) scale.sx, (float) scale.sy, rectF.centerX(), rectF.centerY());
+            }
+            else if (transform instanceof CGTransformMatrix){
+                // @TODO
+            }
+        }
+    }
+
     private Bitmap createRadiusMask(@NonNull CGRect rect, double radius){
         Bitmap maskBitmap = Bitmap.createBitmap((int)(rect.size.getWidth()+rect.origin.getX()), (int)(rect.size.getHeight()+rect.origin.getY()), Bitmap.Config.ARGB_8888);
         Canvas canvasB = new Canvas(maskBitmap);
@@ -281,7 +343,7 @@ public class CALayer {
         CGRect rect = layer.getFrame();
         Bitmap maskBitmap = Bitmap.createBitmap((int)(rect.size.getWidth()+rect.origin.getX()), (int)(rect.size.getHeight()+rect.origin.getY()), Bitmap.Config.ARGB_8888);
         Canvas canvasB = new Canvas(maskBitmap);
-        layer.drawInCanvas(canvasB);
+        layer.drawTransformLayerInCanvas(canvasB);
         return maskBitmap;
     }
 
@@ -527,9 +589,19 @@ public class CALayer {
         return clipToBounds;
     }
 
+    /*
+        以下情况，在新画布绘制。
+        1. 有 transform 属性时
+        2. 有子节点 且 clipToBounds 时
+     */
     public boolean isNewCanvasContext() {
-        boolean result = this.getSubLayers().length > 0 && this.clipToBounds;
+        boolean result = (this.transforms != null && this.transforms.length > 0)
+                || (this.getSubLayers().length > 0 && this.clipToBounds);
         return result;
+    }
+
+    public CGTransform[] getTransforms() {
+        return transforms;
     }
 
     public void setNewCanvasContext(boolean newCanvasContext) {
@@ -538,10 +610,10 @@ public class CALayer {
 
     @NonNull
     public CALayer setFrame(@NonNull CGRect frame) {
-        float x = (float) frame.origin.getX() * scaledDensity;
-        float y = (float) frame.origin.getY() * scaledDensity;
-        float w = (float) frame.size.getWidth() * scaledDensity;
-        float h = (float) frame.size.getHeight() * scaledDensity;
+        float x = (float) (frame.origin.getX() * scaledDensity);
+        float y = (float) (frame.origin.getY() * scaledDensity);
+        float w = (float) (frame.size.getWidth() * scaledDensity);
+        float h = (float) (frame.size.getHeight() * scaledDensity);
         CGRect newValue = new CGRect(x, y, w, h);
         if (!this.frame.equals(newValue)){
             this.frame = newValue;
@@ -666,6 +738,15 @@ public class CALayer {
         return this;
     }
 
+    public void setTransforms(CGTransform[] transforms) {
+        this.transforms = transforms;
+    }
+
+    public void setTransform(CGTransform a) {
+        CGTransform[] tf = {a};
+        this.transforms = tf;
+    }
+
     public void setNeedDisplay(boolean needDisplay) {
         this.needDisplay = needDisplay;
         if (needDisplay){
@@ -676,6 +757,7 @@ public class CALayer {
         }
     }
 
+    @NonNull
     public CALayer setMask(CALayer mask) {
         if (this.mask != mask){
             this.mask = mask;

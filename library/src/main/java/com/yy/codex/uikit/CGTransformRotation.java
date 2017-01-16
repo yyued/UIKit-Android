@@ -6,7 +6,7 @@ package com.yy.codex.uikit;
 
 public class CGTransformRotation extends CGTransform {
 
-    private double angle;
+    protected double angle;
 
     public CGTransformRotation(double angle) {
         super(true);
