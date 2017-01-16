@@ -101,14 +101,14 @@ public class UIScrollView extends UIView {
 
         if (panGestureRecognizer.getState() == UIGestureRecognizerState.Ended) {
             tracking = false;
-            if (mContentOffset.getY() < 0) {
-                viewAnimation = UIView.sAnimator.linear(0.25, new Runnable() {
-                    @Override
-                    public void run() {
-                        scrollTo(0, 0);
-                    }
-                }, null);
-            }
+//            if (mContentOffset.getY() < 0) {
+//                viewAnimation = UIView.sAnimator.linear(0.25, new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        scrollTo(0, 0);
+//                    }
+//                }, null);
+//            }
         }
 
     }
