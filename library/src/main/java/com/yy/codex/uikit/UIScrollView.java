@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
+import android.view.animation.Interpolator;
 import android.widget.OverScroller;
 import android.widget.ScrollView;
 
@@ -19,8 +20,11 @@ import android.widget.ScrollView;
 
 public class UIScrollView extends UIView {
 
-    OverScroller overScroller;
-    float y;
+    private CGPoint mPreContentOffset = new CGPoint(0, 0);
+    private CGPoint mContentOffset = new CGPoint(0, 0);
+
+    private OverScroller mOverScroller;
+    private Interpolator mInterpolator;
 
     public UIScrollView(@NonNull Context context, @NonNull View view) {
         super(context, view);
@@ -50,11 +54,59 @@ public class UIScrollView extends UIView {
     private void initScrollView() {
         UIPanGestureRecognizer pan = new UIPanGestureRecognizer(this, "pan:");
         this.addGestureRecognizer(pan);
+
+        mOverScroller = new OverScroller(getContext());
     }
 
+    @Override
+    public void animate(@NonNull String aKey, float aValue) {
+        super.animate(aKey, aValue);
+        if (aKey.equalsIgnoreCase("contentOffset.x")) {
+            scrollTo((int)aValue, getScrollY());
+            mContentOffset = new CGPoint((int)aValue / UIScreen.mainScreen.scale(), getScrollY() / UIScreen.mainScreen.scale());
+        }
+        else if (aKey.equalsIgnoreCase("contentOffset.y")) {
+            scrollTo(getScrollX(), (int)aValue);
+            mContentOffset = new CGPoint(getScrollX() / UIScreen.mainScreen.scale(), (int)aValue / UIScreen.mainScreen.scale());
+        }
+    }
+
+    @Override
+    public void scrollTo(int x, int y) {
+        double originX = (double) this.getScrollX();
+        double originY = (double) this.getScrollY();
+        super.scrollTo(x, y);
+        UIView.animator.addAnimationState(this, "contentOffset.x", originX, (double) x);
+        UIView.animator.addAnimationState(this, "contentOffset.y", originY, (double) y);
+    }
+
+    boolean test = false;
+    UIViewAnimation viewAnimation;
     public void pan(UIPanGestureRecognizer panGestureRecognizer) {
-        CGPoint point = panGestureRecognizer.location(panGestureRecognizer.getView());
-        NSLog.log(point);
+        if (!test) {
+            test = true;
+            panGestureRecognizer.setTranslation(mContentOffset);
+            viewAnimation.cancel();
+        }
+
+        double scrollY = -(panGestureRecognizer.translation().getY());
+
+        mContentOffset = new CGPoint(0, -(panGestureRecognizer.translation().getY()));
+        scrollTo(0, (int)(mContentOffset.getY() * UIScreen.mainScreen.scale()));
+
+        NSLog.log(mContentOffset.getY());
+
+
+        if (panGestureRecognizer.getState() == UIGestureRecognizerState.Ended) {
+            test = false;
+            viewAnimation = UIView.animator.spring(new Runnable() {
+                @Override
+                public void run() {
+                    scrollTo(0, 0);
+                }
+            }, null);
+        }
+
     }
 
 
