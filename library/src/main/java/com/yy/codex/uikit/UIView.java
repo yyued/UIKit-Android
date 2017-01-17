@@ -84,7 +84,6 @@ public class UIView extends UIResponder {
         }
         this.setMinimumWidth((int) mWidth);
         this.setMinimumHeight((int) mHeight);
-        CALayer.scaledDensity = (float) UIScreen.mainScreen.scale();
         this.mLayer.setFrame(new CGRect(0, 0, frame.size.width, frame.size.height));
         UIView.animator.addAnimationState(this, "frame.origin.x", oldValue.origin.x, frame.origin.x);
         UIView.animator.addAnimationState(this, "frame.origin.y", oldValue.origin.y, frame.origin.y);
