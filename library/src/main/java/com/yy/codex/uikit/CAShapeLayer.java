@@ -12,9 +12,9 @@ import android.support.annotation.NonNull;
 
 public class CAShapeLayer extends CALayer {
 
-    private Path path = null;
-    private int strokeColor = Color.BLACK;
-    private double lineWidth = 1;
+    private Path mPath = null;
+    private int mStrokeColor = Color.BLACK;
+    private double mLineWidth = 1;
 
     /* category CAShapeLayer Constructor */
 
@@ -22,43 +22,41 @@ public class CAShapeLayer extends CALayer {
     protected void drawInCanvas(@NonNull Canvas canvas) {
         super.drawInCanvas(canvas);
 
-        if (path != null){
+        if (mPath != null){
             Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
             paint.setStyle(Paint.Style.STROKE);
-            paint.setStrokeWidth((float) lineWidth);
-            paint.setColor(strokeColor);
-            canvas.drawPath(path, paint);
+            paint.setStrokeWidth((float) mLineWidth);
+            paint.setColor(mStrokeColor);
+            canvas.drawPath(mPath, paint);
         }
     }
 
     /* category CAShapeLayer Getter&Setter */
 
     public Path getPath() {
-        return path;
+        return mPath;
     }
 
     public int getStrokeColor() {
-        return strokeColor;
+        return mStrokeColor;
     }
 
     public double getLineWidth() {
-        return lineWidth;
+        return mLineWidth;
     }
 
-    @NonNull
-    public CAShapeLayer setPath(Path path) {
-        this.path = path;
+    public @NonNull CAShapeLayer setPath(Path mPath) {
+        this.mPath = mPath;
         return this;
     }
 
-    @NonNull
-    public CAShapeLayer setStrokeColor(int strokeColor) {
-        this.strokeColor = strokeColor;
+    public @NonNull CAShapeLayer setStrokeColor(int mStrokeColor) {
+        this.mStrokeColor = mStrokeColor;
         return this;
     }
 
-    public CAShapeLayer setLineWidth(double lineWidth) {
-        this.lineWidth = lineWidth;
+    public CAShapeLayer setLineWidth(double mLineWidth) {
+        this.mLineWidth = mLineWidth;
         return this;
     }
 }

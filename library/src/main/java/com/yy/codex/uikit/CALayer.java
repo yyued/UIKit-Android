@@ -21,112 +21,350 @@ public class CALayer {
 
     /* layoutProps */
 
-    @NonNull
-    private CGRect frame = new CGRect(0, 0, 0, 0);
+    private @NonNull CGRect mFrame = new CGRect(0, 0, 0, 0);
+
+    public @NonNull CGRect getFrame() {
+        return mFrame;
+    }
+
+    public @NonNull CALayer setFrame(@NonNull CGRect mFrame) {
+        float x = (float) mFrame.origin.getX();
+        float y = (float) mFrame.origin.getY();
+        float w = (float) mFrame.size.getWidth();
+        float h = (float) mFrame.size.getHeight();
+        CGRect newValue = new CGRect(x, y, w, h);
+        if (!this.mFrame.equals(newValue)){
+            this.mFrame = newValue;
+            this.setNeedDisplay(true);
+        }
+        return this;
+    }
 
     /* styleProps */
 
-    private UIColor backgroundColor = UIColor.clearColor;
-    private double cornerRadius = 0.0;
-    private double borderWidth = 0.0;
-    private UIColor borderColor = UIColor.blackColor;
-    private double shadowX = 2.0;
-    private double shadowY = 2.0;
-    private double shadowRadius = 0.0;
-    private UIColor shadowColor = UIColor.blackColor;
-    @Nullable
-    private Bitmap bitmap = null;
-    private int bitmapGravity = CALayerBitmapPainter.GRAVITY_SCALE_ASCEPT_FIT;
-    private UIColor bitmapColor = null;
-    private boolean clipToBounds = false;
-    private boolean hidden = false;
+    private UIColor mBackgroundColor = UIColor.clearColor;
+
+    public UIColor getBackgroundColor() {
+        return mBackgroundColor;
+    }
+
+    public @NonNull CALayer setBackgroundColor(UIColor backgroundColor) {
+        if (this.mBackgroundColor != backgroundColor){
+            this.mBackgroundColor = backgroundColor;
+            this.setNeedDisplay(true);
+        }
+        return this;
+    }
+
+    private double mCornerRadius = 0.0;
+
+    public double getCornerRadius() {
+        return mCornerRadius;
+    }
+
+    public @NonNull CALayer setCornerRadius(double mCornerRadius) {
+        if (!doubleEqual(this.mCornerRadius, mCornerRadius)){
+            double oldValue = this.mCornerRadius;
+            this.mCornerRadius = mCornerRadius;
+            this.setNeedDisplay(true);
+            if (this.requestRootLayer().mView != null) {
+                UIView.sAnimator.addAnimationState(this.requestRootLayer().mView, "layer.mCornerRadius", oldValue, mCornerRadius);
+            }
+        }
+        return this;
+    }
+
+    private double mBorderWidth = 0.0;
+
+    public double getBorderWidth() {
+        return mBorderWidth;
+    }
+
+    public @NonNull CALayer setBorderWidth(double mBorderWidth) {
+        double oldValue = this.mBorderWidth;
+        if (!doubleEqual(this.mBorderWidth, mBorderWidth)){
+            this.mBorderWidth = mBorderWidth;
+            this.setNeedDisplay(true);
+            if (this.requestRootLayer().mView != null) {
+                UIView.sAnimator.addAnimationState(this.requestRootLayer().mView, "layer.mBorderWidth", oldValue, mBorderWidth);
+            }
+        }
+        return this;
+    }
+
+    private UIColor mBorderColor = UIColor.blackColor;
+
+    public UIColor getBorderColor() {
+        return mBorderColor;
+    }
+
+    public @NonNull CALayer setBorderColor(UIColor mBorderColor) {
+        if (this.mBorderColor != mBorderColor){
+            this.mBorderColor = mBorderColor;
+            this.setNeedDisplay(true);
+        }
+        return this;
+    }
+
+    private double mShadowX = 2.0;
+
+    public double getShadowX() {
+        return mShadowX;
+    }
+
+    public @NonNull CALayer setShadowX(double mShadowX) {
+        if (!doubleEqual(this.mShadowX, mShadowX)){
+            this.mShadowX = mShadowX;
+            this.setNeedDisplay(true);
+        }
+        return this;
+    }
+
+    private double mShadowY = 2.0;
+
+    public double getShadowY() {
+        return mShadowY;
+    }
+
+    public @NonNull CALayer setShadowY(double mShadowY) {
+        if (!doubleEqual(this.mShadowY, mShadowY)){
+            this.mShadowY = mShadowY;
+            this.setNeedDisplay(true);
+        }
+        return this;
+    }
+
+    private double mShadowRadius = 0.0;
+
+    public double getShadowRadius() {
+        return mShadowRadius;
+    }
+
+    public @NonNull CALayer setShadowRadius(double mShadowRadius) {
+        if (!doubleEqual(this.mShadowRadius, mShadowRadius)){
+            this.mShadowRadius = mShadowRadius;
+            this.setNeedDisplay(true);
+        }
+        return this;
+    }
+
+    private UIColor mShadowColor = UIColor.blackColor;
+
+    public UIColor getShadowColor() {
+        return mShadowColor;
+    }
+
+    public @NonNull CALayer setShadowColor(UIColor mShadowColor) {
+        if (this.mShadowColor != mShadowColor){
+            this.mShadowColor = mShadowColor;
+            this.setNeedDisplay(true);
+        }
+        return this;
+    }
+
+    private @Nullable Bitmap mBitmap = null;
+
+    public @Nullable Bitmap getBitmap() {
+        return mBitmap;
+    }
+
+    public @NonNull CALayer setBitmap(Bitmap mBitmap) {
+        if (this.mBitmap != mBitmap){
+            this.mBitmap = mBitmap;
+            this.setNeedDisplay(true);
+        }
+        return this;
+    }
+
+    private int mBitmapGravity = CALayerBitmapPainter.GRAVITY_SCALE_ASCEPT_FIT;
+
+    public int getBitmapGravity() {
+        return mBitmapGravity;
+    }
+
+    public @NonNull CALayer setBitmapGravity(int mBitmapGravity) {
+        if (this.mBitmapGravity != mBitmapGravity){
+            this.mBitmapGravity = mBitmapGravity;
+            this.setNeedDisplay(true);
+        }
+        return this;
+    }
+
+    private UIColor mBitmapColor = null;
+
+    public UIColor getBitmapColor() {
+        return mBitmapColor;
+    }
+
+    public void setBitmapColor(UIColor mBitmapColor) {
+        this.mBitmapColor = mBitmapColor;
+    }
+
+    private boolean mClipToBounds = false;
+
+    public Boolean getClipToBounds() {
+        return mClipToBounds;
+    }
+
+    public @NonNull CALayer setClipToBounds(Boolean mClipToBounds) {
+        if (this.mClipToBounds != mClipToBounds){
+            this.mClipToBounds = mClipToBounds;
+            this.setNeedDisplay(true);
+        }
+        return this;
+    }
+
+    private boolean mHidden = false;
+
+    public boolean isHidden() {
+        return mHidden;
+    }
+
+    public @NonNull CALayer setHidden(boolean mHidden) {
+        if (this.mHidden != mHidden){
+            this.mHidden = mHidden;
+            this.setNeedDisplay(true);
+        }
+        return this;
+    }
 
     /* renderProps */
 
-    private boolean needDisplay = false;
-    private boolean newCanvasContext = false;
-    @Nullable
-    private CALayer mask = null; // not support
+    private boolean mNeedDisplay = false;
+
+    public void setNeedDisplay(boolean mNeedDisplay) {
+        this.mNeedDisplay = mNeedDisplay;
+        if (mNeedDisplay){
+            UIView view = this.requestRootLayer().mView;
+            if (view != null){
+                view.invalidate();
+            }
+        }
+    }
+
+    private boolean mNewCanvasContext = false;
+
+    public boolean isNewCanvasContext() {
+        /*
+            以下情况，在新画布绘制。
+            1. 有 transform 属性时
+            2. 有子节点 且 mClipToBounds 时
+        */
+        boolean result = (this.mTransforms != null && this.mTransforms.length > 0)
+                || (this.getSubLayers().length > 0 && this.mClipToBounds);
+        return result;
+    }
+
+    public void setNewCanvasContext(boolean mNewCanvasContext) {
+        this.mNewCanvasContext = mNewCanvasContext;
+    }
+
+    private @Nullable CALayer mMask = null; // not support
+
+    public @Nullable CALayer getMask() {
+        return mMask;
+    }
+
+    public @NonNull CALayer setMask(CALayer mMask) {
+        if (this.mMask != mMask){
+            this.mMask = mMask;
+            this.setNeedDisplay(true);
+        }
+        return this;
+    }
 
     /* hierarchyProps */
 
-    private UIView view;
-    private CALayer superLayer;
-    @NonNull
-    private ArrayList<CALayer> subLayers = new ArrayList<CALayer>();
+    private UIView mView;
+
+    public void bindView(UIView view){
+        this.mView = view;
+    }
+
+    private CALayer mSuperLayer;
+
+    public CALayer getSuperLayer() {
+        return mSuperLayer;
+    }
+
+    private @NonNull ArrayList<CALayer> mSubLayers = new ArrayList<CALayer>();
+
+    public @NonNull CALayer[] getSubLayers() { return mSubLayers.toArray(new CALayer[mSubLayers.size()]); }
 
     /* transformProp */
 
-    private CGTransform[] transforms = null;
+    private CGTransform[] mTransforms = null;
 
-    /* scaledDensityProp */
+    public CGTransform[] getTransforms() {
+        return mTransforms;
+    }
 
-    public static float scaledDensity = (float) UIScreen.mainScreen.scale();
+    public void setTransforms(CGTransform[] mTransforms) {
+        this.mTransforms = mTransforms;
+    }
+
+    public void setTransform(CGTransform a) {
+        CGTransform[] tf = {a};
+        this.mTransforms = tf;
+    }
 
     /* category CALayer Constructor */
 
     public CALayer() {}
 
-    public CALayer(@NonNull CGRect frame) {
-        float x = (float) (frame.origin.getX());
-        float y = (float) (frame.origin.getY());
-        float w = (float) (frame.size.getWidth());
-        float h = (float) (frame.size.getHeight());
-        this.frame = new CGRect(x, y, w, h);
+    public CALayer(@NonNull CGRect mFrame) {
+        float x = (float) (mFrame.origin.getX());
+        float y = (float) (mFrame.origin.getY());
+        float w = (float) (mFrame.size.getWidth());
+        float h = (float) (mFrame.size.getHeight());
+        this.mFrame = new CGRect(x, y, w, h);
     }
 
     /* category CALayer Hierarchy */
 
-    public CALayer getSuperLayer() {
-        return superLayer;
-    }
-
-    @NonNull
-    public CALayer[] getSubLayers() { return subLayers.toArray(new CALayer[subLayers.size()]); }
-
     public void removeFromSuperLayer(){
-        if (this.superLayer != null){
-            this.superLayer.subLayers.remove(this);
+        if (this.mSuperLayer != null){
+            this.mSuperLayer.mSubLayers.remove(this);
         }
     }
 
     public void addSubLayer(@NonNull CALayer layer){
         layer.removeFromSuperLayer();
-        layer.superLayer = this;
-        subLayers.add(layer);
+        layer.mSuperLayer = this;
+        mSubLayers.add(layer);
     }
 
     public void insertSubLayerAtIndex(@NonNull CALayer subLayer, int index){
         subLayer.removeFromSuperLayer();
         if (index < 1){
-            this.subLayers.add(0, subLayer);
+            this.mSubLayers.add(0, subLayer);
         }
-        else if (index > this.subLayers.size() - 1){
-            this.subLayers.add(subLayer);
+        else if (index > this.mSubLayers.size() - 1){
+            this.mSubLayers.add(subLayer);
         }
         else {
-            this.subLayers.add(index, subLayer);
+            this.mSubLayers.add(index, subLayer);
         }
     }
 
     public void insertBelowSubLayer(@NonNull CALayer subLayer, CALayer siblingSubview){
-        int idx = subLayers.indexOf(siblingSubview);
+        int idx = mSubLayers.indexOf(siblingSubview);
         if (idx > -1){
             subLayer.removeFromSuperLayer();
-            subLayers.add(idx, subLayer);
+            mSubLayers.add(idx, subLayer);
         }
     }
 
     public void insertAboveSubLayer(@NonNull CALayer subLayer, CALayer siblingSubview){
-        int idx = subLayers.indexOf(siblingSubview);
+        int idx = mSubLayers.indexOf(siblingSubview);
         if (idx > -1){
             subLayer.removeFromSuperLayer();
-            subLayers.add(idx + 1, subLayer);
+            mSubLayers.add(idx + 1, subLayer);
         }
     }
 
     public void replaceSubLayer(@NonNull CALayer subLayer, @NonNull CALayer newLayer){
-        int idx = subLayers.indexOf(subLayer);
+        int idx = mSubLayers.indexOf(subLayer);
         if (idx > -1){
             subLayer.removeFromSuperLayer();
             insertSubLayerAtIndex(newLayer, idx);
@@ -143,7 +381,7 @@ public class CALayer {
     }
 
     private void drawAllLayers(@NonNull Canvas canvas, CGRect rect){
-        if (hidden){
+        if (mHidden){
             return;
         }
         if (isNewCanvasContext()){
@@ -151,16 +389,17 @@ public class CALayer {
         }
         else {
             drawLayer(canvas, rect, false);
-            for (CALayer item : subLayers){
+            for (CALayer item : mSubLayers){
                 item.drawAllLayers(canvas, rect);
             }
         }
     }
 
     protected void drawLayer(@NonNull Canvas canvas, CGRect rect, boolean isDrawInNewCanvas){
+        float scaledDensity = (float) UIScreen.mainScreen.scale();
         if (isDrawInNewCanvas){
-            double frameW = frame.size.getWidth() * scaledDensity;
-            double frameH = frame.size.getHeight() * scaledDensity;
+            double frameW = mFrame.size.getWidth() * scaledDensity;
+            double frameH = mFrame.size.getHeight() * scaledDensity;
             CGPoint origin = calcOriginInSuperCoordinate(this);
 
             // create srcBitmap
@@ -173,13 +412,13 @@ public class CALayer {
             Canvas maskCanvas = new Canvas(maskBitmap);
             Paint maskPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
             RectF maskRectF = new CGRect(origin.getX(), origin.getY(), frameW, frameH).toRectF();
-            maskCanvas.drawRoundRect(maskRectF, (float) cornerRadius * scaledDensity, (float) cornerRadius * scaledDensity, maskPaint);
+            maskCanvas.drawRoundRect(maskRectF, (float) mCornerRadius * scaledDensity, (float) mCornerRadius * scaledDensity, maskPaint);
 
             // draw srcBitmap, and apply maskBitmap if need
             Paint mixPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-            if (this.transforms != null & this.transforms.length > 0){
-                Matrix matrix = createMatrix(this.transforms);
-                if (this.clipToBounds){
+            if (this.mTransforms != null & this.mTransforms.length > 0){
+                Matrix matrix = createMatrix(this.mTransforms);
+                if (this.mClipToBounds){
                     canvas.drawBitmap(maskBitmap, matrix, mixPaint);
                     mixPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
                 }
@@ -198,7 +437,7 @@ public class CALayer {
 
     private void drawLayersInCanvas(@NonNull Canvas canvas){
         drawInCanvas(canvas);
-        for (CALayer item : subLayers){
+        for (CALayer item : mSubLayers){
             item.drawLayersInCanvas(canvas);
         }
     }
@@ -208,11 +447,12 @@ public class CALayer {
     }
 
     private Matrix createMatrix(CGTransform[] transforms){
+        float scaledDensity = (float) UIScreen.mainScreen.scale();
         Matrix matrix = new Matrix();
         if (transforms == null || transforms.length == 0){
             return matrix;
         }
-        RectF rectF = frame.toRectF();
+        RectF rectF = mFrame.toRectF();
         for (CGTransform transform : transforms){
             if (!transform.enable){
                 continue;
@@ -256,275 +496,25 @@ public class CALayer {
     }
 
     private void resetNeedDisplayToFalse(){
-        this.needDisplay = false;
-        for (CALayer item : subLayers){
+        this.mNeedDisplay = false;
+        for (CALayer item : mSubLayers){
             item.resetNeedDisplayToFalse();
         }
     }
 
-    /* category CALayer Getter&Setter */
-
-    public void bindView(UIView view){
-        this.view = view;
-    }
-
-    public boolean isHidden() {
-        return hidden;
-    }
-
-    @Nullable
-    public Bitmap getBitmap() {
-        return bitmap;
-    }
-
-    public int getBitmapGravity() {
-        return bitmapGravity;
-    }
-
-    public UIColor getBackgroundColor() {
-        return backgroundColor;
-    }
-
-    public double getCornerRadius() {
-        return cornerRadius;
-    }
-
-    public double getBorderWidth() {
-        return borderWidth;
-    }
-
-    public UIColor getBorderColor() {
-        return borderColor;
-    }
-
-    public double getShadowX() {
-        return shadowX;
-    }
-
-    public double getShadowY() {
-        return shadowY;
-    }
-
-    public double getShadowRadius() {
-        return shadowRadius;
-    }
-
-    public UIColor getShadowColor() {
-        return shadowColor;
-    }
-
-    public UIColor getBitmapColor() {
-        return bitmapColor;
-    }
-
-    @Nullable
-    public CALayer getMask() {
-        return mask;
-    }
-
-    @NonNull
-    public CGRect getFrame() {
-        return frame;
-    }
-
-    public Boolean getClipToBounds() {
-        return clipToBounds;
-    }
-
-    /*
-        以下情况，在新画布绘制。
-        1. 有 transform 属性时
-        2. 有子节点 且 clipToBounds 时
-     */
-    public boolean isNewCanvasContext() {
-        boolean result = (this.transforms != null && this.transforms.length > 0)
-                || (this.getSubLayers().length > 0 && this.clipToBounds);
-        return result;
-    }
-
-    public CGTransform[] getTransforms() {
-        return transforms;
-    }
-
-    public void setNewCanvasContext(boolean newCanvasContext) {
-        this.newCanvasContext = newCanvasContext;
-    }
-
-    @NonNull
-    public CALayer setFrame(@NonNull CGRect frame) {
-        float x = (float) frame.origin.getX();
-        float y = (float) frame.origin.getY();
-        float w = (float) frame.size.getWidth();
-        float h = (float) frame.size.getHeight();
-        CGRect newValue = new CGRect(x, y, w, h);
-        if (!this.frame.equals(newValue)){
-            this.frame = newValue;
-            this.setNeedDisplay(true);
-        }
-        return this;
-    }
-
-    @NonNull
-    public CALayer setBitmap(Bitmap bitmap) {
-        if (this.bitmap != bitmap){
-            this.bitmap = bitmap;
-            this.setNeedDisplay(true);
-        }
-        return this;
-    }
-
-    public void setBitmapColor(UIColor bitmapColor) {
-        this.bitmapColor = bitmapColor;
-    }
-
-    @NonNull
-    public CALayer setBitmapGravity(int bitmapGravity) {
-        if (this.bitmapGravity != bitmapGravity){
-            this.bitmapGravity = bitmapGravity;
-            this.setNeedDisplay(true);
-        }
-        return this;
-    }
-
-    @NonNull
-    public CALayer setClipToBounds(Boolean clipToBounds) {
-        if (this.clipToBounds != clipToBounds){
-            this.clipToBounds = clipToBounds;
-            this.setNeedDisplay(true);
-        }
-        return this;
-    }
-
-    @NonNull
-    public CALayer setHidden(boolean hidden) {
-        if (this.hidden != hidden){
-            this.hidden = hidden;
-            this.setNeedDisplay(true);
-        }
-        return this;
-    }
-
-    @NonNull
-    public CALayer setBorderWidth(double borderWidth) {
-        double oldValue = this.borderWidth;
-        if (!doubleEqual(this.borderWidth, borderWidth)){
-            this.borderWidth = borderWidth;
-            this.setNeedDisplay(true);
-            if (this.requestRootLayer().view != null) {
-                UIView.sAnimator.addAnimationState(this.requestRootLayer().view, "layer.borderWidth", oldValue, borderWidth);
-            }
-        }
-        return this;
-    }
-
-    @NonNull
-    public CALayer setBorderColor(UIColor borderColor) {
-        if (this.borderColor != borderColor){
-            this.borderColor = borderColor;
-            this.setNeedDisplay(true);
-        }
-        return this;
-    }
-
-    @NonNull
-    public CALayer setCornerRadius(double cornerRadius) {
-        if (!doubleEqual(this.cornerRadius, cornerRadius)){
-            double oldValue = this.cornerRadius;
-            this.cornerRadius = cornerRadius;
-            this.setNeedDisplay(true);
-            if (this.requestRootLayer().view != null) {
-                UIView.sAnimator.addAnimationState(this.requestRootLayer().view, "layer.cornerRadius", oldValue, cornerRadius);
-            }
-        }
-        return this;
-    }
-
-    @NonNull
-    public CALayer setBackgroundColor(UIColor backgroundColor) {
-        if (this.backgroundColor != backgroundColor){
-            this.backgroundColor = backgroundColor;
-            this.setNeedDisplay(true);
-        }
-        return this;
-    }
-
-    @NonNull
-    public CALayer setShadowX(double shadowX) {
-        if (!doubleEqual(this.shadowX, shadowX)){
-            this.shadowX = shadowX;
-            this.setNeedDisplay(true);
-        }
-        return this;
-    }
-
-    @NonNull
-    public CALayer setShadowY(double shadowY) {
-        if (!doubleEqual(this.shadowY, shadowY)){
-            this.shadowY = shadowY;
-            this.setNeedDisplay(true);
-        }
-        return this;
-    }
-
-    @NonNull
-    public CALayer setShadowRadius(double shadowRadius) {
-        if (!doubleEqual(this.shadowRadius, shadowRadius)){
-            this.shadowRadius = shadowRadius;
-            this.setNeedDisplay(true);
-        }
-        return this;
-    }
-
-    @NonNull
-    public CALayer setShadowColor(UIColor shadowColor) {
-        if (this.shadowColor != shadowColor){
-            this.shadowColor = shadowColor;
-            this.setNeedDisplay(true);
-        }
-        return this;
-    }
-
-    public void setTransforms(CGTransform[] transforms) {
-        this.transforms = transforms;
-    }
-
-    public void setTransform(CGTransform a) {
-        CGTransform[] tf = {a};
-        this.transforms = tf;
-    }
-
-    public void setNeedDisplay(boolean needDisplay) {
-        this.needDisplay = needDisplay;
-        if (needDisplay){
-            UIView view = this.requestRootLayer().view;
-            if (view != null){
-                view.invalidate();
-            }
-        }
-    }
-
-    @NonNull
-    public CALayer setMask(CALayer mask) {
-        if (this.mask != mask){
-            this.mask = mask;
-            this.setNeedDisplay(true);
-        }
-        return this;
-    }
-
     /* category CALayer support method */
 
-    @NonNull
-    public static CGPoint calcOriginInSuperCoordinate(@NonNull CALayer layer){
-        double oriX = layer.frame.origin.getX();
-        double oriY = layer.frame.origin.getY();
+    public static @NonNull CGPoint calcOriginInSuperCoordinate(@NonNull CALayer layer){
+        float scaledDensity = (float) UIScreen.mainScreen.scale();
+        double oriX = layer.mFrame.origin.getX();
+        double oriY = layer.mFrame.origin.getY();
         CALayer p = layer.getSuperLayer();
         while (p != null){
 //            if (p.isNewCanvasContext()) {
 //                break;
 //            }
-            oriX += p.frame.origin.getX();
-            oriY += p.frame.origin.getY();
+            oriX += p.mFrame.origin.getX();
+            oriY += p.mFrame.origin.getY();
             p = p.getSuperLayer();
         }
         return new CGPoint(oriX * scaledDensity, oriY * scaledDensity);
@@ -532,8 +522,8 @@ public class CALayer {
 
     private CALayer requestRootLayer(){
         CALayer root = this;
-        while (root.superLayer!=null){
-            root = root.superLayer;
+        while (root.mSuperLayer !=null){
+            root = root.mSuperLayer;
             if (root == null){
                 return root;
             }
@@ -551,14 +541,12 @@ public class CALayer {
     /* Animation */
 
     public void animate(@NonNull String aKey, float aValue) {
-        if (aKey.equalsIgnoreCase("layer.cornerRadius")) {
+        if (aKey.equalsIgnoreCase("layer.mCornerRadius")) {
             setCornerRadius(aValue);
         }
-        else if (aKey.equalsIgnoreCase("layer.borderWidth")){
+        else if (aKey.equalsIgnoreCase("layer.mBorderWidth")){
             setBorderWidth(aValue);
         }
     }
 
 }
-
-
