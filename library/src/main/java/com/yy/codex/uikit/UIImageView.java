@@ -95,10 +95,10 @@ public class UIImageView extends UIView {
             this.getLayer().setBitmapGravity(CALayerBitmapPainter.GRAVITY_SCALE_TO_FILL);
         }
         else if (contentMode == UIViewContentMode.ScaleAspectFit) {
-            this.getLayer().setBitmapGravity(CALayerBitmapPainter.GRAVITY_SCALE_ASCEPT_FIT);
+            this.getLayer().setBitmapGravity(CALayerBitmapPainter.GRAVITY_SCALE_ASPECT_FIT);
         }
         else if (contentMode == UIViewContentMode.ScaleAspectFill) {
-            this.getLayer().setBitmapGravity(CALayerBitmapPainter.GRAVITY_SCALE_ASCEPT_FILL);
+            this.getLayer().setBitmapGravity(CALayerBitmapPainter.GRAVITY_SCALE_ASPECT_FILL);
         }
         else if (contentMode == UIViewContentMode.TopLeft) {
             this.getLayer().setBitmapGravity(CALayerBitmapPainter.GRAVITY_TOP_LEFT);
@@ -116,7 +116,7 @@ public class UIImageView extends UIView {
             this.getLayer().setBitmapGravity(CALayerBitmapPainter.GRAVITY_RIGHT);
         }
         else if (contentMode == UIViewContentMode.Center) {
-            this.getLayer().setBitmapGravity(CALayerBitmapPainter.GRAVITY_CENRER);
+            this.getLayer().setBitmapGravity(CALayerBitmapPainter.GRAVITY_CENTER);
         }
         else if (contentMode == UIViewContentMode.BottomLeft) {
             this.getLayer().setBitmapGravity(CALayerBitmapPainter.GRAVITY_BOTTOM_LEFT);

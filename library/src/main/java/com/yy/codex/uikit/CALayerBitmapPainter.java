@@ -14,9 +14,9 @@ public class CALayerBitmapPainter {
     /* imageGravity const */
 
     public static final int GRAVITY_SCALE_TO_FILL = 0x01;
-    public static final int GRAVITY_SCALE_ASCEPT_FIT = 0x02;
-    public static final int GRAVITY_SCALE_ASCEPT_FILL = 0x03;
-    public static final int GRAVITY_CENRER = 0x04;
+    public static final int GRAVITY_SCALE_ASPECT_FIT = 0x02;
+    public static final int GRAVITY_SCALE_ASPECT_FILL = 0x03;
+    public static final int GRAVITY_CENTER = 0x04;
     public static final int GRAVITY_TOP = 0x05;
     public static final int GRAVITY_TOP_LEFT = 0x06;
     public static final int GRAVITY_TOP_RIGHT = 0x07;
@@ -32,13 +32,13 @@ public class CALayerBitmapPainter {
             case GRAVITY_SCALE_TO_FILL:
                 drawScaleToFill(canvas, rect, bitmap, paint);
                 break;
-            case GRAVITY_SCALE_ASCEPT_FIT:
+            case GRAVITY_SCALE_ASPECT_FIT:
                 drawScaleAsceptFit(canvas, rect, bitmap, paint);
                 break;
-            case GRAVITY_SCALE_ASCEPT_FILL:
+            case GRAVITY_SCALE_ASPECT_FILL:
                 drawScaleAsceptFill(canvas, rect, bitmap, paint);
                 break;
-            case GRAVITY_CENRER:
+            case GRAVITY_CENTER:
                 drawCenter(canvas, rect, bitmap, paint);
                 break;
             case GRAVITY_TOP:

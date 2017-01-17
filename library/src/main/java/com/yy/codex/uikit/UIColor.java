@@ -15,6 +15,9 @@ public class UIColor {
     public static final UIColor redColor = new UIColor(1, 0, 0, 1);
     public static final UIColor greenColor = new UIColor(0, 1, 0, 1);
     public static final UIColor blueColor = new UIColor(0, 0, 1, 1);
+    public static final UIColor grayColor = new UIColor(.3, .3, .3, 1);
+    public static final UIColor orangeColor = new UIColor(1, .38, 0, 1);
+
 
     final public double r;
     final public double g;

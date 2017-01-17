@@ -176,7 +176,7 @@ public class CALayer {
         return this;
     }
 
-    private int mBitmapGravity = CALayerBitmapPainter.GRAVITY_SCALE_ASCEPT_FIT;
+    private int mBitmapGravity = CALayerBitmapPainter.GRAVITY_SCALE_ASPECT_FIT;
 
     public int getBitmapGravity() {
         return mBitmapGravity;
@@ -435,7 +435,7 @@ public class CALayer {
         }
     }
 
-    private void drawLayersInCanvas(@NonNull Canvas canvas){
+    protected void drawLayersInCanvas(@NonNull Canvas canvas){
         drawInCanvas(canvas);
         for (CALayer item : mSubLayers){
             item.drawLayersInCanvas(canvas);
@@ -473,22 +473,6 @@ public class CALayer {
             }
         }
         return matrix;
-    }
-
-    private Bitmap createRadiusMask(@NonNull CGRect rect, double radius){
-        Bitmap maskBitmap = Bitmap.createBitmap((int)(rect.size.width+rect.origin.x), (int)(rect.size.height+rect.origin.y), Bitmap.Config.ARGB_8888);
-        Canvas canvasB = new Canvas(maskBitmap);
-        Paint p3 = new Paint(Paint.ANTI_ALIAS_FLAG);
-        canvasB.drawRoundRect(rect.toRectF(), (float) radius, (float) radius, p3);
-        return maskBitmap;
-    }
-
-    private Bitmap createMask(@NonNull CALayer layer){
-        CGRect rect = layer.getFrame();
-        Bitmap maskBitmap = Bitmap.createBitmap((int)(rect.size.width+rect.origin.x), (int)(rect.size.height+rect.origin.y), Bitmap.Config.ARGB_8888);
-        Canvas canvasB = new Canvas(maskBitmap);
-        layer.drawInCanvas(canvasB);
-        return maskBitmap;
     }
 
     private boolean askIfNeedDispaly(){
