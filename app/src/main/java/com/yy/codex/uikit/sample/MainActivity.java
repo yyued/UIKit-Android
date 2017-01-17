@@ -50,22 +50,14 @@ class TestView extends UIView {
     protected void init() {
         super.init();
         final UIView aView = new UIView(getContext());
-        aView.setFrame(new CGRect(0, 0, 44, 44));
+        aView.setFrame(new CGRect(0, 200, 44, 44));
         aView.setBackgroundColor(UIColor.redColor);
         postDelayed(new Runnable() {
             @Override
             public void run() {
-                UIView.animator.decay(aView, "frame.origin.y", 0, 1.0, new Runnable() {
-                    @Override
-                    public void run() {
-                        UIView.animator.linear(new Runnable() {
-                            @Override
-                            public void run() {
-                                aView.setAlpha(0);
-                            }
-                        });
-                    }
-                });
+//                UIView.animator.decay(aView, "frame.origin.x", 0, 0.6, null);
+//                UIView.animator.decay(aView, "frame.origin.y", 0, 0.6, null);
+//                UIView.animator.decayToValue(aView, "frame.origin.x", 0, 300, null);
             }
         }, 3000);
         addSubview(aView);
