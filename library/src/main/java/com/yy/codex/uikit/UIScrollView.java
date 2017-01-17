@@ -93,17 +93,17 @@ public class UIScrollView extends UIView {
             }
         }
 
-        double scrollY = -(panGestureRecognizer.translation().getY());
+        double scrollY = -(panGestureRecognizer.translation().y);
 
-        mContentOffset = new CGPoint(0, -(panGestureRecognizer.translation().getY()));
-        scrollTo(0, (int)(mContentOffset.getY() * UIScreen.mainScreen.scale()));
+        mContentOffset = new CGPoint(0, -(panGestureRecognizer.translation().y));
+        scrollTo(0, (int)(mContentOffset.y * UIScreen.mainScreen.scale()));
 
-        NSLog.log(mContentOffset.getY());
+        NSLog.log(mContentOffset.y);
 
 
         if (panGestureRecognizer.getState() == UIGestureRecognizerState.Ended) {
             tracking = false;
-//            if (mContentOffset.getY() < 0) {
+//            if (mContentOffset.y < 0) {
 //                viewAnimation = UIView.sAnimator.linear(0.25, new Runnable() {
 //                    @Override
 //                    public void run() {

@@ -6,10 +6,10 @@ package com.yy.codex.uikit;
 
 public class UIEdgeInsets {
 
-    double mTop;
-    double mLeft;
-    double mBottom;
-    double mRight;
+    final double mTop;
+    final double mLeft;
+    final double mBottom;
+    final double mRight;
 
     public UIEdgeInsets(double top, double left, double bottom, double right) {
         this.mTop = top;

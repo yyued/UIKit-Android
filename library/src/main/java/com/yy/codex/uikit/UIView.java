@@ -71,8 +71,8 @@ public class UIView extends UIResponder {
         CGRect oldValue = this.mFrame;
         this.mFrame = frame;
         layoutSubviews();
-        this.setX((float) (frame.origin.getX() * UIScreen.mainScreen.scale()));
-        this.setY((float) (frame.origin.getY() * UIScreen.mainScreen.scale()));
+        this.setX((float) (frame.origin.x * UIScreen.mainScreen.scale()));
+        this.setY((float) (frame.origin.y * UIScreen.mainScreen.scale()));
 
         double mWidth = frame.size.getWidth() * UIScreen.mainScreen.scale();
         double mHeight = frame.size.getHeight() * UIScreen.mainScreen.scale();
@@ -86,15 +86,15 @@ public class UIView extends UIResponder {
         this.setMinimumHeight((int) mHeight);
         CALayer.scaledDensity = (float) UIScreen.mainScreen.scale();
         this.mLayer.setFrame(new CGRect(0, 0, frame.size.getWidth(), frame.size.getHeight()));
-        UIView.sAnimator.addAnimationState(this, "mFrame.origin.x", oldValue.origin.getX(), frame.origin.getX());
-        UIView.sAnimator.addAnimationState(this, "mFrame.origin.y", oldValue.origin.getY(), frame.origin.getY());
+        UIView.sAnimator.addAnimationState(this, "mFrame.origin.x", oldValue.origin.x, frame.origin.x);
+        UIView.sAnimator.addAnimationState(this, "mFrame.origin.y", oldValue.origin.y, frame.origin.y);
         UIView.sAnimator.addAnimationState(this, "mFrame.size.width", oldValue.size.getWidth(), frame.size.getWidth());
         UIView.sAnimator.addAnimationState(this, "mFrame.size.height", oldValue.size.getHeight(), frame.size.getHeight());
     }
 
     @NonNull
     public CGPoint getCenter() {
-        return new CGPoint((mFrame.origin.getX() + mFrame.size.getWidth()) / 2.0, (mFrame.origin.getY() + mFrame.size.getHeight()) / 2.0);
+        return new CGPoint((mFrame.origin.x + mFrame.size.getWidth()) / 2.0, (mFrame.origin.y + mFrame.size.getHeight()) / 2.0);
     }
 
     @Nullable private UIConstraint mConstraint = null;

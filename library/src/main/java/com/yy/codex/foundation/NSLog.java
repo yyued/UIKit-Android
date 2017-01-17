@@ -16,7 +16,7 @@ public class NSLog {
 
     public static void log(@Nullable UIView view) {
         System.out.print("NSLog: " + view.toString());
-        System.out.print(", Frame: ("+(int)view.getFrame().origin.getX() + ", " + (int)view.getFrame().origin.getY()+", "+(int)view.getFrame().size.getWidth()+", "+(int)view.getFrame().size.getHeight()+")");
+        System.out.print(", Frame: ("+(int)view.getFrame().origin.x + ", " + (int)view.getFrame().origin.y+", "+(int)view.getFrame().size.getWidth()+", "+(int)view.getFrame().size.getHeight()+")");
         System.out.print("\n");
     }
 

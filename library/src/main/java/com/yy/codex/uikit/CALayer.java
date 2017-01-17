@@ -74,8 +74,8 @@ public class CALayer {
     public CALayer() {}
 
     public CALayer(@NonNull CGRect frame) {
-        float x = (float) (frame.origin.getX());
-        float y = (float) (frame.origin.getY());
+        float x = (float) (frame.origin.x);
+        float y = (float) (frame.origin.y);
         float w = (float) (frame.size.getWidth());
         float h = (float) (frame.size.getHeight());
         this.frame = new CGRect(x, y, w, h);
@@ -170,15 +170,15 @@ public class CALayer {
             CGPoint origin = calcOriginInSuperCoordinate(this);
 
             // create srcBitmap
-            Bitmap srcBitmap = Bitmap.createBitmap((int)( frameW + origin.getX()), (int)(frameH + origin.getY()), Bitmap.Config.ARGB_8888);
+            Bitmap srcBitmap = Bitmap.createBitmap((int)( frameW + origin.x), (int)(frameH + origin.y), Bitmap.Config.ARGB_8888);
             Canvas srcCanvas = new Canvas(srcBitmap);
             drawLayersInCanvas(srcCanvas);
 
             // create maskBitmap
-            Bitmap maskBitmap = Bitmap.createBitmap((int)( frameW + origin.getX()), (int)(frameH + origin.getY()), Bitmap.Config.ARGB_8888);
+            Bitmap maskBitmap = Bitmap.createBitmap((int)( frameW + origin.x), (int)(frameH + origin.y), Bitmap.Config.ARGB_8888);
             Canvas maskCanvas = new Canvas(maskBitmap);
             Paint maskPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-            RectF maskRectF = new CGRect(origin.getX(), origin.getY(), frameW, frameH).toRectF();
+            RectF maskRectF = new CGRect(origin.x, origin.y, frameW, frameH).toRectF();
             maskCanvas.drawRoundRect(maskRectF, (float) cornerRadius * scaledDensity, (float) cornerRadius * scaledDensity, maskPaint);
 
             // draw srcBitmap, and apply maskBitmap if need
@@ -211,7 +211,7 @@ public class CALayer {
 
     protected void drawInCanvas(@NonNull Canvas canvas){
         CGPoint origin = calcOriginInSuperCoordinate(this);
-        CGRect frameFormatted = new CGRect(this.frame.getX() * scaledDensity, this.frame.getY() * scaledDensity, this.frame.getWidth() * scaledDensity, this.frame.getHeight() * scaledDensity);
+        CGRect frameFormatted = new CGRect(this.frame.origin.x * scaledDensity, this.frame.origin.y * scaledDensity, this.frame.getWidth() * scaledDensity, this.frame.getHeight() * scaledDensity);
         float halfBorderW = (float) borderWidth * scaledDensity / 2.0f;
 
         // background
@@ -232,7 +232,7 @@ public class CALayer {
 
             if (bitmap != null){
                 Paint mixPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-                CGRect maskFrame = new CGRect(origin.getX(), origin.getY(), frameFormatted.size.getWidth(), frameFormatted.size.getHeight());
+                CGRect maskFrame = new CGRect(origin.x, origin.y, frameFormatted.size.getWidth(), frameFormatted.size.getHeight());
                 Bitmap maskBitmap = createRadiusMask(maskFrame, cornerRadius * scaledDensity);
                 canvas.drawBitmap(maskBitmap, 0, 0, mixPaint);
                 mixPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
@@ -254,7 +254,7 @@ public class CALayer {
             
             if (bitmap != null){
                 paint.reset();
-                CGRect bitmapFrame = new CGRect(origin.getX(), origin.getY(), frameFormatted.size.getWidth(), frameFormatted.size.getHeight());
+                CGRect bitmapFrame = new CGRect(origin.x, origin.y, frameFormatted.size.getWidth(), frameFormatted.size.getHeight());
                 if (bitmapColor != null) {
                     float[] colorTransform = {
                             0, (float)bitmapColor.getR(), 0, 0, 0,
@@ -311,7 +311,7 @@ public class CALayer {
     }
 
     private Bitmap createRadiusMask(@NonNull CGRect rect, double radius){
-        Bitmap maskBitmap = Bitmap.createBitmap((int)(rect.size.getWidth()+rect.origin.getX()), (int)(rect.size.getHeight()+rect.origin.getY()), Bitmap.Config.ARGB_8888);
+        Bitmap maskBitmap = Bitmap.createBitmap((int)(rect.size.getWidth()+rect.origin.x), (int)(rect.size.getHeight()+rect.origin.y), Bitmap.Config.ARGB_8888);
         Canvas canvasB = new Canvas(maskBitmap);
         Paint p3 = new Paint(Paint.ANTI_ALIAS_FLAG);
         canvasB.drawRoundRect(rect.toRectF(), (float) radius, (float) radius, p3);
@@ -320,7 +320,7 @@ public class CALayer {
 
     private Bitmap createMask(@NonNull CALayer layer){
         CGRect rect = layer.getFrame();
-        Bitmap maskBitmap = Bitmap.createBitmap((int)(rect.size.getWidth()+rect.origin.getX()), (int)(rect.size.getHeight()+rect.origin.getY()), Bitmap.Config.ARGB_8888);
+        Bitmap maskBitmap = Bitmap.createBitmap((int)(rect.size.getWidth()+rect.origin.x), (int)(rect.size.getHeight()+rect.origin.y), Bitmap.Config.ARGB_8888);
         Canvas canvasB = new Canvas(maskBitmap);
         layer.drawInCanvas(canvasB);
         return maskBitmap;
@@ -405,8 +405,8 @@ public class CALayer {
 
     @NonNull
     public CALayer setFrame(@NonNull CGRect frame) {
-        float x = (float) frame.origin.getX();
-        float y = (float) frame.origin.getY();
+        float x = (float) frame.origin.x;
+        float y = (float) frame.origin.y;
         float w = (float) frame.size.getWidth();
         float h = (float) frame.size.getHeight();
         CGRect newValue = new CGRect(x, y, w, h);
@@ -569,15 +569,15 @@ public class CALayer {
 
     @NonNull
     private CGPoint calcOriginInSuperCoordinate(@NonNull CALayer layer){
-        double oriX = layer.frame.origin.getX();
-        double oriY = layer.frame.origin.getY();
+        double oriX = layer.frame.origin.x;
+        double oriY = layer.frame.origin.y;
         CALayer p = layer.getSuperLayer();
         while (p != null){
 //            if (p.isNewCanvasContext()) {
 //                break;
 //            }
-            oriX += p.frame.origin.getX();
-            oriY += p.frame.origin.getY();
+            oriX += p.frame.origin.x;
+            oriY += p.frame.origin.y;
             p = p.getSuperLayer();
         }
         return new CGPoint(oriX * scaledDensity, oriY * scaledDensity);

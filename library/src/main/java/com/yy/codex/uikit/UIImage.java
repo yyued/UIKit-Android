@@ -19,7 +19,7 @@ public class UIImage {
         AlwaysTemplate
     }
 
-    private static LruCache<Number, Bitmap> sResCache = new LruCache<>(8 * 1024 * 1024);
+    private final static LruCache<Number, Bitmap> sResCache = new LruCache<>(8 * 1024 * 1024);
 
     public UIImage() {
         mBitmap = Bitmap.createBitmap(0, 0, Bitmap.Config.ARGB_8888);
@@ -69,7 +69,7 @@ public class UIImage {
 
     /* Bitmap instance */
 
-    @Nullable private Bitmap mBitmap = null;
+    @Nullable final protected Bitmap mBitmap;
 
     @Nullable
     public Bitmap getBitmap() {

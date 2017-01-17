@@ -95,8 +95,8 @@ public class CALayerBitmapPainter {
         double frameW = rect.size.getWidth();
         double frameH = rect.size.getHeight();
         double frameRatio = frameW / frameH;
-        double frameX = rect.origin.getX();
-        double frameY = rect.origin.getY();
+        double frameX = rect.origin.x;
+        double frameY = rect.origin.y;
         CGRect imageRect = new CGRect(0, 0, imageW, imageH), frameRect;
         if (frameRatio > imageRatio){
             double scaledFrameW = frameH * imageRatio;
@@ -133,8 +133,8 @@ public class CALayerBitmapPainter {
         double imageH = bitmap.getHeight();
         double frameW = rect.size.getWidth();
         double frameH = rect.size.getHeight();
-        double frameX = rect.origin.getX();
-        double frameY = rect.origin.getY();
+        double frameX = rect.origin.x;
+        double frameY = rect.origin.y;
         CGRect imageRect = new CGRect(0, 0, imageW, imageH);
         CGRect frameRect = rect;
         if (frameW >= imageW && frameH >= imageH){
@@ -159,8 +159,8 @@ public class CALayerBitmapPainter {
         double imageH = bitmap.getHeight();
         double frameW = rect.size.getWidth();
         double frameH = rect.size.getHeight();
-        double frameX = rect.origin.getX();
-        double frameY = rect.origin.getY();
+        double frameX = rect.origin.x;
+        double frameY = rect.origin.y;
         CGRect imageRect = new CGRect(0, 0, imageW, imageH);
         CGRect frameRect = rect;
         if (frameW >= imageW && frameH >= imageH){
@@ -185,8 +185,8 @@ public class CALayerBitmapPainter {
         double imageH = bitmap.getHeight();
         double frameW = rect.size.getWidth();
         double frameH = rect.size.getHeight();
-        double frameX = rect.origin.getX();
-        double frameY = rect.origin.getY();
+        double frameX = rect.origin.x;
+        double frameY = rect.origin.y;
         CGRect imageRect = new CGRect(0, 0, imageW, imageH);
         CGRect frameRect = rect;
         if (frameW >= imageW && frameH >= imageH){
@@ -211,8 +211,8 @@ public class CALayerBitmapPainter {
         double imageH = bitmap.getHeight();
         double frameW = rect.size.getWidth();
         double frameH = rect.size.getHeight();
-        double frameX = rect.origin.getX();
-        double frameY = rect.origin.getY();
+        double frameX = rect.origin.x;
+        double frameY = rect.origin.y;
         CGRect imageRect = new CGRect(0, 0, imageW, imageH);
         CGRect frameRect = rect;
         if (frameW >= imageW && frameH >= imageH){
@@ -237,8 +237,8 @@ public class CALayerBitmapPainter {
         double imageH = bitmap.getHeight();
         double frameW = rect.size.getWidth();
         double frameH = rect.size.getHeight();
-        double frameX = rect.origin.getX();
-        double frameY = rect.origin.getY();
+        double frameX = rect.origin.x;
+        double frameY = rect.origin.y;
         CGRect imageRect = new CGRect(0, 0, imageW, imageH);
         CGRect frameRect = rect;
         if (frameW >= imageW && frameH >= imageH){
@@ -263,8 +263,8 @@ public class CALayerBitmapPainter {
         double imageH = bitmap.getHeight();
         double frameW = rect.size.getWidth();
         double frameH = rect.size.getHeight();
-        double frameX = rect.origin.getX();
-        double frameY = rect.origin.getY();
+        double frameX = rect.origin.x;
+        double frameY = rect.origin.y;
         CGRect imageRect = new CGRect(0, 0, imageW, imageH);
         CGRect frameRect = rect;
         if (frameW >= imageW && frameH >= imageH){
@@ -289,8 +289,8 @@ public class CALayerBitmapPainter {
         double imageH = bitmap.getHeight();
         double frameW = rect.size.getWidth();
         double frameH = rect.size.getHeight();
-        double frameX = rect.origin.getX();
-        double frameY = rect.origin.getY();
+        double frameX = rect.origin.x;
+        double frameY = rect.origin.y;
         CGRect imageRect = new CGRect(0, 0, imageW, imageH);
         CGRect frameRect = rect;
         if (frameW >= imageW && frameH >= imageH){
@@ -315,8 +315,8 @@ public class CALayerBitmapPainter {
         double imageH = bitmap.getHeight();
         double frameW = rect.size.getWidth();
         double frameH = rect.size.getHeight();
-        double frameX = rect.origin.getX();
-        double frameY = rect.origin.getY();
+        double frameX = rect.origin.x;
+        double frameY = rect.origin.y;
         CGRect imageRect = new CGRect(0, 0, imageW, imageH);
         CGRect frameRect = rect;
         if (frameW >= imageW && frameH >= imageH){
@@ -341,8 +341,8 @@ public class CALayerBitmapPainter {
         double imageH = bitmap.getHeight();
         double frameW = rect.size.getWidth();
         double frameH = rect.size.getHeight();
-        double frameX = rect.origin.getX();
-        double frameY = rect.origin.getY();
+        double frameX = rect.origin.x;
+        double frameY = rect.origin.y;
         CGRect imageRect = new CGRect(0, 0, imageW, imageH);
         CGRect frameRect = rect;
         if (frameW >= imageW && frameH >= imageH){
