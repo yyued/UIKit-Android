@@ -3,13 +3,15 @@ package com.yy.codex.uikit;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.yy.codex.foundation.NSLog;
+
 /**
  * Created by PonyCui_Home on 2017/1/11.
  */
 
 public class UIPanGestureRecognizer extends UIGestureRecognizer {
 
-    @Nullable UITouch[] mStartTouches;
+    @Nullable UITouch[] mMaxTouches;
     @NonNull CGPoint mTranslatePoint = new CGPoint(0, 0);
     @NonNull CGPoint mVelocityPoint = new CGPoint(0, 0);
 
@@ -28,7 +30,7 @@ public class UIPanGestureRecognizer extends UIGestureRecognizer {
             mState = UIGestureRecognizerState.Failed;
             return;
         }
-        mStartTouches = touches;
+        mMaxTouches = touches;
         setTranslation(new CGPoint(0, 0));
     }
 
@@ -38,7 +40,7 @@ public class UIPanGestureRecognizer extends UIGestureRecognizer {
             resetVelocity(touches);
         }
         super.touchesMoved(touches, event);
-        if (mStartTouches == null) {
+        if (mMaxTouches == null) {
             mState = UIGestureRecognizerState.Failed;
             return;
         }
@@ -48,6 +50,14 @@ public class UIPanGestureRecognizer extends UIGestureRecognizer {
             sendActions();
         }
         else if (mState == UIGestureRecognizerState.Began || mState == UIGestureRecognizerState.Changed) {
+            if (touches.length > mMaxTouches.length) {
+                mMaxTouches = touches;
+            }
+            else if (touches.length < mMaxTouches.length) {
+                mState = UIGestureRecognizerState.Ended;
+                sendActions();
+                return;
+            }
             mState = UIGestureRecognizerState.Changed;
             sendActions();
         }
@@ -59,6 +69,9 @@ public class UIPanGestureRecognizer extends UIGestureRecognizer {
         if (mState == UIGestureRecognizerState.Began || mState == UIGestureRecognizerState.Changed) {
             mState = UIGestureRecognizerState.Ended;
             sendActions();
+        }
+        else if (mState == UIGestureRecognizerState.Ended) {
+            // Because as least one finger touch up, turns Ended during Moved.
         }
         else {
             mState = UIGestureRecognizerState.Failed;
@@ -103,7 +116,7 @@ public class UIPanGestureRecognizer extends UIGestureRecognizer {
     }
 
     private boolean moveOutOfBounds(@NonNull UITouch[] touches) {
-        if (mStartTouches == null) {
+        if (mMaxTouches == null) {
             return true;
         }
         UIView view = getView();
@@ -114,8 +127,8 @@ public class UIPanGestureRecognizer extends UIGestureRecognizer {
         double allowableMovement = 8.0;
         for (int i = 0; i < touches.length; i++) {
             CGPoint p0 = touches[i].locationInView(view);
-            for (int j = 0; j < mStartTouches.length; j++) {
-                CGPoint p1 = mStartTouches[j].locationInView(view);
+            for (int j = 0; j < mMaxTouches.length; j++) {
+                CGPoint p1 = mMaxTouches[j].locationInView(view);
                 if (!p0.inRange(allowableMovement, allowableMovement, p1)) {
                     accepted++;
                     break;

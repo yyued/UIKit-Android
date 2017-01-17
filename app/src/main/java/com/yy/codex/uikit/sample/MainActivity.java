@@ -11,6 +11,9 @@ import android.view.View;
 
 import com.yy.codex.uikit.CGRect;
 import com.yy.codex.uikit.UIColor;
+import com.yy.codex.uikit.UIConstraint;
+import com.yy.codex.uikit.UIScrollView;
+import com.yy.codex.uikit.UISwitch;
 import com.yy.codex.uikit.UIView;
 
 public class MainActivity extends AppCompatActivity {
@@ -49,18 +52,25 @@ class TestView extends UIView {
     @Override
     protected void init() {
         super.init();
-        final UIView aView = new UIView(getContext());
-        aView.setFrame(new CGRect(0, 200, 44, 44));
-        aView.setBackgroundColor(UIColor.redColor);
-        postDelayed(new Runnable() {
-            @Override
-            public void run() {
-//                UIView.animator.decay(aView, "frame.origin.x", 0, 0.6, null);
-//                UIView.animator.decay(aView, "frame.origin.y", 0, 0.6, null);
-//                UIView.animator.decayToValue(aView, "frame.origin.x", 0, 300, null);
-            }
-        }, 3000);
-        addSubview(aView);
+
+        UIScrollView scrollView = new UIScrollView(getContext());
+        UIConstraint constraint = new UIConstraint();
+        constraint.centerHorizontally = true;
+        constraint.centerVertically = true;
+        constraint.width = "100%";
+        constraint.height = "100%";
+        scrollView.setConstraint(constraint);
+
+        scrollView.setBackgroundColor(UIColor.blackColor.colorWithAlpha(0.1));
+
+        for (int i = 0; i < 100; i++) {
+            UIView redView = new UIView(getContext());
+            redView.setFrame(new CGRect(0,100 * i,20,20));
+            redView.setBackgroundColor(new UIColor(1, 0, 0, 1.0 - (i / 100.0)));
+            scrollView.addSubview(redView);
+        }
+
+        addSubview(scrollView);
     }
 
 }

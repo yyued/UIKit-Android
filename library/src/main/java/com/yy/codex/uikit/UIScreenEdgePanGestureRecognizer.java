@@ -35,9 +35,6 @@ public class UIScreenEdgePanGestureRecognizer extends UIPanGestureRecognizer {
     }
 
     private boolean checkEdge(UITouch[] touches) {
-        if (mStartTouches == null) {
-            return false;
-        }
         UIView view = getView();
         if (view == null) {
             return false;
