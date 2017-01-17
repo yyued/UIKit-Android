@@ -1,6 +1,7 @@
 package com.yy.codex.uikit;
 
 import android.graphics.Color;
+import android.support.annotation.NonNull;
 
 /**
  * Created by cuiminghui on 2017/1/16.
@@ -33,6 +34,12 @@ public class UIColor {
 
     public int toInt() {
         return Color.argb((int)(a * 255), (int)(r * 255), (int)(g * 255), (int)(b * 255));
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "UIColor, r = " + r + ", g = " + g + ", b = " + b + ", a = " + a + "";
     }
 
 }

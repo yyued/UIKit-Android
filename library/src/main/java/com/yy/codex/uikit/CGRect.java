@@ -105,4 +105,9 @@ public final class CGRect {
         return false;
     }
 
+    @NonNull @Override
+    public String toString() {
+        return "CGRect > origin = " + origin.toString() + ", size = " + size.toString();
+    }
+
 }

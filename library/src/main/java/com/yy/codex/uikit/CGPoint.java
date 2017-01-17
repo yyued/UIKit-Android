@@ -30,8 +30,7 @@ public final class CGPoint {
         return Math.abs(toPoint.x - this.x) < xRange && Math.abs(toPoint.y - this.y) < yRange;
     }
 
-    @NonNull
-    @Override
+    @NonNull @Override
     public String toString() {
         return "CGPoint{x=" + x + ",y=" + y + "}";
     }

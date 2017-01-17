@@ -26,4 +26,9 @@ public final class CGSize {
         return new CGSize(width, height);
     }
 
+    @NonNull @Override
+    public String toString() {
+        return "CGSize{width=" + width + ",height=" + height + "}";
+    }
+
 }
