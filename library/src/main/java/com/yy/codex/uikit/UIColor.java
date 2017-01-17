@@ -15,40 +15,24 @@ public class UIColor {
     public static final UIColor greenColor = new UIColor(0, 1, 0, 1);
     public static final UIColor blueColor = new UIColor(0, 0, 1, 1);
 
-    private double mR = 0.0;
-    private double mG = 0.0;
-    private double mB = 0.0;
-    private double mA = 1.0;
+    final public double r;
+    final public double g;
+    final public double b;
+    final public double a;
 
     public UIColor(double r, double g, double b, double a) {
-        this.mR = r;
-        this.mG = g;
-        this.mB = b;
-        this.mA = a;
-    }
-
-    public double getR() {
-        return mR;
-    }
-
-    public double getG() {
-        return mG;
-    }
-
-    public double getB() {
-        return mB;
-    }
-
-    public double getA() {
-        return mA;
+        this.r = r;
+        this.g = g;
+        this.b = b;
+        this.a = a;
     }
 
     public UIColor colorWithAlpha(double alpha) {
-        return new UIColor(mR, mG, mB, mA * alpha);
+        return new UIColor(r, g, b, a * alpha);
     }
 
     public int toInt() {
-        return Color.argb((int)(mA * 255), (int)(mR * 255), (int)(mG * 255), (int)(mB * 255));
+        return Color.argb((int)(a * 255), (int)(r * 255), (int)(g * 255), (int)(b * 255));
     }
 
 }

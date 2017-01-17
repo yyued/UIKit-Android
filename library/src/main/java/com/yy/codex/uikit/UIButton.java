@@ -261,9 +261,9 @@ public class UIButton extends UIControl {
     @Override
     public void layoutSubviews() {
         super.layoutSubviews();
-        mTitleLabel.setMaxWidth(getFrame().getWidth() - mImageView.intrinsicContentSize().getWidth() - (mContentEdgeInsets.getLeft() + mContentEdgeInsets.getRight() + mImageEdgeInsets.getLeft() + mImageEdgeInsets.getRight() + mTitleEdgeInsets.getLeft() + mTitleEdgeInsets.getRight()));
+        mTitleLabel.setMaxWidth(getFrame().getWidth() - mImageView.intrinsicContentSize().getWidth() - (mContentEdgeInsets.left + mContentEdgeInsets.right + mImageEdgeInsets.left + mImageEdgeInsets.right + mTitleEdgeInsets.left + mTitleEdgeInsets.right));
         double contentWidth = mTitleLabel.intrinsicContentSize().getWidth() + mImageView.intrinsicContentSize().getWidth();
-        contentWidth += mContentEdgeInsets.getLeft() + mContentEdgeInsets.getRight() + mImageEdgeInsets.getLeft() + mImageEdgeInsets.getRight() + mTitleEdgeInsets.getLeft() + mTitleEdgeInsets.getRight();
+        contentWidth += mContentEdgeInsets.left + mContentEdgeInsets.right + mImageEdgeInsets.left + mImageEdgeInsets.right + mTitleEdgeInsets.left + mTitleEdgeInsets.right;
         double imageViewOriginY = 0;
         double titleLabelOriginY = 0;
         if (getContentVerticalAlignment() == ContentVerticalAlignment.Center) {
@@ -276,13 +276,13 @@ public class UIButton extends UIControl {
         }
         if (getContentHorizontalAlignment() == ContentHorizontalAlignment.Left) {
             mImageView.setFrame(new CGRect(
-                    mContentEdgeInsets.getLeft() + mImageEdgeInsets.getLeft(),
+                    mContentEdgeInsets.left + mImageEdgeInsets.left,
                     imageViewOriginY,
                     mImageView.intrinsicContentSize().getWidth(),
                     mImageView.intrinsicContentSize().getHeight())
             );
             mTitleLabel.setFrame(new CGRect(
-                    mContentEdgeInsets.getLeft() + mImageEdgeInsets.getLeft() + mImageView.getFrame().getWidth() + mImageEdgeInsets.getRight() + mTitleEdgeInsets.getLeft(),
+                    mContentEdgeInsets.left + mImageEdgeInsets.left + mImageView.getFrame().getWidth() + mImageEdgeInsets.right + mTitleEdgeInsets.left,
                     titleLabelOriginY,
                     mTitleLabel.intrinsicContentSize().getWidth(),
                     mTitleLabel.intrinsicContentSize().getHeight())
@@ -290,13 +290,13 @@ public class UIButton extends UIControl {
         }
         else if (getContentHorizontalAlignment() == ContentHorizontalAlignment.Center) {
             mImageView.setFrame(new CGRect(
-                    ((getFrame().getWidth() - contentWidth) / 2.0) + mContentEdgeInsets.getLeft() + mImageEdgeInsets.getLeft(),
+                    ((getFrame().getWidth() - contentWidth) / 2.0) + mContentEdgeInsets.left + mImageEdgeInsets.left,
                     imageViewOriginY,
                     mImageView.intrinsicContentSize().getWidth(),
                     mImageView.intrinsicContentSize().getHeight())
             );
             mTitleLabel.setFrame(new CGRect(
-                    ((getFrame().getWidth() - contentWidth) / 2.0) + mContentEdgeInsets.getLeft() + mImageEdgeInsets.getLeft() + mImageView.getFrame().getWidth() + mImageEdgeInsets.getRight() + mTitleEdgeInsets.getLeft(),
+                    ((getFrame().getWidth() - contentWidth) / 2.0) + mContentEdgeInsets.left + mImageEdgeInsets.left + mImageView.getFrame().getWidth() + mImageEdgeInsets.right + mTitleEdgeInsets.left,
                     titleLabelOriginY,
                     mTitleLabel.intrinsicContentSize().getWidth(),
                     mTitleLabel.intrinsicContentSize().getHeight())
@@ -304,13 +304,13 @@ public class UIButton extends UIControl {
         }
         else if (getContentHorizontalAlignment() == ContentHorizontalAlignment.Right) {
             mImageView.setFrame(new CGRect(
-                    (getFrame().getWidth() - contentWidth) + mContentEdgeInsets.getLeft() + mImageEdgeInsets.getLeft(),
+                    (getFrame().getWidth() - contentWidth) + mContentEdgeInsets.left + mImageEdgeInsets.left,
                     imageViewOriginY,
                     mImageView.intrinsicContentSize().getWidth(),
                     mImageView.intrinsicContentSize().getHeight())
             );
             mTitleLabel.setFrame(new CGRect(
-                    (getFrame().getWidth() - contentWidth) + mContentEdgeInsets.getLeft() + mImageEdgeInsets.getLeft() + mImageView.getFrame().getWidth() + mImageEdgeInsets.getRight() + mTitleEdgeInsets.getLeft(),
+                    (getFrame().getWidth() - contentWidth) + mContentEdgeInsets.left + mImageEdgeInsets.left + mImageView.getFrame().getWidth() + mImageEdgeInsets.right + mTitleEdgeInsets.left,
                     titleLabelOriginY,
                     mTitleLabel.intrinsicContentSize().getWidth(),
                     mTitleLabel.intrinsicContentSize().getHeight())

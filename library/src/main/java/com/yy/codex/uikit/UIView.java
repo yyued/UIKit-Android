@@ -57,7 +57,7 @@ public class UIView extends UIResponder {
 
     /* category UIView Layout */
 
-    @NonNull  private CGRect mFrame = new CGRect(0, 0, 0, 0);
+    @NonNull private CGRect mFrame = new CGRect(0, 0, 0, 0);
 
     @NonNull
     public CGRect getFrame() {

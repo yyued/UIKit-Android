@@ -257,10 +257,10 @@ public class CALayer {
                 CGRect bitmapFrame = new CGRect(origin.x, origin.y, frameFormatted.size.getWidth(), frameFormatted.size.getHeight());
                 if (bitmapColor != null) {
                     float[] colorTransform = {
-                            0, (float)bitmapColor.getR(), 0, 0, 0,
-                            0, 0, (float)bitmapColor.getG(), 0, 0,
-                            0, 0, 0, (float)bitmapColor.getB(), 0,
-                            0, 0, 0, (float)bitmapColor.getA(), 0};
+                            0, (float)bitmapColor.r, 0, 0, 0,
+                            0, 0, (float)bitmapColor.g, 0, 0,
+                            0, 0, 0, (float)bitmapColor.b, 0,
+                            0, 0, 0, (float)bitmapColor.a, 0};
                     ColorMatrix colorMatrix = new ColorMatrix();
                     colorMatrix.set(colorTransform);
                     ColorMatrixColorFilter colorFilter = new ColorMatrixColorFilter(colorMatrix);
