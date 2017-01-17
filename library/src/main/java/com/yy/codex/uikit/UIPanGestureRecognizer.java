@@ -12,7 +12,7 @@ import com.yy.codex.foundation.NSLog;
 public class UIPanGestureRecognizer extends UIGestureRecognizer {
 
     @Nullable UITouch[] mMaxTouches;
-    @NonNull CGPoint mTranslatePoint = new CGPoint(0, 0);
+    @NonNull CGPoint[] mTranslatePoint = new CGPoint[0];
     @NonNull CGPoint mVelocityPoint = new CGPoint(0, 0);
 
     public UIPanGestureRecognizer(@NonNull Object target, @NonNull String selector) {
@@ -52,6 +52,7 @@ public class UIPanGestureRecognizer extends UIGestureRecognizer {
         else if (mState == UIGestureRecognizerState.Began || mState == UIGestureRecognizerState.Changed) {
             if (touches.length > mMaxTouches.length) {
                 mMaxTouches = touches;
+                bonusTranslation();
             }
             else if (touches.length < mMaxTouches.length) {
                 mState = UIGestureRecognizerState.Ended;
@@ -80,21 +81,42 @@ public class UIPanGestureRecognizer extends UIGestureRecognizer {
 
     @NonNull
     public CGPoint translation() {
-        if (mLastPoints.length > 0 && mTranslatePoint != null) {
-            return new CGPoint(
-                    mLastPoints[0].getAbsolutePoint().x - mTranslatePoint.x,
-                    mLastPoints[0].getAbsolutePoint().y - mTranslatePoint.y
-            );
+        if (mLastPoints.length > 0 && mTranslatePoint != null && mLastPoints.length == mTranslatePoint.length) {
+            double sumX = 0.0;
+            double sumY = 0.0;
+            for (int i = 0; i < mLastPoints.length; i++) {
+                sumX += mLastPoints[i].getAbsolutePoint().x - mTranslatePoint[i].x;
+                sumY += mLastPoints[i].getAbsolutePoint().y - mTranslatePoint[i].y;
+            }
+            return new CGPoint(sumX, sumY);
         }
         return new CGPoint(0, 0);
     }
 
     public void setTranslation(@NonNull CGPoint point) {
         if (mLastPoints.length > 0) {
-            mTranslatePoint = new CGPoint(
-                    mLastPoints[0].getAbsolutePoint().x + point.x,
-                    mLastPoints[0].getAbsolutePoint().y + point.y
-            );
+            mTranslatePoint = new CGPoint[mLastPoints.length];
+            for (int i = 0; i < mLastPoints.length; i++) {
+                mTranslatePoint[i] = new CGPoint(
+                    mLastPoints[i].getAbsolutePoint().x + point.x,
+                    mLastPoints[i].getAbsolutePoint().y + point.y
+                );
+            }
+        }
+    }
+
+    public void bonusTranslation() {
+        if (mTranslatePoint.length < mLastPoints.length) {
+            CGPoint[] translatePoint = new CGPoint[mLastPoints.length];
+            for (int i = 0; i < mLastPoints.length; i++) {
+                if (i < mTranslatePoint.length) {
+                    translatePoint[i] = mTranslatePoint[i];
+                }
+                else {
+                    translatePoint[i] = mLastPoints[i].getAbsolutePoint();
+                }
+            }
+            mTranslatePoint = translatePoint;
         }
     }
 

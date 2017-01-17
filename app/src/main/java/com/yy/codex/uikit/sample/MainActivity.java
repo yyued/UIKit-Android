@@ -10,6 +10,7 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.yy.codex.uikit.CGRect;
+import com.yy.codex.uikit.CGSize;
 import com.yy.codex.uikit.UIColor;
 import com.yy.codex.uikit.UIConstraint;
 import com.yy.codex.uikit.UIScrollView;
@@ -63,12 +64,17 @@ class TestView extends UIView {
 
         scrollView.setBackgroundColor(UIColor.blackColor.colorWithAlpha(0.1));
 
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 20; i++) {
             UIView redView = new UIView(getContext());
             redView.setFrame(new CGRect(0,100 * i,20,20));
             redView.setBackgroundColor(new UIColor(1, 0, 0, 1.0 - (i / 100.0)));
+            if (i == 0) {
+                redView.setBackgroundColor(UIColor.blueColor);
+            }
             scrollView.addSubview(redView);
         }
+
+        scrollView.setContentSize(new CGSize(0, 100 * 20));
 
         addSubview(scrollView);
     }

@@ -7,10 +7,6 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.animation.Interpolator;
-import android.widget.OverScroller;
-
-import com.yy.codex.foundation.NSLog;
 
 /**
  * Created by it on 17/1/6.
@@ -51,6 +47,7 @@ public class UIScrollView extends UIView {
 
     @NonNull private UIPanGestureRecognizer mPanGestureRecognizer;
     @NonNull private CGPoint mContentOffset = new CGPoint(0, 0);
+    @NonNull private CGSize mContentSize = new CGSize(0, 0);
     private boolean mTracking = false;
     @Nullable private UIViewAnimation mCurrentAnimation = null;
 
@@ -60,6 +57,16 @@ public class UIScrollView extends UIView {
         if (mCurrentAnimation != null) {
             mCurrentAnimation.cancel();
             mCurrentAnimation = null;
+        }
+    }
+
+    @Override
+    public void touchesEnded(@NonNull UITouch[] touches, @NonNull UIEvent event) {
+        super.touchesEnded(touches, event);
+        if (mPanGestureRecognizer.getState() != UIGestureRecognizerState.Ended) {
+            if (yOutOfBounds(mContentOffset)) {
+                moveYToBounds();
+            }
         }
     }
 
@@ -82,25 +89,22 @@ public class UIScrollView extends UIView {
         if (mTracking && panGestureRecognizer.getState() == UIGestureRecognizerState.Changed) {
             /* Move */
             double originY = -(panGestureRecognizer.translation().y);
-            if (originY < 0.0) {
-                originY = originY / 3.0;
+            if (yOutOfBounds(mContentOffset.setY(originY))) {
+                moveYResisted(mContentOffset.setY(originY));
             }
-            setContentOffset(mContentOffset.setY(originY));
+            else {
+                setContentOffset(mContentOffset.setY(originY));
+            }
         }
         else if (panGestureRecognizer.getState() == UIGestureRecognizerState.Ended) {
             /* Ended */
             mTracking = false;
             CGPoint velocity = panGestureRecognizer.velocity();
-            if (mContentOffset.y < 0.0) {
-                mCurrentAnimation = UIView.animator.springWithOptions(120.0, 20.0, Math.abs(velocity.y), new Runnable() {
-                    @Override
-                    public void run() {
-                        setContentOffset(mContentOffset.setY(0), false);
-                    }
-                }, null);
+            if (yOutOfBounds(mContentOffset)) {
+                moveYToBounds();
             }
             else {
-                mCurrentAnimation = UIView.animator.decay(this, "contentOffset.y", mContentOffset.y, -velocity.y / 1000.0, null);
+                mCurrentAnimation = UIView.animator.decayBounds(this, "contentOffset.y", mContentOffset.y, -velocity.y / 1000.0, 0.0, (mContentSize.height - getFrame().size.height), null);
             }
         }
     }
@@ -139,6 +143,61 @@ public class UIScrollView extends UIView {
         }
         UIView.animator.addAnimationState(this, "contentOffset.x", oldValue.x, mContentOffset.x);
         UIView.animator.addAnimationState(this, "contentOffset.y", oldValue.y, mContentOffset.y);
+    }
+
+    public void setContentSize(@NonNull CGSize contentSize) {
+        mContentSize = contentSize;
+    }
+
+    private boolean yOutOfBounds(@NonNull CGPoint ofPoint) {
+        if (mContentSize.height < getFrame().size.height) {
+            return true;
+        }
+        if (ofPoint.y < 0.0) {
+            return true;
+        }
+        else if (ofPoint.y > mContentSize.height - getFrame().size.height) {
+            return true;
+        }
+        return false;
+    }
+
+    private void moveYResisted(@NonNull CGPoint contentOffset) {
+        if (mContentSize.height < getFrame().size.height) {
+            double delta = contentOffset.y;
+            setContentOffset(contentOffset.setY(delta / 3.0), false);
+        }
+        else if (contentOffset.y < 0.0) {
+            double delta = Math.abs(contentOffset.y);
+            setContentOffset(contentOffset.setY(-delta / 3.0), false);
+        }
+        else if (contentOffset.y > mContentSize.height - getFrame().size.height) {
+            double delta = contentOffset.y - (mContentSize.height - getFrame().size.height);
+            setContentOffset(contentOffset.setY((mContentSize.height - getFrame().size.height) + delta / 3.0), false);
+        }
+    }
+
+    private void moveYToBounds() {
+        if (mCurrentAnimation != null) {
+            mCurrentAnimation.cancel();
+        }
+        double nearestBounds;
+        if (mContentSize.height < getFrame().size.height) {
+            nearestBounds = 0.0;
+        }
+        else if (mContentOffset.y < 0.0) {
+            nearestBounds = 0.0;
+        }
+        else {
+            nearestBounds = mContentSize.height - getFrame().size.height;
+        }
+        final double finalNearestBounds = nearestBounds;
+        mCurrentAnimation = UIView.animator.springWithOptions(120.0, 20.0, 0.0, new Runnable() {
+            @Override
+            public void run() {
+            setContentOffset(mContentOffset.setY(finalNearestBounds), false);
+            }
+        }, null);
     }
 
 }
