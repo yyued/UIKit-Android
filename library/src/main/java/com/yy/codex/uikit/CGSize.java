@@ -16,14 +16,6 @@ public final class CGSize {
         this.height = height;
     }
 
-    public double getWidth() {
-        return width;
-    }
-
-    public double getHeight() {
-        return height;
-    }
-
     @NonNull
     public CGSize setWidth(double width) {
         return new CGSize(width, height);

@@ -92,8 +92,8 @@ public class CALayerBitmapPainter {
         double imageW = bitmap.getWidth();
         double imageH = bitmap.getHeight();
         double imageRatio = imageW / imageH;
-        double frameW = rect.size.getWidth();
-        double frameH = rect.size.getHeight();
+        double frameW = rect.size.width;
+        double frameH = rect.size.height;
         double frameRatio = frameW / frameH;
         double frameX = rect.origin.x;
         double frameY = rect.origin.y;
@@ -113,8 +113,8 @@ public class CALayerBitmapPainter {
         double imageW = bitmap.getWidth();
         double imageH = bitmap.getHeight();
         double imageRatio = imageW / imageH;
-        double frameW = rect.size.getWidth();
-        double frameH = rect.size.getHeight();
+        double frameW = rect.size.width;
+        double frameH = rect.size.height;
         double frameRatio = frameW / frameH;
         CGRect imageRect, frameRect = rect;
         if (frameRatio > imageRatio){
@@ -131,8 +131,8 @@ public class CALayerBitmapPainter {
     private void drawCenter(Canvas canvas, CGRect rect, Bitmap bitmap, Paint paint){
         double imageW = bitmap.getWidth();
         double imageH = bitmap.getHeight();
-        double frameW = rect.size.getWidth();
-        double frameH = rect.size.getHeight();
+        double frameW = rect.size.width;
+        double frameH = rect.size.height;
         double frameX = rect.origin.x;
         double frameY = rect.origin.y;
         CGRect imageRect = new CGRect(0, 0, imageW, imageH);
@@ -157,8 +157,8 @@ public class CALayerBitmapPainter {
     private void drawTop(Canvas canvas, CGRect rect, Bitmap bitmap, Paint paint){
         double imageW = bitmap.getWidth();
         double imageH = bitmap.getHeight();
-        double frameW = rect.size.getWidth();
-        double frameH = rect.size.getHeight();
+        double frameW = rect.size.width;
+        double frameH = rect.size.height;
         double frameX = rect.origin.x;
         double frameY = rect.origin.y;
         CGRect imageRect = new CGRect(0, 0, imageW, imageH);
@@ -183,8 +183,8 @@ public class CALayerBitmapPainter {
     private void drawTopLeft(Canvas canvas, CGRect rect, Bitmap bitmap, Paint paint){
         double imageW = bitmap.getWidth();
         double imageH = bitmap.getHeight();
-        double frameW = rect.size.getWidth();
-        double frameH = rect.size.getHeight();
+        double frameW = rect.size.width;
+        double frameH = rect.size.height;
         double frameX = rect.origin.x;
         double frameY = rect.origin.y;
         CGRect imageRect = new CGRect(0, 0, imageW, imageH);
@@ -209,8 +209,8 @@ public class CALayerBitmapPainter {
     private void drawTopRight(Canvas canvas, CGRect rect, Bitmap bitmap, Paint paint){
         double imageW = bitmap.getWidth();
         double imageH = bitmap.getHeight();
-        double frameW = rect.size.getWidth();
-        double frameH = rect.size.getHeight();
+        double frameW = rect.size.width;
+        double frameH = rect.size.height;
         double frameX = rect.origin.x;
         double frameY = rect.origin.y;
         CGRect imageRect = new CGRect(0, 0, imageW, imageH);
@@ -235,8 +235,8 @@ public class CALayerBitmapPainter {
     private void drawBottom(Canvas canvas, CGRect rect, Bitmap bitmap, Paint paint){
         double imageW = bitmap.getWidth();
         double imageH = bitmap.getHeight();
-        double frameW = rect.size.getWidth();
-        double frameH = rect.size.getHeight();
+        double frameW = rect.size.width;
+        double frameH = rect.size.height;
         double frameX = rect.origin.x;
         double frameY = rect.origin.y;
         CGRect imageRect = new CGRect(0, 0, imageW, imageH);
@@ -261,8 +261,8 @@ public class CALayerBitmapPainter {
     private void drawBottomLeft(Canvas canvas, CGRect rect, Bitmap bitmap, Paint paint){
         double imageW = bitmap.getWidth();
         double imageH = bitmap.getHeight();
-        double frameW = rect.size.getWidth();
-        double frameH = rect.size.getHeight();
+        double frameW = rect.size.width;
+        double frameH = rect.size.height;
         double frameX = rect.origin.x;
         double frameY = rect.origin.y;
         CGRect imageRect = new CGRect(0, 0, imageW, imageH);
@@ -287,8 +287,8 @@ public class CALayerBitmapPainter {
     private void drawBottomRight(Canvas canvas, CGRect rect, Bitmap bitmap, Paint paint){
         double imageW = bitmap.getWidth();
         double imageH = bitmap.getHeight();
-        double frameW = rect.size.getWidth();
-        double frameH = rect.size.getHeight();
+        double frameW = rect.size.width;
+        double frameH = rect.size.height;
         double frameX = rect.origin.x;
         double frameY = rect.origin.y;
         CGRect imageRect = new CGRect(0, 0, imageW, imageH);
@@ -313,8 +313,8 @@ public class CALayerBitmapPainter {
     private void drawLeft(Canvas canvas, CGRect rect, Bitmap bitmap, Paint paint){
         double imageW = bitmap.getWidth();
         double imageH = bitmap.getHeight();
-        double frameW = rect.size.getWidth();
-        double frameH = rect.size.getHeight();
+        double frameW = rect.size.width;
+        double frameH = rect.size.height;
         double frameX = rect.origin.x;
         double frameY = rect.origin.y;
         CGRect imageRect = new CGRect(0, 0, imageW, imageH);
@@ -339,8 +339,8 @@ public class CALayerBitmapPainter {
     private void drawRight(Canvas canvas, CGRect rect, Bitmap bitmap, Paint paint){
         double imageW = bitmap.getWidth();
         double imageH = bitmap.getHeight();
-        double frameW = rect.size.getWidth();
-        double frameH = rect.size.getHeight();
+        double frameW = rect.size.width;
+        double frameH = rect.size.height;
         double frameX = rect.origin.x;
         double frameY = rect.origin.y;
         CGRect imageRect = new CGRect(0, 0, imageW, imageH);

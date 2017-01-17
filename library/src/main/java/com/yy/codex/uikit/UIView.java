@@ -74,8 +74,8 @@ public class UIView extends UIResponder {
         this.setX((float) (frame.origin.x * UIScreen.mainScreen.scale()));
         this.setY((float) (frame.origin.y * UIScreen.mainScreen.scale()));
 
-        double mWidth = frame.size.getWidth() * UIScreen.mainScreen.scale();
-        double mHeight = frame.size.getHeight() * UIScreen.mainScreen.scale();
+        double mWidth = frame.size.width * UIScreen.mainScreen.scale();
+        double mHeight = frame.size.height * UIScreen.mainScreen.scale();
         if (Math.ceil(mWidth) - mWidth < 0.1) {
             mWidth = Math.ceil(mWidth);
         }
@@ -85,16 +85,16 @@ public class UIView extends UIResponder {
         this.setMinimumWidth((int) mWidth);
         this.setMinimumHeight((int) mHeight);
         CALayer.scaledDensity = (float) UIScreen.mainScreen.scale();
-        this.mLayer.setFrame(new CGRect(0, 0, frame.size.getWidth(), frame.size.getHeight()));
+        this.mLayer.setFrame(new CGRect(0, 0, frame.size.width, frame.size.height));
         UIView.sAnimator.addAnimationState(this, "mFrame.origin.x", oldValue.origin.x, frame.origin.x);
         UIView.sAnimator.addAnimationState(this, "mFrame.origin.y", oldValue.origin.y, frame.origin.y);
-        UIView.sAnimator.addAnimationState(this, "mFrame.size.width", oldValue.size.getWidth(), frame.size.getWidth());
-        UIView.sAnimator.addAnimationState(this, "mFrame.size.height", oldValue.size.getHeight(), frame.size.getHeight());
+        UIView.sAnimator.addAnimationState(this, "mFrame.size.width", oldValue.size.width, frame.size.width);
+        UIView.sAnimator.addAnimationState(this, "mFrame.size.height", oldValue.size.height, frame.size.height);
     }
 
     @NonNull
     public CGPoint getCenter() {
-        return new CGPoint((mFrame.origin.x + mFrame.size.getWidth()) / 2.0, (mFrame.origin.y + mFrame.size.getHeight()) / 2.0);
+        return new CGPoint((mFrame.origin.x + mFrame.size.width) / 2.0, (mFrame.origin.y + mFrame.size.height) / 2.0);
     }
 
     @Nullable private UIConstraint mConstraint = null;

@@ -76,8 +76,8 @@ public class CALayer {
     public CALayer(@NonNull CGRect frame) {
         float x = (float) (frame.origin.x);
         float y = (float) (frame.origin.y);
-        float w = (float) (frame.size.getWidth());
-        float h = (float) (frame.size.getHeight());
+        float w = (float) (frame.size.width);
+        float h = (float) (frame.size.height);
         this.frame = new CGRect(x, y, w, h);
     }
 
@@ -165,8 +165,8 @@ public class CALayer {
 
     protected void drawLayer(@NonNull Canvas canvas, CGRect rect, boolean isDrawInNewCanvas){
         if (isDrawInNewCanvas){
-            double frameW = frame.size.getWidth() * scaledDensity;
-            double frameH = frame.size.getHeight() * scaledDensity;
+            double frameW = frame.size.width * scaledDensity;
+            double frameH = frame.size.height * scaledDensity;
             CGPoint origin = calcOriginInSuperCoordinate(this);
 
             // create srcBitmap
@@ -211,7 +211,7 @@ public class CALayer {
 
     protected void drawInCanvas(@NonNull Canvas canvas){
         CGPoint origin = calcOriginInSuperCoordinate(this);
-        CGRect frameFormatted = new CGRect(this.frame.origin.x * scaledDensity, this.frame.origin.y * scaledDensity, this.frame.getWidth() * scaledDensity, this.frame.getHeight() * scaledDensity);
+        CGRect frameFormatted = new CGRect(this.frame.origin.x * scaledDensity, this.frame.origin.y * scaledDensity, this.frame.size.width * scaledDensity, this.frame.size.height * scaledDensity);
         float halfBorderW = (float) borderWidth * scaledDensity / 2.0f;
 
         // background
@@ -232,7 +232,7 @@ public class CALayer {
 
             if (bitmap != null){
                 Paint mixPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-                CGRect maskFrame = new CGRect(origin.x, origin.y, frameFormatted.size.getWidth(), frameFormatted.size.getHeight());
+                CGRect maskFrame = new CGRect(origin.x, origin.y, frameFormatted.size.width, frameFormatted.size.height);
                 Bitmap maskBitmap = createRadiusMask(maskFrame, cornerRadius * scaledDensity);
                 canvas.drawBitmap(maskBitmap, 0, 0, mixPaint);
                 mixPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
@@ -254,7 +254,7 @@ public class CALayer {
             
             if (bitmap != null){
                 paint.reset();
-                CGRect bitmapFrame = new CGRect(origin.x, origin.y, frameFormatted.size.getWidth(), frameFormatted.size.getHeight());
+                CGRect bitmapFrame = new CGRect(origin.x, origin.y, frameFormatted.size.width, frameFormatted.size.height);
                 if (bitmapColor != null) {
                     float[] colorTransform = {
                             0, (float)bitmapColor.r, 0, 0, 0,
@@ -311,7 +311,7 @@ public class CALayer {
     }
 
     private Bitmap createRadiusMask(@NonNull CGRect rect, double radius){
-        Bitmap maskBitmap = Bitmap.createBitmap((int)(rect.size.getWidth()+rect.origin.x), (int)(rect.size.getHeight()+rect.origin.y), Bitmap.Config.ARGB_8888);
+        Bitmap maskBitmap = Bitmap.createBitmap((int)(rect.size.width+rect.origin.x), (int)(rect.size.height+rect.origin.y), Bitmap.Config.ARGB_8888);
         Canvas canvasB = new Canvas(maskBitmap);
         Paint p3 = new Paint(Paint.ANTI_ALIAS_FLAG);
         canvasB.drawRoundRect(rect.toRectF(), (float) radius, (float) radius, p3);
@@ -320,7 +320,7 @@ public class CALayer {
 
     private Bitmap createMask(@NonNull CALayer layer){
         CGRect rect = layer.getFrame();
-        Bitmap maskBitmap = Bitmap.createBitmap((int)(rect.size.getWidth()+rect.origin.x), (int)(rect.size.getHeight()+rect.origin.y), Bitmap.Config.ARGB_8888);
+        Bitmap maskBitmap = Bitmap.createBitmap((int)(rect.size.width+rect.origin.x), (int)(rect.size.height+rect.origin.y), Bitmap.Config.ARGB_8888);
         Canvas canvasB = new Canvas(maskBitmap);
         layer.drawInCanvas(canvasB);
         return maskBitmap;
@@ -407,8 +407,8 @@ public class CALayer {
     public CALayer setFrame(@NonNull CGRect frame) {
         float x = (float) frame.origin.x;
         float y = (float) frame.origin.y;
-        float w = (float) frame.size.getWidth();
-        float h = (float) frame.size.getHeight();
+        float w = (float) frame.size.width;
+        float h = (float) frame.size.height;
         CGRect newValue = new CGRect(x, y, w, h);
         if (!this.frame.equals(newValue)){
             this.frame = newValue;

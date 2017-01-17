@@ -28,8 +28,8 @@ class UIViewHelpers {
     }
 
     static public boolean pointInside(@NonNull UIView view, @NonNull CGPoint point) {
-        double h = view.getFrame().size.getHeight();
-        double w = view.getFrame().size.getWidth();
+        double h = view.getFrame().size.height;
+        double w = view.getFrame().size.width;
         double touchX = point.x;
         double touchY = point.y;
         if (touchY <= h && touchX <= w && touchY >= 0 && touchX >= 0) {
