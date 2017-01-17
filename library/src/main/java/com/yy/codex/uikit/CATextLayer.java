@@ -34,11 +34,6 @@ public class CATextLayer extends CALayer {
     }
 
     @Override
-    protected void drawLayer(@NonNull Canvas canvas, CGRect rect, boolean inNewCanvas) {
-        super.drawLayer(canvas, rect, inNewCanvas);
-    }
-
-    @Override
     protected void drawInCanvas(Canvas canvas) {
         super.drawInCanvas(canvas);
         Rect rect = this.getFrame().toRect();

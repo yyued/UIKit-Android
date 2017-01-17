@@ -384,95 +384,26 @@ public class CALayer {
         if (mHidden){
             return;
         }
-        if (isNewCanvasContext()){
-            drawLayer(canvas, rect, true);
+        if (this.isNewCanvasContext()){
+            CALayerPainter.drawLayerTree(this, canvas);
         }
         else {
-            drawLayer(canvas, rect, false);
+            this.drawInCanvas(canvas);
             for (CALayer item : mSubLayers){
                 item.drawAllLayers(canvas, rect);
             }
         }
     }
 
-    protected void drawLayer(@NonNull Canvas canvas, CGRect rect, boolean isDrawInNewCanvas){
-        float scaledDensity = (float) UIScreen.mainScreen.scale();
-        if (isDrawInNewCanvas){
-            double frameW = mFrame.size.width * scaledDensity;
-            double frameH = mFrame.size.height * scaledDensity;
-            CGPoint origin = calcOriginInSuperCoordinate(this);
-
-            // create srcBitmap
-            Bitmap srcBitmap = Bitmap.createBitmap((int)( frameW + origin.x), (int)(frameH + origin.y), Bitmap.Config.ARGB_8888);
-            Canvas srcCanvas = new Canvas(srcBitmap);
-            drawLayersInCanvas(srcCanvas);
-
-            // create maskBitmap
-            Bitmap maskBitmap = Bitmap.createBitmap((int)( frameW + origin.x), (int)(frameH + origin.y), Bitmap.Config.ARGB_8888);
-            Canvas maskCanvas = new Canvas(maskBitmap);
-            Paint maskPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-            RectF maskRectF = new CGRect(origin.x, origin.y, frameW, frameH).toRectF();
-            maskCanvas.drawRoundRect(maskRectF, (float) mCornerRadius * scaledDensity, (float) mCornerRadius * scaledDensity, maskPaint);
-
-            // draw srcBitmap, and apply maskBitmap if need
-            Paint mixPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-            if (this.mTransforms != null & this.mTransforms.length > 0){
-                Matrix matrix = createMatrix(this.mTransforms);
-                if (this.mClipToBounds){
-                    canvas.drawBitmap(maskBitmap, matrix, mixPaint);
-                    mixPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-                }
-                canvas.drawBitmap(srcBitmap, matrix, mixPaint);
-            }
-            else {
-                canvas.drawBitmap(maskBitmap, 0, 0, mixPaint);
-                mixPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-                canvas.drawBitmap(srcBitmap, 0, 0, mixPaint);
-            }
-        }
-        else {
-            drawInCanvas(canvas);
-        }
-    }
-
-    protected void drawLayersInCanvas(@NonNull Canvas canvas){
-        drawInCanvas(canvas);
-        for (CALayer item : mSubLayers){
-            item.drawLayersInCanvas(canvas);
-        }
-    }
-
     protected void drawInCanvas(@NonNull Canvas canvas){
-        CALayerPainter.draw(this, canvas);
+        CALayerPainter.drawCurrentLayer(this, canvas);
     }
 
-    private Matrix createMatrix(CGTransform[] transforms){
-        float scaledDensity = (float) UIScreen.mainScreen.scale();
-        Matrix matrix = new Matrix();
-        if (transforms == null || transforms.length == 0){
-            return matrix;
+    protected void drawLayerTreeInCanvas(@NonNull Canvas canvas){
+        this.drawInCanvas(canvas);
+        for (CALayer item : mSubLayers){
+            item.drawLayerTreeInCanvas(canvas);
         }
-        RectF rectF = mFrame.toRectF();
-        for (CGTransform transform : transforms){
-            if (!transform.enable){
-                continue;
-            }
-            if (transform instanceof CGTransformRotation){
-                matrix.preRotate((float) ((CGTransformRotation) transform).angle, rectF.centerX() * (float) scaledDensity, rectF.centerY() * (float) scaledDensity);
-            }
-            else if (transform instanceof CGTransformTranslation){
-                CGTransformTranslation translation = (CGTransformTranslation) transform;
-                matrix.postTranslate((float) translation.tx, (float) translation.ty);
-            }
-            else if (transform instanceof CGTransformScale){
-                CGTransformScale scale = (CGTransformScale)transform;
-                matrix.postScale((float) scale.sx, (float) scale.sy, rectF.centerX() * (float) scaledDensity, rectF.centerY() * (float) scaledDensity);
-            }
-            else if (transform instanceof CGTransformMatrix){
-                // @TODO
-            }
-        }
-        return matrix;
     }
 
     private boolean askIfNeedDispaly(){

@@ -45,10 +45,10 @@ public class UISwitch extends UIControl {
         mOffBackgroundView.setFrame(new CGRect(0, 0, 51, 32));
         mOffBackgroundView.setAlpha(1.0f);
         mOffBackgroundView.setWantsLayer(true);
-//        mOffBackgroundView.getLayer().setCornerRadius(16);
-        mOffBackgroundView.getLayer().setBorderColor(new UIColor(0xe5/255.0, 0xe5/255.0, 0xe5/255.0, 1.0));
+        mOffBackgroundView.getLayer().setCornerRadius(16);
+        mOffBackgroundView.getLayer().setBorderColor(UIColor.blackColor);
         mOffBackgroundView.getLayer().setBorderWidth(2.0);
-//        mOffBackgroundView.getLayer().setBackgroundColor(UIColor.whiteColor);
+        mOffBackgroundView.getLayer().setBackgroundColor(UIColor.greenColor);
 
         mOnBackgroundView = new UIView(getContext());
         mOnBackgroundView.setFrame(new CGRect(0, 0, 51, 32));
@@ -57,6 +57,9 @@ public class UISwitch extends UIControl {
         mHandleView = new UIView(getContext());
         mHandleView.setFrame(new CGRect(2, 2, 28, 28));
         mHandleView.setAlpha(1.0f);
+        mHandleView.setWantsLayer(true);
+        mHandleView.getLayer().setCornerRadius(14);
+        mHandleView.getLayer().setBackgroundColor(UIColor.blackColor);
         mOffBackgroundView.setWantsLayer(true);
         mOffBackgroundView.getLayer().setCornerRadius(14);
         mOffBackgroundView.getLayer().setBorderColor(new UIColor(0x00/255.0, 0x00/255.0, 0x00/255.0, 0.1));
@@ -64,8 +67,8 @@ public class UISwitch extends UIControl {
         mOffBackgroundView.getLayer().setBackgroundColor(UIColor.whiteColor);
 
         addSubview(mOffBackgroundView);
-//        addSubview(mOnBackgroundView);
-//        addSubview(mHandleView);
+        addSubview(mOnBackgroundView);
+        addSubview(mHandleView);
     }
 
     @Override
