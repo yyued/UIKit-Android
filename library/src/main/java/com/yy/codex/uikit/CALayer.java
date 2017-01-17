@@ -2,8 +2,6 @@ package com.yy.codex.uikit;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.ColorMatrix;
-import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
@@ -20,10 +18,6 @@ import java.util.ArrayList;
  */
 
 public class CALayer {
-
-    /* painter */
-
-    private CALayerBitmapPainter bitmapPainter = CALayerBitmapPainter.getSharedInstance();
 
     /* layoutProps */
 
@@ -210,76 +204,7 @@ public class CALayer {
     }
 
     protected void drawInCanvas(@NonNull Canvas canvas){
-        CGPoint origin = calcOriginInSuperCoordinate(this);
-        CGRect frameFormatted = new CGRect(this.frame.getX() * scaledDensity, this.frame.getY() * scaledDensity, this.frame.getWidth() * scaledDensity, this.frame.getHeight() * scaledDensity);
-        float halfBorderW = (float) borderWidth * scaledDensity / 2.0f;
-
-        // background
-        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        paint.setColor(this.backgroundColor.toInt());
-
-        // visible
-        if (hidden){
-            return;
-        }
-
-        // background bitmap border
-        if (cornerRadius > 0){
-            if (shadowRadius > 0){
-                paint.setShadowLayer((float) shadowRadius * scaledDensity, (float) shadowX * scaledDensity, (float) shadowY * scaledDensity, shadowColor.toInt());
-            }
-            canvas.drawRoundRect(frameFormatted.shrinkToRectF(halfBorderW, origin), (float) cornerRadius * scaledDensity, (float) cornerRadius * scaledDensity, paint);
-
-            if (bitmap != null){
-                Paint mixPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-                CGRect maskFrame = new CGRect(origin.getX(), origin.getY(), frameFormatted.size.getWidth(), frameFormatted.size.getHeight());
-                Bitmap maskBitmap = createRadiusMask(maskFrame, cornerRadius * scaledDensity);
-                canvas.drawBitmap(maskBitmap, 0, 0, mixPaint);
-                mixPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-                bitmapPainter.drawBitmap(canvas, maskFrame, bitmap, bitmapGravity, mixPaint);
-            }
-
-            if (borderWidth > 0){
-                paint.setStyle(Paint.Style.STROKE);
-                paint.setStrokeWidth((float) borderWidth * scaledDensity);
-                paint.setColor(borderColor.toInt());
-                canvas.drawRoundRect(frameFormatted.shrinkToRectF(halfBorderW, origin), (float) cornerRadius * scaledDensity, (float) cornerRadius * scaledDensity, paint);
-            }
-        }
-        else {
-            if (shadowRadius > 0){
-                paint.setShadowLayer((float) shadowRadius * scaledDensity, (float) shadowX * scaledDensity, (float) shadowY * scaledDensity, shadowColor.toInt());
-            }
-            canvas.drawRect(frameFormatted.toRectF(origin), paint);
-            
-            if (bitmap != null){
-                paint.reset();
-                CGRect bitmapFrame = new CGRect(origin.getX(), origin.getY(), frameFormatted.size.getWidth(), frameFormatted.size.getHeight());
-                if (bitmapColor != null) {
-                    float[] colorTransform = {
-                            0, (float)bitmapColor.getR(), 0, 0, 0,
-                            0, 0, (float)bitmapColor.getG(), 0, 0,
-                            0, 0, 0, (float)bitmapColor.getB(), 0,
-                            0, 0, 0, (float)bitmapColor.getA(), 0};
-                    ColorMatrix colorMatrix = new ColorMatrix();
-                    colorMatrix.set(colorTransform);
-                    ColorMatrixColorFilter colorFilter = new ColorMatrixColorFilter(colorMatrix);
-                    paint.setColorFilter(colorFilter);
-                }
-                bitmapPainter.drawBitmap(canvas, bitmapFrame, bitmap, bitmapGravity, paint);
-                paint.setColorFilter(null);
-            }
-            if (borderWidth > 0){
-                paint.setStyle(Paint.Style.STROKE);
-                paint.setStrokeWidth((float) borderWidth * scaledDensity);
-                paint.setColor(borderColor.toInt());
-                canvas.drawRect(frameFormatted.shrinkToRectF(halfBorderW, origin), paint);
-            }
-        }
-
-        if (mask != null){
-            // @TODO
-        }
+        CALayerPainter.draw(this, canvas);
     }
 
     private Matrix createMatrix(CGTransform[] transforms){
@@ -343,6 +268,19 @@ public class CALayer {
         this.view = view;
     }
 
+    public boolean isHidden() {
+        return hidden;
+    }
+
+    @Nullable
+    public Bitmap getBitmap() {
+        return bitmap;
+    }
+
+    public int getBitmapGravity() {
+        return bitmapGravity;
+    }
+
     public UIColor getBackgroundColor() {
         return backgroundColor;
     }
@@ -373,6 +311,15 @@ public class CALayer {
 
     public UIColor getShadowColor() {
         return shadowColor;
+    }
+
+    public UIColor getBitmapColor() {
+        return bitmapColor;
+    }
+
+    @Nullable
+    public CALayer getMask() {
+        return mask;
     }
 
     @NonNull
@@ -568,7 +515,7 @@ public class CALayer {
     /* category CALayer support method */
 
     @NonNull
-    private CGPoint calcOriginInSuperCoordinate(@NonNull CALayer layer){
+    public static CGPoint calcOriginInSuperCoordinate(@NonNull CALayer layer){
         double oriX = layer.frame.origin.getX();
         double oriY = layer.frame.origin.getY();
         CALayer p = layer.getSuperLayer();
