@@ -1,7 +1,6 @@
 package com.yy.codex.uikit.sample;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -10,12 +9,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.yy.codex.uikit.UIButton;
+import com.yy.codex.uikit.CGRect;
 import com.yy.codex.uikit.UIColor;
-import com.yy.codex.uikit.UIConstraint;
-import com.yy.codex.uikit.UIControl;
-import com.yy.codex.uikit.UIEdgeInsets;
-import com.yy.codex.uikit.UIImage;
 import com.yy.codex.uikit.UIView;
 
 public class MainActivity extends AppCompatActivity {
@@ -54,43 +49,26 @@ class TestView extends UIView {
     @Override
     protected void init() {
         super.init();
-        UIButton button = new UIButton(getContext());
-        UIConstraint constraint = new UIConstraint();
-        constraint.centerVertically = true;
-        constraint.centerHorizontally = true;
-        constraint.width = "200";
-        constraint.height = "44";
-        button.setSelected(false);
-        button.setConstraint(constraint);
-        button.setWantsLayer(true);
-        button.getLayer().setCornerRadius(22);
-        button.getLayer().setBorderWidth(1.0);
-        button.getLayer().setBorderColor(UIColor.blackColor);
-        button.setTitle("Hello, World!", UIControl.State.Normal);
-        UIImage image = new UIImage(getContext(), R.drawable.ani_16);
-        image.setScale(3.0);
-        button.setImage(image, UIControl.State.Normal);
-        button.setContentHorizontalAlignment(UIControl.ContentHorizontalAlignment.Center);
-        button.setContentVerticalAlignment(UIControl.ContentVerticalAlignment.Center);
-        button.setImageEdgeInsets(new UIEdgeInsets(0, 0, 0, 4));
-        button.setTitleEdgeInsets(new UIEdgeInsets(0, 4, 0, 0));
-        addSubview(button);
-    }
-
-    public void onTouchDragExit(UIControl control) {
-        control.setBackgroundColor(Color.GRAY);
-    }
-
-    public void onTouchDragEnter(UIControl control) {
-        control.setBackgroundColor(Color.GREEN);
-    }
-
-    public void onTouchUpInside(UIControl control) {
-        control.setBackgroundColor(Color.RED);
-    }
-
-    public void onTouchUpOutside(UIControl control) {
-        control.setBackgroundColor(Color.YELLOW);
+        final UIView aView = new UIView(getContext());
+        aView.setFrame(new CGRect(0, 0, 44, 44));
+        aView.setBackgroundColor(UIColor.redColor);
+        postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                UIView.animator.decay(aView, "frame.origin.y", 0, 1.0, new Runnable() {
+                    @Override
+                    public void run() {
+                        UIView.animator.linear(new Runnable() {
+                            @Override
+                            public void run() {
+                                aView.setAlpha(0);
+                            }
+                        });
+                    }
+                });
+            }
+        }, 3000);
+        addSubview(aView);
     }
 
 }

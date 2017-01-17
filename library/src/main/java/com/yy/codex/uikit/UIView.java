@@ -86,10 +86,10 @@ public class UIView extends UIResponder {
         this.setMinimumHeight((int) mHeight);
         CALayer.scaledDensity = (float) UIScreen.mainScreen.scale();
         this.mLayer.setFrame(new CGRect(0, 0, frame.size.width, frame.size.height));
-        UIView.sAnimator.addAnimationState(this, "mFrame.origin.x", oldValue.origin.x, frame.origin.x);
-        UIView.sAnimator.addAnimationState(this, "mFrame.origin.y", oldValue.origin.y, frame.origin.y);
-        UIView.sAnimator.addAnimationState(this, "mFrame.size.width", oldValue.size.width, frame.size.width);
-        UIView.sAnimator.addAnimationState(this, "mFrame.size.height", oldValue.size.height, frame.size.height);
+        UIView.animator.addAnimationState(this, "frame.origin.x", oldValue.origin.x, frame.origin.x);
+        UIView.animator.addAnimationState(this, "frame.origin.y", oldValue.origin.y, frame.origin.y);
+        UIView.animator.addAnimationState(this, "frame.size.width", oldValue.size.width, frame.size.width);
+        UIView.animator.addAnimationState(this, "frame.size.height", oldValue.size.height, frame.size.height);
     }
 
     @NonNull
@@ -157,7 +157,7 @@ public class UIView extends UIResponder {
     public void setAlpha(float alpha) {
         float oldValue = this.getAlpha();
         super.setAlpha(alpha);
-        UIView.sAnimator.addAnimationState(this, "alpha", oldValue, alpha);
+        UIView.animator.addAnimationState(this, "alpha", oldValue, alpha);
     }
 
     private UIColor mTintColor = null;
@@ -421,25 +421,25 @@ public class UIView extends UIResponder {
 
     /* UIView animation */
 
-    @NonNull static public UIViewAnimator sAnimator = new UIViewAnimator();
+    @NonNull static public UIViewAnimator animator = new UIViewAnimator();
 
     public void animate(@NonNull String aKey, float aValue) {
-        if (aKey.equalsIgnoreCase("mFrame.origin.x")) {
+        if (aKey.equalsIgnoreCase("frame.origin.x")) {
             setFrame(this.mFrame.setX(aValue));
         }
-        else if (aKey.equalsIgnoreCase("mFrame.origin.y")) {
+        else if (aKey.equalsIgnoreCase("frame.origin.y")) {
             setFrame(this.mFrame.setY(aValue));
         }
-        else if (aKey.equalsIgnoreCase("mFrame.size.width")) {
+        else if (aKey.equalsIgnoreCase("frame.size.width")) {
             setFrame(this.mFrame.setWidth(aValue));
         }
-        else if (aKey.equalsIgnoreCase("mFrame.size.height")) {
+        else if (aKey.equalsIgnoreCase("frame.size.height")) {
             setFrame(this.mFrame.setHeight(aValue));
         }
         else if (aKey.equalsIgnoreCase("alpha")) {
             setAlpha(aValue);
         }
-        else if (aKey.startsWith("mLayer.")) {
+        else if (aKey.startsWith("layer.")) {
             getLayer().animate(aKey, aValue);
         }
     }
