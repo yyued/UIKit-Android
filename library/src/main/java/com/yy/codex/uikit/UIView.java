@@ -24,32 +24,32 @@ public class UIView extends UIResponder {
 
     public UIView(@NonNull Context context, @NonNull View view) {
         super(context);
-        setupProps();
+        init();
         addView(view);
     }
 
     public UIView(@NonNull Context context) {
         super(context);
-        setupProps();
+        init();
     }
 
     public UIView(@NonNull Context context, @NonNull AttributeSet attrs) {
         super(context, attrs);
-        setupProps();
+        init();
     }
 
     public UIView(@NonNull Context context, @NonNull AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        setupProps();
+        init();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public UIView(@NonNull Context context, @NonNull AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        setupProps();
+        init();
     }
 
-    private void setupProps(){
+    protected void init(){
         UIScreen.mainScreen.setContext(getContext());
         this.mLayer.bindView(this);
         setWillNotDraw(false);
@@ -57,7 +57,7 @@ public class UIView extends UIResponder {
 
     /* category UIView Layout */
 
-    @NonNull  private CGRect mFrame = new CGRect(0, 0, 0, 0);
+    @NonNull private CGRect mFrame = new CGRect(0, 0, 0, 0);
 
     @NonNull
     public CGRect getFrame() {
@@ -71,11 +71,11 @@ public class UIView extends UIResponder {
         CGRect oldValue = this.mFrame;
         this.mFrame = frame;
         layoutSubviews();
-        this.setX((float) (frame.origin.getX() * UIScreen.mainScreen.scale()));
-        this.setY((float) (frame.origin.getY() * UIScreen.mainScreen.scale()));
+        this.setX((float) (frame.origin.x * UIScreen.mainScreen.scale()));
+        this.setY((float) (frame.origin.y * UIScreen.mainScreen.scale()));
 
-        double mWidth = frame.size.getWidth() * UIScreen.mainScreen.scale();
-        double mHeight = frame.size.getHeight() * UIScreen.mainScreen.scale();
+        double mWidth = frame.size.width * UIScreen.mainScreen.scale();
+        double mHeight = frame.size.height * UIScreen.mainScreen.scale();
         if (Math.ceil(mWidth) - mWidth < 0.1) {
             mWidth = Math.ceil(mWidth);
         }
@@ -84,16 +84,16 @@ public class UIView extends UIResponder {
         }
         this.setMinimumWidth((int) mWidth);
         this.setMinimumHeight((int) mHeight);
-        this.mLayer.setFrame(new CGRect(0, 0, frame.size.getWidth(), frame.size.getHeight()));
-        UIView.sAnimator.addAnimationState(this, "mFrame.origin.x", oldValue.origin.getX(), frame.origin.getX());
-        UIView.sAnimator.addAnimationState(this, "mFrame.origin.y", oldValue.origin.getY(), frame.origin.getY());
-        UIView.sAnimator.addAnimationState(this, "mFrame.size.width", oldValue.size.getWidth(), frame.size.getWidth());
-        UIView.sAnimator.addAnimationState(this, "mFrame.size.height", oldValue.size.getHeight(), frame.size.getHeight());
+        this.mLayer.setFrame(new CGRect(0, 0, frame.size.width, frame.size.height));
+        UIView.animator.addAnimationState(this, "frame.origin.x", oldValue.origin.x, frame.origin.x);
+        UIView.animator.addAnimationState(this, "frame.origin.y", oldValue.origin.y, frame.origin.y);
+        UIView.animator.addAnimationState(this, "frame.size.width", oldValue.size.width, frame.size.width);
+        UIView.animator.addAnimationState(this, "frame.size.height", oldValue.size.height, frame.size.height);
     }
 
     @NonNull
     public CGPoint getCenter() {
-        return new CGPoint((mFrame.origin.getX() + mFrame.size.getWidth()) / 2.0, (mFrame.origin.getY() + mFrame.size.getHeight()) / 2.0);
+        return new CGPoint((mFrame.origin.x + mFrame.size.width) / 2.0, (mFrame.origin.y + mFrame.size.height) / 2.0);
     }
 
     @Nullable private UIConstraint mConstraint = null;
@@ -156,7 +156,7 @@ public class UIView extends UIResponder {
     public void setAlpha(float alpha) {
         float oldValue = this.getAlpha();
         super.setAlpha(alpha);
-        UIView.sAnimator.addAnimationState(this, "alpha", oldValue, alpha);
+        UIView.animator.addAnimationState(this, "alpha", oldValue, alpha);
     }
 
     private UIColor mTintColor = null;
@@ -420,25 +420,25 @@ public class UIView extends UIResponder {
 
     /* UIView animation */
 
-    @NonNull static public UIViewAnimator sAnimator = new UIViewAnimator();
+    @NonNull static public UIViewAnimator animator = new UIViewAnimator();
 
     public void animate(@NonNull String aKey, float aValue) {
-        if (aKey.equalsIgnoreCase("mFrame.origin.x")) {
+        if (aKey.equalsIgnoreCase("frame.origin.x")) {
             setFrame(this.mFrame.setX(aValue));
         }
-        else if (aKey.equalsIgnoreCase("mFrame.origin.y")) {
+        else if (aKey.equalsIgnoreCase("frame.origin.y")) {
             setFrame(this.mFrame.setY(aValue));
         }
-        else if (aKey.equalsIgnoreCase("mFrame.size.width")) {
+        else if (aKey.equalsIgnoreCase("frame.size.width")) {
             setFrame(this.mFrame.setWidth(aValue));
         }
-        else if (aKey.equalsIgnoreCase("mFrame.size.height")) {
+        else if (aKey.equalsIgnoreCase("frame.size.height")) {
             setFrame(this.mFrame.setHeight(aValue));
         }
         else if (aKey.equalsIgnoreCase("alpha")) {
             setAlpha(aValue);
         }
-        else if (aKey.startsWith("mLayer.")) {
+        else if (aKey.startsWith("layer.")) {
             getLayer().animate(aKey, aValue);
         }
     }

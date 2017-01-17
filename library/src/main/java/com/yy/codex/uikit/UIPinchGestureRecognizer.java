@@ -81,9 +81,9 @@ public class UIPinchGestureRecognizer extends UIGestureRecognizer {
             mScaleCurrentPoints[0] = mLastPoints[0].getAbsolutePoint();
             mScaleCurrentPoints[1] = mLastPoints[1].getAbsolutePoint();
         }
-        double initialLength = Math.sqrt(Math.pow(mScaleInitialPoints[0].getX() - mScaleInitialPoints[1].getX(), 2) + Math.pow(mScaleInitialPoints[0].getY() - mScaleInitialPoints[1].getY(), 2));
-        double currentLength = Math.sqrt(Math.pow(mScaleCurrentPoints[0].getX() - mScaleCurrentPoints[1].getX(), 2) + Math.pow(mScaleCurrentPoints[0].getY() - mScaleCurrentPoints[1].getY(), 2));
-        double screenLength =  Math.sqrt(Math.pow(UIScreen.mainScreen.bounds().getWidth(), 2) + Math.pow(UIScreen.mainScreen.bounds().getHeight(), 2));
+        double initialLength = Math.sqrt(Math.pow(mScaleInitialPoints[0].x - mScaleInitialPoints[1].x, 2) + Math.pow(mScaleInitialPoints[0].y - mScaleInitialPoints[1].y, 2));
+        double currentLength = Math.sqrt(Math.pow(mScaleCurrentPoints[0].x - mScaleCurrentPoints[1].x, 2) + Math.pow(mScaleCurrentPoints[0].y - mScaleCurrentPoints[1].y, 2));
+        double screenLength =  Math.sqrt(Math.pow(UIScreen.mainScreen.bounds().size.width, 2) + Math.pow(UIScreen.mainScreen.bounds().size.height, 2));
         mScaleCurrent = mScaleInitial + (currentLength - initialLength) / screenLength;
     }
 

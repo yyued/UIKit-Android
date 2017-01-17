@@ -49,7 +49,9 @@ public class UILabel extends UIView {
         init();
     }
 
-    private void init() {
+    @Override
+    protected void init() {
+        super.init();
         mTextView = new TextView(getContext());
         mTextView.setMaxLines(1);
         resetTextView();
@@ -222,7 +224,7 @@ public class UILabel extends UIView {
 
     private void resetTextView() {
         removeView(mTextView);
-        addView(mTextView, new LayoutParams((int)(this.getFrame().size.getWidth() * UIScreen.mainScreen.scale()), (int)(this.getFrame().size.getHeight() * UIScreen.mainScreen.scale())));
+        addView(mTextView, new LayoutParams((int)(this.getFrame().size.width * UIScreen.mainScreen.scale()), (int)(this.getFrame().size.height * UIScreen.mainScreen.scale())));
     }
 
 }

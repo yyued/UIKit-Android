@@ -9,6 +9,8 @@ import android.view.View;
 import android.view.animation.Interpolator;
 import android.widget.OverScroller;
 
+import com.yy.codex.foundation.NSLog;
+
 /**
  * Created by it on 17/1/6.
  */
@@ -72,8 +74,8 @@ public class UIScrollView extends UIView {
         double originX = (double) this.getScrollX();
         double originY = (double) this.getScrollY();
         super.scrollTo(x, y);
-        UIView.sAnimator.addAnimationState(this, "contentOffset.x", originX, (double) x);
-        UIView.sAnimator.addAnimationState(this, "contentOffset.y", originY, (double) y);
+        UIView.animator.addAnimationState(this, "contentOffset.x", originX, (double) x);
+        UIView.animator.addAnimationState(this, "contentOffset.y", originY, (double) y);
     }
 
     private UIViewAnimation mViewAnimation;
@@ -91,18 +93,18 @@ public class UIScrollView extends UIView {
             }
         }
 
-        double scrollY = -(panGestureRecognizer.translation().getY());
+        double scrollY = -(panGestureRecognizer.translation().y);
 
-        mContentOffset = new CGPoint(0, -(panGestureRecognizer.translation().getY()));
-        scrollTo(0, (int)(mContentOffset.getY() * UIScreen.mainScreen.scale()));
+        mContentOffset = new CGPoint(0, -(panGestureRecognizer.translation().y));
+        scrollTo(0, (int)(mContentOffset.y * UIScreen.mainScreen.scale()));
 
-        NSLog.log(mContentOffset.getY());
+        NSLog.log(mContentOffset.y);
 
 
         if (panGestureRecognizer.getState() == UIGestureRecognizerState.Ended) {
             tracking = false;
-//            if (mContentOffset.getY() < 0) {
-//                viewAnimation = UIView.sAnimator.linear(0.25, new Runnable() {
+//            if (mContentOffset.y < 0) {
+//                viewAnimation = UIView.animator.linear(0.25, new Runnable() {
 //                    @Override
 //                    public void run() {
 //                        scrollTo(0, 0);

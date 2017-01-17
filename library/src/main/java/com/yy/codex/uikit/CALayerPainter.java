@@ -47,7 +47,7 @@ public class CALayerPainter {
 
             if (bitmap != null){
                 Paint mixPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-                CGRect maskFrame = new CGRect(origin.getX(), origin.getY(), frame.size.getWidth(), frame.size.getHeight());
+                CGRect maskFrame = new CGRect(origin.x, origin.y, frame.size.width, frame.size.height);
                 Bitmap maskBitmap = createRadiusMask(maskFrame, cornerRadius);
                 canvas.drawBitmap(maskBitmap, 0, 0, mixPaint);
                 mixPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
@@ -70,13 +70,13 @@ public class CALayerPainter {
 
             if (bitmap != null){
                 paint.reset();
-                CGRect bitmapFrame = new CGRect(origin.getX(), origin.getY(), frame.size.getWidth(), frame.size.getHeight());
+                CGRect bitmapFrame = new CGRect(origin.x, origin.y, frame.size.width, frame.size.height);
                 if (layer.getBitmapColor() != null) {
                     float[] colorTransform = {
-                            0, (float)layer.getBitmapColor().getR(), 0, 0, 0,
-                            0, 0, (float)layer.getBitmapColor().getG(), 0, 0,
-                            0, 0, 0, (float)layer.getBitmapColor().getB(), 0,
-                            0, 0, 0, (float)layer.getBitmapColor().getA(), 0};
+                            0, (float)layer.getBitmapColor().r, 0, 0, 0,
+                            0, 0, (float)layer.getBitmapColor().g, 0, 0,
+                            0, 0, 0, (float)layer.getBitmapColor().b, 0,
+                            0, 0, 0, (float)layer.getBitmapColor().a, 0};
                     ColorMatrix colorMatrix = new ColorMatrix();
                     colorMatrix.set(colorTransform);
                     ColorMatrixColorFilter colorFilter = new ColorMatrixColorFilter(colorMatrix);
@@ -102,7 +102,7 @@ public class CALayerPainter {
     /* support method */
 
     private static Bitmap createRadiusMask(@NonNull CGRect rect, double radius){
-        Bitmap maskBitmap = Bitmap.createBitmap((int)(rect.size.getWidth()+rect.origin.getX()), (int)(rect.size.getHeight()+rect.origin.getY()), Bitmap.Config.ARGB_8888);
+        Bitmap maskBitmap = Bitmap.createBitmap((int)(rect.size.width+rect.origin.x), (int)(rect.size.height+rect.origin.y), Bitmap.Config.ARGB_8888);
         Canvas maskCanvas = new Canvas(maskBitmap);
         Paint maskPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         maskCanvas.drawRoundRect(rect.toRectF(), (float) radius, (float) radius, maskPaint);

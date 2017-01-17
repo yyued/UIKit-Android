@@ -4,6 +4,8 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.yy.codex.foundation.NSInvocation;
+
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Timer;
@@ -122,11 +124,7 @@ public class UIGestureRecognizer {
     protected void sendActions() {
         if (mActions != null) {
             for (int i = 0; i < mActions.length; i++) {
-                try {
-                    mActions[i].invoke(new Object[]{this});
-                } catch (Exception e) {
-                    System.out.print(e);
-                }
+                mActions[i].invoke(new Object[]{this});
             }
         }
         if (mTriggerBlock != null) {

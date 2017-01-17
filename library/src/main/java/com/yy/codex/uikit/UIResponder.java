@@ -20,6 +20,7 @@ public class UIResponder extends FrameLayout {
 
     /* UIResponder initialize methods */
 
+    @Nullable
     private WeakReference<UIResponder> mNextResponder;
 
     public void setNextResponder(@NonNull UIResponder responder) {

@@ -43,7 +43,7 @@ public class UIPanGestureRecognizer extends UIGestureRecognizer {
             return;
         }
         if (mState == UIGestureRecognizerState.Possible && moveOutOfBounds(touches)) {
-            setTranslation(new CGPoint(-translation().getX(), -translation().getY()));
+            setTranslation(new CGPoint(-translation().x, -translation().y));
             mState = UIGestureRecognizerState.Began;
             sendActions();
         }
@@ -69,8 +69,8 @@ public class UIPanGestureRecognizer extends UIGestureRecognizer {
     public CGPoint translation() {
         if (mLastPoints.length > 0 && mTranslatePoint != null) {
             return new CGPoint(
-                    mLastPoints[0].getAbsolutePoint().getX() - mTranslatePoint.getX(),
-                    mLastPoints[0].getAbsolutePoint().getY() - mTranslatePoint.getY()
+                    mLastPoints[0].getAbsolutePoint().x - mTranslatePoint.x,
+                    mLastPoints[0].getAbsolutePoint().y - mTranslatePoint.y
             );
         }
         return new CGPoint(0, 0);
@@ -79,8 +79,8 @@ public class UIPanGestureRecognizer extends UIGestureRecognizer {
     public void setTranslation(@NonNull CGPoint point) {
         if (mLastPoints.length > 0) {
             mTranslatePoint = new CGPoint(
-                    mLastPoints[0].getAbsolutePoint().getX() + point.getX(),
-                    mLastPoints[0].getAbsolutePoint().getY() + point.getY()
+                    mLastPoints[0].getAbsolutePoint().x + point.x,
+                    mLastPoints[0].getAbsolutePoint().y + point.y
             );
         }
     }
@@ -95,8 +95,8 @@ public class UIPanGestureRecognizer extends UIGestureRecognizer {
             double ts = ((double)(nextTouches[0].getTimestamp() - mLastPoints[0].getTimestamp()) / 1000.0);
             if (ts == 0.0) { }
             else {
-                double vx = (nextTouches[0].getAbsolutePoint().getX() - mLastPoints[0].getAbsolutePoint().getX()) / ts;
-                double vy = (nextTouches[0].getAbsolutePoint().getY() - mLastPoints[0].getAbsolutePoint().getY()) / ts;
+                double vx = (nextTouches[0].getAbsolutePoint().x - mLastPoints[0].getAbsolutePoint().x) / ts;
+                double vy = (nextTouches[0].getAbsolutePoint().y - mLastPoints[0].getAbsolutePoint().y) / ts;
                 mVelocityPoint = new CGPoint(vx, vy);
             }
         }

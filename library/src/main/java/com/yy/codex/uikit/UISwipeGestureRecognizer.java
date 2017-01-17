@@ -50,64 +50,64 @@ public class UISwipeGestureRecognizer extends UIGestureRecognizer {
         }
         super.touchesMoved(touches, event);
         if (direction == Direction.Right) {
-            double distance = touches[0].getAbsolutePoint().getX() - mOriginalPoint.getX();
+            double distance = touches[0].getAbsolutePoint().x - mOriginalPoint.x;
             if (distance < -22.0) {
                 mState = UIGestureRecognizerState.Failed;
             }
             else {
-                if (distance > 100.0 && mVelocityPoint.getX() > 1000.0) {
+                if (distance > 100.0 && mVelocityPoint.x > 1000.0) {
                     mState = UIGestureRecognizerState.Ended;
                     sendActions();
                 }
-                else if (mVelocityPoint.getX() > 500.0) {
+                else if (mVelocityPoint.x > 500.0) {
                     mState = UIGestureRecognizerState.Ended;
                     sendActions();
                 }
             }
         }
         else if (direction == Direction.Left) {
-            double distance = touches[0].getAbsolutePoint().getX() - mOriginalPoint.getX();
+            double distance = touches[0].getAbsolutePoint().x - mOriginalPoint.x;
             if (distance > 22.0) {
                 mState = UIGestureRecognizerState.Failed;
             }
             else {
-                if (distance < -100.0 && mVelocityPoint.getX() < -1000.0) {
+                if (distance < -100.0 && mVelocityPoint.x < -1000.0) {
                     mState = UIGestureRecognizerState.Ended;
                     sendActions();
                 }
-                else if (mVelocityPoint.getX() < -500.0) {
+                else if (mVelocityPoint.x < -500.0) {
                     mState = UIGestureRecognizerState.Ended;
                     sendActions();
                 }
             }
         }
         else if (direction == Direction.Down) {
-            double distance = touches[0].getAbsolutePoint().getY() - mOriginalPoint.getY();
+            double distance = touches[0].getAbsolutePoint().y - mOriginalPoint.y;
             if (distance < -22.0) {
                 mState = UIGestureRecognizerState.Failed;
             }
             else {
-                if (distance > 100.0 && mVelocityPoint.getY() > 1000.0) {
+                if (distance > 100.0 && mVelocityPoint.y > 1000.0) {
                     mState = UIGestureRecognizerState.Ended;
                     sendActions();
                 }
-                else if (mVelocityPoint.getY() > 500.0) {
+                else if (mVelocityPoint.y > 500.0) {
                     mState = UIGestureRecognizerState.Ended;
                     sendActions();
                 }
             }
         }
         else if (direction == Direction.Up) {
-            double distance = touches[0].getAbsolutePoint().getY() - mOriginalPoint.getY();
+            double distance = touches[0].getAbsolutePoint().y - mOriginalPoint.y;
             if (distance > 22.0) {
                 mState = UIGestureRecognizerState.Failed;
             }
             else {
-                if (distance < -100.0 && mVelocityPoint.getY() < -1000.0) {
+                if (distance < -100.0 && mVelocityPoint.y < -1000.0) {
                     mState = UIGestureRecognizerState.Ended;
                     sendActions();
                 }
-                else if (mVelocityPoint.getY() < -500.0) {
+                else if (mVelocityPoint.y < -500.0) {
                     mState = UIGestureRecognizerState.Ended;
                     sendActions();
                 }
@@ -133,8 +133,8 @@ public class UISwipeGestureRecognizer extends UIGestureRecognizer {
             double ts = ((double)(nextTouches[0].getTimestamp() - mLastPoints[0].getTimestamp()) / 1000.0);
             if (ts == 0.0) { }
             else {
-                double vx = (nextTouches[0].getAbsolutePoint().getX() - mLastPoints[0].getAbsolutePoint().getX()) / ts;
-                double vy = (nextTouches[0].getAbsolutePoint().getY() - mLastPoints[0].getAbsolutePoint().getY()) / ts;
+                double vx = (nextTouches[0].getAbsolutePoint().x - mLastPoints[0].getAbsolutePoint().x) / ts;
+                double vy = (nextTouches[0].getAbsolutePoint().y - mLastPoints[0].getAbsolutePoint().y) / ts;
                 mVelocityPoint = new CGPoint(vx, vy);
             }
         }

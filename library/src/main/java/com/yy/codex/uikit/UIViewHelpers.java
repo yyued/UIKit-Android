@@ -28,10 +28,10 @@ class UIViewHelpers {
     }
 
     static public boolean pointInside(@NonNull UIView view, @NonNull CGPoint point) {
-        double h = view.getFrame().size.getHeight();
-        double w = view.getFrame().size.getWidth();
-        double touchX = point.getX();
-        double touchY = point.getY();
+        double h = view.getFrame().size.height;
+        double w = view.getFrame().size.width;
+        double touchX = point.x;
+        double touchY = point.y;
         if (touchY <= h && touchX <= w && touchY >= 0 && touchX >= 0) {
             return true;
         }
@@ -74,9 +74,9 @@ class UIViewHelpers {
                 }
             } while (toViewSuperView != superView);
             if (toViewSuperView != null && superView != null) {
-                double toX = toView.getFrame().origin.getX();
-                double toY = toView.getFrame().origin.getY();
-                return new CGPoint(convertPoint.getX() - toX, convertPoint.getY() - toY);
+                double toX = toView.getFrame().origin.x;
+                double toY = toView.getFrame().origin.y;
+                return new CGPoint(convertPoint.x - toX, convertPoint.y - toY);
             }
         }
         return convertPoint;
@@ -84,16 +84,16 @@ class UIViewHelpers {
 
     @NonNull
     static private CGPoint convertPointToSuperView(@NonNull UIView view, @NonNull CGPoint point, @NonNull UIView superView) {
-        double x = superView.getFrame().origin.getX();
-        double y = superView.getFrame().origin.getY();
-        return new CGPoint(point.getX() + x, point.getY() + y);
+        double x = superView.getFrame().origin.x;
+        double y = superView.getFrame().origin.y;
+        return new CGPoint(point.x + x, point.y + y);
     }
 
     @NonNull
     static private CGPoint convertPointToSubView(@NonNull UIView view, @NonNull CGPoint point, @NonNull UIView subView) {
-        double x = subView.getFrame().origin.getX();
-        double y = subView.getFrame().origin.getY();
-        return new CGPoint(point.getX() - x, point.getY() - y);
+        double x = subView.getFrame().origin.x;
+        double y = subView.getFrame().origin.y;
+        return new CGPoint(point.x - x, point.y - y);
     }
 
 }

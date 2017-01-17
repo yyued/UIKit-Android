@@ -43,7 +43,9 @@ public class UIImageView extends UIView {
         init();
     }
 
-    private void init() {
+    @Override
+    protected void init() {
+        super.init();
         setWantsLayer(true);
         setContentMode(UIViewContentMode.ScaleToFill);
     }
@@ -56,7 +58,7 @@ public class UIImageView extends UIView {
         if (mImage == null) {
             return new CGSize(0, 0);
         }
-        return new CGSize(mImage.getSize().getWidth(), mImage.getSize().getHeight());
+        return new CGSize(mImage.getSize().width, mImage.getSize().height);
     }
 
     /* UIImageView Props */

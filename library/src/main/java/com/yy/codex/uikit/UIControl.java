@@ -8,6 +8,8 @@ import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
 import android.view.View;
 
+import com.yy.codex.foundation.NSInvocation;
+
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -55,28 +57,23 @@ public class UIControl extends UIView {
 
     public UIControl(@NonNull Context context, @NonNull View view) {
         super(context, view);
-        init();
     }
 
     public UIControl(@NonNull Context context) {
         super(context);
-        init();
     }
 
     public UIControl(@NonNull Context context, @NonNull AttributeSet attrs) {
         super(context, attrs);
-        init();
     }
 
     public UIControl(@NonNull Context context, @NonNull AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public UIControl(@NonNull Context context, @NonNull AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        init();
     }
 
     private HashMap<Event, NSInvocation[]> mInvocations = new HashMap<>();
@@ -187,7 +184,9 @@ public class UIControl extends UIView {
         mRunnable.put(event, runnables);
     }
 
+    @Override
     protected void init() {
+        super.init();
         setUserInteractionEnabled(true);
         UILongPressGestureRecognizer longPressGestureRecognizer = new UILongPressGestureRecognizer(this, "onLongPressed:");
         longPressGestureRecognizer.mMinimumPressDuration = 0.05;
@@ -247,11 +246,7 @@ public class UIControl extends UIView {
         NSInvocation[] invocations = mInvocations.get(event);
         if (invocations != null) {
             for (int i = 0; i < invocations.length; i++) {
-                try {
-                    invocations[i].invoke(new Object[]{this});
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                invocations[i].invoke(new Object[]{this});
             }
         }
         Runnable[] runnables = mRunnable.get(event);
@@ -263,8 +258,8 @@ public class UIControl extends UIView {
     }
 
     protected boolean isPointInside(CGPoint point) {
-        double xRange = this.getFrame().getWidth() / 2.0;
-        double yRange = this.getFrame().getHeight() / 2.0;
+        double xRange = this.getFrame().size.width / 2.0;
+        double yRange = this.getFrame().size.height / 2.0;
         return point.inRange(xRange + 22, yRange + 22, new CGPoint(xRange, yRange));
     }
 

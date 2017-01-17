@@ -28,10 +28,10 @@ public class CALayer {
     }
 
     public @NonNull CALayer setFrame(@NonNull CGRect mFrame) {
-        float x = (float) mFrame.origin.getX();
-        float y = (float) mFrame.origin.getY();
-        float w = (float) mFrame.size.getWidth();
-        float h = (float) mFrame.size.getHeight();
+        float x = (float) mFrame.origin.x;
+        float y = (float) mFrame.origin.y;
+        float w = (float) mFrame.size.width;
+        float h = (float) mFrame.size.height;
         CGRect newValue = new CGRect(x, y, w, h);
         if (!this.mFrame.equals(newValue)){
             this.mFrame = newValue;
@@ -68,7 +68,7 @@ public class CALayer {
             this.mCornerRadius = mCornerRadius;
             this.setNeedDisplay(true);
             if (this.requestRootLayer().mView != null) {
-                UIView.sAnimator.addAnimationState(this.requestRootLayer().mView, "layer.mCornerRadius", oldValue, mCornerRadius);
+                UIView.animator.addAnimationState(this.requestRootLayer().mView, "layer.mCornerRadius", oldValue, mCornerRadius);
             }
         }
         return this;
@@ -86,7 +86,7 @@ public class CALayer {
             this.mBorderWidth = mBorderWidth;
             this.setNeedDisplay(true);
             if (this.requestRootLayer().mView != null) {
-                UIView.sAnimator.addAnimationState(this.requestRootLayer().mView, "layer.mBorderWidth", oldValue, mBorderWidth);
+                UIView.animator.addAnimationState(this.requestRootLayer().mView, "layer.mBorderWidth", oldValue, mBorderWidth);
             }
         }
         return this;
@@ -313,10 +313,10 @@ public class CALayer {
     public CALayer() {}
 
     public CALayer(@NonNull CGRect mFrame) {
-        float x = (float) (mFrame.origin.getX());
-        float y = (float) (mFrame.origin.getY());
-        float w = (float) (mFrame.size.getWidth());
-        float h = (float) (mFrame.size.getHeight());
+        float x = (float) (mFrame.origin.x);
+        float y = (float) (mFrame.origin.y);
+        float w = (float) (mFrame.size.width);
+        float h = (float) (mFrame.size.height);
         this.mFrame = new CGRect(x, y, w, h);
     }
 
@@ -398,20 +398,20 @@ public class CALayer {
     protected void drawLayer(@NonNull Canvas canvas, CGRect rect, boolean isDrawInNewCanvas){
         float scaledDensity = (float) UIScreen.mainScreen.scale();
         if (isDrawInNewCanvas){
-            double frameW = mFrame.size.getWidth() * scaledDensity;
-            double frameH = mFrame.size.getHeight() * scaledDensity;
+            double frameW = mFrame.size.width * scaledDensity;
+            double frameH = mFrame.size.height * scaledDensity;
             CGPoint origin = calcOriginInSuperCoordinate(this);
 
             // create srcBitmap
-            Bitmap srcBitmap = Bitmap.createBitmap((int)( frameW + origin.getX()), (int)(frameH + origin.getY()), Bitmap.Config.ARGB_8888);
+            Bitmap srcBitmap = Bitmap.createBitmap((int)( frameW + origin.x), (int)(frameH + origin.y), Bitmap.Config.ARGB_8888);
             Canvas srcCanvas = new Canvas(srcBitmap);
             drawLayersInCanvas(srcCanvas);
 
             // create maskBitmap
-            Bitmap maskBitmap = Bitmap.createBitmap((int)( frameW + origin.getX()), (int)(frameH + origin.getY()), Bitmap.Config.ARGB_8888);
+            Bitmap maskBitmap = Bitmap.createBitmap((int)( frameW + origin.x), (int)(frameH + origin.y), Bitmap.Config.ARGB_8888);
             Canvas maskCanvas = new Canvas(maskBitmap);
             Paint maskPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-            RectF maskRectF = new CGRect(origin.getX(), origin.getY(), frameW, frameH).toRectF();
+            RectF maskRectF = new CGRect(origin.x, origin.y, frameW, frameH).toRectF();
             maskCanvas.drawRoundRect(maskRectF, (float) mCornerRadius * scaledDensity, (float) mCornerRadius * scaledDensity, maskPaint);
 
             // draw srcBitmap, and apply maskBitmap if need
@@ -476,7 +476,7 @@ public class CALayer {
     }
 
     private Bitmap createRadiusMask(@NonNull CGRect rect, double radius){
-        Bitmap maskBitmap = Bitmap.createBitmap((int)(rect.size.getWidth()+rect.origin.getX()), (int)(rect.size.getHeight()+rect.origin.getY()), Bitmap.Config.ARGB_8888);
+        Bitmap maskBitmap = Bitmap.createBitmap((int)(rect.size.width+rect.origin.x), (int)(rect.size.height+rect.origin.y), Bitmap.Config.ARGB_8888);
         Canvas canvasB = new Canvas(maskBitmap);
         Paint p3 = new Paint(Paint.ANTI_ALIAS_FLAG);
         canvasB.drawRoundRect(rect.toRectF(), (float) radius, (float) radius, p3);
@@ -485,7 +485,7 @@ public class CALayer {
 
     private Bitmap createMask(@NonNull CALayer layer){
         CGRect rect = layer.getFrame();
-        Bitmap maskBitmap = Bitmap.createBitmap((int)(rect.size.getWidth()+rect.origin.getX()), (int)(rect.size.getHeight()+rect.origin.getY()), Bitmap.Config.ARGB_8888);
+        Bitmap maskBitmap = Bitmap.createBitmap((int)(rect.size.width+rect.origin.x), (int)(rect.size.height+rect.origin.y), Bitmap.Config.ARGB_8888);
         Canvas canvasB = new Canvas(maskBitmap);
         layer.drawInCanvas(canvasB);
         return maskBitmap;
@@ -506,15 +506,15 @@ public class CALayer {
 
     public static @NonNull CGPoint calcOriginInSuperCoordinate(@NonNull CALayer layer){
         float scaledDensity = (float) UIScreen.mainScreen.scale();
-        double oriX = layer.mFrame.origin.getX();
-        double oriY = layer.mFrame.origin.getY();
+        double oriX = layer.mFrame.origin.x;
+        double oriY = layer.mFrame.origin.y;
         CALayer p = layer.getSuperLayer();
         while (p != null){
 //            if (p.isNewCanvasContext()) {
 //                break;
 //            }
-            oriX += p.mFrame.origin.getX();
-            oriY += p.mFrame.origin.getY();
+            oriX += p.mFrame.origin.x;
+            oriY += p.mFrame.origin.y;
             p = p.getSuperLayer();
         }
         return new CGPoint(oriX * scaledDensity, oriY * scaledDensity);

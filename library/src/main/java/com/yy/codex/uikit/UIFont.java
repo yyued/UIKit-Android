@@ -10,15 +10,17 @@ import android.support.annotation.Nullable;
 public class UIFont {
 
     @Nullable
-    public String fontFamily = "";
-    public float  fontSize = 17;
+    final public String fontFamily;
+    final public float  fontSize;
 
     public UIFont(float fontSize) {
+        this.fontFamily = "";
         this.fontSize = fontSize;
     }
 
     public UIFont(@Nullable String fontFamily, float fontSize) {
         this.fontFamily = fontFamily;
+        this.fontSize = fontSize;
     }
 
     @Nullable

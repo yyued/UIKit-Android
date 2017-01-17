@@ -242,4 +242,42 @@ public class UIViewAnimator {
         return animation;
     }
 
+    static public double decayDeceleration = 0.997;
+
+    static public UIViewAnimation decay(final UIView animationView, final String animationKey, final double fromValue, final double velocity, @Nullable final Runnable completion) {
+        final UIViewAnimation animation = new UIViewAnimation();
+        final double startTime = System.currentTimeMillis();
+        final double deceleration = decayDeceleration;
+        final double finalValue = fromValue + (velocity / (1.0 - deceleration)) * (1 - Math.exp(-(1 - deceleration) * (999999999)));
+        ValueAnimator valueAnimator = ValueAnimator.ofInt(0, 1);
+        valueAnimator.setDuration(16);
+        valueAnimator.setRepeatCount(9999999);
+        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                if (animation.isCancelled()) {
+                    return;
+                }
+                double now = System.currentTimeMillis();
+                double value = fromValue + (velocity / (1.0 - deceleration)) * (1 - Math.exp(-(1 - deceleration) * (now - startTime)));
+                animationView.animate(animationKey, (float) value);
+                if (Math.abs(finalValue - value) < 0.1) {
+                    valueAnimator.cancel();
+                    animation.markFinished();
+                    if (completion != null) {
+                        completion.run();
+                    }
+                }
+            }
+        });
+        valueAnimator.start();
+        return animation;
+    }
+
+    static public UIViewAnimation decayToValue(final UIView animationView, final String animationKey, final double fromValue, final double toValue, @Nullable final Runnable completion) {
+        final double deceleration = decayDeceleration;
+        double velocity = (toValue / (1 - Math.exp(-(1 - deceleration) * (999999999))) - fromValue) * (1.0 - deceleration);
+        return decay(animationView, animationKey, fromValue, velocity, completion);
+    }
+
 }

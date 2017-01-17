@@ -6,32 +6,16 @@ package com.yy.codex.uikit;
 
 public class UIEdgeInsets {
 
-    double mTop;
-    double mLeft;
-    double mBottom;
-    double mRight;
+    final public double top;
+    final public double left;
+    final public double bottom;
+    final public double right;
 
     public UIEdgeInsets(double top, double left, double bottom, double right) {
-        this.mTop = top;
-        this.mLeft = left;
-        this.mBottom = bottom;
-        this.mRight = right;
-    }
-
-    public double getTop() {
-        return mTop;
-    }
-
-    public double getLeft() {
-        return mLeft;
-    }
-
-    public double getBottom() {
-        return mBottom;
-    }
-
-    public double getRight() {
-        return mRight;
+        this.top = top;
+        this.left = left;
+        this.bottom = bottom;
+        this.right = right;
     }
 
 }

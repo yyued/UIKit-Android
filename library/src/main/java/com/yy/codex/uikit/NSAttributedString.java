@@ -154,7 +154,7 @@ public class NSAttributedString extends SpannableStringBuilder {
             setSpan(new CharacterStyle() {
                 @Override
                 public void updateDrawState(@NonNull TextPaint textPaint) {
-                    textPaint.setShadowLayer((float) shadow.shadowBlurRadius, (float) shadow.shadowOffset.getWidth(), (float) shadow.shadowOffset.getHeight(), shadow.shadowColor);
+                    textPaint.setShadowLayer((float) shadow.shadowBlurRadius, (float) shadow.shadowOffset.width, (float) shadow.shadowOffset.height, shadow.shadowColor);
                 }
             }, range.location, range.location + range.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
