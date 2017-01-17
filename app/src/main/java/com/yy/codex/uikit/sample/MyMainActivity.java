@@ -10,6 +10,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Scroller;
 
+import com.yy.codex.uikit.CGRect;
+import com.yy.codex.uikit.CGSize;
+import com.yy.codex.uikit.UIColor;
+import com.yy.codex.uikit.UIConstraint;
 import com.yy.codex.uikit.UIGestureRecognizer;
 import com.yy.codex.uikit.UIScrollView;
 import com.yy.codex.uikit.UIView;
@@ -20,37 +24,12 @@ import com.yy.codex.uikit.UIView;
 
 public class MyMainActivity extends AppCompatActivity {
 
-    UIView view = null;
-    UIView testView2;
-    UIView testView;
-    Button button;
-    Button moveButton;
-
-    Scroller mScroller;
-
-    TestLayout testLayout;
-
-    UIScrollView scrollView;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-
-        scrollView = (UIScrollView)findViewById(R.id.testScrollView);
-//        button = (Button)findViewById(R.id.testButton);
-//        moveButton = (Button)findViewById(R.id.testMoveButton);
-//
-//        mScroller=new Scroller(this);
-//
-
-
+        setContentView(new MyTestView(this));
     }
 
-    public void ttt(UIGestureRecognizer gestureRecognizer) {
-
-    }
 }
 
 class MyTestView extends UIView {
@@ -76,43 +55,27 @@ class MyTestView extends UIView {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 
-}
-
-class MyTestView2 extends UIView {
-
-    public MyTestView2(Context context, View view) {
-        super(context, view);
+    @Override
+    protected void init() {
+        super.init();
+        UIScrollView scrollView = new UIScrollView(getContext());
+        UIConstraint constraint = new UIConstraint();
+        constraint.centerHorizontally = true;
+        constraint.centerVertically = true;
+        constraint.width = "100%";
+        constraint.height = "100%";
+        scrollView.setConstraint(constraint);
+        scrollView.setBackgroundColor(UIColor.blackColor.colorWithAlpha(0.1));
+        for (int i = 0; i < 20; i++) {
+            UIView redView = new UIView(getContext());
+            redView.setFrame(new CGRect(0,100 * i,20,20));
+            redView.setBackgroundColor(new UIColor(1, 0, 0, 1.0 - (i / 100.0)));
+            if (i == 0) {
+                redView.setBackgroundColor(UIColor.blueColor);
+            }
+            scrollView.addSubview(redView);
+        }
+        scrollView.setContentSize(new CGSize(0, 100 * 20));
+        addSubview(scrollView);
     }
-
-    public MyTestView2(Context context) {
-        super(context);
-    }
-
-    public MyTestView2(Context context, AttributeSet attrs) {
-        super(context, attrs);
-    }
-
-    public MyTestView2(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public MyTestView2(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-    }
-
-//    @Override
-//    public void touchesBegan() {
-//        super.touchesBegan();
-//    }
-//
-//    @Override
-//    public void touchesMoved() {
-//        super.touchesMoved();
-//    }
-//
-//    @Override
-//    public void touchesEnded() {
-//        super.touchesEnded();
-//    }
 }

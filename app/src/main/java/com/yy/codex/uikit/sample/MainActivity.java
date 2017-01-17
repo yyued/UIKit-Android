@@ -54,29 +54,12 @@ class TestView extends UIView {
     protected void init() {
         super.init();
 
-        UIScrollView scrollView = new UIScrollView(getContext());
-        UIConstraint constraint = new UIConstraint();
-        constraint.centerHorizontally = true;
-        constraint.centerVertically = true;
-        constraint.width = "100%";
-        constraint.height = "100%";
-        scrollView.setConstraint(constraint);
+        setBackgroundColor(UIColor.whiteColor);
 
-        scrollView.setBackgroundColor(UIColor.blackColor.colorWithAlpha(0.1));
+        UISwitch uiSwitch = new UISwitch(getContext());
+        uiSwitch.setFrame(new CGRect(44, 44, 51, 32));
+        addSubview(uiSwitch);
 
-        for (int i = 0; i < 20; i++) {
-            UIView redView = new UIView(getContext());
-            redView.setFrame(new CGRect(0,100 * i,20,20));
-            redView.setBackgroundColor(new UIColor(1, 0, 0, 1.0 - (i / 100.0)));
-            if (i == 0) {
-                redView.setBackgroundColor(UIColor.blueColor);
-            }
-            scrollView.addSubview(redView);
-        }
-
-        scrollView.setContentSize(new CGSize(0, 100 * 20));
-
-        addSubview(scrollView);
     }
 
 }
