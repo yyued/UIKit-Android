@@ -1,7 +1,6 @@
 package com.yy.codex.uikit.sample;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
@@ -11,17 +10,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Scroller;
 
-import com.yy.codex.uikit.CGPoint;
-import com.yy.codex.uikit.CGRect;
-import com.yy.codex.uikit.NSLog;
-import com.yy.codex.uikit.UIEvent;
 import com.yy.codex.uikit.UIGestureRecognizer;
 import com.yy.codex.uikit.UIScrollView;
-import com.yy.codex.uikit.UITapGestureRecognizer;
-import com.yy.codex.uikit.UITouch;
 import com.yy.codex.uikit.UIView;
-
-import java.util.Set;
 
 /**
  * Created by it on 17/1/10.

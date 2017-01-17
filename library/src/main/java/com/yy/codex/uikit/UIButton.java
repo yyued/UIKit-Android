@@ -59,16 +59,6 @@ public class UIButton extends UIControl {
         resetImageView();
     }
 
-    @Override
-    protected void onLongPressed(UILongPressGestureRecognizer sender) {
-        super.onLongPressed(sender);
-    }
-
-    @Override
-    protected void onTapped(UITapGestureRecognizer sender) {
-        super.onTapped(sender);
-    }
-
     /* UIView */
 
     @Override

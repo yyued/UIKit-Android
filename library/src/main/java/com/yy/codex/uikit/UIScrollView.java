@@ -9,6 +9,8 @@ import android.view.View;
 import android.view.animation.Interpolator;
 import android.widget.OverScroller;
 
+import com.yy.codex.foundation.NSLog;
+
 /**
  * Created by it on 17/1/6.
  */

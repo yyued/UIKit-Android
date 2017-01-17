@@ -8,6 +8,8 @@ import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
 import android.view.View;
 
+import com.yy.codex.foundation.NSInvocation;
+
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -247,11 +249,7 @@ public class UIControl extends UIView {
         NSInvocation[] invocations = mInvocations.get(event);
         if (invocations != null) {
             for (int i = 0; i < invocations.length; i++) {
-                try {
-                    invocations[i].invoke(new Object[]{this});
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                invocations[i].invoke(new Object[]{this});
             }
         }
         Runnable[] runnables = mRunnable.get(event);

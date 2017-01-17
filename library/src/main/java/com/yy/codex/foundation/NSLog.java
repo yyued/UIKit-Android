@@ -1,6 +1,8 @@
-package com.yy.codex.uikit;
+package com.yy.codex.foundation;
 
 import android.support.annotation.Nullable;
+
+import com.yy.codex.uikit.UIView;
 
 /**
  * Created by cuiminghui on 2017/1/12.
