@@ -49,7 +49,9 @@ public class UILabel extends UIView {
         init();
     }
 
-    private void init() {
+    @Override
+    protected void init() {
+        super.init();
         mTextView = new TextView(getContext());
         mTextView.setMaxLines(1);
         resetTextView();

@@ -43,7 +43,9 @@ public class UIImageView extends UIView {
         init();
     }
 
-    private void init() {
+    @Override
+    protected void init() {
+        super.init();
         setWantsLayer(true);
         setContentMode(UIViewContentMode.ScaleToFill);
     }

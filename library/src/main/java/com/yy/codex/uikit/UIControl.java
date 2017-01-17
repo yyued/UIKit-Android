@@ -57,28 +57,23 @@ public class UIControl extends UIView {
 
     public UIControl(@NonNull Context context, @NonNull View view) {
         super(context, view);
-        init();
     }
 
     public UIControl(@NonNull Context context) {
         super(context);
-        init();
     }
 
     public UIControl(@NonNull Context context, @NonNull AttributeSet attrs) {
         super(context, attrs);
-        init();
     }
 
     public UIControl(@NonNull Context context, @NonNull AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public UIControl(@NonNull Context context, @NonNull AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        init();
     }
 
     private HashMap<Event, NSInvocation[]> mInvocations = new HashMap<>();
@@ -189,7 +184,9 @@ public class UIControl extends UIView {
         mRunnable.put(event, runnables);
     }
 
+    @Override
     protected void init() {
+        super.init();
         setUserInteractionEnabled(true);
         UILongPressGestureRecognizer longPressGestureRecognizer = new UILongPressGestureRecognizer(this, "onLongPressed:");
         longPressGestureRecognizer.mMinimumPressDuration = 0.05;

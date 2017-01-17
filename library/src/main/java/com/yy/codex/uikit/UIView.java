@@ -24,32 +24,32 @@ public class UIView extends UIResponder {
 
     public UIView(@NonNull Context context, @NonNull View view) {
         super(context);
-        setupProps();
+        init();
         addView(view);
     }
 
     public UIView(@NonNull Context context) {
         super(context);
-        setupProps();
+        init();
     }
 
     public UIView(@NonNull Context context, @NonNull AttributeSet attrs) {
         super(context, attrs);
-        setupProps();
+        init();
     }
 
     public UIView(@NonNull Context context, @NonNull AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        setupProps();
+        init();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public UIView(@NonNull Context context, @NonNull AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        setupProps();
+        init();
     }
 
-    private void setupProps(){
+    protected void init(){
         UIScreen.mainScreen.setContext(getContext());
         this.mLayer.bindView(this);
         setWillNotDraw(false);

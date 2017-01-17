@@ -19,28 +19,23 @@ public class UIButton extends UIControl {
 
     public UIButton(@NonNull Context context, @NonNull View view) {
         super(context, view);
-        init();
     }
 
     public UIButton(@NonNull Context context) {
         super(context);
-        init();
     }
 
     public UIButton(@NonNull Context context, @NonNull AttributeSet attrs) {
         super(context, attrs);
-        init();
     }
 
     public UIButton(@NonNull Context context, @NonNull AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public UIButton(@NonNull Context context, @NonNull AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        init();
     }
 
     @Override

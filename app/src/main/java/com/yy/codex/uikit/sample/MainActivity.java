@@ -32,31 +32,28 @@ class TestView extends UIView {
 
     public TestView(Context context, View view) {
         super(context, view);
-        init();
     }
 
     public TestView(Context context) {
         super(context);
-        init();
     }
 
     public TestView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init();
     }
 
     public TestView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public TestView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        init();
     }
 
-    private void init() {
+    @Override
+    protected void init() {
+        super.init();
         UIButton button = new UIButton(getContext());
         UIConstraint constraint = new UIConstraint();
         constraint.centerVertically = true;
