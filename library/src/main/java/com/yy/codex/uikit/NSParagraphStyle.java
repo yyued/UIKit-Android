@@ -10,7 +10,6 @@ import android.text.Layout;
 public class NSParagraphStyle {
 
     public double lineSpacing = Double.NaN;
-    @NonNull
     public NSLineBreakMode lineBreakMode = NSLineBreakMode.ByWordWrapping;
     public Layout.Alignment alignment = Layout.Alignment.ALIGN_NORMAL;
     public double lineHeight = Double.NaN;

@@ -30,7 +30,7 @@ public class NSInvocation {
     }
 
     public void setTarget(Object target) {
-        this.mTarget = new WeakReference<Object>(target);
+        this.mTarget = new WeakReference<>(target);
     }
 
     @NonNull
