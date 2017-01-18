@@ -81,13 +81,13 @@ public class UILabel extends UIView {
 
     /* TextColor */
 
-    private int mTextColor = Color.BLACK;
+    private UIColor mTextColor = UIColor.blackColor;
 
-    public int getTextColor() {
+    public UIColor getTextColor() {
         return mTextColor;
     }
 
-    public void setTextColor(int textColor) {
+    public void setTextColor(UIColor textColor) {
         this.mTextColor = textColor;
         updateTextAppearance();
     }

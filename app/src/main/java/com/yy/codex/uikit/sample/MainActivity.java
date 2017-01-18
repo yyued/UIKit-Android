@@ -1,6 +1,7 @@
 package com.yy.codex.uikit.sample;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -8,19 +9,26 @@ import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.WindowManager;
 
 import com.yy.codex.uikit.CGRect;
+import com.yy.codex.uikit.UIBarButtonItem;
 import com.yy.codex.uikit.UIColor;
 import com.yy.codex.uikit.UIConstraint;
+import com.yy.codex.uikit.UINavigationBar;
+import com.yy.codex.uikit.UINavigationItem;
 import com.yy.codex.uikit.UIScrollView;
 import com.yy.codex.uikit.UISwitch;
 import com.yy.codex.uikit.UIView;
+
+import java.io.File;
 
 public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+//        getSupportActionBar().hide();
         setContentView(new TestView(this));
     }
 
@@ -53,15 +61,18 @@ class TestView extends UIView {
     protected void init() {
         super.init();
 
+        setBackgroundColor(UIColor.whiteColor);
+
         UIScrollView scrollView = new UIScrollView(getContext());
         UIConstraint constraint = new UIConstraint();
         constraint.centerHorizontally = true;
         constraint.centerVertically = true;
         constraint.width = "100%";
-        constraint.height = "100%";
+        constraint.height = "100% - 44";
+        constraint.top = "22";
         scrollView.setConstraint(constraint);
 
-        scrollView.setBackgroundColor(UIColor.blackColor.colorWithAlpha(0.1));
+        scrollView.setBackgroundColor(UIColor.whiteColor);
 
         for (int i = 0; i < 100; i++) {
             UIView redView = new UIView(getContext());
@@ -71,6 +82,28 @@ class TestView extends UIView {
         }
 
         addSubview(scrollView);
+
+
+        final UINavigationBar navigationBar = new UINavigationBar(getContext());
+        addSubview(navigationBar);
+
+        final UINavigationItem navigationItem = new UINavigationItem(getContext());
+        navigationItem.setTitle("Hello");
+
+        UIBarButtonItem barButtonItem = new UIBarButtonItem();
+        barButtonItem.setTitle("Test");
+        navigationItem.setRightBarButtonItem(barButtonItem);
+
+        navigationBar.setItems(new UINavigationItem[]{navigationItem}, false);
+
+        postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                navigationItem.setTitle("忘记密码");
+            }
+        }, 1000);
+
+
     }
 
 }

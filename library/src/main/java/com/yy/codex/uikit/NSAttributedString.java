@@ -111,6 +111,9 @@ public class NSAttributedString extends SpannableStringBuilder {
             UIFont font = (UIFont) attrs.get(NSFontAttributeName);
             setSpan(new TypefaceSpan(font.fontFamily), range.location, range.location + range.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             setSpan(new AbsoluteSizeSpan((int)font.fontSize, true), range.location, range.location + range.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            if (font.fontFamily.equalsIgnoreCase("SystemBold")) {
+                setSpan(new NSBoldSpan(), range.location, range.location + range.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
         }
         if (attrs.get(NSParagraphStyleAttributeName) != null && NSParagraphStyle.class.isAssignableFrom(attrs.get(NSParagraphStyleAttributeName).getClass())) {
             NSParagraphStyle style = (NSParagraphStyle) attrs.get(NSParagraphStyleAttributeName);
@@ -172,5 +175,14 @@ class NSAttributedSpan extends CharacterStyle {
 
     @Override
     public void updateDrawState(TextPaint textPaint) {}
+
+}
+
+class NSBoldSpan extends CharacterStyle {
+
+    @Override
+    public void updateDrawState(TextPaint textPaint) {
+        textPaint.setFakeBoldText(true);
+    }
 
 }

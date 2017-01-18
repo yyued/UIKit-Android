@@ -12,6 +12,22 @@ import net.objecthunter.exp4j.ExpressionBuilder;
 
 public class UIConstraint {
 
+    public static UIConstraint center() {
+        UIConstraint constraint = new UIConstraint();
+        constraint.centerHorizontally = true;
+        constraint.centerVertically = true;
+        return constraint;
+    }
+
+    public static UIConstraint full() {
+        UIConstraint constraint = new UIConstraint();
+        constraint.centerHorizontally = true;
+        constraint.centerVertically = true;
+        constraint.width = "100%";
+        constraint.height = "100%";
+        return constraint;
+    }
+
     public enum LayoutRelate {
         RelateToGroup,
         RelateToPrevious,

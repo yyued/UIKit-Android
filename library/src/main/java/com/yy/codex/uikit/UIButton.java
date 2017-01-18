@@ -239,6 +239,17 @@ public class UIButton extends UIControl {
 
     /* Layouts */
 
+    @NonNull
+    @Override
+    public CGSize intrinsicContentSize() {
+        mTitleLabel.setMaxWidth(999999);
+        double contentWidth = mTitleLabel.intrinsicContentSize().width + mImageView.intrinsicContentSize().width;
+        contentWidth += mContentEdgeInsets.left + mContentEdgeInsets.right + mImageEdgeInsets.left + mImageEdgeInsets.right + mTitleEdgeInsets.left + mTitleEdgeInsets.right;
+        double contentHeight = mTitleLabel.intrinsicContentSize().height + mImageView.intrinsicContentSize().height;
+        contentHeight += mContentEdgeInsets.top + mContentEdgeInsets.bottom + Math.max(mTitleEdgeInsets.top + mTitleEdgeInsets.bottom, mImageEdgeInsets.top + mImageEdgeInsets.bottom);
+        return new CGSize(Math.max(contentWidth, 44), Math.max(contentHeight, 44));
+    }
+
     private UIEdgeInsets mContentEdgeInsets = new UIEdgeInsets(0, 0, 0, 0);
     private UIEdgeInsets mTitleEdgeInsets = new UIEdgeInsets(0, 0, 0, 0);
     private UIEdgeInsets mImageEdgeInsets = new UIEdgeInsets(0, 0, 0, 0);
