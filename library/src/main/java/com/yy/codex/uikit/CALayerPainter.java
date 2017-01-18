@@ -22,7 +22,9 @@ public class CALayerPainter {
     public static void drawLayerTree(CALayer layer, Canvas canvas){
         Bitmap srcBitmap = createBitmapWithLayerTree(layer);
         Bitmap maskBitmap = createBitmapWithMaskLayer(layer);
-        drawBitmapUsingMask(canvas, layer, srcBitmap, maskBitmap);
+        Bitmap resultBitmap = createBitmapThatApplyMask(layer, srcBitmap, maskBitmap);
+        sPaint.reset();
+        canvas.drawBitmap(resultBitmap, 0, 0, sPaint);
     }
 
     public static void drawCurrentLayer(CALayer layer, Canvas canvas){
@@ -122,12 +124,17 @@ public class CALayerPainter {
         canvas.drawRoundRect(rectF, cornerRadius, cornerRadius, sPaint);
     }
 
-    private static Bitmap createBitmapWithLayerTree(CALayer layer){
+    private static Bitmap createEmptyBitmap(CALayer layer){
         CGPoint origin = CALayer.calcOriginInSuperCoordinate(layer);
         float scaledDensity = (float) UIScreen.mainScreen.scale();
         int bitmapW = (int) (layer.getFrame().size.width * scaledDensity  + origin.x);
         int bitmapH = (int) (layer.getFrame().size.height * scaledDensity + origin.y);
         Bitmap bitmap = Bitmap.createBitmap(bitmapW, bitmapH, Bitmap.Config.ARGB_8888);
+        return bitmap;
+    }
+
+    private static Bitmap createBitmapWithLayerTree(CALayer layer){
+        Bitmap bitmap = createEmptyBitmap(layer);
         layer.drawLayerTreeInCanvas(new Canvas(bitmap));
         return bitmap;
     }
@@ -144,23 +151,26 @@ public class CALayerPainter {
         return bitmap;
     }
 
-    private static void drawBitmapUsingMask(Canvas canvas, CALayer layer, Bitmap srcBitmap, Bitmap maskBitmap){
+    private static Bitmap createBitmapThatApplyMask(CALayer layer, Bitmap srcBitmap, Bitmap maskBitmap){
         sPaint.reset();
+        Bitmap bitmapMixed = createEmptyBitmap(layer);
+        Canvas canvasMixed = new Canvas(bitmapMixed);
         if (layer.getTransforms() != null & layer.getTransforms().length > 0){
             Matrix matrix = createMatrix(layer);
-            canvas.drawBitmap(srcBitmap, matrix, sPaint);
+            canvasMixed.drawBitmap(srcBitmap, matrix, sPaint);
             if (layer.getClipToBounds()){
                 sPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_IN));
-                canvas.drawBitmap(maskBitmap, matrix, sPaint);
+                canvasMixed.drawBitmap(maskBitmap, matrix, sPaint);
                 sPaint.setXfermode(null);
             }
         }
         else {
-            canvas.drawBitmap(srcBitmap, 0, 0, sPaint);
+            canvasMixed.drawBitmap(srcBitmap, 0, 0, sPaint);
             sPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_IN));
-            canvas.drawBitmap(maskBitmap, 0, 0, sPaint);
+            canvasMixed.drawBitmap(maskBitmap, 0, 0, sPaint);
             sPaint.setXfermode(null);
         }
+        return bitmapMixed;
     }
 
     private static Bitmap createRadiusMask(@NonNull CGRect rect, double radius){
