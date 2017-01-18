@@ -13,19 +13,18 @@ public class CALayerBitmapPainter {
 
     /* imageGravity const */
 
-    public static final int GRAVITY_SCALE_TO_FILL = 0x01;
-    public static final int GRAVITY_SCALE_ASPECT_FIT = 0x02;
-    public static final int GRAVITY_SCALE_ASPECT_FILL = 0x03;
-    public static final int GRAVITY_CENTER = 0x04;
-    public static final int GRAVITY_TOP = 0x05;
-    public static final int GRAVITY_TOP_LEFT = 0x06;
-    public static final int GRAVITY_TOP_RIGHT = 0x07;
-    public static final int GRAVITY_BOTTOM = 0x08;
+    public static final int GRAVITY_SCALE_ASPECT_FIT = 0x00;
+    public static final int GRAVITY_SCALE_ASPECT_FILL = 0x01;
+    public static final int GRAVITY_SCALE_TO_FILL = 0x02;
+    public static final int GRAVITY_TOP_LEFT = 0x03;
+    public static final int GRAVITY_TOP = 0x04;
+    public static final int GRAVITY_TOP_RIGHT = 0x05;
+    public static final int GRAVITY_LEFT = 0x06;
+    public static final int GRAVITY_CENTER = 0x07;
+    public static final int GRAVITY_RIGHT = 0x08;
     public static final int GRAVITY_BOTTOM_LEFT = 0x09;
-    public static final int GRAVITY_BOTTOM_RIGHT = 0x0a;
-    public static final int GRAVITY_LEFT = 0x0b;
-    public static final int GRAVITY_RIGHT = 0x0c;
-
+    public static final int GRAVITY_BOTTOM = 0x0a;
+    public static final int GRAVITY_BOTTOM_RIGHT = 0x0b;
 
     public static void drawBitmap(@NonNull Canvas canvas, @NonNull CGRect rect, @NonNull Bitmap bitmap, int bitmapGravity, Paint paint){
         switch (bitmapGravity){
@@ -319,7 +318,7 @@ public class CALayerBitmapPainter {
             frameRect = new CGRect(frameX, frameY, imageW, frameH);
         }
         else {
-            imageRect = new CGRect(0, 0, frameW, frameH);
+            imageRect = new CGRect(0, (imageH-frameH)/2, frameW, frameH);
         }
         canvas.drawBitmap(bitmap, imageRect.toRect(), frameRect.toRect(), paint);
     }
