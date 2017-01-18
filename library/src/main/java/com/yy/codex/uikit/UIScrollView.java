@@ -39,8 +39,18 @@ public class UIScrollView extends UIView {
     @Override
     protected void init() {
         super.init();
+
+        mTracking = false;
+        mScrollEnabled = true;
+        mAlwaysBounceVertical = false;
+        mAlwaysBounceHorizontal= false;
+        mPagingEnabled = true;
+        mBounces = true;
+
         mPanGestureRecognizer = new UIPanGestureRecognizer(this, "handlePan:");
-        addGestureRecognizer(mPanGestureRecognizer);
+        if (mScrollEnabled) {
+            addGestureRecognizer(mPanGestureRecognizer);
+        }
     }
 
     /* Scrolls */
@@ -48,15 +58,26 @@ public class UIScrollView extends UIView {
     @NonNull private UIPanGestureRecognizer mPanGestureRecognizer;
     @NonNull private CGPoint mContentOffset = new CGPoint(0, 0);
     @NonNull private CGSize mContentSize = new CGSize(0, 0);
-    private boolean mTracking = false;
-    @Nullable private UIViewAnimation mCurrentAnimation = null;
+    private boolean mTracking;
+    private boolean mScrollEnabled;
+    private boolean mAlwaysBounceVertical;
+    private boolean mAlwaysBounceHorizontal;
+    private boolean mBounces;
+    private boolean mPagingEnabled;
+    @Nullable private UIViewAnimation mCurrentAnimationY = null;
+    @Nullable private UIViewAnimation mCurrentAnimationX = null;
 
     @Override
     public void touchesBegan(@NonNull UITouch[] touches, @NonNull UIEvent event) {
         super.touchesBegan(touches, event);
-        if (mCurrentAnimation != null) {
-            mCurrentAnimation.cancel();
-            mCurrentAnimation = null;
+        if (mCurrentAnimationY != null) {
+            mCurrentAnimationY.cancel();
+            mCurrentAnimationY = null;
+        }
+
+        if (mCurrentAnimationX != null) {
+            mCurrentAnimationX.cancel();
+            mCurrentAnimationX = null;
         }
     }
 
@@ -64,9 +85,13 @@ public class UIScrollView extends UIView {
     public void touchesEnded(@NonNull UITouch[] touches, @NonNull UIEvent event) {
         super.touchesEnded(touches, event);
         if (mPanGestureRecognizer.getState() != UIGestureRecognizerState.Ended) {
-            if (yOutOfBounds(mContentOffset)) {
-                moveYToBounds();
-            }
+//            if (yOutOfBounds(mContentOffset)) {
+//                moveYToBounds();
+//            }
+//
+//            if (xOutOfBounds(mContentOffset)) {
+//                moveXToBounds();
+//            }
         }
     }
 
@@ -74,39 +99,84 @@ public class UIScrollView extends UIView {
         if (!mTracking) {
             /* Began */
             mTracking = true;
-            if (mContentOffset.y < 0.0) {
-                panGestureRecognizer.setTranslation(new CGPoint(mContentOffset.x, mContentOffset.y * 3));
+            panGestureRecognizer.setTranslation(mContentOffset);
+            if (mCurrentAnimationY != null) {
+                mCurrentAnimationY.cancel();
+                mCurrentAnimationY = null;
             }
-            else {
-                panGestureRecognizer.setTranslation(mContentOffset);
-            }
-            if (mCurrentAnimation != null) {
-                mCurrentAnimation.cancel();
-                mCurrentAnimation = null;
+
+            if (mCurrentAnimationX != null) {
+                mCurrentAnimationX.cancel();
+                mCurrentAnimationX = null;
             }
             return;
         }
         if (mTracking && panGestureRecognizer.getState() == UIGestureRecognizerState.Changed) {
             /* Move */
             double originY = -(panGestureRecognizer.translation().y);
-            if (yOutOfBounds(mContentOffset.setY(originY))) {
-                moveYResisted(mContentOffset.setY(originY));
+            double originX = -(panGestureRecognizer.translation().x);
+
+            CGPoint offset = calculateMovePoint(new CGPoint(originX, originY));
+
+            if (mAlwaysBounceHorizontal) {
+                offset = offset.setX(overBoundsCheckX(offset.x));
             }
-            else {
-                setContentOffset(mContentOffset.setY(originY));
+            if (mAlwaysBounceVertical) {
+                offset = offset.setY(overBoundsCheckY(offset.y));
             }
+            if (!mBounces) {
+                offset = overBoundsCheck(offset);
+            }
+
+            setContentOffset(offset);
         }
         else if (panGestureRecognizer.getState() == UIGestureRecognizerState.Ended) {
             /* Ended */
             mTracking = false;
             CGPoint velocity = panGestureRecognizer.velocity();
-            if (yOutOfBounds(mContentOffset)) {
-                moveYToBounds();
-            }
-            else {
-                mCurrentAnimation = UIView.animator.decayBounds(this, "contentOffset.y", mContentOffset.y, -velocity.y / 1000.0, 0.0, (mContentSize.height - getFrame().size.height), null);
-            }
+            mCurrentAnimationY = UIView.animator.decayBounds(this, "contentOffset.y", mContentOffset.y, -velocity.y / 1000.0, 0.0, (mContentSize.height - getFrame().size.height), null);
+            mCurrentAnimationX = UIView.animator.decayBounds(this, "contentOffset.x", mContentOffset.x, -velocity.x / 1000.0, 0.0, (mContentSize.width - getFrame().size.width), null);
         }
+    }
+
+    private CGPoint calculateMovePoint(CGPoint point) {
+        double y = calculateY(point.y);
+        double x = calculateX(point.x);
+        return new CGPoint(x, y);
+    }
+
+    private double calculateY(double y) {
+        if (mContentSize.height < getFrame().size.height) {
+            double delta = y;
+            return delta / 3.0;
+        }
+        else if (y < 0.0) {
+            // out of top
+            double delta = Math.abs(y);
+            return -(delta / 3.0);
+        }
+        else if (y > mContentSize.height - getFrame().size.height) {
+            // out of bottom
+            double delta = y - (mContentSize.height - getFrame().size.height);
+            return delta / 3.0;
+        }
+        return y;
+    }
+
+    private double calculateX(double x) {
+        if (mContentSize.width < getFrame().size.width) {
+            double delta = x;
+            return delta / 3.0;
+        }
+        else if (x < 0.0) {
+            double delta = Math.abs(x);
+            return -(delta / 3.0);
+        }
+        else if (x > mContentSize.width - getFrame().size.width) {
+            double delta = x - (mContentSize.width - getFrame().size.width);
+            return delta / 3.0;
+        }
+        return x;
     }
 
     @Override
@@ -128,10 +198,10 @@ public class UIScrollView extends UIView {
         CGPoint oldValue = mContentOffset;
         mContentOffset = contentOffset;
         if (animated) {
-            if (mCurrentAnimation != null) {
-                mCurrentAnimation.cancel();
+            if (mCurrentAnimationY != null) {
+                mCurrentAnimationY.cancel();
             }
-            mCurrentAnimation = UIView.animator.linear(0.25, new Runnable() {
+            mCurrentAnimationY = UIView.animator.linear(0.25, new Runnable() {
                 @Override
                 public void run() {
                     setContentOffset(contentOffset, false);
@@ -149,37 +219,9 @@ public class UIScrollView extends UIView {
         mContentSize = contentSize;
     }
 
-    private boolean yOutOfBounds(@NonNull CGPoint ofPoint) {
-        if (mContentSize.height < getFrame().size.height) {
-            return true;
-        }
-        if (ofPoint.y < 0.0) {
-            return true;
-        }
-        else if (ofPoint.y > mContentSize.height - getFrame().size.height) {
-            return true;
-        }
-        return false;
-    }
-
-    private void moveYResisted(@NonNull CGPoint contentOffset) {
-        if (mContentSize.height < getFrame().size.height) {
-            double delta = contentOffset.y;
-            setContentOffset(contentOffset.setY(delta / 3.0), false);
-        }
-        else if (contentOffset.y < 0.0) {
-            double delta = Math.abs(contentOffset.y);
-            setContentOffset(contentOffset.setY(-delta / 3.0), false);
-        }
-        else if (contentOffset.y > mContentSize.height - getFrame().size.height) {
-            double delta = contentOffset.y - (mContentSize.height - getFrame().size.height);
-            setContentOffset(contentOffset.setY((mContentSize.height - getFrame().size.height) + delta / 3.0), false);
-        }
-    }
-
     private void moveYToBounds() {
-        if (mCurrentAnimation != null) {
-            mCurrentAnimation.cancel();
+        if (mCurrentAnimationY != null) {
+            mCurrentAnimationY.cancel();
         }
         double nearestBounds;
         if (mContentSize.height < getFrame().size.height) {
@@ -192,7 +234,7 @@ public class UIScrollView extends UIView {
             nearestBounds = mContentSize.height - getFrame().size.height;
         }
         final double finalNearestBounds = nearestBounds;
-        mCurrentAnimation = UIView.animator.springWithOptions(120.0, 20.0, 0.0, new Runnable() {
+        mCurrentAnimationY = UIView.animator.springWithOptions(120.0, 20.0, 0.0, new Runnable() {
             @Override
             public void run() {
             setContentOffset(mContentOffset.setY(finalNearestBounds), false);
@@ -200,4 +242,33 @@ public class UIScrollView extends UIView {
         }, null);
     }
 
+    private CGPoint overBoundsCheck(CGPoint point) {
+        double nearestBoundsY = overBoundsCheckY(point.y);
+        double nearestBoundsX = overBoundsCheckX(point.x);
+        return new CGPoint(nearestBoundsX, nearestBoundsY);
+    }
+
+    private double overBoundsCheckX(double x) {
+        double nearestBoundsX = x;
+        //check x
+        if (x < 0.0) {
+            nearestBoundsX = 0.0;
+        }
+        else if (x > mContentSize.width - getFrame().size.width) {
+            nearestBoundsX = mContentSize.width - getFrame().size.width;
+        }
+        return nearestBoundsX;
+    }
+
+    private double overBoundsCheckY(double y) {
+        double nearestBoundsY = y;
+        //check x
+        if (y < 0.0) {
+            nearestBoundsY = 0.0;
+        }
+        else if (y > mContentSize.height - getFrame().size.height) {
+            nearestBoundsY = mContentSize.height - getFrame().size.height;
+        }
+        return nearestBoundsY;
+    }
 }
