@@ -196,8 +196,9 @@ public class CALayer {
         return mBitmapColor;
     }
 
-    public void setBitmapColor(UIColor mBitmapColor) {
+    public @NonNull CALayer setBitmapColor(UIColor mBitmapColor) {
         this.mBitmapColor = mBitmapColor;
+        return this;
     }
 
     private boolean mClipToBounds = false;

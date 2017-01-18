@@ -99,13 +99,27 @@ public class CALayerPainter {
     }
 
     private static void drawRoundRectBitmap(Canvas canvas, CGRect maskFrame, Bitmap bitmap, int bitmapGravity, UIColor bitmapColor, float cornerRadius){
-        // @TODO apply bitmapColor
-        sPaint.reset();
+        Bitmap resultBitmap = createEmptyBitmap(maskFrame);
+        Canvas resultCanvas = new Canvas(resultBitmap);
         Paint mixPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        Bitmap maskBitmap = createRadiusMask(maskFrame, cornerRadius);
-        canvas.drawBitmap(maskBitmap, 0, 0, mixPaint);
+        resultCanvas.drawBitmap(createRadiusMask(maskFrame, cornerRadius), 0, 0, mixPaint);
         mixPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-        CALayerBitmapPainter.drawBitmap(canvas, maskFrame, bitmap, bitmapGravity, mixPaint);
+        if (bitmapColor != null) {
+            float[] colorTransform = {
+                    0, (float)bitmapColor.r, 0, 0, 0,
+                    0, 0, (float)bitmapColor.g, 0, 0,
+                    0, 0, 0, (float)bitmapColor.b, 0,
+                    0, 0, 0, (float)bitmapColor.a, 0};
+            ColorMatrix colorMatrix = new ColorMatrix();
+            colorMatrix.set(colorTransform);
+            ColorMatrixColorFilter colorFilter = new ColorMatrixColorFilter(colorMatrix);
+            mixPaint.setColorFilter(colorFilter);
+        }
+        CALayerBitmapPainter.drawBitmap(resultCanvas, maskFrame, bitmap, bitmapGravity, mixPaint);
+
+        // draw resultBitmap, inMainCanvas
+        sPaint.reset();
+        canvas.drawBitmap(resultBitmap, 0, 0, sPaint);
     }
 
     private static void drawBorder(Canvas canvas, RectF rectF, float borderWidth, UIColor borderColor){
@@ -122,6 +136,13 @@ public class CALayerPainter {
         sPaint.setStrokeWidth(borderWidth);
         sPaint.setColor(borderColor.toInt());
         canvas.drawRoundRect(rectF, cornerRadius, cornerRadius, sPaint);
+    }
+
+    private static Bitmap createEmptyBitmap(CGRect rect){
+        int bitmapW = (int) (rect.size.width + rect.origin.x);
+        int bitmapH = (int) (rect.size.height + rect.origin.y);
+        Bitmap bitmap = Bitmap.createBitmap(bitmapW, bitmapH, Bitmap.Config.ARGB_8888);
+        return bitmap;
     }
 
     private static Bitmap createEmptyBitmap(CALayer layer){
@@ -155,19 +176,19 @@ public class CALayerPainter {
         sPaint.reset();
         Bitmap bitmapMixed = createEmptyBitmap(layer);
         Canvas canvasMixed = new Canvas(bitmapMixed);
-        if (layer.getTransforms() != null & layer.getTransforms().length > 0){
+        if (layer.getTransforms() != null && layer.getTransforms().length > 0){
             Matrix matrix = createMatrix(layer);
-            canvasMixed.drawBitmap(srcBitmap, matrix, sPaint);
             if (layer.getClipToBounds()){
-                sPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_IN));
                 canvasMixed.drawBitmap(maskBitmap, matrix, sPaint);
-                sPaint.setXfermode(null);
+                sPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
             }
+            canvasMixed.drawBitmap(srcBitmap, matrix, sPaint);
+            sPaint.setXfermode(null);
         }
         else {
-            canvasMixed.drawBitmap(srcBitmap, 0, 0, sPaint);
-            sPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_IN));
             canvasMixed.drawBitmap(maskBitmap, 0, 0, sPaint);
+            sPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+            canvasMixed.drawBitmap(srcBitmap, 0, 0, sPaint);
             sPaint.setXfermode(null);
         }
         return bitmapMixed;
