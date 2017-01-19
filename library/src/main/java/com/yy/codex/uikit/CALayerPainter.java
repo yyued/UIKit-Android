@@ -78,6 +78,7 @@ public class CALayerPainter {
 
     private static void drawRoundRect(Canvas canvas, RectF rectF, UIColor backgroundColor, float cornerRadius){
         sPaint.reset();
+        sPaint.setAntiAlias(true);
         sPaint.setColor(backgroundColor.toInt());
         canvas.drawRoundRect(rectF, cornerRadius, cornerRadius, sPaint);
     }
