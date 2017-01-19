@@ -11,14 +11,16 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
+import android.widget.FrameLayout;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 /**
  * Created by cuiminghui on 2016/12/30.
  */
 
-public class UIView extends UIResponder {
+public class UIView extends FrameLayout implements UIResponder {
 
     /* FrameLayout initialize methods */
 
@@ -53,6 +55,25 @@ public class UIView extends UIResponder {
         UIScreen.mainScreen.setContext(getContext());
         this.mLayer.bindView(this);
         setWillNotDraw(false);
+    }
+
+    /* UIResponder */
+
+    private WeakReference<UIResponder> mNextResponder;
+
+    @Override
+    public void setNextResponder(@NonNull UIResponder responder) {
+        this.mNextResponder = new WeakReference<>(responder);
+    }
+
+    @Nullable
+    @Override
+    public UIResponder getNextResponder() {
+        UIResponder nextResponder = this.mNextResponder != null ? this.mNextResponder.get() : null;
+        if (nextResponder != null) {
+            return nextResponder;
+        }
+        return null;
     }
 
     /* category Material Design */
@@ -440,7 +461,9 @@ public class UIView extends UIResponder {
 
     @Override
     public void touchesBegan(@NonNull UITouch[] touches, @NonNull UIEvent event) {
-        super.touchesBegan(touches, event);
+        if (getNextResponder() != null) {
+            getNextResponder().touchesBegan(touches, event);
+        }
         if (UIGestureRecognizerLooper.isHitTestedView(touches, this)) {
             if (sGestureRecognizerLooper == null || sGestureRecognizerLooper.isFinished() || sGestureRecognizerLooper.mGestureRecognizers.size() == 0) {
                 sGestureRecognizerLooper = new UIGestureRecognizerLooper(this);
@@ -451,7 +474,9 @@ public class UIView extends UIResponder {
 
     @Override
     public void touchesMoved(@NonNull UITouch[] touches, @NonNull UIEvent event) {
-        super.touchesMoved(touches, event);
+        if (getNextResponder() != null) {
+            getNextResponder().touchesMoved(touches, event);
+        }
         if (UIGestureRecognizerLooper.isHitTestedView(touches, this)) {
             if (sGestureRecognizerLooper == null || sGestureRecognizerLooper.isFinished()) {
                 sGestureRecognizerLooper = new UIGestureRecognizerLooper(this);
@@ -462,7 +487,9 @@ public class UIView extends UIResponder {
 
     @Override
     public void touchesEnded(@NonNull UITouch[] touches, @NonNull UIEvent event) {
-        super.touchesEnded(touches, event);
+        if (getNextResponder() != null) {
+            getNextResponder().touchesEnded(touches, event);
+        }
         if (UIGestureRecognizerLooper.isHitTestedView(touches, this)) {
             if (sGestureRecognizerLooper == null || sGestureRecognizerLooper.isFinished()) {
                 sGestureRecognizerLooper = new UIGestureRecognizerLooper(this);

@@ -23,16 +23,19 @@ import com.yy.codex.uikit.UINavigationItem;
 import com.yy.codex.uikit.UIScrollView;
 import com.yy.codex.uikit.UISwitch;
 import com.yy.codex.uikit.UIView;
+import com.yy.codex.uikit.UIViewController;
 
 import java.io.File;
 import java.util.HashMap;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends Activity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(new TestView(this));
+        UIViewController viewController = new UIViewController(this);
+        viewController.setView(new TestView(this));
+        setContentView(viewController.getView());
     }
 
 }
