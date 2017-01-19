@@ -1,5 +1,6 @@
 package com.yy.codex.uikit;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -7,10 +8,10 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.util.AttributeSet;
 import android.view.View;
+
+import com.yy.codex.foundation.NSInvocation;
 
 import java.util.HashMap;
 
@@ -62,10 +63,20 @@ public class UINavigationBar extends UIView {
     @Override
     public void didMoveToSuperview() {
         super.didMoveToSuperview();
-        if (getContext() instanceof AppCompatActivity) {
-            ActionBar actionBar = ((AppCompatActivity) getContext()).getSupportActionBar();
+        if (getContext() != null && getContext() instanceof Activity) {
+            NSInvocation invocation = new NSInvocation(getContext(), "getSupportActionBar");
+            Object actionBar = invocation.invoke();
             if (actionBar != null) {
-                actionBar.hide();
+                NSInvocation actionBarInvocation = new NSInvocation(actionBar, "hide");
+                actionBarInvocation.invoke();
+            }
+            else {
+                NSInvocation _invocation = new NSInvocation(getContext(), "getActionBar");
+                Object _actionBar = _invocation.invoke();
+                if (_actionBar != null) {
+                    NSInvocation _actionBarInvocation = new NSInvocation(_actionBar, "hide");
+                    _actionBarInvocation.invoke();
+                }
             }
         }
     }
@@ -85,7 +96,9 @@ public class UINavigationBar extends UIView {
                 put(NSAttributedString.NSForegroundColorAttributeName, UIColor.whiteColor);
                 put(NSAttributedString.NSFontAttributeName, UIFont.systemBold(17));
             }});
-            getConstraint().height = "48";
+            if (getConstraint() != null) {
+                getConstraint().height = "48";
+            }
             layoutSubviews();
             resetItemsView();
             invalidate();
