@@ -60,6 +60,7 @@ public class UIButton extends UIControl {
     public void tintColorDidChanged() {
         super.tintColorDidChanged();
         resetTitleLabel();
+        resetImageView();
     }
 
     /* Title */

@@ -91,7 +91,7 @@ public class UINavigationItem {
     public UIView getTitleView() {
         if (mTitleView == null) {
             UILabel labelTitleView = new UILabel(mContext);
-            labelTitleView.setFont(new UIFont(18));
+            labelTitleView.setFont(new UIFont(17));
             labelTitleView.setTextColor(UIColor.blackColor);
             labelTitleView.setText(mTitle);
             mTitleView = labelTitleView;

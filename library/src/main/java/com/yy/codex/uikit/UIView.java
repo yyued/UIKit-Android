@@ -133,6 +133,19 @@ public class UIView extends UIResponder {
         }
     }
 
+    private UIEdgeInsets mMarginInsets;
+
+    public UIEdgeInsets getMarginInsets() {
+        if (mMarginInsets == null) {
+            mMarginInsets = UIEdgeInsets.zero;
+        }
+        return mMarginInsets;
+    }
+
+    public void setMarginInsets(UIEdgeInsets marginInsets) {
+        mMarginInsets = marginInsets;
+    }
+
     @NonNull
     public CGSize intrinsicContentSize() {
         return new CGSize(0, 0);

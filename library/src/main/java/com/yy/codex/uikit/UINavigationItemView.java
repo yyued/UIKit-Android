@@ -61,10 +61,11 @@ class UINavigationItemView extends UIView {
             }
         }
         if (mLeftViews != null && mLeftViews.length > 0) {
-            double x = 12;
+            double x = 0;
             for (int i = 0; i < mLeftViews.length; i++) {
                 UIView contentView = mLeftViews[i];
                 if (contentView != null) {
+                    x += contentView.getMarginInsets().left;
                     CGSize iSize = contentView.intrinsicContentSize();
                     if (iSize.width > 0 && iSize.height > 0) {
                         contentView.setFrame(new CGRect(
@@ -73,7 +74,7 @@ class UINavigationItemView extends UIView {
                                 iSize.width,
                                 iSize.height)
                         );
-                        x += iSize.width + 12;
+                        x += iSize.width + contentView.getMarginInsets().right;
                     }
                     else {
                         contentView.setFrame(new CGRect(
@@ -82,36 +83,132 @@ class UINavigationItemView extends UIView {
                                 contentView.getFrame().size.width,
                                 contentView.getFrame().size.height)
                         );
-                        x += contentView.getFrame().size.width + 12;
+                        x += contentView.getFrame().size.width + contentView.getMarginInsets().right;
                     }
                 }
             }
         }
         if (mRightViews != null && mRightViews.length > 0) {
-            double rx = getFrame().size.width - 12;
+            double rx = getFrame().size.width;
             for (int i = 0; i < mRightViews.length; i++) {
                 UIView contentView = mRightViews[i];
                 if (contentView != null) {
                     CGSize iSize = contentView.intrinsicContentSize();
                     if (iSize.width > 0 && iSize.height > 0) {
                         contentView.setFrame(new CGRect(
-                                rx - iSize.width,
+                                rx - iSize.width - contentView.getMarginInsets().right,
                                 (getFrame().size.height - iSize.height) / 2.0,
                                 iSize.width,
                                 iSize.height)
                         );
-                        rx -= iSize.width + 12;
+                        rx -= iSize.width + contentView.getMarginInsets().right + contentView.getMarginInsets().left;
                     }
                     else {
                         contentView.setFrame(new CGRect(
-                                rx - contentView.getFrame().size.width,
+                                rx - contentView.getFrame().size.width - contentView.getMarginInsets().right,
                                 (getFrame().size.height - contentView.getFrame().size.height) / 2.0,
                                 contentView.getFrame().size.width,
                                 contentView.getFrame().size.height)
                         );
-                        rx -= contentView.getFrame().size.width + 12;
+                        rx -= contentView.getFrame().size.width + contentView.getMarginInsets().right + contentView.getMarginInsets().left;;
                     }
                 }
+            }
+        }
+    }
+
+    void animateFromFrontToBack(boolean reset) {
+        if (!reset) {
+            layoutSubviews();
+            mTitleView.setAlpha(1);
+            for (int i = 0; i < mLeftViews.length; i++) {
+                mLeftViews[i].setAlpha(1);
+            }
+            for (int i = 0; i < mRightViews.length; i++) {
+                mRightViews[i].setAlpha(1);
+            }
+        }
+        else {
+            layoutSubviews();
+            mTitleView.setFrame(new CGRect(0, mTitleView.getFrame().getY(), mTitleView.getFrame().getWidth(), mTitleView.getFrame().getHeight()));
+            mTitleView.setAlpha(0);
+            for (int i = 0; i < mLeftViews.length; i++) {
+                mLeftViews[i].setAlpha(0);
+            }
+            for (int i = 0; i < mRightViews.length; i++) {
+                mRightViews[i].setAlpha(0);
+            }
+        }
+    }
+
+    void animateToFront(boolean reset) {
+        if (!reset) {
+            layoutSubviews();
+            mTitleView.setFrame(new CGRect(getFrame().getWidth() - mTitleView.getFrame().getWidth(), mTitleView.getFrame().getY(), mTitleView.getFrame().getWidth(), mTitleView.getFrame().getHeight()));
+            mTitleView.setAlpha(0);
+            for (int i = 0; i < mLeftViews.length; i++) {
+                mLeftViews[i].setAlpha(0);
+            }
+            for (int i = 0; i < mRightViews.length; i++) {
+                mRightViews[i].setAlpha(0);
+            }
+        }
+        else {
+            layoutSubviews();
+            mTitleView.setAlpha(1);
+            for (int i = 0; i < mLeftViews.length; i++) {
+                mLeftViews[i].setAlpha(1);
+            }
+            for (int i = 0; i < mRightViews.length; i++) {
+                mRightViews[i].setAlpha(1);
+            }
+        }
+    }
+
+    void animateFromBackToFront(boolean reset) {
+        if (!reset) {
+            layoutSubviews();
+            mTitleView.setFrame(new CGRect(0, mTitleView.getFrame().getY(), mTitleView.getFrame().getWidth(), mTitleView.getFrame().getHeight()));
+            mTitleView.setAlpha(0);
+            for (int i = 0; i < mLeftViews.length; i++) {
+                mLeftViews[i].setAlpha(0);
+            }
+            for (int i = 0; i < mRightViews.length; i++) {
+                mRightViews[i].setAlpha(0);
+            }
+        }
+        else {
+            layoutSubviews();
+            mTitleView.setAlpha(1);
+            for (int i = 0; i < mLeftViews.length; i++) {
+                mLeftViews[i].setAlpha(1);
+            }
+            for (int i = 0; i < mRightViews.length; i++) {
+                mRightViews[i].setAlpha(1);
+            }
+        }
+    }
+
+    void animateToGone(boolean reset) {
+        if (!reset) {
+            layoutSubviews();
+            mTitleView.setAlpha(1);
+            for (int i = 0; i < mLeftViews.length; i++) {
+                mLeftViews[i].setAlpha(1);
+            }
+            for (int i = 0; i < mRightViews.length; i++) {
+                mRightViews[i].setAlpha(1);
+            }
+        }
+        else {
+            layoutSubviews();
+            mTitleView.setFrame(new CGRect(getFrame().getWidth() - mTitleView.getFrame().getWidth(), mTitleView.getFrame().getY(), mTitleView.getFrame().getWidth(), mTitleView.getFrame().getHeight()));
+            mTitleView.setAlpha(0);
+            for (int i = 0; i < mLeftViews.length; i++) {
+                mLeftViews[i].setAlpha(0);
+            }
+            for (int i = 0; i < mRightViews.length; i++) {
+                mRightViews[i].setAlpha(0);
             }
         }
     }

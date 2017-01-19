@@ -51,25 +51,40 @@ public class UIBarButtonItem extends UIBarItem {
         this.mWidth = width;
     }
 
+    protected UIEdgeInsets mInsets;
+
+    public UIEdgeInsets getInsets() {
+        if (mInsets == null) {
+            mInsets = new UIEdgeInsets(0, 8, 0, 8);
+        }
+        return mInsets;
+    }
+
+    public void setInsets(UIEdgeInsets insets) {
+        mInsets = insets;
+    }
+
     @Override
     public UIView getContentView(Context context) {
         if (mCustomView != null) {
             if (mWidth > 0.0) {
                 mCustomView.setFrame(new CGRect(0, 0, mWidth, Math.min(44.0, mCustomView.getFrame().getHeight())));
             }
+            mCustomView.setMarginInsets(getInsets());
             return mCustomView;
         }
         else if (mView == null) {
             UIButton button = new UIButton(context);
             if (mTitle != null) {
+                button.setFont(new UIFont(17));
                 button.setTitle(mTitle, UIControl.State.Normal);
             }
             if (mImage != null) {
                 button.setImage(mImage, UIControl.State.Normal);
             }
-            button.resetState();
             button.setFrame(new CGRect(0, 0, button.intrinsicContentSize().width, 44));
             mView = button;
+            mView.setMarginInsets(getInsets());
         }
         return super.getContentView(context);
     }

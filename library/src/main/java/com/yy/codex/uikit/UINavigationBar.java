@@ -49,7 +49,6 @@ public class UINavigationBar extends UIView {
         constraint.height = "44";
         setConstraint(constraint);
         setBackgroundColor(getBarTintColor());
-//        addSubview(getBottomLine());
     }
 
     @Override
@@ -106,18 +105,104 @@ public class UINavigationBar extends UIView {
     /* Items */
 
     private UINavigationItem[] mItems = new UINavigationItem[0];
-    private UIView[] mItemsView = new UIView[0];
+    private UINavigationItemView[] mItemsView = new UINavigationItemView[0];
 
     public void setItems(UINavigationItem[] items, boolean animated) {
         mItems = items;
         resetItemsView();
     }
 
+    public void pushNavigationItem(UINavigationItem item, boolean animated) {
+        UINavigationItem[] items = new UINavigationItem[mItems.length + 1];
+        for (int i = 0; i < mItems.length; i++) {
+            items[i] = mItems[i];
+        }
+        items[items.length - 1] = item;
+        mItems = items;
+        resetItemsView();
+        if (animated) {
+            doPushAnimation();
+        }
+    }
+
+    protected void doPushAnimation() {
+        if (mItemsView.length >= 2) {
+            final UINavigationItemView topItemView = mItemsView[mItemsView.length - 1];
+            final UINavigationItemView backItemView = mItemsView[mItemsView.length - 2];
+            topItemView.setAlpha(1);
+            backItemView.setAlpha(1);
+            topItemView.animateToFront(false);
+            backItemView.animateFromFrontToBack(false);
+            UIView.animator.linear(0.75, new Runnable() {
+                @Override
+                public void run() {
+                    topItemView.animateToFront(true);
+                    backItemView.animateFromFrontToBack(true);
+                }
+            }, new Runnable() {
+                @Override
+                public void run() {
+                    backItemView.setAlpha(0);
+                }
+            });
+        }
+    }
+
+    public void popNavigationItem(boolean animated) {
+        if (animated) {
+            doPopAnimation(new Runnable() {
+                @Override
+                public void run() {
+                    popNavigationItem(false);
+                }
+            });
+        }
+        else {
+            if (mItems.length <= 0) {
+                return;
+            }
+            UINavigationItem[] items = new UINavigationItem[mItems.length - 1];
+            for (int i = 0; i < mItems.length; i++) {
+                if (i < items.length) {
+                    items[i] = mItems[i];
+                }
+            }
+            mItems = items;
+            resetItemsView();
+        }
+    }
+
+    protected void doPopAnimation(@NonNull final Runnable completion) {
+        if (mItemsView.length >= 2) {
+            final UINavigationItemView topItemView = mItemsView[mItemsView.length - 1];
+            final UINavigationItemView backItemView = mItemsView[mItemsView.length - 2];
+            topItemView.setAlpha(1);
+            backItemView.setAlpha(1);
+            topItemView.animateToGone(false);
+            backItemView.animateFromBackToFront(false);
+            UIView.animator.linear(0.75, new Runnable() {
+                @Override
+                public void run() {
+                    topItemView.animateToGone(true);
+                    backItemView.animateFromBackToFront(true);
+                }
+            }, new Runnable() {
+                @Override
+                public void run() {
+                    topItemView.setAlpha(0);
+                    if (completion != null) {
+                        completion.run();
+                    }
+                }
+            });
+        }
+    }
+
     public void resetItemsView() {
         for (int i = 0; i < mItemsView.length; i++) {
             mItemsView[i].removeFromSuperview();
         }
-        UIView[] itemsView = new UIView[mItems.length];
+        UINavigationItemView[] itemsView = new UINavigationItemView[mItems.length];
         for (int i = 0; i < mItems.length; i++) {
             UINavigationItemView frontView = new UINavigationItemView(getContext());
             mItems[i].mFrontView = frontView;
@@ -125,6 +210,12 @@ public class UINavigationBar extends UIView {
             itemsView[i] = frontView;
             frontView.setConstraint(UIConstraint.full());
             addSubview(frontView);
+            if (i < mItems.length - 1) {
+                frontView.setAlpha(0);
+            }
+            else {
+                frontView.setAlpha(1);
+            }
         }
         mItemsView = itemsView;
         layoutSubviews();
