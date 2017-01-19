@@ -159,6 +159,17 @@ public class UIView extends UIResponder {
         }
     }
 
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        if (MeasureSpec.getMode(widthMeasureSpec) == MeasureSpec.AT_MOST) {
+            widthMeasureSpec = MeasureSpec.makeMeasureSpec((int)(getFrame().getWidth() * UIScreen.mainScreen.scale()), MeasureSpec.AT_MOST);
+        }
+        if (MeasureSpec.getMode(heightMeasureSpec) == MeasureSpec.AT_MOST) {
+            heightMeasureSpec = MeasureSpec.makeMeasureSpec((int)(getFrame().getHeight() * UIScreen.mainScreen.scale()), MeasureSpec.AT_MOST);
+        }
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    }
+
     /* category UIView Rendering */
 
     public void setBackgroundColor(UIColor color) {

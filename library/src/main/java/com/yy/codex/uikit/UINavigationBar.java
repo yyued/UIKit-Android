@@ -2,7 +2,6 @@ package com.yy.codex.uikit;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Build;
 import android.support.annotation.NonNull;
@@ -109,6 +108,7 @@ public class UINavigationBar extends UIView {
 
     public void setItems(UINavigationItem[] items, boolean animated) {
         mItems = items;
+        resetBackItems();
         resetItemsView();
     }
 
@@ -119,6 +119,7 @@ public class UINavigationBar extends UIView {
         }
         items[items.length - 1] = item;
         mItems = items;
+        resetBackItems();
         resetItemsView();
         if (animated) {
             doPushAnimation();
@@ -198,7 +199,17 @@ public class UINavigationBar extends UIView {
         }
     }
 
-    public void resetItemsView() {
+    protected void resetBackItems() {
+        for (int i = 0; i < mItems.length; i++) {
+            if (i > 0) {
+                if (mItems[i].getLeftBarButtonItems().length <= 0 || mItems[i].getLeftBarButtonItems()[0].isSystemBackItem()) {
+                    mItems[i].setLeftBarButtonItem(mItems[i - 1].getBackBarButtonItem());
+                }
+            }
+        }
+    }
+
+    protected void resetItemsView() {
         for (int i = 0; i < mItemsView.length; i++) {
             mItemsView[i].removeFromSuperview();
         }

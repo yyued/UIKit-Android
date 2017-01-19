@@ -130,7 +130,7 @@ class UINavigationItemView extends UIView {
         }
         else {
             layoutSubviews();
-            mTitleView.setFrame(new CGRect(0, mTitleView.getFrame().getY(), mTitleView.getFrame().getWidth(), mTitleView.getFrame().getHeight()));
+            mTitleView.setFrame(new CGRect(22, mTitleView.getFrame().getY(), mTitleView.getFrame().getWidth(), mTitleView.getFrame().getHeight()));
             mTitleView.setAlpha(0);
             for (int i = 0; i < mLeftViews.length; i++) {
                 mLeftViews[i].setAlpha(0);
@@ -168,7 +168,7 @@ class UINavigationItemView extends UIView {
     void animateFromBackToFront(boolean reset) {
         if (!reset) {
             layoutSubviews();
-            mTitleView.setFrame(new CGRect(0, mTitleView.getFrame().getY(), mTitleView.getFrame().getWidth(), mTitleView.getFrame().getHeight()));
+            mTitleView.setFrame(new CGRect(22, mTitleView.getFrame().getY(), mTitleView.getFrame().getWidth(), mTitleView.getFrame().getHeight()));
             mTitleView.setAlpha(0);
             for (int i = 0; i < mLeftViews.length; i++) {
                 mLeftViews[i].setAlpha(0);

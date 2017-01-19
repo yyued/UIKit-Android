@@ -11,6 +11,12 @@ import com.yy.codex.foundation.NSInvocation;
 
 public class UIBarButtonItem extends UIBarItem {
 
+    boolean mSystemBackItem = false;
+
+    public boolean isSystemBackItem() {
+        return mSystemBackItem;
+    }
+
     protected NSInvocation mInvocation = null;
 
     public UIBarButtonItem() {
@@ -64,6 +70,8 @@ public class UIBarButtonItem extends UIBarItem {
         mInsets = insets;
     }
 
+    protected UIEdgeInsets mImageInsets;
+
     @Override
     public UIView getContentView(Context context) {
         if (mCustomView != null) {
@@ -83,6 +91,7 @@ public class UIBarButtonItem extends UIBarItem {
                 button.setImage(mImage, UIControl.State.Normal);
             }
             button.setFrame(new CGRect(0, 0, button.intrinsicContentSize().width, 44));
+            button.setImageEdgeInsets(getImageInsets());
             mView = button;
             mView.setMarginInsets(getInsets());
         }

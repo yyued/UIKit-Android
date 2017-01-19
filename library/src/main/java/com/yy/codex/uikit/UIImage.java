@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.util.LruCache;
+import android.util.Base64;
 
 /**
  * Created by cuiminghui on 2017/1/10.
@@ -36,6 +37,11 @@ public class UIImage {
     }
 
     public UIImage(@NonNull byte[] data) {
+        mBitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+    }
+
+    public UIImage(@NonNull String base64String) {
+        byte[] data = Base64.decode(base64String, Base64.DEFAULT);
         mBitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
     }
 
@@ -80,7 +86,7 @@ public class UIImage {
         if (mBitmap == null) {
             return new CGSize(0, 0);
         }
-        return new CGSize(mBitmap.getWidth() / mScale, mBitmap.getHeight() / mScale);
+        return new CGSize(Math.ceil(mBitmap.getWidth() / mScale), Math.ceil(mBitmap.getHeight() / mScale));
     }
 
 }

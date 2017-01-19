@@ -219,7 +219,7 @@ public class UILabel extends UIView {
         mTextView.measure(0, 0);
         int width = mTextView.getMeasuredWidth();
         int height = mTextView.getMeasuredHeight();
-        return new CGSize(width / UIScreen.mainScreen.scale(), height / UIScreen.mainScreen.scale());
+        return new CGSize(Math.ceil(width / UIScreen.mainScreen.scale()), Math.ceil(height / UIScreen.mainScreen.scale()));
     }
 
     private void resetTextView() {

@@ -1,6 +1,7 @@
 package com.yy.codex.uikit;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 
 import java.util.ArrayList;
 
@@ -108,6 +109,7 @@ public class UINavigationItem {
 
     /* BarButtonItems */
 
+    @Nullable
     protected UIBarButtonItem[] mLeftBarButtonItems = new UIBarButtonItem[0];
 
     public UIBarButtonItem[] getLeftBarButtonItems() {
@@ -122,6 +124,7 @@ public class UINavigationItem {
         setLeftBarButtonItems(new UIBarButtonItem[]{leftBarButtonItem});
     }
 
+    @Nullable
     protected UIBarButtonItem[] mRightBarButtonItems = new UIBarButtonItem[0];
 
     public UIBarButtonItem[] getRightBarButtonItems() {
@@ -136,4 +139,34 @@ public class UINavigationItem {
         setRightBarButtonItems(new UIBarButtonItem[]{rightBarButtonItem});
     }
 
+    @Nullable
+    protected UIBarButtonItem mBackBarButtonItem = null;
+
+    public UIBarButtonItem getBackBarButtonItem() {
+        if (mBackBarButtonItem == null) {
+            mBackBarButtonItem = new UIBarButtonItem(mTitle == null ? "Back" : mTitle, null, null);
+            if (UIScreen.mainScreen.scale() == 1.0) {
+                UIImage arrowImage = new UIImage("iVBORw0KGgoAAAANSUhEUgAAABoAAAAsCAYAAAB7aah+AAAAAXNSR0IArs4c6QAAATpJREFUWAm92LsNwjAQANAzFIzATJQwCAPQABJiAMagoUCCHegYgwkQlfEFQkLikPviJo5t3fNHyiUB8Cj7OGyGHTQb1Pe7OIIrHGERl/VYoX6jriNygwNEmLxjrWAb1li3g9pIOe8Cs4G6kQ/WOrSyh3ztR3Df7roV0ZAzjGEqhxgIzMNDBjERPAY+JED4kBDhQQqEDikRGmSA9ENGyG/IEOmGjJE85IC0ISfkG3JEKsgZeUF/QBCivpxEHKwpr6c3bVWnlMBmmFskYJUmaFiRLSVYBeE0HbFvyBFrQ05YHnLAuiFj7DdkiPVDRhgNMsDokBLjQQqMDwkxGSTA5BAT00EMjJr4MGS+YH5KH1rpu+ScH5BaA1z0Kyqjd6WYAaxhE1Z2EIJN7I1gly1Ux9J24Uqwya9kftE8AedMD8V9MQduAAAAAElFTkSuQmCC");
+                arrowImage.setScale(1.0);
+                mBackBarButtonItem.setImage(arrowImage);
+            }
+            else if (UIScreen.mainScreen.scale() == 2.0) {
+                UIImage arrowImage = new UIImage("iVBORw0KGgoAAAANSUhEUgAAABoAAAAsCAYAAAB7aah+AAAAAXNSR0IArs4c6QAAATpJREFUWAm92LsNwjAQANAzFIzATJQwCAPQABJiAMagoUCCHegYgwkQlfEFQkLikPviJo5t3fNHyiUB8Cj7OGyGHTQb1Pe7OIIrHGERl/VYoX6jriNygwNEmLxjrWAb1li3g9pIOe8Cs4G6kQ/WOrSyh3ztR3Df7roV0ZAzjGEqhxgIzMNDBjERPAY+JED4kBDhQQqEDikRGmSA9ENGyG/IEOmGjJE85IC0ISfkG3JEKsgZeUF/QBCivpxEHKwpr6c3bVWnlMBmmFskYJUmaFiRLSVYBeE0HbFvyBFrQ05YHnLAuiFj7DdkiPVDRhgNMsDokBLjQQqMDwkxGSTA5BAT00EMjJr4MGS+YH5KH1rpu+ScH5BaA1z0Kyqjd6WYAaxhE1Z2EIJN7I1gly1Ux9J24Uqwya9kftE8AedMD8V9MQduAAAAAElFTkSuQmCC");
+                arrowImage.setScale(2.0);
+                mBackBarButtonItem.setImage(arrowImage);
+            }
+            else {
+                UIImage arrowImage = new UIImage("iVBORw0KGgoAAAANSUhEUgAAACcAAABCCAYAAADUms/cAAAAAXNSR0IArs4c6QAAAbFJREFUaAXt2stNxDAQBuDfSNQBpWwVcORRBhHSXqALkOBCG1SCdkUfeD2CKC8ncex5+MAcR5b8aRxLmUmA/1iowKO/QuMvYivOYkm1XONv8IMPeHzGgE4NMt6IYMBrgLUFOsBhhyd3bJfa4Kaw1jMA6uPmYROgLm4dNgDq4dJhLfBLB7cV5sIdBu7lcZmwcGvfZHEFMDpbOVwhTA7HAJPBMcH4cYwwXhwzjA8nAOPBCcHKcYKwMpwwLB+nAMvDKcG24xRh23DKsHScASwNZwRbxxnClnHGsHlcBbA4rhLYFFcRbIirDNbhKoQR7nfC4zO6MB/mQ8LRtYY51fO4w7N7lzJ2ONqhMuAQlwsMcw0aH3BXcIrLBQoccRxXCXAeVwFwGWcMXMcZAtNwRsB0nAFwG04ZuB2nCMzDKQHzcQrAMpwwsBwnCOTBCQH5cAJAXhwzkB/HCJTB5QJHb9RyOAagLK4QKI8rAOrgCPjgb0Pr/tL7VYOyS6H0Gb0lpPbFDkecY6dXuVTgHwx7d9DHEXKugj0YLbPBxYAjmC2uDwS+6Rmjo6R0PdH4a+z9ZT2gRMkJbMiClVJCMU0AAAAASUVORK5CYII=");
+                arrowImage.setScale(3.0);
+                mBackBarButtonItem.setImage(arrowImage);
+            }
+            mBackBarButtonItem.setImageInsets(new UIEdgeInsets(0, 0, 0, 5));
+            mBackBarButtonItem.mSystemBackItem = true;
+        }
+        return mBackBarButtonItem;
+    }
+
+    public void setBackBarButtonItem(UIBarButtonItem backBarButtonItem) {
+        mBackBarButtonItem = backBarButtonItem;
+    }
 }

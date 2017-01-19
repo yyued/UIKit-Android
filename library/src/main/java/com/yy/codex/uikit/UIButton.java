@@ -281,10 +281,14 @@ public class UIButton extends UIControl {
         if (getContentVerticalAlignment() == ContentVerticalAlignment.Center) {
             imageViewOriginY = (getFrame().size.height - mImageView.intrinsicContentSize().height) / 2.0;
             titleLabelOriginY = (getFrame().size.height - mTitleLabel.intrinsicContentSize().height) / 2.0;
+            imageViewOriginY = Math.ceil(imageViewOriginY);
+            titleLabelOriginY = Math.ceil(titleLabelOriginY);
         }
         else if (getContentVerticalAlignment() == ContentVerticalAlignment.Bottom) {
             imageViewOriginY = getFrame().size.height - mImageView.intrinsicContentSize().height;
             titleLabelOriginY = getFrame().size.height - mTitleLabel.intrinsicContentSize().height;
+            imageViewOriginY = Math.ceil(imageViewOriginY);
+            titleLabelOriginY = Math.ceil(titleLabelOriginY);
         }
         if (getContentHorizontalAlignment() == ContentHorizontalAlignment.Left) {
             mImageView.setFrame(new CGRect(

@@ -88,7 +88,7 @@ class TestView extends UIView {
         addSubview(navigationBar);
 
         final UINavigationItem navigationItem = new UINavigationItem(getContext());
-        navigationItem.setTitle("Hello");
+        navigationItem.setTitle("测试");
         UIBarButtonItem barButtonItem = new UIBarButtonItem();
         barButtonItem.setTitle("Test");
         navigationItem.setRightBarButtonItem(barButtonItem);
@@ -99,20 +99,20 @@ class TestView extends UIView {
             @Override
             public void run() {
                 final UINavigationItem navigationItem = new UINavigationItem(getContext());
-                navigationItem.setTitle("Second");
+                navigationItem.setTitle("修改用户名");
                 UIBarButtonItem barButtonItem = new UIBarButtonItem();
-                barButtonItem.setTitle("Next");
+//                barButtonItem.setTitle("Next");
                 navigationItem.setRightBarButtonItem(barButtonItem);
                 navigationBar.pushNavigationItem(navigationItem, true);
             }
         }, 3000);
 
-        postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                navigationBar.popNavigationItem(true);
-            }
-        }, 6000);
+//        postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                navigationBar.popNavigationItem(true);
+//            }
+//        }, 6000);
 
 
     }
