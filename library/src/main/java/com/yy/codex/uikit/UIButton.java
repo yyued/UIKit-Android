@@ -60,6 +60,7 @@ public class UIButton extends UIControl {
     public void tintColorDidChanged() {
         super.tintColorDidChanged();
         resetTitleLabel();
+        resetImageView();
     }
 
     /* Title */
@@ -239,6 +240,17 @@ public class UIButton extends UIControl {
 
     /* Layouts */
 
+    @NonNull
+    @Override
+    public CGSize intrinsicContentSize() {
+        mTitleLabel.setMaxWidth(999999);
+        double contentWidth = mTitleLabel.intrinsicContentSize().width + mImageView.intrinsicContentSize().width;
+        contentWidth += mContentEdgeInsets.left + mContentEdgeInsets.right + mImageEdgeInsets.left + mImageEdgeInsets.right + mTitleEdgeInsets.left + mTitleEdgeInsets.right;
+        double contentHeight = mTitleLabel.intrinsicContentSize().height + mImageView.intrinsicContentSize().height;
+        contentHeight += mContentEdgeInsets.top + mContentEdgeInsets.bottom + Math.max(mTitleEdgeInsets.top + mTitleEdgeInsets.bottom, mImageEdgeInsets.top + mImageEdgeInsets.bottom);
+        return new CGSize(Math.max(contentWidth, 44), Math.max(contentHeight, 44));
+    }
+
     private UIEdgeInsets mContentEdgeInsets = new UIEdgeInsets(0, 0, 0, 0);
     private UIEdgeInsets mTitleEdgeInsets = new UIEdgeInsets(0, 0, 0, 0);
     private UIEdgeInsets mImageEdgeInsets = new UIEdgeInsets(0, 0, 0, 0);
@@ -269,10 +281,14 @@ public class UIButton extends UIControl {
         if (getContentVerticalAlignment() == ContentVerticalAlignment.Center) {
             imageViewOriginY = (getFrame().size.height - mImageView.intrinsicContentSize().height) / 2.0;
             titleLabelOriginY = (getFrame().size.height - mTitleLabel.intrinsicContentSize().height) / 2.0;
+            imageViewOriginY = Math.ceil(imageViewOriginY);
+            titleLabelOriginY = Math.ceil(titleLabelOriginY);
         }
         else if (getContentVerticalAlignment() == ContentVerticalAlignment.Bottom) {
             imageViewOriginY = getFrame().size.height - mImageView.intrinsicContentSize().height;
             titleLabelOriginY = getFrame().size.height - mTitleLabel.intrinsicContentSize().height;
+            imageViewOriginY = Math.ceil(imageViewOriginY);
+            titleLabelOriginY = Math.ceil(titleLabelOriginY);
         }
         if (getContentHorizontalAlignment() == ContentHorizontalAlignment.Left) {
             mImageView.setFrame(new CGRect(

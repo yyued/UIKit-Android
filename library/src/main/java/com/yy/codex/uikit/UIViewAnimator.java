@@ -303,11 +303,13 @@ public class UIViewAnimator {
                     if (value < topBounds) {
                         value = value / 3;
                     }
-                    if (backStartTime[0] > 0 && now > backStartTime[0] + 16) {
+                    double scale = fromValue < topBounds ? 1.0 : 2.0;
+                    double startValue = fromValue < topBounds ? fromValue : finalValue / 12.0;
+                    if (fromValue < topBounds || (backStartTime[0] > 0 && now > backStartTime[0] + 16)) {
                         SpringSystem system = SpringSystem.create();
                         Spring spring = system.createSpring();
-                        spring.setCurrentValue(finalValue / 12.0);
-                        SpringConfig config = new SpringConfig(240.0, 40.0);
+                        spring.setCurrentValue(startValue);
+                        SpringConfig config = new SpringConfig(120.0 * scale, 20.0 * scale);
                         spring.setSpringConfig(config);
                         spring.addListener(new SpringListener() {
                             @Override
@@ -373,11 +375,13 @@ public class UIViewAnimator {
                     if (value > bottomBounds) {
                         value = (value - bottomBounds) / 3 + bottomBounds;
                     }
-                    if (backStartTime[0] > 0 && now > backStartTime[0] + 16) {
+                    double scale = fromValue > bottomBounds ? 1.0 : 2.0;
+                    double startValue = fromValue > bottomBounds ? fromValue : (finalValue - bottomBounds) / 12.0 + bottomBounds;
+                    if (fromValue > bottomBounds || (backStartTime[0] > 0 && now > backStartTime[0] + 16)) {
                         SpringSystem system = SpringSystem.create();
                         Spring spring = system.createSpring();
-                        spring.setCurrentValue((finalValue - bottomBounds) / 12.0 + bottomBounds);
-                        SpringConfig config = new SpringConfig(240.0, 40.0);
+                        spring.setCurrentValue(startValue);
+                        SpringConfig config = new SpringConfig(120.0 * scale, 20.0 * scale);
                         spring.setSpringConfig(config);
                         spring.addListener(new SpringListener() {
                             @Override

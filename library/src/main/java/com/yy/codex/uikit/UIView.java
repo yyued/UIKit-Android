@@ -87,7 +87,7 @@ public class UIView extends UIResponder {
         this.mLayer.setFrame(new CGRect(0, 0, frame.size.width, frame.size.height));
         UIView.animator.addAnimationState(this, "frame.origin.x", oldValue.origin.x, frame.origin.x);
         UIView.animator.addAnimationState(this, "frame.origin.y", oldValue.origin.y, frame.origin.y);
-        UIView.animator.addAnimationState(this, "frame.size.width", oldValue.size.width, frame.size.width);
+        UIView.animator.addAnimationState(this, "frame.size.mWidth", oldValue.size.width, frame.size.width);
         UIView.animator.addAnimationState(this, "frame.size.height", oldValue.size.height, frame.size.height);
     }
 
@@ -133,6 +133,19 @@ public class UIView extends UIResponder {
         }
     }
 
+    private UIEdgeInsets mMarginInsets;
+
+    public UIEdgeInsets getMarginInsets() {
+        if (mMarginInsets == null) {
+            mMarginInsets = UIEdgeInsets.zero;
+        }
+        return mMarginInsets;
+    }
+
+    public void setMarginInsets(UIEdgeInsets marginInsets) {
+        mMarginInsets = marginInsets;
+    }
+
     @NonNull
     public CGSize intrinsicContentSize() {
         return new CGSize(0, 0);
@@ -146,10 +159,23 @@ public class UIView extends UIResponder {
         }
     }
 
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        if (MeasureSpec.getMode(widthMeasureSpec) == MeasureSpec.AT_MOST) {
+            widthMeasureSpec = MeasureSpec.makeMeasureSpec((int)(getFrame().getWidth() * UIScreen.mainScreen.scale()), MeasureSpec.AT_MOST);
+        }
+        if (MeasureSpec.getMode(heightMeasureSpec) == MeasureSpec.AT_MOST) {
+            heightMeasureSpec = MeasureSpec.makeMeasureSpec((int)(getFrame().getHeight() * UIScreen.mainScreen.scale()), MeasureSpec.AT_MOST);
+        }
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    }
+
     /* category UIView Rendering */
 
     public void setBackgroundColor(UIColor color) {
-        setBackgroundColor(color.toInt());
+        if (color != null) {
+            setBackgroundColor(color.toInt());
+        }
     }
 
     @Override
@@ -429,7 +455,7 @@ public class UIView extends UIResponder {
         else if (aKey.equalsIgnoreCase("frame.origin.y")) {
             setFrame(this.mFrame.setY(aValue));
         }
-        else if (aKey.equalsIgnoreCase("frame.size.width")) {
+        else if (aKey.equalsIgnoreCase("frame.size.mWidth")) {
             setFrame(this.mFrame.setWidth(aValue));
         }
         else if (aKey.equalsIgnoreCase("frame.size.height")) {

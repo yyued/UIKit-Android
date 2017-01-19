@@ -6,6 +6,8 @@ package com.yy.codex.uikit;
 
 public class UIEdgeInsets {
 
+    static public UIEdgeInsets zero = new UIEdgeInsets(0, 0, 0, 0);
+
     final public double top;
     final public double left;
     final public double bottom;
