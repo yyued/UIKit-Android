@@ -11,6 +11,10 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
 import android.support.annotation.NonNull;
 
+import com.yy.codex.foundation.NSLog;
+
+import java.sql.Ref;
+
 /**
  * Created by adi on 17/1/17.
  */
@@ -42,13 +46,13 @@ public class CALayerPainter {
         float halfBorderW = borderWidth / 2.0f;
 
         if (layer.getCornerRadius() > 0){
-            drawRoundRect(canvas, frame.shrinkToRectF(halfBorderW, origin), layer.getBackgroundColor(), cornerRadius);
+            drawRoundRect(canvas, frame.shrinkToRectF(halfBorderW, origin), layer.getBackgroundColor(), cornerRadius, layer);
             if (bitmap != null){
                 CGRect maskFrame = new CGRect(origin.x, origin.y, frame.size.width, frame.size.height);
                 drawRoundRectBitmap(canvas, maskFrame, bitmap, bitmapGravity, layer.getBitmapColor(), cornerRadius);
             }
             if (borderWidth > 0){
-                drawRoundRectBorder(canvas, frame.shrinkToRectF(halfBorderW, origin), borderWidth, layer.getBorderColor(), cornerRadius);
+                drawRoundRectBorder(canvas, frame.shrinkToRectF(halfBorderW, origin), borderWidth, layer.getBorderColor(), cornerRadius, layer);
             }
         }
         else {
@@ -75,11 +79,37 @@ public class CALayerPainter {
         canvas.drawRect(rectF, sPaint);
     }
 
-    private static void drawRoundRect(Canvas canvas, RectF rectF, UIColor backgroundColor, float cornerRadius){
+    // drawRoundRectWithShadow @Td drawRectWithSahdow
+    private static void drawRoundRect(Canvas canvas, RectF rectF, UIColor backgroundColor, float cornerRadius, CALayer layer){
+        float scaledDensity = (float) UIScreen.mainScreen.scale();
+        RectF rectFCopyed = rectF;
         sPaint.reset();
         sPaint.setAntiAlias(true);
         sPaint.setColor(backgroundColor.toInt());
-        canvas.drawRoundRect(rectF, cornerRadius, cornerRadius, sPaint);
+        if (layer.getShadowRadius() > 0){
+            float shadowRadius = (float) layer.getShadowRadius() * scaledDensity;
+            float shadowX = (float) layer.getShadowX() * scaledDensity;
+            float shadowY = (float) layer.getShadowY() * scaledDensity;
+            sPaint.setShadowLayer(shadowRadius, shadowX, shadowY, layer.getShadowColor().toInt());
+            rectFCopyed = new RectF(rectF.left, rectF.top, rectF.right-shadowX, rectF.bottom-shadowY);
+        }
+        canvas.drawRoundRect(rectFCopyed, cornerRadius, cornerRadius, sPaint);
+    }
+
+    private static void drawRoundRectBorder(Canvas canvas, RectF rectF, float borderWidth, UIColor borderColor, float cornerRadius, CALayer layer){
+        float scaledDensity = (float) UIScreen.mainScreen.scale();
+        RectF rectFCopyed = rectF;
+        sPaint.reset();
+        sPaint.setAntiAlias(true);
+        sPaint.setStyle(Paint.Style.STROKE);
+        sPaint.setStrokeWidth(borderWidth);
+        sPaint.setColor(borderColor.toInt());
+        if (layer.getShadowRadius() > 0){
+            float shadowX = (float) layer.getShadowX() * scaledDensity;
+            float shadowY = (float) layer.getShadowY() * scaledDensity;
+            rectFCopyed = new RectF(rectF.left, rectF.top, rectF.right-shadowX, rectF.bottom-shadowY);
+        }
+        canvas.drawRoundRect(rectFCopyed, cornerRadius, cornerRadius, sPaint);
     }
 
     private static void drawBitmap(Canvas canvas, CGRect frame, Bitmap bitmap, int bitmapGravity, UIColor bitmapColor){
@@ -131,13 +161,7 @@ public class CALayerPainter {
         canvas.drawRect(rectF, sPaint);
     }
 
-    private static void drawRoundRectBorder(Canvas canvas, RectF rectF, float borderWidth, UIColor borderColor, float cornerRadius){
-        sPaint.reset();
-        sPaint.setStyle(Paint.Style.STROKE);
-        sPaint.setStrokeWidth(borderWidth);
-        sPaint.setColor(borderColor.toInt());
-        canvas.drawRoundRect(rectF, cornerRadius, cornerRadius, sPaint);
-    }
+
 
     private static Bitmap createEmptyBitmap(CGRect rect){
         int bitmapW = (int) (rect.size.width + rect.origin.x);
