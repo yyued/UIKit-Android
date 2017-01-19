@@ -11,10 +11,6 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
 import android.support.annotation.NonNull;
 
-import com.yy.codex.foundation.NSLog;
-
-import java.sql.Ref;
-
 /**
  * Created by adi on 17/1/17.
  */
@@ -35,34 +31,22 @@ public class CALayerPainter {
         if (layer.isHidden()){
             return;
         }
-        CGRect frameRaw = layer.getFrame();
-        Bitmap bitmap = layer.getBitmap();
-        int bitmapGravity = layer.getBitmapGravity();
-        float scaledDensity = (float) UIScreen.mainScreen.scale();
-        CGPoint origin = CALayer.calcOriginInSuperCoordinate(layer);
-        CGRect frame = new CGRect(frameRaw.getX() * scaledDensity, frameRaw.getY() * scaledDensity, frameRaw.getWidth() * scaledDensity, frameRaw.getHeight() * scaledDensity);
-        float borderWidth = (float) layer.getBorderWidth() * scaledDensity;
-        float cornerRadius = (float) layer.getCornerRadius() * scaledDensity;
-        float halfBorderW = borderWidth / 2.0f;
-
         if (layer.getCornerRadius() > 0){
-            drawRoundRect(canvas, frame.shrinkToRectF(halfBorderW, origin), layer.getBackgroundColor(), cornerRadius, layer);
-            if (bitmap != null){
-                CGRect maskFrame = new CGRect(origin.x, origin.y, frame.size.width, frame.size.height);
-                drawRoundRectBitmap(canvas, maskFrame, bitmap, bitmapGravity, layer.getBitmapColor(), cornerRadius);
+            drawRoundRect(canvas, layer);
+            if (layer.getBitmap() != null){
+                drawRoundRectBitmap(canvas, layer);
             }
-            if (borderWidth > 0){
-                drawRoundRectBorder(canvas, frame.shrinkToRectF(halfBorderW, origin), borderWidth, layer.getBorderColor(), cornerRadius, layer);
+            if (layer.getBorderWidth() > 0){
+                drawRoundRectBorder(canvas, layer);
             }
         }
         else {
-            drawRect(canvas, frame.toRectF(origin), layer.getBackgroundColor());
-            if (bitmap != null){
-                CGRect bitmapFrame = new CGRect(origin.x, origin.y, frame.size.width, frame.size.height);
-                drawBitmap(canvas, bitmapFrame, bitmap, bitmapGravity, layer.getBitmapColor());
+            drawRect(canvas, layer);
+            if (layer.getBitmap() != null){
+                drawRectBitmap(canvas, layer);
             }
-            if (borderWidth > 0){
-                drawBorder(canvas, frame.shrinkToRectF(halfBorderW, origin), borderWidth, layer.getBorderColor());
+            if (layer.getBorderWidth() > 0){
+                drawRectBorder(canvas, layer);
             }
         }
 
@@ -73,63 +57,40 @@ public class CALayerPainter {
 
     /* support method */
 
-    private static void drawRect(Canvas canvas, RectF rectF, UIColor backgroundColor){
-        sPaint.reset();
-        sPaint.setColor(backgroundColor.toInt());
-        canvas.drawRect(rectF, sPaint);
-    }
-
-    // drawRoundRectWithShadow @Td drawRectWithSahdow
-    private static void drawRoundRect(Canvas canvas, RectF rectF, UIColor backgroundColor, float cornerRadius, CALayer layer){
+    private static void drawRoundRect(Canvas canvas, CALayer layer){
+        CGRect frameRaw = layer.getFrame();
         float scaledDensity = (float) UIScreen.mainScreen.scale();
-        RectF rectFCopyed = rectF;
+        CGPoint origin = CALayer.calcOriginInSuperCoordinate(layer);
+        CGRect frame = new CGRect(frameRaw.getX() * scaledDensity, frameRaw.getY() * scaledDensity, frameRaw.getWidth() * scaledDensity, frameRaw.getHeight() * scaledDensity);
+        float borderWidth = (float) layer.getBorderWidth() * scaledDensity;
+        float cornerRadius = (float) layer.getCornerRadius() * scaledDensity;
+        float halfBorderW = borderWidth / 2.0f;
+
+        RectF rectFCopyed = frame.shrinkToRectF(halfBorderW, origin);
         sPaint.reset();
         sPaint.setAntiAlias(true);
-        sPaint.setColor(backgroundColor.toInt());
+        sPaint.setColor(layer.getBackgroundColor().toInt());
         if (layer.getShadowRadius() > 0){
             float shadowRadius = (float) layer.getShadowRadius() * scaledDensity;
             float shadowX = (float) layer.getShadowX() * scaledDensity;
             float shadowY = (float) layer.getShadowY() * scaledDensity;
             sPaint.setShadowLayer(shadowRadius, shadowX, shadowY, layer.getShadowColor().toInt());
-            rectFCopyed = new RectF(rectF.left, rectF.top, rectF.right-shadowX, rectF.bottom-shadowY);
+            rectFCopyed = new RectF(rectFCopyed.left, rectFCopyed.top, rectFCopyed.right-shadowX, rectFCopyed.bottom-shadowY);
         }
         canvas.drawRoundRect(rectFCopyed, cornerRadius, cornerRadius, sPaint);
     }
 
-    private static void drawRoundRectBorder(Canvas canvas, RectF rectF, float borderWidth, UIColor borderColor, float cornerRadius, CALayer layer){
+    private static void drawRoundRectBitmap(Canvas canvas, CALayer layer){
+        CGRect frameRaw = layer.getFrame();
+        Bitmap bitmap = layer.getBitmap();
+        int bitmapGravity = layer.getBitmapGravity();
         float scaledDensity = (float) UIScreen.mainScreen.scale();
-        RectF rectFCopyed = rectF;
-        sPaint.reset();
-        sPaint.setAntiAlias(true);
-        sPaint.setStyle(Paint.Style.STROKE);
-        sPaint.setStrokeWidth(borderWidth);
-        sPaint.setColor(borderColor.toInt());
-        if (layer.getShadowRadius() > 0){
-            float shadowX = (float) layer.getShadowX() * scaledDensity;
-            float shadowY = (float) layer.getShadowY() * scaledDensity;
-            rectFCopyed = new RectF(rectF.left, rectF.top, rectF.right-shadowX, rectF.bottom-shadowY);
-        }
-        canvas.drawRoundRect(rectFCopyed, cornerRadius, cornerRadius, sPaint);
-    }
+        CGPoint origin = CALayer.calcOriginInSuperCoordinate(layer);
+        CGRect frame = new CGRect(frameRaw.getX() * scaledDensity, frameRaw.getY() * scaledDensity, frameRaw.getWidth() * scaledDensity, frameRaw.getHeight() * scaledDensity);
+        float cornerRadius = (float) layer.getCornerRadius() * scaledDensity;
+        UIColor bitmapColor = layer.getBitmapColor();
 
-    private static void drawBitmap(Canvas canvas, CGRect frame, Bitmap bitmap, int bitmapGravity, UIColor bitmapColor){
-        sPaint.reset();
-        if (bitmapColor != null) {
-            float[] colorTransform = {
-                    0, (float)bitmapColor.r, 0, 0, 0,
-                    0, 0, (float)bitmapColor.g, 0, 0,
-                    0, 0, 0, (float)bitmapColor.b, 0,
-                    0, 0, 0, (float)bitmapColor.a, 0};
-            ColorMatrix colorMatrix = new ColorMatrix();
-            colorMatrix.set(colorTransform);
-            ColorMatrixColorFilter colorFilter = new ColorMatrixColorFilter(colorMatrix);
-            sPaint.setColorFilter(colorFilter);
-        }
-        CALayerBitmapPainter.drawBitmap(canvas, frame, bitmap, bitmapGravity, sPaint);
-        sPaint.setColorFilter(null);
-    }
-
-    private static void drawRoundRectBitmap(Canvas canvas, CGRect maskFrame, Bitmap bitmap, int bitmapGravity, UIColor bitmapColor, float cornerRadius){
+        CGRect maskFrame = new CGRect(origin.x, origin.y, frame.size.width, frame.size.height);
         Bitmap resultBitmap = createEmptyBitmap(maskFrame);
         Canvas resultCanvas = new Canvas(resultBitmap);
         Paint mixPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -147,21 +108,97 @@ public class CALayerPainter {
             mixPaint.setColorFilter(colorFilter);
         }
         CALayerBitmapPainter.drawBitmap(resultCanvas, maskFrame, bitmap, bitmapGravity, mixPaint);
-
-        // draw resultBitmap, inMainCanvas
         sPaint.reset();
         canvas.drawBitmap(resultBitmap, 0, 0, sPaint);
     }
 
-    private static void drawBorder(Canvas canvas, RectF rectF, float borderWidth, UIColor borderColor){
+    private static void drawRoundRectBorder(Canvas canvas, CALayer layer){
+        CGRect frameRaw = layer.getFrame();
+        float scaledDensity = (float) UIScreen.mainScreen.scale();
+        CGPoint origin = CALayer.calcOriginInSuperCoordinate(layer);
+        CGRect frame = new CGRect(frameRaw.getX() * scaledDensity, frameRaw.getY() * scaledDensity, frameRaw.getWidth() * scaledDensity, frameRaw.getHeight() * scaledDensity);
+        float borderWidth = (float) layer.getBorderWidth() * scaledDensity;
+        float cornerRadius = (float) layer.getCornerRadius() * scaledDensity;
+        float halfBorderW = borderWidth / 2.0f;
+
+        RectF rectFCopyed = frame.shrinkToRectF(halfBorderW, origin);
+        sPaint.reset();
+        sPaint.setAntiAlias(true);
+        sPaint.setStyle(Paint.Style.STROKE);
+        sPaint.setStrokeWidth(borderWidth);
+        sPaint.setColor(layer.getBorderColor().toInt());
+        if (layer.getShadowRadius() > 0){
+            float shadowX = (float) layer.getShadowX() * scaledDensity;
+            float shadowY = (float) layer.getShadowY() * scaledDensity;
+            rectFCopyed = new RectF(rectFCopyed.left, rectFCopyed.top, rectFCopyed.right-shadowX, rectFCopyed.bottom-shadowY);
+        }
+        canvas.drawRoundRect(rectFCopyed, cornerRadius, cornerRadius, sPaint);
+    }
+
+    private static void drawRect(Canvas canvas, CALayer layer){
+        CGRect frameRaw = layer.getFrame();
+        float scaledDensity = (float) UIScreen.mainScreen.scale();
+        CGPoint origin = CALayer.calcOriginInSuperCoordinate(layer);
+        CGRect frame = new CGRect(frameRaw.getX() * scaledDensity, frameRaw.getY() * scaledDensity, frameRaw.getWidth() * scaledDensity, frameRaw.getHeight() * scaledDensity);
+
+        RectF rectFCopyed = frame.toRectF(origin);
+        if (layer.getShadowRadius() > 0){
+            float shadowX = (float) layer.getShadowX() * scaledDensity;
+            float shadowY = (float) layer.getShadowY() * scaledDensity;
+            rectFCopyed = new RectF(rectFCopyed.left, rectFCopyed.top, rectFCopyed.right-shadowX, rectFCopyed.bottom-shadowY);
+        }
+        sPaint.reset();
+        sPaint.setColor(layer.getBitmapColor().toInt());
+        canvas.drawRect(rectFCopyed, sPaint);
+    }
+
+    private static void drawRectBitmap(Canvas canvas, CALayer layer){
+        CGRect frameRaw = layer.getFrame();
+        Bitmap bitmap = layer.getBitmap();
+        int bitmapGravity = layer.getBitmapGravity();
+        float scaledDensity = (float) UIScreen.mainScreen.scale();
+        CGPoint origin = CALayer.calcOriginInSuperCoordinate(layer);
+        CGRect frame = new CGRect(frameRaw.getX() * scaledDensity, frameRaw.getY() * scaledDensity, frameRaw.getWidth() * scaledDensity, frameRaw.getHeight() * scaledDensity);
+        UIColor bitmapColor = layer.getBitmapColor();
+
+        CGRect bitmapFrame = new CGRect(origin.x, origin.y, frame.size.width, frame.size.height);
+
+        sPaint.reset();
+        if (bitmapColor != null) {
+            float[] colorTransform = {
+                    0, (float)bitmapColor.r, 0, 0, 0,
+                    0, 0, (float)bitmapColor.g, 0, 0,
+                    0, 0, 0, (float)bitmapColor.b, 0,
+                    0, 0, 0, (float)bitmapColor.a, 0};
+            ColorMatrix colorMatrix = new ColorMatrix();
+            colorMatrix.set(colorTransform);
+            ColorMatrixColorFilter colorFilter = new ColorMatrixColorFilter(colorMatrix);
+            sPaint.setColorFilter(colorFilter);
+        }
+        CALayerBitmapPainter.drawBitmap(canvas, bitmapFrame, bitmap, bitmapGravity, sPaint);
+        sPaint.setColorFilter(null);
+    }
+
+    private static void drawRectBorder(Canvas canvas, CALayer layer){
+        CGRect frameRaw = layer.getFrame();
+        float scaledDensity = (float) UIScreen.mainScreen.scale();
+        CGPoint origin = CALayer.calcOriginInSuperCoordinate(layer);
+        CGRect frame = new CGRect(frameRaw.getX() * scaledDensity, frameRaw.getY() * scaledDensity, frameRaw.getWidth() * scaledDensity, frameRaw.getHeight() * scaledDensity);
+        float borderWidth = (float) layer.getBorderWidth() * scaledDensity;
+        float halfBorderW = borderWidth / 2.0f;
+
+        RectF rectFCopyed = frame.shrinkToRectF(halfBorderW, origin);
+        if (layer.getShadowRadius() > 0){
+            float shadowX = (float) layer.getShadowX() * scaledDensity;
+            float shadowY = (float) layer.getShadowY() * scaledDensity;
+            rectFCopyed = new RectF(rectFCopyed.left, rectFCopyed.top, rectFCopyed.right-shadowX, rectFCopyed.bottom-shadowY);
+        }
         sPaint.reset();
         sPaint.setStyle(Paint.Style.STROKE);
         sPaint.setStrokeWidth(borderWidth);
-        sPaint.setColor(borderColor.toInt());
-        canvas.drawRect(rectF, sPaint);
+        sPaint.setColor(layer.getBorderColor().toInt());
+        canvas.drawRect(rectFCopyed, sPaint);
     }
-
-
 
     private static Bitmap createEmptyBitmap(CGRect rect){
         int bitmapW = (int) (rect.size.width + rect.origin.x);
