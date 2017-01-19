@@ -134,8 +134,8 @@ public class UIScrollView extends UIView {
             /* Ended */
             mTracking = false;
             CGPoint velocity = panGestureRecognizer.velocity();
-            mCurrentAnimationY = UIView.animator.decayBounds(this, "contentOffset.y", mContentOffset.y, -velocity.y / 1000.0, 0.0, (mContentSize.height - getFrame().size.height), null);
-            mCurrentAnimationX = UIView.animator.decayBounds(this, "contentOffset.x", mContentOffset.x, -velocity.x / 1000.0, 0.0, (mContentSize.width - getFrame().size.width), null);
+            mCurrentAnimationY = UIView.animator.decayBounds(this, "contentOffset.y", mContentOffset.y, -velocity.y / 1000.0, 0.0, mContentSize.height < getFrame().size.height ? 0.0 : (mContentSize.height - getFrame().size.height), null);
+            mCurrentAnimationX = UIView.animator.decayBounds(this, "contentOffset.x", mContentOffset.x, -velocity.x / 1000.0, 0.0, mContentSize.width < getFrame().size.width ? 0.0 : (mContentSize.width - getFrame().size.width), null);
         }
     }
 
