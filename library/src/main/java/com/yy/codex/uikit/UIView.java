@@ -55,9 +55,35 @@ public class UIView extends UIResponder {
         setWillNotDraw(false);
     }
 
+    /* category Material Design */
+
+    protected boolean mMaterialDesign = false;
+
+    public void setMaterialDesign(boolean materialDesign) {
+        mMaterialDesign = materialDesign;
+        materialDesignDidChanged();
+    }
+
+    public boolean isMaterialDesign() {
+        boolean materialDesign = mMaterialDesign;
+        UIView superview = getSuperview();
+        while (materialDesign == false && superview != null) {
+            materialDesign = superview.mMaterialDesign;
+            superview = superview.getSuperview();
+        }
+        return materialDesign;
+    }
+
+    public void materialDesignDidChanged() {
+        UIView[] subviews = getSubviews();
+        for (int i = 0; i < subviews.length; i++) {
+            subviews[i].materialDesignDidChanged();
+        }
+    }
+
     /* category UIView Layout */
 
-    @NonNull private CGRect mFrame = new CGRect(0, 0, 0, 0);
+    @NonNull protected CGRect mFrame = new CGRect(0, 0, 0, 0);
 
     @NonNull
     public CGRect getFrame() {
@@ -96,7 +122,7 @@ public class UIView extends UIResponder {
         return new CGPoint((mFrame.origin.x + mFrame.size.width) / 2.0, (mFrame.origin.y + mFrame.size.height) / 2.0);
     }
 
-    @Nullable private UIConstraint mConstraint = null;
+    @Nullable protected UIConstraint mConstraint = null;
 
     @Nullable
     public UIConstraint getConstraint() {
@@ -111,7 +137,7 @@ public class UIView extends UIResponder {
         }
     }
 
-    private double mMaxWidth = 0.0;
+    protected double mMaxWidth = 0.0;
 
     public double getMaxWidth() {
         return mMaxWidth;
@@ -133,7 +159,7 @@ public class UIView extends UIResponder {
         }
     }
 
-    private UIEdgeInsets mMarginInsets;
+    protected UIEdgeInsets mMarginInsets;
 
     public UIEdgeInsets getMarginInsets() {
         if (mMarginInsets == null) {
@@ -185,7 +211,7 @@ public class UIView extends UIResponder {
         UIView.animator.addAnimationState(this, "alpha", oldValue, alpha);
     }
 
-    private UIColor mTintColor = null;
+    protected UIColor mTintColor = null;
 
     public void setTintColor(UIColor tintColor) {
         this.mTintColor = tintColor;
@@ -287,6 +313,7 @@ public class UIView extends UIResponder {
     public void willRemoveSubview(@NonNull UIView subview) {}
 
     public void willMoveToSuperview(@Nullable UIView newSuperview) {
+        materialDesignDidChanged();
         tintColorDidChanged();
     }
 
@@ -325,8 +352,8 @@ public class UIView extends UIResponder {
 
     /* category UIView Layer-Backed Service */
 
-    private boolean mWantsLayer = false;
-    @NonNull private CALayer mLayer = new CALayer();
+    protected boolean mWantsLayer = false;
+    @NonNull protected CALayer mLayer = new CALayer();
 
     public boolean isWantsLayer() {
         return mWantsLayer;
@@ -362,9 +389,9 @@ public class UIView extends UIResponder {
 
     /* category: UIView touch events */
 
-    private boolean mUserInteractionEnabled = true;
+    protected boolean mUserInteractionEnabled = true;
 
-    @NonNull private ArrayList<UIGestureRecognizer> mGestureRecognizers = new ArrayList<>();
+    @NonNull protected ArrayList<UIGestureRecognizer> mGestureRecognizers = new ArrayList<>();
 
     public boolean isUserInteractionEnabled() {
         return mUserInteractionEnabled;
@@ -409,7 +436,7 @@ public class UIView extends UIResponder {
         return UIViewHelpers.convertPoint(this, point, toView);
     }
 
-    @Nullable static private UIGestureRecognizerLooper sGestureRecognizerLooper = null;
+    @Nullable static protected UIGestureRecognizerLooper sGestureRecognizerLooper = null;
 
     @Override
     public void touchesBegan(@NonNull UITouch[] touches, @NonNull UIEvent event) {

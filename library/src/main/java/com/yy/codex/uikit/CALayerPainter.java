@@ -7,6 +7,7 @@ import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
 import android.support.annotation.NonNull;
@@ -84,15 +85,7 @@ public class CALayerPainter {
     private static void drawBitmap(Canvas canvas, CGRect frame, Bitmap bitmap, int bitmapGravity, UIColor bitmapColor){
         sPaint.reset();
         if (bitmapColor != null) {
-            float[] colorTransform = {
-                    0, (float)bitmapColor.r, 0, 0, 0,
-                    0, 0, (float)bitmapColor.g, 0, 0,
-                    0, 0, 0, (float)bitmapColor.b, 0,
-                    0, 0, 0, (float)bitmapColor.a, 0};
-            ColorMatrix colorMatrix = new ColorMatrix();
-            colorMatrix.set(colorTransform);
-            ColorMatrixColorFilter colorFilter = new ColorMatrixColorFilter(colorMatrix);
-            sPaint.setColorFilter(colorFilter);
+            sPaint.setColorFilter(new PorterDuffColorFilter(bitmapColor.toInt(), PorterDuff.Mode.SRC_IN));
         }
         CALayerBitmapPainter.drawBitmap(canvas, frame, bitmap, bitmapGravity, sPaint);
         sPaint.setColorFilter(null);
@@ -105,15 +98,7 @@ public class CALayerPainter {
         resultCanvas.drawBitmap(createRadiusMask(maskFrame, cornerRadius), 0, 0, mixPaint);
         mixPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
         if (bitmapColor != null) {
-            float[] colorTransform = {
-                    0, (float)bitmapColor.r, 0, 0, 0,
-                    0, 0, (float)bitmapColor.g, 0, 0,
-                    0, 0, 0, (float)bitmapColor.b, 0,
-                    0, 0, 0, (float)bitmapColor.a, 0};
-            ColorMatrix colorMatrix = new ColorMatrix();
-            colorMatrix.set(colorTransform);
-            ColorMatrixColorFilter colorFilter = new ColorMatrixColorFilter(colorMatrix);
-            mixPaint.setColorFilter(colorFilter);
+            mixPaint.setColorFilter(new PorterDuffColorFilter(bitmapColor.toInt(), PorterDuff.Mode.SRC_IN));
         }
         CALayerBitmapPainter.drawBitmap(resultCanvas, maskFrame, bitmap, bitmapGravity, mixPaint);
 

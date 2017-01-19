@@ -5,11 +5,14 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.AttributeSet;
 import android.view.View;
+
+import java.util.HashMap;
 
 /**
  * Created by cuiminghui on 2017/1/18.
@@ -47,7 +50,13 @@ public class UINavigationBar extends UIView {
         constraint.width = "100%";
         constraint.height = "44";
         setConstraint(constraint);
+    }
+
+    @Override
+    public void willMoveToSuperview(@Nullable UIView newSuperview) {
+        super.willMoveToSuperview(newSuperview);
         setBackgroundColor(getBarTintColor());
+        setTintColor(getTintColor());
     }
 
     @Override
@@ -58,6 +67,28 @@ public class UINavigationBar extends UIView {
             if (actionBar != null) {
                 actionBar.hide();
             }
+        }
+    }
+
+    /* Material Design */
+
+    private boolean mMaterialDesignInitialized = false;
+
+    @Override
+    public void materialDesignDidChanged() {
+        super.materialDesignDidChanged();
+        if (!mMaterialDesignInitialized && isMaterialDesign()) {
+            mMaterialDesignInitialized = true;
+            setBarTintColor(new UIColor(0x3f/255.0, 0x51/255.0, 0xb5/255.0, 1.0));
+            setTintColor(UIColor.whiteColor);
+            setTitleTextAttributes(new HashMap<String, Object>(){{
+                put(NSAttributedString.NSForegroundColorAttributeName, UIColor.whiteColor);
+                put(NSAttributedString.NSFontAttributeName, UIFont.systemBold(17));
+            }});
+            getConstraint().height = "48";
+            layoutSubviews();
+            resetItemsView();
+            invalidate();
         }
     }
 
@@ -75,6 +106,20 @@ public class UINavigationBar extends UIView {
     public void setBarTintColor(UIColor barTintColor) {
         mBarTintColor = barTintColor;
         setBackgroundColor(barTintColor);
+    }
+
+    /* Title Attributes */
+
+    @Nullable private HashMap<String, Object> mTitleTextAttributes;
+
+    @Nullable
+    public HashMap<String, Object> getTitleTextAttributes() {
+        return mTitleTextAttributes;
+    }
+
+    public void setTitleTextAttributes(@Nullable HashMap<String, Object> titleTextAttributes) {
+        mTitleTextAttributes = titleTextAttributes;
+        resetItemsView();
     }
 
     /* Line Color */
@@ -96,9 +141,11 @@ public class UINavigationBar extends UIView {
     @Override
     protected void onDraw(@NonNull Canvas canvas) {
         super.onDraw(canvas);
-        Paint paint = new Paint();
-        paint.setColor(getBottomLineColor().toInt());
-        canvas.drawLine(0, canvas.getHeight() - 1, canvas.getWidth(), canvas.getHeight() - 1, paint);
+        if (!isMaterialDesign()) {
+            Paint paint = new Paint();
+            paint.setColor(getBottomLineColor().toInt());
+            canvas.drawLine(0, canvas.getHeight() - 1, canvas.getWidth(), canvas.getHeight() - 1, paint);
+        }
     }
 
     /* Items */
@@ -108,6 +155,7 @@ public class UINavigationBar extends UIView {
 
     public void setItems(UINavigationItem[] items, boolean animated) {
         mItems = items;
+        resetItemsProps();
         resetBackItems();
         resetItemsView();
     }
@@ -119,6 +167,7 @@ public class UINavigationBar extends UIView {
         }
         items[items.length - 1] = item;
         mItems = items;
+        resetItemsProps();
         resetBackItems();
         resetItemsView();
         if (animated) {
@@ -199,6 +248,12 @@ public class UINavigationBar extends UIView {
         }
     }
 
+    protected void resetItemsProps() {
+        for (int i = 0; i < mItems.length; i++) {
+            mItems[i].setNavigationBar(this);
+        }
+    }
+
     protected void resetBackItems() {
         for (int i = 0; i < mItems.length; i++) {
             if (i > 0) {
@@ -215,7 +270,7 @@ public class UINavigationBar extends UIView {
         }
         UINavigationItemView[] itemsView = new UINavigationItemView[mItems.length];
         for (int i = 0; i < mItems.length; i++) {
-            UINavigationItemView frontView = new UINavigationItemView(getContext());
+            UINavigationItemView frontView = isMaterialDesign() ? new UINavigationItemView_MaterialDesign(getContext()) : new UINavigationItemView(getContext());
             mItems[i].mFrontView = frontView;
             mItems[i].setNeedsUpdate();
             itemsView[i] = frontView;

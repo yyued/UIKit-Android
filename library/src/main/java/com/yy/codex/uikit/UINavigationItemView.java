@@ -70,9 +70,9 @@ class UINavigationItemView extends UIView {
                     if (iSize.width > 0 && iSize.height > 0) {
                         contentView.setFrame(new CGRect(
                                 x,
-                                (getFrame().size.height - iSize.height) / 2.0,
+                                0,
                                 iSize.width,
-                                iSize.height)
+                                getFrame().getHeight())
                         );
                         x += iSize.width + contentView.getMarginInsets().right;
                     }
@@ -97,9 +97,9 @@ class UINavigationItemView extends UIView {
                     if (iSize.width > 0 && iSize.height > 0) {
                         contentView.setFrame(new CGRect(
                                 rx - iSize.width - contentView.getMarginInsets().right,
-                                (getFrame().size.height - iSize.height) / 2.0,
+                                0,
                                 iSize.width,
-                                iSize.height)
+                                getFrame().getHeight())
                         );
                         rx -= iSize.width + contentView.getMarginInsets().right + contentView.getMarginInsets().left;
                     }
