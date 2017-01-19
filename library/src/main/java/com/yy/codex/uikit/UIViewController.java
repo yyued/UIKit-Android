@@ -125,4 +125,16 @@ public class UIViewController implements UIResponder {
 
     }
 
+    /* ChildViewControllers */
+
+    private UIViewController[] childViewControllers = new UIViewController[0];
+
+    public void addChildViewController(UIViewController childController) {
+
+    }
+
+    public void removeFromParentViewController() {
+
+    }
+
 }

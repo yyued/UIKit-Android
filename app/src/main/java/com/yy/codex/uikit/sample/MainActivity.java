@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.WindowManager;
 
 import com.yy.codex.uikit.CGRect;
+import com.yy.codex.uikit.CGSize;
 import com.yy.codex.uikit.NSAttributedString;
 import com.yy.codex.uikit.UIBarButtonItem;
 import com.yy.codex.uikit.UIColor;
