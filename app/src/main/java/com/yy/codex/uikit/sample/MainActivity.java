@@ -81,12 +81,15 @@ class TestView extends UIView {
 
         scrollView.setBackgroundColor(UIColor.whiteColor);
 
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 20; i++) {
             UIView redView = new UIView(getContext());
             redView.setFrame(new CGRect(0,100 * i,20,20));
             redView.setBackgroundColor(new UIColor(1, 0, 0, 1.0 - (i / 100.0)));
             scrollView.addSubview(redView);
         }
+
+        scrollView.setAlwaysBounceVertical(true);
+        scrollView.setContentSize(new CGSize(0, 2000));
 
         addSubview(scrollView);
 

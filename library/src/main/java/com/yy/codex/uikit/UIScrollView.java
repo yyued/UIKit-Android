@@ -66,12 +66,20 @@ public class UIScrollView extends UIView {
     @NonNull private CGPoint mContentOffset = new CGPoint(0, 0);
     @NonNull private CGSize mContentSize = new CGSize(0, 0);
     private UIEdgeInsets mContentInset;
-    public boolean mTracking;
-    public boolean mScrollEnabled;
-    public boolean mAlwaysBounceVertical;
-    public boolean mAlwaysBounceHorizontal;
-    public boolean mBounces;
-    public boolean mPagingEnabled;
+    private boolean mTracking;
+    private boolean mScrollEnabled = true;
+    private boolean mAlwaysBounceVertical = false;
+    private boolean mAlwaysBounceHorizontal = false;
+    private boolean mBounces = true;
+    private boolean mPagingEnabled = false;
+
+    public void setAlwaysBounceHorizontal(boolean alwaysBounceHorizontal) {
+        mAlwaysBounceHorizontal = alwaysBounceHorizontal;
+    }
+
+    public void setAlwaysBounceVertical(boolean alwaysBounceVertical) {
+        mAlwaysBounceVertical = alwaysBounceVertical;
+    }
 
     @Nullable private UIViewAnimation mCurrentAnimationY = null;
     @Nullable private UIViewAnimation mCurrentAnimationX = null;
@@ -182,11 +190,25 @@ public class UIScrollView extends UIView {
                 setContentOffset(offset, true);
             }
             else {
-                CGPoint offset = calculateMovePoint(new CGPoint(originX, originY), mPagingEnabled);
-                mCurrentAnimationX = UIView.animator.decayBounds(this, "contentOffset.x", mContentOffset.x, -velocity.x / 1000.0, 0.0, mContentSize.width < getFrame().size.width ? 0.0 : (mContentSize.width - getFrame().size.width), null);
-                mCurrentAnimationY = UIView.animator.decayBounds(this, "contentOffset.y", mContentOffset.y, -velocity.y / 1000.0, 0.0, mContentSize.height < getFrame().size.height ? 0.0 : (mContentSize.height - getFrame().size.height), null);
+                UIViewAnimator.UIViewAnimationDecayBoundsOptions xOptions = new UIViewAnimator.UIViewAnimationDecayBoundsOptions();
+                xOptions.allowBounds = mBounces;
+                xOptions.alwaysBounds = mAlwaysBounceHorizontal;
+                xOptions.fromValue = mContentOffset.x;
+                xOptions.velocity = -velocity.x / 1000.0;
+                xOptions.topBounds = 0.0;
+                xOptions.bottomBounds = mContentSize.width - getFrame().size.width;
+                xOptions.viewBounds = getFrame().size.width;
+                mCurrentAnimationX = UIView.animator.decayBounds(this, "contentOffset.x", xOptions, null);
+                UIViewAnimator.UIViewAnimationDecayBoundsOptions yOptions = new UIViewAnimator.UIViewAnimationDecayBoundsOptions();
+                yOptions.allowBounds = mBounces;
+                yOptions.alwaysBounds = mAlwaysBounceVertical;
+                yOptions.fromValue = mContentOffset.y;
+                yOptions.velocity = -velocity.y / 1000.0;
+                yOptions.topBounds = 0.0;
+                yOptions.bottomBounds = mContentSize.height - getFrame().size.height;
+                yOptions.viewBounds = getFrame().size.height;
+                mCurrentAnimationY = UIView.animator.decayBounds(this, "contentOffset.y", yOptions, null);
             }
-
             mHorizontalMoveDiscance = 0;
             mVerticalMoveDiscance = 0;
         }

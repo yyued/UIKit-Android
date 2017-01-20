@@ -281,156 +281,126 @@ public class UIViewAnimator {
         return decay(animationView, animationKey, fromValue, velocity, completion);
     }
 
-    static public UIViewAnimation decayBounds(final UIView animationView, final String animationKey, final double fromValue, final double velocity, final double topBounds, final double bottomBounds, @Nullable final Runnable completion) {
-        final double deceleration = decayDeceleration;
-        final double finalValue = fromValue + (velocity / (1.0 - deceleration)) * (1 - Math.exp(-(1 - deceleration) * (999999999)));
-        if (finalValue < topBounds) {
-            final UIViewAnimation animation = new UIViewAnimation();
-            final long startTime = System.currentTimeMillis();
-            final long[] backStartTime = new long[1];
-            ValueAnimator valueAnimator = ValueAnimator.ofInt(0, 1);
-            valueAnimator.setDuration(16);
-            valueAnimator.setRepeatCount(9999999);
-            valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                    if (animation.isCancelled()) {
-                        valueAnimator.cancel();
-                        return;
-                    }
-                    long now = System.currentTimeMillis();
-                    double value = fromValue + (velocity / (1.0 - deceleration)) * (1 - Math.exp(-(1 - deceleration) * (now - startTime)));
-                    if (value < topBounds) {
-                        value = value / 3;
-                    }
-                    double scale = fromValue < topBounds ? 1.0 : 2.0;
-                    double startValue = fromValue < topBounds ? fromValue : finalValue / 12.0;
-                    if (fromValue < topBounds || (backStartTime[0] > 0 && now > backStartTime[0] + 16)) {
-                        SpringSystem system = SpringSystem.create();
-                        Spring spring = system.createSpring();
-                        spring.setCurrentValue(startValue);
-                        SpringConfig config = new SpringConfig(120.0 * scale, 20.0 * scale);
-                        spring.setSpringConfig(config);
-                        spring.addListener(new SpringListener() {
-                            @Override
-                            public void onSpringUpdate(Spring spring) {
-                                if (animation.isCancelled()) {
-                                    return;
-                                }
-                                float currentValue = (float)spring.getCurrentValue();
-                                animationView.animate(animationKey, currentValue);
-                            }
+    static public class UIViewAnimationDecayBoundsOptions {
+        double fromValue;
+        double velocity;
+        boolean allowBounds = true;
+        boolean alwaysBounds = false;
+        double topBounds;
+        double bottomBounds;
+        double viewBounds;
+    }
 
-                            @Override
-                            public void onSpringAtRest(Spring spring) {
-                                if (animation.isCancelled()) {
-                                    return;
-                                }
-                                if (completion != null) {
-                                    completion.run();
-                                }
-                            }
-
-                            @Override
-                            public void onSpringActivate(Spring spring) {
-
-                            }
-
-                            @Override
-                            public void onSpringEndStateChange(Spring spring) {
-
-                            }
-                        });
-                        spring.setEndValue(topBounds);
-                        valueAnimator.cancel();
-                    }
-                    else if (backStartTime[0] > 0) {
-                        return;
-                    }
-                    else if (value < finalValue / 12.0 && backStartTime[0] == 0.0) {
-                        backStartTime[0] = now;
-                    }
-                    animationView.animate(animationKey, (float) value);
-                }
-            });
-            valueAnimator.start();
-            return animation;
+    static public UIViewAnimation decayBounds(final UIView animationView, final String animationKey, final UIViewAnimationDecayBoundsOptions options, @Nullable final Runnable completion) {
+        if (options.bottomBounds - options.topBounds < options.viewBounds) {
+            if (options.allowBounds && options.alwaysBounds) {
+                options.bottomBounds = options.topBounds;
+            }
+            else {
+                return new UIViewAnimation();
+            }
         }
-        else if (finalValue > bottomBounds) {
-            final UIViewAnimation animation = new UIViewAnimation();
-            final long startTime = System.currentTimeMillis();
-            final long[] backStartTime = new long[1];
-            ValueAnimator valueAnimator = ValueAnimator.ofInt(0, 1);
-            valueAnimator.setDuration(16);
-            valueAnimator.setRepeatCount(9999999);
-            valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                    if (animation.isCancelled()) {
-                        valueAnimator.cancel();
-                        return;
-                    }
-                    long now = System.currentTimeMillis();
-                    double value = fromValue + (velocity / (1.0 - deceleration)) * (1 - Math.exp(-(1 - deceleration) * (now - startTime)));
-                    if (value > bottomBounds) {
-                        value = (value - bottomBounds) / 3 + bottomBounds;
-                    }
-                    double scale = fromValue > bottomBounds ? 1.0 : 2.0;
-                    double startValue = fromValue > bottomBounds ? fromValue : (finalValue - bottomBounds) / 12.0 + bottomBounds;
-                    if (fromValue > bottomBounds || (backStartTime[0] > 0 && now > backStartTime[0] + 16)) {
-                        SpringSystem system = SpringSystem.create();
-                        Spring spring = system.createSpring();
-                        spring.setCurrentValue(startValue);
-                        SpringConfig config = new SpringConfig(120.0 * scale, 20.0 * scale);
-                        spring.setSpringConfig(config);
-                        spring.addListener(new SpringListener() {
-                            @Override
-                            public void onSpringUpdate(Spring spring) {
-                                if (animation.isCancelled()) {
-                                    return;
-                                }
-                                float currentValue = (float)spring.getCurrentValue();
-                                animationView.animate(animationKey, currentValue);
-                            }
-
-                            @Override
-                            public void onSpringAtRest(Spring spring) {
-                                if (animation.isCancelled()) {
-                                    return;
-                                }
-                                if (completion != null) {
-                                    completion.run();
-                                }
-                            }
-
-                            @Override
-                            public void onSpringActivate(Spring spring) {
-
-                            }
-
-                            @Override
-                            public void onSpringEndStateChange(Spring spring) {
-
-                            }
-                        });
-                        spring.setEndValue(bottomBounds);
-                        valueAnimator.cancel();
-                    }
-                    else if (backStartTime[0] > 0) {
-                        return;
-                    }
-                    else if (value > ((finalValue - bottomBounds) / 12.0 + bottomBounds) && backStartTime[0] == 0.0) {
-                        backStartTime[0] = now;
-                    }
-                    animationView.animate(animationKey, (float) value);
-                }
-            });
-            valueAnimator.start();
-            return animation;
+        final double deceleration = decayDeceleration;
+        final double finalValue = options.fromValue + (options.velocity / (1.0 - deceleration)) * (1 - Math.exp(-(1 - deceleration) * (999999999)));
+        double backStartValue;
+        final boolean[] backStarted = new boolean[1];
+        final double backEndValue;
+        if (options.fromValue < options.topBounds || options.fromValue > options.bottomBounds) {
+            backStartValue = options.fromValue;
+            backEndValue = options.fromValue < options.topBounds ? options.topBounds : options.bottomBounds;
+            backStarted[0] = true;
+        }
+        else if (finalValue < options.topBounds) {
+            backStartValue = options.topBounds - (options.topBounds - finalValue) / 12.0;
+            backEndValue = options.topBounds;
+            if (!options.allowBounds) {
+                backStartValue = backEndValue;
+            }
+        }
+        else if (finalValue > options.bottomBounds) {
+            backStartValue = ((finalValue - options.bottomBounds) / 12.0 + options.bottomBounds);
+            backEndValue = options.bottomBounds;
+            if (!options.allowBounds) {
+                backStartValue = backEndValue;
+            }
         }
         else {
-            return decay(animationView, animationKey, fromValue, velocity, completion);
+            return decay(animationView, animationKey, options.fromValue, options.velocity, completion);
         }
+        final long startTime = System.currentTimeMillis();
+        final UIViewAnimation animation = new UIViewAnimation();
+        ValueAnimator valueAnimator = ValueAnimator.ofInt(0, 1);
+        valueAnimator.setDuration(16);
+        valueAnimator.setRepeatCount(9999999);
+        final double finalBackStartValue = backStartValue;
+        final double finalBackEndValue = backEndValue;
+        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                if (animation.isCancelled()) {
+                    valueAnimator.cancel();
+                    return;
+                }
+                double decayValue = options.fromValue + (options.velocity / (1.0 - deceleration)) * (1 - Math.exp(-(1 - deceleration) * (System.currentTimeMillis() - startTime)));
+                if (decayValue < options.topBounds) {
+                    decayValue = options.topBounds - (options.topBounds - decayValue) / 3;
+                }
+                else if (decayValue > options.bottomBounds) {
+                    decayValue = (decayValue - options.bottomBounds) / 3 + options.bottomBounds;
+                }
+                if (backStarted[0]) {
+                    SpringSystem system = SpringSystem.create();
+                    Spring spring = system.createSpring();
+                    spring.setCurrentValue(finalBackStartValue);
+                    SpringConfig config = new SpringConfig(120.0, 20.0);
+                    spring.setSpringConfig(config);
+                    spring.addListener(new SpringListener() {
+                        @Override
+                        public void onSpringUpdate(Spring spring) {
+                            if (animation.isCancelled()) {
+                                return;
+                            }
+                            float currentValue = (float)spring.getCurrentValue();
+                            animationView.animate(animationKey, currentValue);
+                        }
+
+                        @Override
+                        public void onSpringAtRest(Spring spring) {
+                            if (animation.isCancelled()) {
+                                return;
+                            }
+                            if (completion != null) {
+                                completion.run();
+                            }
+                        }
+
+                        @Override
+                        public void onSpringActivate(Spring spring) {
+
+                        }
+
+                        @Override
+                        public void onSpringEndStateChange(Spring spring) {
+
+                        }
+                    });
+                    spring.setEndValue(finalBackEndValue);
+                    valueAnimator.cancel();
+                }
+                else if (backStarted[0]) {
+                    return;
+                }
+                else if (decayValue < finalBackStartValue && !backStarted[0]) {
+                    backStarted[0] = true;
+                }
+                else if (finalBackStartValue == backEndValue && decayValue <= backEndValue) {
+                    valueAnimator.cancel();
+                }
+                animationView.animate(animationKey, (float) decayValue);
+            }
+        });
+        valueAnimator.start();
+        return animation;
     }
 
 }
