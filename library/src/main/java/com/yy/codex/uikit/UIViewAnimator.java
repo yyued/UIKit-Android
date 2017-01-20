@@ -390,7 +390,10 @@ public class UIViewAnimator {
                 else if (backStarted[0]) {
                     return;
                 }
-                else if (decayValue < finalBackStartValue && !backStarted[0]) {
+                else if (finalValue < options.topBounds && decayValue < finalBackStartValue && !backStarted[0]) {
+                    backStarted[0] = true;
+                }
+                else if (finalValue > options.bottomBounds && decayValue < finalBackStartValue && !backStarted[0]) {
                     backStarted[0] = true;
                 }
                 else if (finalBackStartValue == backEndValue && decayValue <= backEndValue) {

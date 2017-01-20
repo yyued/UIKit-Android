@@ -85,6 +85,9 @@ class TestView extends UIView {
             UIView redView = new UIView(getContext());
             redView.setFrame(new CGRect(0,100 * i,20,20));
             redView.setBackgroundColor(new UIColor(1, 0, 0, 1.0 - (i / 100.0)));
+            if (i == 0) {
+                redView.setBackgroundColor(UIColor.blueColor);
+            }
             scrollView.addSubview(redView);
         }
 

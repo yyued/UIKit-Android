@@ -144,17 +144,17 @@ public class UIScrollView extends UIView {
             /* Move */
             CGPoint offset = calculateMovePoint(new CGPoint(originX, originY), mPagingEnabled);
 
-            mVerticalMoveDiscance = (originY + Math.abs(mTrackingPoint.y)) - mWindowSizePoint.y;
-            mHorizontalMoveDiscance = (originX + Math.abs(mTrackingPoint.x)) - mWindowSizePoint.x;
-            if (mAlwaysBounceHorizontal) {
-                offset = offset.setX(overBoundsCheckX(offset.x));
-            }
-            if (mAlwaysBounceVertical) {
-                offset = offset.setY(overBoundsCheckY(offset.y));
-            }
-            if (!mBounces) {
-                offset = overBoundsCheck(offset);
-            }
+//            mVerticalMoveDiscance = (originY + Math.abs(mTrackingPoint.y)) - mWindowSizePoint.y;
+//            mHorizontalMoveDiscance = (originX + Math.abs(mTrackingPoint.x)) - mWindowSizePoint.x;
+//            if (mAlwaysBounceHorizontal) {
+//                offset = offset.setX(overBoundsCheckX(offset.x));
+//            }
+//            if (mAlwaysBounceVertical) {
+//                offset = offset.setY(overBoundsCheckY(offset.y));
+//            }
+//            if (!mBounces) {
+//                offset = overBoundsCheck(offset);
+//            }
             setContentOffset(offset);
         }
         else if (panGestureRecognizer.getState() == UIGestureRecognizerState.Ended) {
