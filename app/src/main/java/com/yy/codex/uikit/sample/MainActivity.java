@@ -90,7 +90,7 @@ class TestView extends UIView {
             scrollView.addSubview(label);
         }
 
-        scrollView.setBounces(false);
+        scrollView.setBounces(true);
         scrollView.setAlwaysBounceVertical(true);
         scrollView.setContentSize(new CGSize(0, 2000));
 

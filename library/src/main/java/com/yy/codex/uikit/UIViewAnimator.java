@@ -363,12 +363,12 @@ public class UIViewAnimator {
                 if (decayValue < options.topBounds) {
                     decayValue = options.topBounds - (options.topBounds - decayValue) / 3;
                     if (options.fromValue < options.topBounds) {
-                        decayValue += (options.fromValue - options.topBounds);
+                        decayValue -= (options.topBounds - options.fromValue);
                     }
                 }
                 else if (decayValue > options.bottomBounds) {
                     decayValue = (decayValue - options.bottomBounds) / 3 + options.bottomBounds;
-                    if (options.fromValue < options.topBounds) {
+                    if (options.fromValue > options.bottomBounds) {
                         decayValue += (options.fromValue - options.bottomBounds);
                     }
                 }
