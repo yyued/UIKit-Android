@@ -292,6 +292,9 @@ public class UIViewAnimator {
     }
 
     static public UIViewAnimation decayBounds(final UIView animationView, final String animationKey, final UIViewAnimationDecayBoundsOptions options, @Nullable final Runnable completion) {
+        if (!options.allowBounds && (options.fromValue <= options.topBounds || options.fromValue >= options.bottomBounds)) {
+            return new UIViewAnimation();
+        }
         if (options.bottomBounds - options.topBounds < options.viewBounds) {
             if (options.allowBounds && options.alwaysBounds) {
                 options.bottomBounds = options.topBounds;
@@ -369,7 +372,21 @@ public class UIViewAnimator {
                         decayValue += (options.fromValue - options.bottomBounds);
                     }
                 }
-                if (backStarted[0]) {
+                if (!options.allowBounds) {
+                    if (decayValue <= options.topBounds) {
+                        animationView.animate(animationKey, (float) options.topBounds);
+                        valueAnimator.cancel();
+                        animation.markFinished();
+                        return;
+                    }
+                    else if (decayValue >= options.bottomBounds) {
+                        animationView.animate(animationKey, (float) options.bottomBounds);
+                        valueAnimator.cancel();
+                        animation.markFinished();
+                        return;
+                    }
+                }
+                else if (backStarted[0]) {
                     SpringSystem system = SpringSystem.create();
                     Spring spring = system.createSpring();
                     spring.setCurrentValue(finalBackStartValue);
@@ -414,14 +431,6 @@ public class UIViewAnimator {
                     }
                     else if (finalValue > options.bottomBounds && decayValue > finalBackStartValue && !backStarted[0]) {
                         backStarted[0] = true;
-                    }
-                }
-                else if (!options.allowBounds) {
-                    if (decayValue < options.topBounds) {
-                        valueAnimator.cancel();
-                    }
-                    else if (decayValue > options.bottomBounds) {
-                        valueAnimator.cancel();
                     }
                 }
                 animationView.animate(animationKey, (float) decayValue);
