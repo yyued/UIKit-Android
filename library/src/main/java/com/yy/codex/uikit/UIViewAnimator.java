@@ -315,7 +315,7 @@ public class UIViewAnimator {
                 backStartValue += (options.fromValue - options.topBounds);
             }
             backEndValue = options.topBounds;
-            if (Math.abs(options.velocity) < 44.0) {
+            if (Math.abs(options.velocity) < 8.0) {
                 backStarted[0] = true;
             }
         }
