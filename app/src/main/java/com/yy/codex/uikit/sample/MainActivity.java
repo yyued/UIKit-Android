@@ -19,6 +19,7 @@ import com.yy.codex.uikit.UIBarButtonItem;
 import com.yy.codex.uikit.UIColor;
 import com.yy.codex.uikit.UIConstraint;
 import com.yy.codex.uikit.UIFont;
+import com.yy.codex.uikit.UILabel;
 import com.yy.codex.uikit.UINavigationBar;
 import com.yy.codex.uikit.UINavigationItem;
 import com.yy.codex.uikit.UIScrollView;
@@ -82,13 +83,11 @@ class TestView extends UIView {
         scrollView.setBackgroundColor(UIColor.whiteColor);
 
         for (int i = 0; i < 20; i++) {
-            UIView redView = new UIView(getContext());
-            redView.setFrame(new CGRect(0,100 * i,20,20));
-            redView.setBackgroundColor(new UIColor(1, 0, 0, 1.0 - (i / 100.0)));
-            if (i == 0) {
-                redView.setBackgroundColor(UIColor.blueColor);
-            }
-            scrollView.addSubview(redView);
+            UILabel label = new UILabel(getContext());
+            label.setFrame(new CGRect(0,100 * i,44,22));
+//            label.setBackgroundColor(new UIColor(1, 0, 0, 1.0 - (i / 100.0)));
+            label.setText("i = " + i);
+            scrollView.addSubview(label);
         }
 
         scrollView.setAlwaysBounceVertical(true);
