@@ -53,6 +53,8 @@ public class UIScrollView extends UIView {
         mBounces = true;
         mWindowSizePoint = new CGPoint(0, 0);
         mContentInset = new UIEdgeInsets(0, 0, 0, 0);
+        mFingerVerticalMoveDistance = getFrame().size.height / 5;
+        mFingerHorizontalMoveDistance = getFrame().size.width / 5;
 
         mPanGestureRecognizer = new UIPanGestureRecognizer(this, "handlePan:");
         if (mScrollEnabled) {
@@ -66,12 +68,6 @@ public class UIScrollView extends UIView {
     @NonNull private CGPoint mContentOffset = new CGPoint(0, 0);
     @NonNull private CGSize mContentSize = new CGSize(0, 0);
     private UIEdgeInsets mContentInset;
-    private boolean mTracking;
-    private boolean mScrollEnabled = true;
-    private boolean mAlwaysBounceVertical = false;
-    private boolean mAlwaysBounceHorizontal = false;
-    private boolean mBounces = true;
-    private boolean mPagingEnabled = false;
 
     public void setAlwaysBounceHorizontal(boolean alwaysBounceHorizontal) {
         mAlwaysBounceHorizontal = alwaysBounceHorizontal;
@@ -80,6 +76,12 @@ public class UIScrollView extends UIView {
     public void setAlwaysBounceVertical(boolean alwaysBounceVertical) {
         mAlwaysBounceVertical = alwaysBounceVertical;
     }
+    private boolean mTracking;
+    private boolean mScrollEnabled;
+    private boolean mAlwaysBounceVertical;
+    private boolean mAlwaysBounceHorizontal;
+    private boolean mBounces;
+    private boolean mPagingEnabled;
 
     @Nullable private UIViewAnimation mCurrentAnimationY = null;
     @Nullable private UIViewAnimation mCurrentAnimationX = null;
@@ -89,9 +91,9 @@ public class UIScrollView extends UIView {
 
     private CGPoint mWindowSizePoint;
 
-    private static final double FINGER_VERTICAL_MOVE_DISTANCE = 250;
+    private double mFingerVerticalMoveDistance;
+    private double mFingerHorizontalMoveDistance;
     private static final double FINGER_VELOCITY = 300;
-    private static final double FINGER_HORIZONTAL_MOVE_DISTANCE = 120;
 
     public void setPagingEnabled(boolean pagingEnabled) {
         this.mPagingEnabled = pagingEnabled;
@@ -103,18 +105,6 @@ public class UIScrollView extends UIView {
     public boolean getBounces() {
         return this.mBounces;
     }
-
-//    @Override
-//    public void addSubview(UIView subview) {
-//        subview.
-//
-//        mContentInset.
-//
-//
-//        super.addSubview(subview);
-//
-//
-//    }
 
     @Override
     public void touchesBegan(UITouch[] touches, UIEvent event) {
@@ -155,6 +145,7 @@ public class UIScrollView extends UIView {
 //            if (!mBounces) {
 //                offset = overBoundsCheck(offset);
 //            }
+            NSLog.log(offset);
             setContentOffset(offset);
         }
         else if (panGestureRecognizer.getState() == UIGestureRecognizerState.Ended) {
@@ -168,7 +159,7 @@ public class UIScrollView extends UIView {
 
                 double moveOffsetX = horizontalPageCurrentIndex * getFrame().size.width;
                 double moveOffsetY = verticalPageCurrentIndex * getFrame().size.height;
-                if ((Math.abs(mHorizontalMoveDiscance) > FINGER_VERTICAL_MOVE_DISTANCE || Math.abs(mVerticalMoveDiscance) > FINGER_HORIZONTAL_MOVE_DISTANCE) || (Math.abs(velocity.x) > FINGER_VELOCITY || Math.abs(velocity.y) > FINGER_VELOCITY )) {
+                if ((Math.abs(mHorizontalMoveDiscance) > mFingerHorizontalMoveDistance || Math.abs(mVerticalMoveDiscance) > mFingerVerticalMoveDistance ) || (Math.abs(velocity.x) > FINGER_VELOCITY || Math.abs(velocity.y) > FINGER_VELOCITY )) {
                     verticalPageCurrentIndex = mVerticalMoveDiscance > 0 ? ++verticalPageCurrentIndex : --verticalPageCurrentIndex;
                     horizontalPageCurrentIndex = mHorizontalMoveDiscance > 0 ? ++horizontalPageCurrentIndex : --horizontalPageCurrentIndex;
                     if (verticalPageCurrentIndex < 0) {
@@ -178,16 +169,15 @@ public class UIScrollView extends UIView {
                         horizontalPageCurrentIndex = 0;
                     }
 
-                    NSLog.log(horizontalPageCurrentIndex);
                     moveOffsetX = horizontalPageCurrentIndex * getFrame().size.width;
                     moveOffsetY = verticalPageCurrentIndex * getFrame().size.height;
                 }
 
                 CGPoint offset = calculateMovePoint(new CGPoint(moveOffsetX, moveOffsetY), mPagingEnabled);
+                NSLog.log(horizontalPageCurrentIndex);
                 NSLog.log(offset);
-                NSLog.log(velocity.x);
                 mWindowSizePoint = offset;
-                setContentOffset(offset, true);
+                setContentOffsetSpring(offset, true, velocity.x);
             }
             else {
                 UIViewAnimator.UIViewAnimationDecayBoundsOptions xOptions = new UIViewAnimator.UIViewAnimationDecayBoundsOptions();
@@ -238,8 +228,8 @@ public class UIScrollView extends UIView {
         double calculateContentSizeValue = isX ? contentSizeWidth : contentSizeHeight;
         double calculateThisValue = isX ? thisWidth : thisHeight;
 
+        // out of top
         if (xOry < 0.0) {
-            // out of top
             if (calculateContentSizeValue > calculateThisValue) {
                 double delta = Math.abs(xOry);
                 return -(delta / 3.0);
@@ -251,9 +241,14 @@ public class UIScrollView extends UIView {
             return 0;
         }
 
+        //out of bottom
         if (xOry > Math.abs(calculateContentSizeValue - calculateThisValue)) {
-            double delta = xOry - (calculateContentSizeValue - calculateThisValue);
-            return delta / 3.0;
+            double delta = calculateContentSizeValue - calculateThisValue;
+            double over = xOry - delta;
+            if (calculateContentSizeValue > calculateThisValue) {
+                return delta + (over / 3.0);
+            }
+            return calculateContentSizeValue - calculateThisValue;
         }
 
         return xOry;
@@ -297,31 +292,31 @@ public class UIScrollView extends UIView {
         }
     }
 
-    public void setContentSize(@NonNull CGSize contentSize) {
-        mContentSize = contentSize;
-    }
-
-    private void moveYToBounds() {
-        if (mCurrentAnimationY != null) {
-            mCurrentAnimationY.cancel();
-        }
-        double nearestBounds;
-        if (mContentSize.height < getFrame().size.height) {
-            nearestBounds = 0.0;
-        }
-        else if (mContentOffset.y < 0.0) {
-            nearestBounds = 0.0;
+    private void setContentOffsetSpring(@NonNull final CGPoint contentOffset, boolean animated, double velocity) {
+        final CGPoint oldValue = mContentOffset;
+        final UIScrollView self = this;
+        mContentOffset = contentOffset;
+        if (animated) {
+            if (mCurrentAnimationY != null) {
+                mCurrentAnimationY.cancel();
+            }
+            mCurrentAnimationY = UIView.animator.springWithOptions(120, 20, velocity, new Runnable() {
+                @Override
+                public void run() {
+                    UIView.animator.addAnimationState(self, "contentOffset.x", oldValue.x, mContentOffset.x);
+                    UIView.animator.addAnimationState(self, "contentOffset.y", oldValue.y, mContentOffset.y);
+                }
+            }, null);
         }
         else {
-            nearestBounds = mContentSize.height - getFrame().size.height;
+            scrollTo((int)(mContentOffset.x * UIScreen.mainScreen.scale()), (int)(mContentOffset.y * UIScreen.mainScreen.scale()));
+            UIView.animator.addAnimationState(self, "contentOffset.x", oldValue.x, mContentOffset.x);
+            UIView.animator.addAnimationState(self, "contentOffset.y", oldValue.y, mContentOffset.y);
         }
-        final double finalNearestBounds = nearestBounds;
-        mCurrentAnimationY = UIView.animator.springWithOptions(120.0, 20.0, 0.0, new Runnable() {
-            @Override
-            public void run() {
-            setContentOffset(mContentOffset.setY(finalNearestBounds), false);
-            }
-        }, null);
+    }
+
+    public void setContentSize(@NonNull CGSize contentSize) {
+        mContentSize = contentSize;
     }
 
     private CGPoint overBoundsCheck(CGPoint point) {
@@ -347,7 +342,7 @@ public class UIScrollView extends UIView {
         if (y < 0.0) {
             nearestBoundsY = 0.0;
         }
-        else if (y > mContentSize.height - getFrame().size.height) {
+        else if (y > mContentSize.height - getFrame().size.height && mContentSize.height > 0) {
             nearestBoundsY = mContentSize.height - getFrame().size.height;
         }
         return nearestBoundsY;
