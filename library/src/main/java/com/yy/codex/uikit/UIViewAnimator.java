@@ -305,18 +305,33 @@ public class UIViewAnimator {
         double backStartValue;
         final boolean[] backStarted = new boolean[1];
         final double backEndValue;
-        if (options.fromValue < options.topBounds || options.fromValue > options.bottomBounds) {
-            backStartValue = options.fromValue;
-            backEndValue = options.fromValue < options.topBounds ? options.topBounds : options.bottomBounds;
-            backStarted[0] = true;
-        }
-        else if (finalValue < options.topBounds) {
-            backStartValue = options.topBounds - (options.topBounds - finalValue) / 12.0;
+        if (finalValue < options.topBounds) {
+            double tmpFinalValue = finalValue;
+            if (options.fromValue < options.topBounds) {
+                tmpFinalValue = options.topBounds + (options.velocity / (1.0 - deceleration)) * (1 - Math.exp(-(1 - deceleration) * (999999999)));
+            }
+            backStartValue = options.topBounds - (options.topBounds - tmpFinalValue) / 12.0;
+            if (options.fromValue < options.topBounds) {
+                backStartValue += (options.fromValue - options.topBounds);
+            }
             backEndValue = options.topBounds;
+            if (Math.abs(options.velocity) < 44.0) {
+                backStarted[0] = true;
+            }
         }
         else if (finalValue > options.bottomBounds) {
-            backStartValue = ((finalValue - options.bottomBounds) / 12.0 + options.bottomBounds);
+            double tmpFinalValue = finalValue;
+            if (options.fromValue > options.bottomBounds) {
+                tmpFinalValue = options.topBounds + (options.velocity / (1.0 - deceleration)) * (1 - Math.exp(-(1 - deceleration) * (999999999)));
+            }
+            backStartValue = (finalValue - options.bottomBounds) / 12.0 + options.bottomBounds;
+            if (options.fromValue > options.bottomBounds) {
+                backStartValue += (options.fromValue - options.bottomBounds);
+            }
             backEndValue = options.bottomBounds;
+            if (Math.abs(options.velocity) < 44.0) {
+                backStarted[0] = true;
+            }
         }
         else {
             return decay(animationView, animationKey, options.fromValue, options.velocity, completion);
@@ -336,11 +351,23 @@ public class UIViewAnimator {
                     return;
                 }
                 double decayValue = options.fromValue + (options.velocity / (1.0 - deceleration)) * (1 - Math.exp(-(1 - deceleration) * (System.currentTimeMillis() - startTime)));
+                if (options.fromValue < options.topBounds) {
+                    decayValue = options.topBounds + (options.velocity / (1.0 - deceleration)) * (1 - Math.exp(-(1 - deceleration) * (System.currentTimeMillis() - startTime)));
+                }
+                if (options.fromValue > options.bottomBounds) {
+                    decayValue = options.bottomBounds + (options.velocity / (1.0 - deceleration)) * (1 - Math.exp(-(1 - deceleration) * (System.currentTimeMillis() - startTime)));
+                }
                 if (decayValue < options.topBounds) {
                     decayValue = options.topBounds - (options.topBounds - decayValue) / 3;
+                    if (options.fromValue < options.topBounds) {
+                        decayValue += (options.fromValue - options.topBounds);
+                    }
                 }
                 else if (decayValue > options.bottomBounds) {
                     decayValue = (decayValue - options.bottomBounds) / 3 + options.bottomBounds;
+                    if (options.fromValue < options.topBounds) {
+                        decayValue += (options.fromValue - options.bottomBounds);
+                    }
                 }
                 if (backStarted[0]) {
                     SpringSystem system = SpringSystem.create();
