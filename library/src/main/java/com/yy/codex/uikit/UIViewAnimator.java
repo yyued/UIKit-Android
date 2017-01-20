@@ -313,16 +313,10 @@ public class UIViewAnimator {
         else if (finalValue < options.topBounds) {
             backStartValue = options.topBounds - (options.topBounds - finalValue) / 12.0;
             backEndValue = options.topBounds;
-            if (!options.allowBounds) {
-                backStartValue = backEndValue;
-            }
         }
         else if (finalValue > options.bottomBounds) {
             backStartValue = ((finalValue - options.bottomBounds) / 12.0 + options.bottomBounds);
             backEndValue = options.bottomBounds;
-            if (!options.allowBounds) {
-                backStartValue = backEndValue;
-            }
         }
         else {
             return decay(animationView, animationKey, options.fromValue, options.velocity, completion);
@@ -396,8 +390,13 @@ public class UIViewAnimator {
                 else if (finalValue > options.bottomBounds && decayValue < finalBackStartValue && !backStarted[0]) {
                     backStarted[0] = true;
                 }
-                else if (finalBackStartValue == backEndValue && decayValue <= backEndValue) {
-                    valueAnimator.cancel();
+                else if (!options.allowBounds) {
+                    if (decayValue < options.topBounds) {
+                        valueAnimator.cancel();
+                    }
+                    else if (decayValue > options.bottomBounds) {
+                        valueAnimator.cancel();
+                    }
                 }
                 animationView.animate(animationKey, (float) decayValue);
             }
