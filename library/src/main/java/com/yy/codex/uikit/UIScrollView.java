@@ -146,7 +146,7 @@ public class UIScrollView extends UIView {
 
             if (mPagingEnabled) {
                 CGPoint offset = calculateScrollPagingPoint();
-                setContentOffsetSpring(offset, true, velocity.x);
+                setContentOffsetWithSpring(offset, velocity.x);
             }
             else {
                 UIViewAnimator.UIViewAnimationDecayBoundsOptions xOptions = new UIViewAnimator.UIViewAnimationDecayBoundsOptions();
@@ -293,27 +293,13 @@ public class UIScrollView extends UIView {
         }
     }
 
-    private void setContentOffsetSpring(@NonNull final CGPoint contentOffset, boolean animated, double velocity) {
-        final CGPoint oldValue = mContentOffset;
-        final UIScrollView self = this;
-        mContentOffset = contentOffset;
-        if (animated) {
-            if (mCurrentAnimationY != null) {
-                mCurrentAnimationY.cancel();
+    private void setContentOffsetWithSpring(@NonNull final CGPoint contentOffset, double velocity) {
+        mCurrentAnimationY = UIView.animator.springWithOptions(120, 20, velocity, new Runnable() {
+            @Override
+            public void run() {
+                setContentOffset(contentOffset, false);
             }
-            mCurrentAnimationY = UIView.animator.springWithOptions(120, 20, velocity, new Runnable() {
-                @Override
-                public void run() {
-                    UIView.animator.addAnimationState(self, "contentOffset.x", oldValue.x, mContentOffset.x);
-                    UIView.animator.addAnimationState(self, "contentOffset.y", oldValue.y, mContentOffset.y);
-                }
-            }, null);
-        }
-        else {
-            scrollTo((int)(mContentOffset.x * UIScreen.mainScreen.scale()), (int)(mContentOffset.y * UIScreen.mainScreen.scale()));
-            UIView.animator.addAnimationState(self, "contentOffset.x", oldValue.x, mContentOffset.x);
-            UIView.animator.addAnimationState(self, "contentOffset.y", oldValue.y, mContentOffset.y);
-        }
+        }, null);
     }
 
     public void setContentSize(@NonNull CGSize contentSize) {
