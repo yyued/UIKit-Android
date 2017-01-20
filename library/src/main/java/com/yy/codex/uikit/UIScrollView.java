@@ -169,8 +169,7 @@ public class UIScrollView extends UIView {
                 NSLog.log(horizontalPageCurrentIndex);
                 NSLog.log(offset);
                 mWindowSizePoint = offset;
-                setContentOffsetSpring(offset, true, velocity.x);
->>>>>>> 解决编译不过
+                setContentOffsetWithSpring(offset, velocity.x);
             }
             else {
                 UIViewAnimator.UIViewAnimationDecayBoundsOptions xOptions = new UIViewAnimator.UIViewAnimationDecayBoundsOptions();
