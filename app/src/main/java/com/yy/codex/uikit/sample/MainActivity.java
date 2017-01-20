@@ -82,7 +82,7 @@ class TestView extends UIView {
 
         scrollView.setBackgroundColor(UIColor.whiteColor);
 
-        for (int i = 0; i < 200; i++) {
+        for (int i = 0; i < 20; i++) {
             UILabel label = new UILabel(getContext());
             label.setFrame(new CGRect(0,100 * i,100,22));
 //            label.setBackgroundColor(new UIColor(1, 0, 0, 1.0 - (i / 100.0)));
@@ -91,7 +91,7 @@ class TestView extends UIView {
         }
 
         scrollView.setAlwaysBounceVertical(true);
-        scrollView.setContentSize(new CGSize(0, 20000));
+        scrollView.setContentSize(new CGSize(0, 2000));
 
         addSubview(scrollView);
 

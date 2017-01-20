@@ -322,9 +322,9 @@ public class UIViewAnimator {
         else if (finalValue > options.bottomBounds) {
             double tmpFinalValue = finalValue;
             if (options.fromValue > options.bottomBounds) {
-                tmpFinalValue = options.topBounds + (options.velocity / (1.0 - deceleration)) * (1 - Math.exp(-(1 - deceleration) * (999999999)));
+                tmpFinalValue = options.bottomBounds + (options.velocity / (1.0 - deceleration)) * (1 - Math.exp(-(1 - deceleration) * (999999999)));
             }
-            backStartValue = (finalValue - options.bottomBounds) / 12.0 + options.bottomBounds;
+            backStartValue = (tmpFinalValue - options.bottomBounds) / 12.0 + options.bottomBounds;
             if (options.fromValue > options.bottomBounds) {
                 backStartValue += (options.fromValue - options.bottomBounds);
             }
