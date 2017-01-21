@@ -17,15 +17,15 @@ import java.util.TimerTask;
  * Created by it on 17/1/6.
  */
 
-interface UIScrollViewDelegate {
-    public void scrollViewDidScroll(UIScrollView scrollView);
-    public void scrollViewWillBeginDragging(UIScrollView scrollView);
-    public void scrollViewDidEndDragging(UIScrollView scrollView, boolean willDecelerate);
-    public void scrollViewWillBeginDecelerating(UIScrollView scrollView);
-    public void scrollViewDidEndDecelerating(UIScrollView scrollView);
-}
-
 public class UIScrollView extends UIView {
+
+    public interface UIScrollViewDelegate {
+        void scrollViewDidScroll(UIScrollView scrollView);
+        void scrollViewWillBeginDragging(UIScrollView scrollView);
+        void scrollViewDidEndDragging(UIScrollView scrollView, boolean willDecelerate);
+        void scrollViewWillBeginDecelerating(UIScrollView scrollView);
+        void scrollViewDidEndDecelerating(UIScrollView scrollView);
+    }
 
     public UIScrollView(@NonNull Context context, @NonNull View view) {
         super(context, view);
