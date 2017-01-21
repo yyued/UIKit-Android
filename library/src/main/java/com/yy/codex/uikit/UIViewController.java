@@ -38,19 +38,12 @@ public class UIViewController implements UIResponder {
 
     /* UIResponder */
 
-    private WeakReference<UIResponder> mNextResponder;
-
-    @Override
-    public void setNextResponder(@NonNull UIResponder responder) {
-        this.mNextResponder = new WeakReference<>(responder);
-    }
-
     @Nullable
     @Override
     public UIResponder getNextResponder() {
-        UIResponder nextResponder = this.mNextResponder != null ? this.mNextResponder.get() : null;
-        if (nextResponder != null) {
-            return nextResponder;
+        UIViewController parentViewController = getParentViewController();
+        if (parentViewController != null) {
+            return parentViewController.getView();
         }
         return null;
     }
@@ -103,8 +96,11 @@ public class UIViewController implements UIResponder {
     }
 
     public void setView(UIView view) {
-        view.setNextResponder(this);
+        if (mView != null) {
+            mView.setViewController(null);
+        }
         mView = view;
+        mView.setViewController(this);
         if (!mViewLoaded) {
             mViewLoaded = true;
             viewDidLoad();
@@ -179,7 +175,7 @@ public class UIViewController implements UIResponder {
 
     @Nullable
     public UIViewController getParentViewController() {
-        return mParentViewController.get();
+        return mParentViewController != null ? mParentViewController.get() : null;
     }
 
     public void addChildViewController(@NonNull UIViewController childController) {
@@ -187,7 +183,6 @@ public class UIViewController implements UIResponder {
             return;
         }
         childController.mParentViewController = new WeakReference<UIViewController>(this);
-        childController.setNextResponder(this);
         boolean contains = false;
         for (int i = 0; i < mChildViewControllers.length; i++) {
             if (mChildViewControllers[i] == childController) {
@@ -205,7 +200,7 @@ public class UIViewController implements UIResponder {
     }
 
     public void removeFromParentViewController() {
-        UIViewController parentViewController = mParentViewController.get();
+        UIViewController parentViewController = mParentViewController != null ? mParentViewController.get() : null;
         if (parentViewController != null) {
             ArrayList<UIViewController> viewControllers = new ArrayList<>();
             for (int i = 0; i < parentViewController.mChildViewControllers.length; i++) {
@@ -240,6 +235,21 @@ public class UIViewController implements UIResponder {
             mNavigationItem = new UINavigationItem(getContext());
         }
         return mNavigationItem;
+    }
+
+    /* Layout */
+
+    public double topLayoutLength() {
+        double length = 0.0;
+        UINavigationController navigationController = (this instanceof UINavigationController) ? (UINavigationController) this : navigationController();
+        if (navigationController != null) {
+            length += navigationController.getNavigationBar().length();
+        }
+        return length;
+    }
+
+    public double bottomLayoutLength() {
+        return 0.0;
     }
 
 }

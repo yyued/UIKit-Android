@@ -15,8 +15,6 @@ import java.lang.ref.WeakReference;
 
 public interface UIResponder {
 
-    public void setNextResponder(@NonNull UIResponder responder);
-
     public @Nullable UIResponder getNextResponder();
 
     public void touchesBegan(@NonNull UITouch[] touches, @NonNull UIEvent event);

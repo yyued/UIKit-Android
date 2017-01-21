@@ -90,13 +90,13 @@ class TestView extends UIView {
     @Override
     protected void init() {
         super.init();
+//        setAutomaticallyAdjustsSpace(true);
         UIScrollView scrollView = new UIScrollView(getContext());
         UIConstraint constraint = new UIConstraint();
         constraint.centerHorizontally = true;
         constraint.centerVertically = true;
         constraint.width = "100%";
-        constraint.height = "100% - 44";
-        constraint.top = "22";
+        constraint.height = "100%";
         scrollView.setConstraint(constraint);
         scrollView.setBackgroundColor(UIColor.whiteColor);
         for (int i = 0; i < 20; i++) {

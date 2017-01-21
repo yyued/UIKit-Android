@@ -64,7 +64,7 @@ public class UINavigationController extends UIViewController {
             UIViewController[] childViewControllers = getChildViewControllers();
             if (childViewControllers.length > 0) {
                 UIView currentView = childViewControllers[childViewControllers.length - 1].getView();
-                currentView.setFrame(new CGRect(0, 0, getView().getFrame().getWidth(), getView().getFrame().getHeight()));
+                currentView.setFrame(new CGRect(0, topLayoutLength(), getView().getFrame().getWidth(), getView().getFrame().getHeight() - topLayoutLength()));
                 getView().addSubview(currentView);
             }
         }
@@ -86,10 +86,11 @@ public class UINavigationController extends UIViewController {
             UIViewController[] childViewControllers = getChildViewControllers();
             for (int i = 0; i < childViewControllers.length; i++) {
                 UIView currentView = childViewControllers[i].getView();
-                currentView.setFrame(new CGRect(0, 0, getView().getFrame().getWidth(), getView().getFrame().getHeight()));
+                currentView.setFrame(new CGRect(0, topLayoutLength(), getView().getFrame().getWidth(), getView().getFrame().getHeight() - topLayoutLength()));
                 getView().addSubview(currentView);
             }
         }
+        getView().bringSubviewToFront(getNavigationBar());
     }
 
     @Override
@@ -98,7 +99,7 @@ public class UINavigationController extends UIViewController {
         UIViewController[] childViewControllers = getChildViewControllers();
         for (int i = 0; i < childViewControllers.length; i++) {
             UIView currentView = childViewControllers[i].getView();
-            currentView.setFrame(new CGRect(0, 0, getView().getFrame().getWidth(), getView().getFrame().getHeight()));
+            currentView.setFrame(new CGRect(0, topLayoutLength(), getView().getFrame().getWidth(), getView().getFrame().getHeight() - topLayoutLength()));
         }
     }
 

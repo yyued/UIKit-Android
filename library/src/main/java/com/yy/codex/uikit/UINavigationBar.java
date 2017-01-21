@@ -81,6 +81,15 @@ public class UINavigationBar extends UIView {
         }
     }
 
+    /* Layout Length */
+
+    public double length() {
+        if (isMaterialDesign()) {
+            return 48.0;
+        }
+        return 44.0;
+    }
+
     /* Material Design */
 
     private boolean mMaterialDesignInitialized = false;

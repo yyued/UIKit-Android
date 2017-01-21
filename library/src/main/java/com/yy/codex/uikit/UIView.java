@@ -59,19 +59,26 @@ public class UIView extends FrameLayout implements UIResponder {
 
     /* UIResponder */
 
-    private WeakReference<UIResponder> mNextResponder;
+    private WeakReference<UIViewController> mViewController = null;
 
-    @Override
-    public void setNextResponder(@NonNull UIResponder responder) {
-        this.mNextResponder = new WeakReference<>(responder);
+    public void setViewController(UIViewController viewController) {
+        if (viewController == null) {
+            mViewController = null;
+        }
+        else {
+            mViewController = new WeakReference<UIViewController>(viewController);
+        }
     }
 
-    @Nullable
-    @Override
+    @Nullable @Override
     public UIResponder getNextResponder() {
-        UIResponder nextResponder = this.mNextResponder != null ? this.mNextResponder.get() : null;
-        if (nextResponder != null) {
-            return nextResponder;
+        UIViewController viewController = mViewController != null ? mViewController.get() : null;
+        if (viewController != null) {
+            return viewController;
+        }
+        UIView superview = getSuperview();
+        if (superview != null) {
+            return superview;
         }
         return null;
     }
@@ -180,16 +187,43 @@ public class UIView extends FrameLayout implements UIResponder {
             if (subview.mConstraint != null && !subview.mConstraint.disabled) {
                 subview.setFrame(subview.mConstraint.requestFrame(subview, this, previous));
             }
+            subview.automaticallyAdjustsTopSpace();
             previous = subview;
         }
-        postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (nextResponder != null && nextResponder instanceof UIViewController) {
+        if (nextResponder != null && nextResponder instanceof UIViewController) {
+            postDelayed(new Runnable() {
+                @Override
+                public void run() {
                     ((UIViewController) nextResponder).viewDidLayoutSubviews();
                 }
+            }, 1);
+        }
+    }
+
+    private boolean mAutomaticallyAdjustsSpace = false;
+
+    private void automaticallyAdjustsTopSpace() {
+        if (mAutomaticallyAdjustsSpace) {
+            UIResponder nextResponder = getNextResponder();
+            while (nextResponder != null) {
+                if (nextResponder instanceof UIViewController) {
+                    double topSpace = ((UIViewController) nextResponder).topLayoutLength();
+                    double bottomSpace = ((UIViewController) nextResponder).bottomLayoutLength();
+                    CGRect frame = getFrame();
+                    frame = frame.setY(topSpace);
+                    if (getSuperview() != null) {
+                        frame = frame.setHeight(getSuperview().getFrame().getHeight() - topSpace - bottomSpace);
+                    }
+                    setFrame(frame);
+                    break;
+                }
+                nextResponder = nextResponder.getNextResponder();
             }
-        }, 1);
+        }
+    }
+
+    public void setAutomaticallyAdjustsSpace(boolean automaticallyAdjustsSpace) {
+        mAutomaticallyAdjustsSpace = automaticallyAdjustsSpace;
     }
 
     protected UIEdgeInsets mMarginInsets;
@@ -312,7 +346,6 @@ public class UIView extends FrameLayout implements UIResponder {
 
     public void addSubview(@NonNull UIView subview) {
         subview.removeFromSuperview();
-        subview.setNextResponder(this);
         addView(subview, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
     }
 
