@@ -69,6 +69,14 @@ public class UIScrollView extends UIView {
     @NonNull private CGSize mContentSize = new CGSize(0, 0);
     private UIEdgeInsets mContentInset;
 
+    public void setContentInset(UIEdgeInsets contentInset) {
+        this.mContentInset = contentInset;
+        setContentOffset(mContentOffset, false);
+    }
+    public UIEdgeInsets getContentInset() {
+        return this.mContentInset;
+    }
+
     public void setAlwaysBounceHorizontal(boolean alwaysBounceHorizontal) {
         mAlwaysBounceHorizontal = alwaysBounceHorizontal;
     }
@@ -137,7 +145,6 @@ public class UIScrollView extends UIView {
             mVerticalMoveDiscance = (originY + Math.abs(mTrackingPoint.y)) - mWindowSizePoint.y;
             mHorizontalMoveDiscance = (originX + Math.abs(mTrackingPoint.x)) - mWindowSizePoint.x;
 
-            NSLog.log(offset);
             setContentOffset(offset);
         }
         else if (panGestureRecognizer.getState() == UIGestureRecognizerState.Ended) {
@@ -165,7 +172,7 @@ public class UIScrollView extends UIView {
                 yOptions.fromValue = mContentOffset.y;
                 yOptions.velocity = -velocity.y / 1000.0;
                 yOptions.topBounds = 0.0;
-                yOptions.bottomBounds = mContentSize.height - getFrame().size.height;
+                yOptions.bottomBounds = mContentSize.height + mContentInset.bottom - getFrame().size.height;
                 yOptions.viewBounds = getFrame().size.height;
                 mCurrentAnimationY = UIView.animator.decayBounds(this, "contentOffset.y", yOptions, null);
             }
@@ -175,8 +182,8 @@ public class UIScrollView extends UIView {
     }
 
     private void calculateScrollPagingPoint(CGPoint velocity) {
-        int verticalPageCurrentIndex = (int)(mWindowSizePoint.y / getFrame().size.height);
-        int horizontalPageCurrentIndex = (int)(mWindowSizePoint.x / getFrame().size.width);
+        int verticalPageCurrentIndex = (int)Math.round(mWindowSizePoint.y / getFrame().size.height);
+        int horizontalPageCurrentIndex = (int)Math.round(mWindowSizePoint.x / getFrame().size.width);
 
         double moveOffsetX = horizontalPageCurrentIndex * getFrame().size.width;
         double moveOffsetY = verticalPageCurrentIndex * getFrame().size.height;
@@ -225,7 +232,7 @@ public class UIScrollView extends UIView {
         boolean mAlwaysBounceOrientation = isX ? mAlwaysBounceHorizontal : mAlwaysBounceVertical;
 
         double retValue = xOry;
-        double deltaBottom = calculateContentSizeValue - calculateThisValue;
+        double deltaBottom = calculateContentSizeValue + mContentInset.bottom + mContentInset.top - calculateThisValue;
         double over = xOry - deltaBottom;
 
         if (calculateContentSizeValue < calculateThisValue) {
@@ -245,7 +252,7 @@ public class UIScrollView extends UIView {
             }
 
             //out of bottom
-            if (xOry > Math.abs(calculateContentSizeValue - calculateThisValue)) {
+            if (xOry > Math.abs(calculateContentSizeValue + mContentInset.bottom + mContentInset.top - calculateThisValue)) {
                 retValue = deltaBottom;
                 if (mBounces) {
                     // can Bounces
@@ -288,7 +295,7 @@ public class UIScrollView extends UIView {
             }, null);
         }
         else {
-            scrollTo((int)(mContentOffset.x * UIScreen.mainScreen.scale()), (int)(mContentOffset.y * UIScreen.mainScreen.scale()));
+            scrollTo((int)(mContentOffset.x * UIScreen.mainScreen.scale()), (int)(mContentOffset.y * UIScreen.mainScreen.scale() - mContentInset.top));
             UIView.animator.addAnimationState(self, "contentOffset.x", oldValue.x, mContentOffset.x);
             UIView.animator.addAnimationState(self, "contentOffset.y", oldValue.y, mContentOffset.y);
         }
@@ -305,6 +312,10 @@ public class UIScrollView extends UIView {
 
     public void setContentSize(@NonNull CGSize contentSize) {
         mContentSize = contentSize;
+    }
+
+    public CGSize getContentSize() {
+        return mContentSize;
     }
 
     private CGPoint overBoundsCheck(CGPoint point) {
