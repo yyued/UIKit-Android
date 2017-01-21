@@ -17,6 +17,13 @@ import java.util.TimerTask;
  * Created by it on 17/1/6.
  */
 
+interface UIScrollViewDelegate {
+    public void scrollViewDidScroll(UIScrollView scrollView);
+    public void scrollViewWillBeginDragging(UIScrollView scrollView);
+    public void scrollViewDidEndDragging(UIScrollView scrollView, boolean willDecelerate);
+    public void scrollViewWillBeginDecelerating(UIScrollView scrollView);
+    public void scrollViewDidEndDecelerating(UIScrollView scrollView);
+}
 
 public class UIScrollView extends UIView {
 
@@ -68,6 +75,12 @@ public class UIScrollView extends UIView {
     @NonNull private CGPoint mContentOffset = new CGPoint(0, 0);
     @NonNull private CGSize mContentSize = new CGSize(0, 0);
     private UIEdgeInsets mContentInset;
+
+    private UIScrollViewDelegate mDelegate;
+
+    public void setDelegate(UIScrollViewDelegate delegate) {
+        this.mDelegate = delegate;
+    }
 
     public void setContentInset(UIEdgeInsets contentInset) {
         this.mContentInset = contentInset;
@@ -136,6 +149,9 @@ public class UIScrollView extends UIView {
             mTracking = true;
             mTrackingPoint = new CGPoint(originX, originY);
             panGestureRecognizer.setTranslation(mContentOffset);
+            if (mDelegate != null) {
+                mDelegate.scrollViewWillBeginDragging(this);
+            }
             return;
         }
         if (mTracking && panGestureRecognizer.getState() == UIGestureRecognizerState.Changed) {
@@ -150,6 +166,9 @@ public class UIScrollView extends UIView {
         else if (panGestureRecognizer.getState() == UIGestureRecognizerState.Ended) {
             /* Ended */
             mTracking = false;
+            if (mDelegate != null) {
+                mDelegate.scrollViewDidEndDragging(this, false);
+            }
             CGPoint velocity = panGestureRecognizer.velocity();
 
             if (mPagingEnabled) {
@@ -238,7 +257,7 @@ public class UIScrollView extends UIView {
         if (calculateContentSizeValue < calculateThisValue) {
             retValue = 0;
             if (mBounces && mAlwaysBounceOrientation) {
-                retValue = xOry / 3.0;
+                retValue = xOry / 3.0;// add
             }
         }
         else {
@@ -296,6 +315,9 @@ public class UIScrollView extends UIView {
         }
         else {
             scrollTo((int)(mContentOffset.x * UIScreen.mainScreen.scale()), (int)(mContentOffset.y * UIScreen.mainScreen.scale() - mContentInset.top));
+            if (mDelegate != null) {
+                mDelegate.scrollViewDidScroll(this);
+            }
             UIView.animator.addAnimationState(self, "contentOffset.x", oldValue.x, mContentOffset.x);
             UIView.animator.addAnimationState(self, "contentOffset.y", oldValue.y, mContentOffset.y);
         }
