@@ -169,6 +169,10 @@ public class UIView extends FrameLayout implements UIResponder {
     }
 
     public void layoutSubviews() {
+        final UIResponder nextResponder = getNextResponder();
+        if (nextResponder != null && nextResponder instanceof UIViewController) {
+            ((UIViewController) nextResponder).viewWillLayoutSubviews();
+        }
         UIView previous = null;
         UIView[] subviews = getSubviews();
         for (int i = 0; i < subviews.length; i++) {
@@ -178,6 +182,14 @@ public class UIView extends FrameLayout implements UIResponder {
             }
             previous = subview;
         }
+        postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (nextResponder != null && nextResponder instanceof UIViewController) {
+                    ((UIViewController) nextResponder).viewDidLayoutSubviews();
+                }
+            }
+        }, 1);
     }
 
     protected UIEdgeInsets mMarginInsets;
