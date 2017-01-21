@@ -146,30 +146,8 @@ public class UIScrollView extends UIView {
             CGPoint velocity = panGestureRecognizer.velocity();
 
             if (mPagingEnabled) {
-                int verticalPageCurrentIndex = (int)(mWindowSizePoint.y / getFrame().size.height);
-                int horizontalPageCurrentIndex = (int)(mWindowSizePoint.x / getFrame().size.width);
-
-                double moveOffsetX = horizontalPageCurrentIndex * getFrame().size.width;
-                double moveOffsetY = verticalPageCurrentIndex * getFrame().size.height;
-                if ((Math.abs(mHorizontalMoveDiscance) > mFingerHorizontalMoveDistance || Math.abs(mVerticalMoveDiscance) > mFingerVerticalMoveDistance ) || (Math.abs(velocity.x) > FINGER_VELOCITY || Math.abs(velocity.y) > FINGER_VELOCITY )) {
-                    verticalPageCurrentIndex = mVerticalMoveDiscance > 0 ? ++verticalPageCurrentIndex : --verticalPageCurrentIndex;
-                    horizontalPageCurrentIndex = mHorizontalMoveDiscance > 0 ? ++horizontalPageCurrentIndex : --horizontalPageCurrentIndex;
-                    if (verticalPageCurrentIndex < 0) {
-                        verticalPageCurrentIndex = 0;
-                    }
-                    if (horizontalPageCurrentIndex < 0) {
-                        horizontalPageCurrentIndex = 0;
-                    }
-
-                    moveOffsetX = horizontalPageCurrentIndex * getFrame().size.width;
-                    moveOffsetY = verticalPageCurrentIndex * getFrame().size.height;
-                }
-
-                CGPoint offset = calculateMovePoint(new CGPoint(moveOffsetX, moveOffsetY), mPagingEnabled);
-                NSLog.log(horizontalPageCurrentIndex);
-                NSLog.log(offset);
-                mWindowSizePoint = offset;
-                setContentOffsetWithSpring(offset, velocity.x);
+                calculateScrollPagingPoint(velocity);
+                setContentOffsetWithSpring(mWindowSizePoint, velocity.x);
             }
             else {
                 UIViewAnimator.UIViewAnimationDecayBoundsOptions xOptions = new UIViewAnimator.UIViewAnimationDecayBoundsOptions();
@@ -196,6 +174,30 @@ public class UIScrollView extends UIView {
         }
     }
 
+    private void calculateScrollPagingPoint(CGPoint velocity) {
+        int verticalPageCurrentIndex = (int)(mWindowSizePoint.y / getFrame().size.height);
+        int horizontalPageCurrentIndex = (int)(mWindowSizePoint.x / getFrame().size.width);
+
+        double moveOffsetX = horizontalPageCurrentIndex * getFrame().size.width;
+        double moveOffsetY = verticalPageCurrentIndex * getFrame().size.height;
+        if ((Math.abs(mHorizontalMoveDiscance) > mFingerHorizontalMoveDistance || Math.abs(mVerticalMoveDiscance) > mFingerVerticalMoveDistance ) || (Math.abs(velocity.x) > FINGER_VELOCITY || Math.abs(velocity.y) > FINGER_VELOCITY )) {
+            verticalPageCurrentIndex = mVerticalMoveDiscance > 0 ? ++verticalPageCurrentIndex : --verticalPageCurrentIndex;
+            horizontalPageCurrentIndex = mHorizontalMoveDiscance > 0 ? ++horizontalPageCurrentIndex : --horizontalPageCurrentIndex;
+            if (verticalPageCurrentIndex < 0) {
+                verticalPageCurrentIndex = 0;
+            }
+            if (horizontalPageCurrentIndex < 0) {
+                horizontalPageCurrentIndex = 0;
+            }
+
+            moveOffsetX = horizontalPageCurrentIndex * getFrame().size.width;
+            moveOffsetY = verticalPageCurrentIndex * getFrame().size.height;
+        }
+
+        CGPoint offset = calculateMovePoint(new CGPoint(moveOffsetX, moveOffsetY), mPagingEnabled);
+        mWindowSizePoint = offset;
+    }
+
     private CGPoint calculateMovePoint(CGPoint point, boolean PagingEnabled) {
         double y = calculateY(point.y);
         double x = calculateX(point.x);
@@ -220,35 +222,38 @@ public class UIScrollView extends UIView {
         double calculateContentSizeValue = isX ? contentSizeWidth : contentSizeHeight;
         double calculateThisValue = isX ? thisWidth : thisHeight;
 
-        //not set ContentSize
-        if (calculateContentSizeValue == 0) {
-            return 0;
-        }
+        boolean mAlwaysBounceOrientation = isX ? mAlwaysBounceHorizontal : mAlwaysBounceVertical;
 
-        // out of top
-        if (xOry < 0.0) {
-            if ((calculateContentSizeValue > calculateThisValue) && mBounces) {
-                // can Bounces
-                double delta = Math.abs(xOry);
-                return -(delta / 3.0);
-            }
-            // can't Bounces
-            return 0;
-        }
+        double retValue = xOry;
+        double deltaBottom = calculateContentSizeValue - calculateThisValue;
+        double over = xOry - deltaBottom;
 
-        //out of bottom
-        if (xOry > Math.abs(calculateContentSizeValue - calculateThisValue)) {
-            double delta = calculateContentSizeValue - calculateThisValue;
-            double over = xOry - delta;
-            if ((calculateContentSizeValue > calculateThisValue) && mBounces) {
-                // can Bounces
-                return delta + (over / 3.0);
+        if (calculateContentSizeValue < calculateThisValue) {
+            retValue = 0;
+            if (mBounces && mAlwaysBounceOrientation) {
+                retValue = xOry / 3.0;
             }
-            // can't Bounces
-            return calculateContentSizeValue - calculateThisValue;
         }
-        // move
-        return xOry;
+        else {
+            // out of top
+            if (xOry < 0.0) {
+                retValue = 0;
+                if (mBounces) {
+                    // can Bounces
+                    retValue = xOry / 3.0;
+                }
+            }
+
+            //out of bottom
+            if (xOry > Math.abs(calculateContentSizeValue - calculateThisValue)) {
+                retValue = deltaBottom;
+                if (mBounces) {
+                    // can Bounces
+                    retValue = deltaBottom + (over / 3.0);
+                }
+            }
+        }
+        return retValue;
     }
 
     @Override
