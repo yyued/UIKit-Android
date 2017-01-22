@@ -88,7 +88,7 @@ public class UIBarButtonItem extends UIBarItem {
             if (mImage != null) {
                 button.setImage(mImage, UIControl.State.Normal);
             }
-            button.setFrame(new CGRect(0, 0, button.intrinsicContentSize().width, 44));
+            button.setFrame(new CGRect(0, 0, button.intrinsicContentSize().getWidth(), 44));
             button.setImageEdgeInsets(getImageInsets());
             if (mTarget != null && mAction != null) {
                 button.addTarget(mTarget, mAction, UIControl.Event.TouchUpInside);

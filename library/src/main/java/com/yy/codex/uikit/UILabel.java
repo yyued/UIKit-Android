@@ -224,7 +224,7 @@ public class UILabel extends UIView {
 
     private void resetTextView() {
         removeView(mTextView);
-        addView(mTextView, new LayoutParams((int)(this.getFrame().size.width * UIScreen.mainScreen.scale()), (int)(this.getFrame().size.height * UIScreen.mainScreen.scale())));
+        addView(mTextView, new LayoutParams((int)(this.getFrame().getSize().getWidth() * UIScreen.mainScreen.scale()), (int)(this.getFrame().getSize().getHeight() * UIScreen.mainScreen.scale())));
     }
 
 }

@@ -146,7 +146,7 @@ public class UISwitch extends UIControl {
     private void setActiveAnimated(final boolean isActive){
         this.mActive = isActive;
         cancelAnimation();
-        mCurrentAnimation = UIView.animator.spring(new Runnable() {
+        mCurrentAnimation = UIViewAnimator.spring(new Runnable() {
             @Override
             public void run() {
                 float widthExpanded = 8;
@@ -177,7 +177,7 @@ public class UISwitch extends UIControl {
     public void setOnAnimated(boolean isOn){
         this.mOn = isOn;
         cancelAnimation();
-        mCurrentAnimation = UIView.animator.spring(new Runnable() {
+        mCurrentAnimation = UIViewAnimator.spring(new Runnable() {
             @Override
             public void run() {
                 if (mOn) {

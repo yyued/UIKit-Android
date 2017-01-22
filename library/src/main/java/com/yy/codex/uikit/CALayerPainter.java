@@ -91,7 +91,7 @@ public class CALayerPainter {
         float cornerRadius = (float) layer.getCornerRadius() * scaledDensity;
         UIColor bitmapColor = layer.getBitmapColor();
 
-        CGRect maskFrame = new CGRect(origin.x, origin.y, frame.size.width, frame.size.height);
+        CGRect maskFrame = new CGRect(origin.getX(), origin.getY(), frame.getSize().getWidth(), frame.getSize().getHeight());
         Bitmap resultBitmap = createEmptyBitmap(maskFrame);
         Canvas resultCanvas = new Canvas(resultBitmap);
         Paint mixPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -163,7 +163,7 @@ public class CALayerPainter {
         if (bitmapColor != null) {
             sPaint.setColorFilter(new PorterDuffColorFilter(bitmapColor.toInt(), PorterDuff.Mode.SRC_IN));
         }
-        CGRect bitmapFrame = new CGRect(origin.x, origin.y, frame.size.width, frame.size.height);
+        CGRect bitmapFrame = new CGRect(origin.getX(), origin.getY(), frame.getSize().getWidth(), frame.getSize().getHeight());
         CALayerBitmapPainter.drawBitmap(canvas, bitmapFrame, bitmap, layer.getBitmapGravity(), sPaint);
         sPaint.setColorFilter(null);
     }
@@ -190,8 +190,8 @@ public class CALayerPainter {
     }
 
     private static Bitmap createEmptyBitmap(CGRect rect){
-        int bitmapW = (int) (rect.size.width + rect.origin.x);
-        int bitmapH = (int) (rect.size.height + rect.origin.y);
+        int bitmapW = (int) (rect.getSize().getWidth() + rect.getOrigin().getX());
+        int bitmapH = (int) (rect.getSize().getHeight() + rect.getOrigin().getY());
         Bitmap bitmap = Bitmap.createBitmap(bitmapW, bitmapH, Bitmap.Config.ARGB_8888);
         return bitmap;
     }
@@ -199,8 +199,8 @@ public class CALayerPainter {
     private static Bitmap createEmptyBitmap(CALayer layer){
         CGPoint origin = CALayer.calcOriginInSuperCoordinate(layer);
         float scaledDensity = (float) UIScreen.mainScreen.scale();
-        int bitmapW = (int) (layer.getFrame().size.width * scaledDensity  + origin.x);
-        int bitmapH = (int) (layer.getFrame().size.height * scaledDensity + origin.y);
+        int bitmapW = (int) (layer.getFrame().getSize().getWidth() * scaledDensity  + origin.getX());
+        int bitmapH = (int) (layer.getFrame().getSize().getHeight() * scaledDensity + origin.getY());
         Bitmap bitmap = Bitmap.createBitmap(bitmapW, bitmapH, Bitmap.Config.ARGB_8888);
         return bitmap;
     }
@@ -215,10 +215,10 @@ public class CALayerPainter {
         CGPoint origin = CALayer.calcOriginInSuperCoordinate(layer);
         float scaledDensity = (float) UIScreen.mainScreen.scale();
         float cornerRaidus = (float) layer.getCornerRadius() * scaledDensity;
-        int bitmapW = (int) (layer.getFrame().size.width * scaledDensity  + origin.x);
-        int bitmapH = (int) (layer.getFrame().size.height * scaledDensity + origin.y);
+        int bitmapW = (int) (layer.getFrame().getSize().getWidth() * scaledDensity  + origin.getX());
+        int bitmapH = (int) (layer.getFrame().getSize().getHeight() * scaledDensity + origin.getY());
         Bitmap bitmap = Bitmap.createBitmap(bitmapW, bitmapH, Bitmap.Config.ARGB_8888);
-        RectF rectF = new RectF((float)origin.x, (float) origin.y, bitmapW, bitmapH);
+        RectF rectF = new RectF((float) origin.getX(), (float) origin.getY(), bitmapW, bitmapH);
         new Canvas(bitmap).drawRoundRect(rectF, cornerRaidus, cornerRaidus, new Paint(Paint.ANTI_ALIAS_FLAG));
         return bitmap;
     }
@@ -246,7 +246,7 @@ public class CALayerPainter {
     }
 
     private static Bitmap createRadiusMask(@NonNull CGRect rect, double radius){
-        Bitmap maskBitmap = Bitmap.createBitmap((int)(rect.size.width+rect.origin.x), (int)(rect.size.height+rect.origin.y), Bitmap.Config.ARGB_8888);
+        Bitmap maskBitmap = Bitmap.createBitmap((int)(rect.getSize().getWidth() + rect.getOrigin().getX()), (int)(rect.getSize().getHeight() + rect.getOrigin().getY()), Bitmap.Config.ARGB_8888);
         Canvas maskCanvas = new Canvas(maskBitmap);
         Paint maskPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         maskCanvas.drawRoundRect(rect.toRectF(), (float) radius, (float) radius, maskPaint);

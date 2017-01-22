@@ -87,25 +87,25 @@ public class UIConstraint {
         if (width != null) {
             String formula = width;
             if (sizeRelate == LayoutRelate.RelateToPrevious) {
-                w = requestValue(0, previousView != null ? previousView.getFrame().size.width : 0.0, formula);
+                w = requestValue(0, previousView != null ? previousView.getFrame().getSize().getWidth() : 0.0, formula);
             }
             else {
-                w = requestValue(0, superView != null ? superView.getFrame().size.width : 0.0, formula);
+                w = requestValue(0, superView != null ? superView.getFrame().getSize().getWidth() : 0.0, formula);
             }
         }
         else {
             CGSize iSize = myView.intrinsicContentSize();
-            if (iSize.width > 0.0) {
-                w = Math.ceil(iSize.width);
+            if (iSize.getWidth() > 0.0) {
+                w = Math.ceil(iSize.getWidth());
             }
         }
         if (height != null) {
             String formula = height;
             if (sizeRelate == LayoutRelate.RelateToPrevious) {
-                h = requestValue(0, previousView != null ? previousView.getFrame().size.height : 0.0, formula);
+                h = requestValue(0, previousView != null ? previousView.getFrame().getSize().getHeight() : 0.0, formula);
             }
             else {
-                h = requestValue(0, superView != null ? superView.getFrame().size.height : 0.0, formula);
+                h = requestValue(0, superView != null ? superView.getFrame().getSize().getHeight() : 0.0, formula);
             }
         }
         else {
@@ -113,32 +113,32 @@ public class UIConstraint {
                 myView.setMaxWidth(w);
             }
             CGSize iSize = myView.intrinsicContentSize();
-            if (iSize.height > 0.0) {
-                h = Math.ceil(iSize.height);
+            if (iSize.getHeight() > 0.0) {
+                h = Math.ceil(iSize.getHeight());
             }
         }
         if (centerHorizontally && alignmentRelate == LayoutRelate.RelateToGroup) {
-            cx = superView != null ? superView.getFrame().size.width / 2.0 : 0.0;
+            cx = superView != null ? superView.getFrame().getSize().getWidth() / 2.0 : 0.0;
         }
         else if (centerHorizontally && alignmentRelate == LayoutRelate.RelateToPrevious) {
-            cx = previousView != null ? previousView.getCenter().x : 0.0;
+            cx = previousView != null ? previousView.getCenter().getX() : 0.0;
         }
         if (centerVertically && alignmentRelate == LayoutRelate.RelateToGroup) {
-            cy = superView != null ? superView.getFrame().size.height / 2.0 : 0.0;
+            cy = superView != null ? superView.getFrame().getSize().getHeight() / 2.0 : 0.0;
         }
         else if (centerVertically && alignmentRelate == LayoutRelate.RelateToPrevious) {
-            cy = previousView != null ? previousView.getCenter().y : 0.0;
+            cy = previousView != null ? previousView.getCenter().getY() : 0.0;
         }
         if (top != null) {
             String formula = top;
             double t = 0.0;
             if (pinRelate == LayoutRelate.RelateToGroup) {
-                t = requestValue(0, superView != null ? superView.getFrame().size.height : 0.0, formula);
+                t = requestValue(0, superView != null ? superView.getFrame().getSize().getHeight() : 0.0, formula);
             }
             else if (pinRelate == LayoutRelate.RelateToPrevious) {
-                t = requestValue(0, previousView != null ? previousView.getFrame().size.height : 0.0, formula);
+                t = requestValue(0, previousView != null ? previousView.getFrame().getSize().getHeight() : 0.0, formula);
                 if (previousView != null) {
-                    t = previousView.getFrame().origin.y + t;
+                    t = previousView.getFrame().getOrigin().getY() + t;
                 }
             }
             if (centerVertically) {
@@ -152,12 +152,12 @@ public class UIConstraint {
             String formula = bottom;
             double t = 0.0;
             if (pinRelate == LayoutRelate.RelateToGroup) {
-                t = requestValue(0, superView != null ? superView.getFrame().size.height : 0.0, formula);
+                t = requestValue(0, superView != null ? superView.getFrame().getSize().getHeight() : 0.0, formula);
             }
             else if (pinRelate == LayoutRelate.RelateToPrevious) {
-                t = requestValue(0, previousView != null ? previousView.getFrame().size.height : 0.0, formula);
+                t = requestValue(0, previousView != null ? previousView.getFrame().getSize().getHeight() : 0.0, formula);
                 if (previousView != null) {
-                    t = previousView.getFrame().origin.y + previousView.getFrame().size.height - t;
+                    t = previousView.getFrame().getOrigin().getY() + previousView.getFrame().getSize().getHeight() - t;
                 }
             }
             if (centerVertically) {
@@ -175,12 +175,12 @@ public class UIConstraint {
             String formula = left;
             double t = 0.0;
             if (pinRelate == LayoutRelate.RelateToGroup) {
-                t = requestValue(0, superView != null ? superView.getFrame().size.width : 0.0, formula);
+                t = requestValue(0, superView != null ? superView.getFrame().getSize().getWidth() : 0.0, formula);
             }
             else if (pinRelate == LayoutRelate.RelateToPrevious) {
-                t = requestValue(0, previousView != null ? previousView.getFrame().size.width : 0.0, formula);
+                t = requestValue(0, previousView != null ? previousView.getFrame().getSize().getWidth() : 0.0, formula);
                 if (previousView != null) {
-                    t = previousView.getFrame().origin.x + t;
+                    t = previousView.getFrame().getOrigin().getX() + t;
                 }
             }
             if (centerHorizontally) {
@@ -194,12 +194,12 @@ public class UIConstraint {
             String formula = right;
             double t = 0.0;
             if (pinRelate == LayoutRelate.RelateToGroup) {
-                t = requestValue(0, superView != null ? superView.getFrame().size.width : 0.0, formula);
+                t = requestValue(0, superView != null ? superView.getFrame().getSize().getWidth() : 0.0, formula);
             }
             else if (pinRelate == LayoutRelate.RelateToPrevious) {
-                t = requestValue(0, previousView != null ? previousView.getFrame().size.width : 0.0, formula);
+                t = requestValue(0, previousView != null ? previousView.getFrame().getSize().getWidth() : 0.0, formula);
                 if (previousView != null) {
-                    t = previousView.getFrame().origin.x + previousView.getFrame().size.width - t;
+                    t = previousView.getFrame().getOrigin().getX() + previousView.getFrame().getSize().getWidth() - t;
                 }
             }
             if (centerHorizontally) {
@@ -220,59 +220,59 @@ public class UIConstraint {
                 !Double.isNaN(h) ? h : 0.0
         );
         if (!Double.isNaN(cx)) {
-            newFrame = newFrame.setX(newFrame.origin.x - newFrame.size.width / 2.0);
+            newFrame = newFrame.setX(newFrame.getOrigin().getX() - newFrame.getSize().getWidth() / 2.0);
         }
         if (!Double.isNaN(cy)) {
-            newFrame = newFrame.setY(newFrame.origin.y - newFrame.size.height / 2.0);
+            newFrame = newFrame.setY(newFrame.getOrigin().getY() - newFrame.getSize().getHeight() / 2.0);
         }
         if (!Double.isNaN(mx) && Double.isNaN(x)) {
             if (pinRelate == LayoutRelate.RelateToGroup) {
-                newFrame = newFrame.setX((superView != null ? superView.getFrame().size.width : 0.0) - mx - newFrame.size.width);
+                newFrame = newFrame.setX((superView != null ? superView.getFrame().getSize().getWidth() : 0.0) - mx - newFrame.getSize().getWidth());
             }
             else {
-                newFrame = newFrame.setX((previousView != null ? previousView.getFrame().size.width : 0.0) - mx - newFrame.size.width);
+                newFrame = newFrame.setX((previousView != null ? previousView.getFrame().getSize().getWidth() : 0.0) - mx - newFrame.getSize().getWidth());
             }
         }
         if (!Double.isNaN(my) && Double.isNaN(y)) {
             if (pinRelate == LayoutRelate.RelateToGroup) {
-                newFrame = newFrame.setY((superView != null ? superView.getFrame().size.height : 0.0) - my - newFrame.size.height);
+                newFrame = newFrame.setY((superView != null ? superView.getFrame().getSize().getHeight() : 0.0) - my - newFrame.getSize().getHeight());
             }
             else {
-                newFrame = newFrame.setY((previousView != null ? previousView.getFrame().size.height : 0.0) - my - newFrame.size.height);
+                newFrame = newFrame.setY((previousView != null ? previousView.getFrame().getSize().getHeight() : 0.0) - my - newFrame.getSize().getHeight());
             }
         }
         if (!Double.isNaN(mx) && !Double.isNaN(x)) {
             if (pinRelate == LayoutRelate.RelateToGroup) {
-                newFrame = newFrame.setWidth((superView != null ? superView.getFrame().size.width : 0.0) - mx - x);
+                newFrame = newFrame.setWidth((superView != null ? superView.getFrame().getSize().getWidth() : 0.0) - mx - x);
             }
             else {
-                newFrame = newFrame.setWidth((previousView != null ? previousView.getFrame().size.width : 0.0) - mx - (x - (previousView != null ? previousView.getFrame().origin.x : 0.0)));
+                newFrame = newFrame.setWidth((previousView != null ? previousView.getFrame().getSize().getWidth() : 0.0) - mx - (x - (previousView != null ? previousView.getFrame().getOrigin().getX() : 0.0)));
             }
         }
         if (!Double.isNaN(my) && !Double.isNaN(y)) {
             if (pinRelate == LayoutRelate.RelateToGroup) {
-                newFrame = newFrame.setHeight((superView != null ? superView.getFrame().size.height : 0.0) - my - y);
+                newFrame = newFrame.setHeight((superView != null ? superView.getFrame().getSize().getHeight() : 0.0) - my - y);
             }
             else {
-                newFrame = newFrame.setHeight((previousView != null ? previousView.getFrame().size.height : 0.0) - my - (y - (previousView != null ? previousView.getFrame().origin.y : 0.0)));
+                newFrame = newFrame.setHeight((previousView != null ? previousView.getFrame().getSize().getHeight() : 0.0) - my - (y - (previousView != null ? previousView.getFrame().getOrigin().getY() : 0.0)));
             }
         }
         if (xorw) {
-            newFrame = newFrame.setX(newFrame.origin.x - newFrame.size.width);
+            newFrame = newFrame.setX(newFrame.getOrigin().getX() - newFrame.getSize().getWidth());
         }
         if (yorh) {
-            newFrame = newFrame.setY(newFrame.origin.y - newFrame.size.height);
+            newFrame = newFrame.setY(newFrame.getOrigin().getY() - newFrame.getSize().getHeight());
         }
-        if (Double.isNaN(newFrame.origin.x)) {
+        if (Double.isNaN(newFrame.getOrigin().getX())) {
             newFrame = newFrame.setX(0.0);
         }
-        if (Double.isNaN(newFrame.origin.y)) {
+        if (Double.isNaN(newFrame.getOrigin().getY())) {
             newFrame = newFrame.setY(0.0);
         }
-        if (Double.isNaN(newFrame.size.width)) {
+        if (Double.isNaN(newFrame.getSize().getWidth())) {
             newFrame = newFrame.setWidth(0.0);
         }
-        if (Double.isNaN(newFrame.size.height)) {
+        if (Double.isNaN(newFrame.getSize().getHeight())) {
             newFrame = newFrame.setHeight(0.0);
         }
         return newFrame;

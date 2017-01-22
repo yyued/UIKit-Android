@@ -244,9 +244,9 @@ public class UIButton extends UIControl {
     @Override
     public CGSize intrinsicContentSize() {
         mTitleLabel.setMaxWidth(999999);
-        double contentWidth = mTitleLabel.intrinsicContentSize().width + mImageView.intrinsicContentSize().width;
+        double contentWidth = mTitleLabel.intrinsicContentSize().getWidth() + mImageView.intrinsicContentSize().getWidth();
         contentWidth += mContentEdgeInsets.left + mContentEdgeInsets.right + mImageEdgeInsets.left + mImageEdgeInsets.right + mTitleEdgeInsets.left + mTitleEdgeInsets.right;
-        double contentHeight = mTitleLabel.intrinsicContentSize().height + mImageView.intrinsicContentSize().height;
+        double contentHeight = mTitleLabel.intrinsicContentSize().getHeight() + mImageView.intrinsicContentSize().getHeight();
         contentHeight += mContentEdgeInsets.top + mContentEdgeInsets.bottom + Math.max(mTitleEdgeInsets.top + mTitleEdgeInsets.bottom, mImageEdgeInsets.top + mImageEdgeInsets.bottom);
         return new CGSize(Math.max(contentWidth, 44), Math.max(contentHeight, 44));
     }
@@ -273,20 +273,20 @@ public class UIButton extends UIControl {
     @Override
     public void layoutSubviews() {
         super.layoutSubviews();
-        mTitleLabel.setMaxWidth(getFrame().size.width - mImageView.intrinsicContentSize().width - (mContentEdgeInsets.left + mContentEdgeInsets.right + mImageEdgeInsets.left + mImageEdgeInsets.right + mTitleEdgeInsets.left + mTitleEdgeInsets.right));
-        double contentWidth = mTitleLabel.intrinsicContentSize().width + mImageView.intrinsicContentSize().width;
+        mTitleLabel.setMaxWidth(getFrame().getSize().getWidth() - mImageView.intrinsicContentSize().getWidth() - (mContentEdgeInsets.left + mContentEdgeInsets.right + mImageEdgeInsets.left + mImageEdgeInsets.right + mTitleEdgeInsets.left + mTitleEdgeInsets.right));
+        double contentWidth = mTitleLabel.intrinsicContentSize().getWidth() + mImageView.intrinsicContentSize().getWidth();
         contentWidth += mContentEdgeInsets.left + mContentEdgeInsets.right + mImageEdgeInsets.left + mImageEdgeInsets.right + mTitleEdgeInsets.left + mTitleEdgeInsets.right;
         double imageViewOriginY = 0;
         double titleLabelOriginY = 0;
         if (getContentVerticalAlignment() == ContentVerticalAlignment.Center) {
-            imageViewOriginY = (getFrame().size.height - mImageView.intrinsicContentSize().height) / 2.0;
-            titleLabelOriginY = (getFrame().size.height - mTitleLabel.intrinsicContentSize().height) / 2.0;
+            imageViewOriginY = (getFrame().getSize().getHeight() - mImageView.intrinsicContentSize().getHeight()) / 2.0;
+            titleLabelOriginY = (getFrame().getSize().getHeight() - mTitleLabel.intrinsicContentSize().getHeight()) / 2.0;
             imageViewOriginY = Math.ceil(imageViewOriginY);
             titleLabelOriginY = Math.ceil(titleLabelOriginY);
         }
         else if (getContentVerticalAlignment() == ContentVerticalAlignment.Bottom) {
-            imageViewOriginY = getFrame().size.height - mImageView.intrinsicContentSize().height;
-            titleLabelOriginY = getFrame().size.height - mTitleLabel.intrinsicContentSize().height;
+            imageViewOriginY = getFrame().getSize().getHeight() - mImageView.intrinsicContentSize().getHeight();
+            titleLabelOriginY = getFrame().getSize().getHeight() - mTitleLabel.intrinsicContentSize().getHeight();
             imageViewOriginY = Math.ceil(imageViewOriginY);
             titleLabelOriginY = Math.ceil(titleLabelOriginY);
         }
@@ -294,42 +294,42 @@ public class UIButton extends UIControl {
             mImageView.setFrame(new CGRect(
                     mContentEdgeInsets.left + mImageEdgeInsets.left,
                     imageViewOriginY,
-                    mImageView.intrinsicContentSize().width,
-                    mImageView.intrinsicContentSize().height)
+                    mImageView.intrinsicContentSize().getWidth(),
+                    mImageView.intrinsicContentSize().getHeight())
             );
             mTitleLabel.setFrame(new CGRect(
-                    mContentEdgeInsets.left + mImageEdgeInsets.left + mImageView.getFrame().size.width + mImageEdgeInsets.right + mTitleEdgeInsets.left,
+                    mContentEdgeInsets.left + mImageEdgeInsets.left + mImageView.getFrame().getSize().getWidth() + mImageEdgeInsets.right + mTitleEdgeInsets.left,
                     titleLabelOriginY,
-                    mTitleLabel.intrinsicContentSize().width,
-                    mTitleLabel.intrinsicContentSize().height)
+                    mTitleLabel.intrinsicContentSize().getWidth(),
+                    mTitleLabel.intrinsicContentSize().getHeight())
             );
         }
         else if (getContentHorizontalAlignment() == ContentHorizontalAlignment.Center) {
             mImageView.setFrame(new CGRect(
-                    ((getFrame().size.width - contentWidth) / 2.0) + mContentEdgeInsets.left + mImageEdgeInsets.left,
+                    ((getFrame().getSize().getWidth() - contentWidth) / 2.0) + mContentEdgeInsets.left + mImageEdgeInsets.left,
                     imageViewOriginY,
-                    mImageView.intrinsicContentSize().width,
-                    mImageView.intrinsicContentSize().height)
+                    mImageView.intrinsicContentSize().getWidth(),
+                    mImageView.intrinsicContentSize().getHeight())
             );
             mTitleLabel.setFrame(new CGRect(
-                    ((getFrame().size.width - contentWidth) / 2.0) + mContentEdgeInsets.left + mImageEdgeInsets.left + mImageView.getFrame().size.width + mImageEdgeInsets.right + mTitleEdgeInsets.left,
+                    ((getFrame().getSize().getWidth() - contentWidth) / 2.0) + mContentEdgeInsets.left + mImageEdgeInsets.left + mImageView.getFrame().getSize().getWidth() + mImageEdgeInsets.right + mTitleEdgeInsets.left,
                     titleLabelOriginY,
-                    mTitleLabel.intrinsicContentSize().width,
-                    mTitleLabel.intrinsicContentSize().height)
+                    mTitleLabel.intrinsicContentSize().getWidth(),
+                    mTitleLabel.intrinsicContentSize().getHeight())
             );
         }
         else if (getContentHorizontalAlignment() == ContentHorizontalAlignment.Right) {
             mImageView.setFrame(new CGRect(
-                    (getFrame().size.width - contentWidth) + mContentEdgeInsets.left + mImageEdgeInsets.left,
+                    (getFrame().getSize().getWidth() - contentWidth) + mContentEdgeInsets.left + mImageEdgeInsets.left,
                     imageViewOriginY,
-                    mImageView.intrinsicContentSize().width,
-                    mImageView.intrinsicContentSize().height)
+                    mImageView.intrinsicContentSize().getWidth(),
+                    mImageView.intrinsicContentSize().getHeight())
             );
             mTitleLabel.setFrame(new CGRect(
-                    (getFrame().size.width - contentWidth) + mContentEdgeInsets.left + mImageEdgeInsets.left + mImageView.getFrame().size.width + mImageEdgeInsets.right + mTitleEdgeInsets.left,
+                    (getFrame().getSize().getWidth() - contentWidth) + mContentEdgeInsets.left + mImageEdgeInsets.left + mImageView.getFrame().getSize().getWidth() + mImageEdgeInsets.right + mTitleEdgeInsets.left,
                     titleLabelOriginY,
-                    mTitleLabel.intrinsicContentSize().width,
-                    mTitleLabel.intrinsicContentSize().height)
+                    mTitleLabel.intrinsicContentSize().getWidth(),
+                    mTitleLabel.intrinsicContentSize().getHeight())
             );
         }
     }
