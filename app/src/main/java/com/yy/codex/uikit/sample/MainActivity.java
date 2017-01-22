@@ -1,5 +1,6 @@
 package com.yy.codex.uikit.sample;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Build;
@@ -12,24 +13,30 @@ import android.view.View;
 import android.view.WindowManager;
 
 import com.yy.codex.uikit.CGRect;
+import com.yy.codex.uikit.CGSize;
+import com.yy.codex.uikit.NSAttributedString;
 import com.yy.codex.uikit.UIBarButtonItem;
 import com.yy.codex.uikit.UIColor;
 import com.yy.codex.uikit.UIConstraint;
+import com.yy.codex.uikit.UIFont;
 import com.yy.codex.uikit.UINavigationBar;
 import com.yy.codex.uikit.UINavigationItem;
 import com.yy.codex.uikit.UIScrollView;
 import com.yy.codex.uikit.UISwitch;
 import com.yy.codex.uikit.UIView;
+import com.yy.codex.uikit.UIViewController;
 
 import java.io.File;
+import java.util.HashMap;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends Activity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        getSupportActionBar().hide();
-        setContentView(new TestView(this));
+        UIViewController viewController = new UIViewController(this);
+        viewController.setView(new TestView(this));
+        setContentView(viewController.getView());
     }
 
 }
@@ -84,7 +91,10 @@ class TestView extends UIView {
         addSubview(scrollView);
 
 
+        setMaterialDesign(true);
+
         final UINavigationBar navigationBar = new UINavigationBar(getContext());
+
         addSubview(navigationBar);
 
         final UINavigationItem navigationItem = new UINavigationItem(getContext());
@@ -106,13 +116,6 @@ class TestView extends UIView {
                 navigationBar.pushNavigationItem(navigationItem, true);
             }
         }, 3000);
-
-//        postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                navigationBar.popNavigationItem(true);
-//            }
-//        }, 6000);
 
 
     }

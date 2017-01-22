@@ -1,4 +1,4 @@
-package com.yy.codex;
+package com.yy.codex.uikit;
 
 import android.content.Context;
 

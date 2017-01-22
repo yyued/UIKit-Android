@@ -42,19 +42,29 @@ public class NSInvocation {
         this.mSelector = selector;
     }
 
-    public void invoke(Object[] arguments) {
+    public Object invoke() {
         Object target = getTarget();
         if (target != null) {
-            invoke(target, arguments);
+            return invoke(target, null);
         }
+        return null;
     }
 
-    public void invoke(@Nullable Object target, @Nullable Object[] arguments) {
+    public Object invoke(Object[] arguments) {
+        Object target = getTarget();
+        if (target != null) {
+            return invoke(target, arguments);
+        }
+        return null;
+    }
+
+    public Object invoke(@Nullable Object target, @Nullable Object[] arguments) {
         if (target == null || mSelector == null) {
-            return;
+            return null;
         }
         Class clazz = target.getClass();
         String[] components = mSelector.endsWith(":") ? (mSelector+"_").split(":") : mSelector.split(":");
+        Object returnValue = null;
         boolean found = false;
         while (!found && clazz != null) {
             try {
@@ -65,7 +75,7 @@ public class NSInvocation {
                         accessible = false;
                         method.setAccessible(true);
                     }
-                    method.invoke(target);
+                    returnValue = method.invoke(target);
                     if (!accessible) {
                         method.setAccessible(false);
                     }
@@ -78,7 +88,7 @@ public class NSInvocation {
                             accessible = false;
                             method.setAccessible(true);
                         }
-                        method.invoke(target, arguments[0]);
+                        returnValue = method.invoke(target, arguments[0]);
                         if (!accessible) {
                             method.setAccessible(false);
                         }
@@ -90,7 +100,7 @@ public class NSInvocation {
                             accessible = false;
                             method.setAccessible(true);
                         }
-                        method.invoke(target, arguments[0], arguments[1]);
+                        returnValue = method.invoke(target, arguments[0], arguments[1]);
                         if (!accessible) {
                             method.setAccessible(false);
                         }
@@ -102,7 +112,7 @@ public class NSInvocation {
                             accessible = false;
                             method.setAccessible(true);
                         }
-                        method.invoke(target, arguments[0], arguments[1], arguments[2]);
+                        returnValue = method.invoke(target, arguments[0], arguments[1], arguments[2]);
                         if (!accessible) {
                             method.setAccessible(false);
                         }
@@ -114,7 +124,7 @@ public class NSInvocation {
                             accessible = false;
                             method.setAccessible(true);
                         }
-                        method.invoke(target, arguments[0], arguments[1], arguments[2], arguments[3]);
+                        returnValue = method.invoke(target, arguments[0], arguments[1], arguments[2], arguments[3]);
                         if (!accessible) {
                             method.setAccessible(false);
                         }
@@ -126,7 +136,7 @@ public class NSInvocation {
                             accessible = false;
                             method.setAccessible(true);
                         }
-                        method.invoke(target, arguments[0], arguments[1], arguments[2], arguments[3], arguments[4]);
+                        returnValue = method.invoke(target, arguments[0], arguments[1], arguments[2], arguments[3], arguments[4]);
                         if (!accessible) {
                             method.setAccessible(false);
                         }
@@ -138,7 +148,7 @@ public class NSInvocation {
                             accessible = false;
                             method.setAccessible(true);
                         }
-                        method.invoke(target, arguments[0], arguments[1], arguments[2], arguments[3], arguments[4], arguments[5]);
+                        returnValue = method.invoke(target, arguments[0], arguments[1], arguments[2], arguments[3], arguments[4], arguments[5]);
                         if (!accessible) {
                             method.setAccessible(false);
                         }
@@ -152,7 +162,7 @@ public class NSInvocation {
                 }
             }
         }
-
+        return returnValue;
     }
 
 }

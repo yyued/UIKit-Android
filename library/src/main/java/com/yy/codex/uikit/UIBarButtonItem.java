@@ -2,7 +2,6 @@ package com.yy.codex.uikit;
 
 import android.content.Context;
 
-import com.yy.codex.UIBarItem;
 import com.yy.codex.foundation.NSInvocation;
 
 /**

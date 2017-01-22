@@ -62,17 +62,19 @@ class MyTestView extends UIView {
         constraint.width = "100%";
         constraint.height = "100%";
         scrollView.setConstraint(constraint);
+        scrollView.setBounces(true);
+        scrollView.setPagingEnabled(true);
         scrollView.setBackgroundColor(UIColor.blackColor.colorWithAlpha(0.1));
         for (int i = 0; i < 100; i++) {
             UIView redView = new UIView(getContext());
-            redView.setFrame(new CGRect(0,100 * i,20,20));
+            redView.setFrame(new CGRect(100 * i, 0,20,20));
             redView.setBackgroundColor(new UIColor(1, 0, 0, 1.0 - (i / 100.0)));
             if (i == 0) {
                 redView.setBackgroundColor(UIColor.blueColor);
             }
             scrollView.addSubview(redView);
         }
-        scrollView.setContentSize(new CGSize(0, 100 * 100));
+        scrollView.setContentSize(new CGSize(100 * 100, 0));
         addSubview(scrollView);
 
 
