@@ -19,7 +19,9 @@ import com.yy.codex.uikit.UIBarButtonItem;
 import com.yy.codex.uikit.UIColor;
 import com.yy.codex.uikit.UIConstraint;
 import com.yy.codex.uikit.UIFont;
+import com.yy.codex.uikit.UILabel;
 import com.yy.codex.uikit.UINavigationBar;
+import com.yy.codex.uikit.UINavigationController;
 import com.yy.codex.uikit.UINavigationItem;
 import com.yy.codex.uikit.UIScrollView;
 import com.yy.codex.uikit.UISwitch;
@@ -34,11 +36,32 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        UIViewController viewController = new UIViewController(this);
-        viewController.setView(new TestView(this));
-        setContentView(viewController.getView());
+
+        UINavigationController navigationController = new UINavigationController(this);
+        navigationController.setRootViewController(new TestViewController(this));
+        navigationController.getView().setMaterialDesign(true);
+
+        setContentView(navigationController.getView());
     }
 
+}
+
+class TestViewController extends UIViewController {
+
+    public TestViewController(Context context) {
+        super(context);
+    }
+
+    @Override
+    public void loadView() {
+        setView(new TestView(getContext()));
+    }
+
+    @Override
+    public void viewDidLoad() {
+        super.viewDidLoad();
+        setTitle("Test");
+    }
 }
 
 class TestView extends UIView {
@@ -67,57 +90,26 @@ class TestView extends UIView {
     @Override
     protected void init() {
         super.init();
-
-        setBackgroundColor(UIColor.whiteColor);
-
+//        setAutomaticallyAdjustsSpace(true);
         UIScrollView scrollView = new UIScrollView(getContext());
         UIConstraint constraint = new UIConstraint();
         constraint.centerHorizontally = true;
         constraint.centerVertically = true;
         constraint.width = "100%";
-        constraint.height = "100% - 44";
-        constraint.top = "22";
+        constraint.height = "100%";
         scrollView.setConstraint(constraint);
-
         scrollView.setBackgroundColor(UIColor.whiteColor);
-
-        for (int i = 0; i < 100; i++) {
-            UIView redView = new UIView(getContext());
-            redView.setFrame(new CGRect(0,100 * i,20,20));
-            redView.setBackgroundColor(new UIColor(1, 0, 0, 1.0 - (i / 100.0)));
-            scrollView.addSubview(redView);
+        for (int i = 0; i < 20; i++) {
+            UILabel label = new UILabel(getContext());
+            label.setFrame(new CGRect(0,100 * i,100,22));
+//            label.setBackgroundColor(new UIColor(1, 0, 0, 1.0 - (i / 100.0)));
+            label.setText("i = " + i);
+            scrollView.addSubview(label);
         }
-
+        scrollView.setBounces(true);
+        scrollView.setAlwaysBounceVertical(true);
+        scrollView.setContentSize(new CGSize(0, 2000));
         addSubview(scrollView);
-
-
-        setMaterialDesign(true);
-
-        final UINavigationBar navigationBar = new UINavigationBar(getContext());
-
-        addSubview(navigationBar);
-
-        final UINavigationItem navigationItem = new UINavigationItem(getContext());
-        navigationItem.setTitle("测试");
-        UIBarButtonItem barButtonItem = new UIBarButtonItem();
-        barButtonItem.setTitle("Test");
-        navigationItem.setRightBarButtonItem(barButtonItem);
-
-        navigationBar.setItems(new UINavigationItem[]{navigationItem}, false);
-
-        postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                final UINavigationItem navigationItem = new UINavigationItem(getContext());
-                navigationItem.setTitle("修改用户名");
-                UIBarButtonItem barButtonItem = new UIBarButtonItem();
-//                barButtonItem.setTitle("Next");
-                navigationItem.setRightBarButtonItem(barButtonItem);
-                navigationBar.pushNavigationItem(navigationItem, true);
-            }
-        }, 3000);
-
-
     }
 
 }
