@@ -108,6 +108,6 @@ public class UITouch {
     @NonNull
     @Override
     public String toString() {
-        return "UITouch { RelativeView=" + this.mRelativeView + " x=" + this.mRelativePoint.x + " y=" + this.mRelativePoint.y + " Phase=" + this.mPhase;
+        return "UITouch { RelativeView=" + this.mRelativeView + " x=" + this.mRelativePoint.getX() + " y=" + this.mRelativePoint.getY() + " Phase=" + this.mPhase;
     }
 }

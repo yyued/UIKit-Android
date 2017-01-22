@@ -87,7 +87,7 @@ public class UISlider extends UIControl {
         super.layoutSubviews();
         NSLog.warn(getFrame());
 
-        double frameW = getFrame().size.width;
+        double frameW = getFrame().getSize().getWidth();
         trackView.setFrame(new CGRect(0, 14, frameW, 4));
         trackPassedView.setFrame(new CGRect(0, 14, frameW * value, 4));
         thumbView.setFrame(new CGRect(frameW * value - thumbRadius/2.0, 2, thumbRadius, thumbRadius));

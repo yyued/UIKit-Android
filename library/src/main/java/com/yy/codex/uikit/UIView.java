@@ -118,11 +118,11 @@ public class UIView extends FrameLayout implements UIResponder {
         CGRect oldValue = this.mFrame;
         this.mFrame = frame;
         layoutSubviews();
-        this.setX((float) (frame.origin.x * UIScreen.mainScreen.scale()));
-        this.setY((float) (frame.origin.y * UIScreen.mainScreen.scale()));
+        this.setX((float) (frame.getOrigin().getX() * UIScreen.mainScreen.scale()));
+        this.setY((float) (frame.getOrigin().getY() * UIScreen.mainScreen.scale()));
 
-        double mWidth = frame.size.width * UIScreen.mainScreen.scale();
-        double mHeight = frame.size.height * UIScreen.mainScreen.scale();
+        double mWidth = frame.getSize().getWidth() * UIScreen.mainScreen.scale();
+        double mHeight = frame.getSize().getHeight() * UIScreen.mainScreen.scale();
         if (Math.ceil(mWidth) - mWidth < 0.1) {
             mWidth = Math.ceil(mWidth);
         }
@@ -131,16 +131,16 @@ public class UIView extends FrameLayout implements UIResponder {
         }
         this.setMinimumWidth((int) mWidth);
         this.setMinimumHeight((int) mHeight);
-        this.mLayer.setFrame(new CGRect(0, 0, frame.size.width, frame.size.height));
-        UIView.animator.addAnimationState(this, "frame.origin.x", oldValue.origin.x, frame.origin.x);
-        UIView.animator.addAnimationState(this, "frame.origin.y", oldValue.origin.y, frame.origin.y);
-        UIView.animator.addAnimationState(this, "frame.size.mWidth", oldValue.size.width, frame.size.width);
-        UIView.animator.addAnimationState(this, "frame.size.height", oldValue.size.height, frame.size.height);
+        this.mLayer.setFrame(new CGRect(0, 0, frame.getSize().getWidth(), frame.getSize().getHeight()));
+        UIView.animator.addAnimationState(this, "frame.origin.x", oldValue.getOrigin().getX(), frame.getOrigin().getX());
+        UIView.animator.addAnimationState(this, "frame.origin.y", oldValue.getOrigin().getY(), frame.getOrigin().getY());
+        UIView.animator.addAnimationState(this, "frame.size.mWidth", oldValue.getSize().getWidth(), frame.getSize().getWidth());
+        UIView.animator.addAnimationState(this, "frame.size.height", oldValue.getSize().getHeight(), frame.getSize().getHeight());
     }
 
     @NonNull
     public CGPoint getCenter() {
-        return new CGPoint((mFrame.origin.x + mFrame.size.width) / 2.0, (mFrame.origin.y + mFrame.size.height) / 2.0);
+        return new CGPoint((mFrame.getOrigin().getX() + mFrame.getSize().getWidth()) / 2.0, (mFrame.getOrigin().getY() + mFrame.getSize().getHeight()) / 2.0);
     }
 
     @Nullable protected UIConstraint mConstraint = null;

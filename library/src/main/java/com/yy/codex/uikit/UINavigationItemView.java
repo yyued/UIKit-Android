@@ -43,20 +43,20 @@ class UINavigationItemView extends UIView {
         super.layoutSubviews();
         if (mTitleView != null) {
             CGSize iSize = mTitleView.intrinsicContentSize();
-            if (iSize.width > 0 && iSize.height > 0) {
+            if (iSize.getWidth() > 0 && iSize.getHeight() > 0) {
                 mTitleView.setFrame(new CGRect(
-                        (getFrame().size.width - iSize.width) / 2.0,
-                        (getFrame().size.height - iSize.height) / 2.0,
-                        iSize.width,
-                        iSize.height)
+                        (getFrame().getSize().getWidth() - iSize.getWidth()) / 2.0,
+                        (getFrame().getSize().getHeight() - iSize.getHeight()) / 2.0,
+                        iSize.getWidth(),
+                        iSize.getHeight())
                 );
             }
             else {
                 mTitleView.setFrame(new CGRect(
-                        (getFrame().size.width - mTitleView.getFrame().size.width) / 2.0,
-                        (getFrame().size.height - mTitleView.getFrame().size.height) / 2.0,
-                        mTitleView.getFrame().size.width,
-                        mTitleView.getFrame().size.height)
+                        (getFrame().getSize().getWidth() - mTitleView.getFrame().getSize().getWidth()) / 2.0,
+                        (getFrame().getSize().getHeight() - mTitleView.getFrame().getSize().getHeight()) / 2.0,
+                        mTitleView.getFrame().getSize().getWidth(),
+                        mTitleView.getFrame().getSize().getHeight())
                 );
             }
         }
@@ -67,50 +67,50 @@ class UINavigationItemView extends UIView {
                 if (contentView != null) {
                     x += contentView.getMarginInsets().left;
                     CGSize iSize = contentView.intrinsicContentSize();
-                    if (iSize.width > 0 && iSize.height > 0) {
+                    if (iSize.getWidth() > 0 && iSize.getHeight() > 0) {
                         contentView.setFrame(new CGRect(
                                 x,
                                 0,
-                                iSize.width,
+                                iSize.getWidth(),
                                 getFrame().getHeight())
                         );
-                        x += iSize.width + contentView.getMarginInsets().right;
+                        x += iSize.getWidth() + contentView.getMarginInsets().right;
                     }
                     else {
                         contentView.setFrame(new CGRect(
                                 x,
-                                (getFrame().size.height - contentView.getFrame().size.height) / 2.0,
-                                contentView.getFrame().size.width,
-                                contentView.getFrame().size.height)
+                                (getFrame().getSize().getHeight() - contentView.getFrame().getSize().getHeight()) / 2.0,
+                                contentView.getFrame().getSize().getWidth(),
+                                contentView.getFrame().getSize().getHeight())
                         );
-                        x += contentView.getFrame().size.width + contentView.getMarginInsets().right;
+                        x += contentView.getFrame().getSize().getWidth() + contentView.getMarginInsets().right;
                     }
                 }
             }
         }
         if (mRightViews != null && mRightViews.length > 0) {
-            double rx = getFrame().size.width;
+            double rx = getFrame().getSize().getWidth();
             for (int i = 0; i < mRightViews.length; i++) {
                 UIView contentView = mRightViews[i];
                 if (contentView != null) {
                     CGSize iSize = contentView.intrinsicContentSize();
-                    if (iSize.width > 0 && iSize.height > 0) {
+                    if (iSize.getWidth() > 0 && iSize.getHeight() > 0) {
                         contentView.setFrame(new CGRect(
-                                rx - iSize.width - contentView.getMarginInsets().right,
+                                rx - iSize.getWidth() - contentView.getMarginInsets().right,
                                 0,
-                                iSize.width,
+                                iSize.getWidth(),
                                 getFrame().getHeight())
                         );
-                        rx -= iSize.width + contentView.getMarginInsets().right + contentView.getMarginInsets().left;
+                        rx -= iSize.getWidth() + contentView.getMarginInsets().right + contentView.getMarginInsets().left;
                     }
                     else {
                         contentView.setFrame(new CGRect(
-                                rx - contentView.getFrame().size.width - contentView.getMarginInsets().right,
-                                (getFrame().size.height - contentView.getFrame().size.height) / 2.0,
-                                contentView.getFrame().size.width,
-                                contentView.getFrame().size.height)
+                                rx - contentView.getFrame().getSize().getWidth() - contentView.getMarginInsets().right,
+                                (getFrame().getSize().getHeight() - contentView.getFrame().getSize().getHeight()) / 2.0,
+                                contentView.getFrame().getSize().getWidth(),
+                                contentView.getFrame().getSize().getHeight())
                         );
-                        rx -= contentView.getFrame().size.width + contentView.getMarginInsets().right + contentView.getMarginInsets().left;;
+                        rx -= contentView.getFrame().getSize().getWidth() + contentView.getMarginInsets().right + contentView.getMarginInsets().left;;
                     }
                 }
             }

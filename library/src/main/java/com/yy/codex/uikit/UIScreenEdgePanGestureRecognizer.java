@@ -41,16 +41,16 @@ public class UIScreenEdgePanGestureRecognizer extends UIPanGestureRecognizer {
         }
         for (int i = 0; i < touches.length; i++) {
             CGPoint firstPoint = touches[i].getAbsolutePoint();
-            if (edge == Edge.Left && firstPoint.x < edgeLength) {
+            if (edge == Edge.Left && firstPoint.getX() < edgeLength) {
                 return true;
             }
-            else if (edge == Edge.Right && UIScreen.mainScreen.bounds().size.width - firstPoint.x < edgeLength) {
+            else if (edge == Edge.Right && UIScreen.mainScreen.bounds().getSize().getWidth() - firstPoint.getX() < edgeLength) {
                 return true;
             }
-            else if (edge == Edge.Top && firstPoint.y < edgeLength) {
+            else if (edge == Edge.Top && firstPoint.getY() < edgeLength) {
                 return true;
             }
-            else if (edge == Edge.Bottom && UIScreen.mainScreen.bounds().size.height - firstPoint.y < edgeLength) {
+            else if (edge == Edge.Bottom && UIScreen.mainScreen.bounds().getSize().getHeight() - firstPoint.getY() < edgeLength) {
                 return true;
             }
         }

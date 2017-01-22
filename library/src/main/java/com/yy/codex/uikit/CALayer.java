@@ -43,10 +43,10 @@ public class CALayer {
     }
 
     public @NonNull CALayer setFrame(@NonNull CGRect mFrame) {
-        float x = (float) mFrame.origin.x;
-        float y = (float) mFrame.origin.y;
-        float w = (float) mFrame.size.width;
-        float h = (float) mFrame.size.height;
+        float x = (float) mFrame.getOrigin().getX();
+        float y = (float) mFrame.getOrigin().getY();
+        float w = (float) mFrame.getSize().getWidth();
+        float h = (float) mFrame.getSize().getHeight();
         CGRect newValue = new CGRect(x, y, w, h);
         if (!this.mFrame.equals(newValue)){
             this.mFrame = newValue;
@@ -329,10 +329,10 @@ public class CALayer {
     public CALayer() {}
 
     public CALayer(@NonNull CGRect mFrame) {
-        float x = (float) (mFrame.origin.x);
-        float y = (float) (mFrame.origin.y);
-        float w = (float) (mFrame.size.width);
-        float h = (float) (mFrame.size.height);
+        float x = (float) (mFrame.getOrigin().getX());
+        float y = (float) (mFrame.getOrigin().getY());
+        float w = (float) (mFrame.getSize().getWidth());
+        float h = (float) (mFrame.getSize().getHeight());
         this.mFrame = new CGRect(x, y, w, h);
     }
 
@@ -437,15 +437,15 @@ public class CALayer {
 
     public static @NonNull CGPoint calcOriginInSuperCoordinate(@NonNull CALayer layer){
         float scaledDensity = (float) UIScreen.mainScreen.scale();
-        double oriX = layer.mFrame.origin.x;
-        double oriY = layer.mFrame.origin.y;
+        double oriX = layer.mFrame.getOrigin().getX();
+        double oriY = layer.mFrame.getOrigin().getY();
         CALayer p = layer.getSuperLayer();
         while (p != null){
 //            if (p.isNewCanvasContext()) {
 //                break;
 //            }
-            oriX += p.mFrame.origin.x;
-            oriY += p.mFrame.origin.y;
+            oriX += p.mFrame.getOrigin().getX();
+            oriY += p.mFrame.getOrigin().getY();
             p = p.getSuperLayer();
         }
         return new CGPoint(oriX * scaledDensity, oriY * scaledDensity);

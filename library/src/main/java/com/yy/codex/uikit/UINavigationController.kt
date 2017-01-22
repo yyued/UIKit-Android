@@ -54,12 +54,7 @@ class UINavigationController(context: Context) : UIViewController(context) {
     }
 
     fun resetNavigationItems() {
-        val viewControllers = childViewControllers
-        val navigationItems = arrayOfNulls<UINavigationItem>(viewControllers.size)
-        for (i in viewControllers.indices) {
-            navigationItems[i] = viewControllers[i].navigationItem
-        }
-        navigationBar.setItems(navigationItems, false)
+        navigationBar.setItems(childViewControllers.map { it.navigationItem }, false)
     }
 
     fun resetChildViews() {
@@ -81,9 +76,10 @@ class UINavigationController(context: Context) : UIViewController(context) {
                 subviews[i].removeFromSuperview()
             }
             val childViewControllers = childViewControllers
-            for (i in childViewControllers.indices) {
-                val currentView = childViewControllers[i].view
-                wrapperView.addSubview(currentView!!)
+            for (childViewController in childViewControllers) {
+                childViewController.view?.let {
+                    wrapperView.addSubview(it)
+                }
             }
         }
         resetContentViewsFrame()
@@ -97,12 +93,9 @@ class UINavigationController(context: Context) : UIViewController(context) {
 
     private fun resetContentViewsFrame() {
         val subviews = wrapperView.subviews
-        for (i in subviews.indices) {
-            val currentView = subviews[i]
-            currentView.frame = CGRect(0.0, topLayoutLength(), wrapperView.frame.width, wrapperView.frame.height - topLayoutLength())
+        for (subview in subviews) {
+            subview.frame = CGRect(0.0, topLayoutLength(), wrapperView.frame.width, wrapperView.frame.height - topLayoutLength())
         }
     }
-
-
 
 }

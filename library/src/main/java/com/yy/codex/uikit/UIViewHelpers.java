@@ -33,10 +33,10 @@ class UIViewHelpers {
     }
 
     static public boolean pointInside(@NonNull UIView view, @NonNull CGPoint point) {
-        double h = view.getFrame().size.height;
-        double w = view.getFrame().size.width;
-        double touchX = point.x;
-        double touchY = point.y;
+        double h = view.getFrame().getSize().getHeight();
+        double w = view.getFrame().getSize().getWidth();
+        double touchX = point.getX();
+        double touchY = point.getY();
         if (touchY <= h && touchX <= w && touchY >= 0 && touchX >= 0) {
             return true;
         }
@@ -49,25 +49,25 @@ class UIViewHelpers {
             return point;
         }
         UIView viewRoot = view;
-        double viewX = viewRoot.getFrame().origin.x;
-        double viewY = viewRoot.getFrame().origin.y;
+        double viewX = viewRoot.getFrame().getOrigin().getX();
+        double viewY = viewRoot.getFrame().getOrigin().getY();
         while (viewRoot.getSuperview() != null) {
             viewRoot = viewRoot.getSuperview();
-            viewX += viewRoot.getFrame().origin.x;
-            viewY += viewRoot.getFrame().origin.y;
+            viewX += viewRoot.getFrame().getOrigin().getX();
+            viewY += viewRoot.getFrame().getOrigin().getY();
         }
         UIView toViewRoot = toView;
-        double toViewX = toViewRoot.getFrame().origin.x;
-        double toViewY = toViewRoot.getFrame().origin.y;
+        double toViewX = toViewRoot.getFrame().getOrigin().getX();
+        double toViewY = toViewRoot.getFrame().getOrigin().getY();
         while (toViewRoot.getSuperview() != null) {
             toViewRoot = toViewRoot.getSuperview();
-            toViewX += toViewRoot.getFrame().origin.x;
-            toViewY += toViewRoot.getFrame().origin.y;
+            toViewX += toViewRoot.getFrame().getOrigin().getX();
+            toViewY += toViewRoot.getFrame().getOrigin().getY();
         }
         if (viewRoot != toViewRoot) {
             return new CGPoint(0, 0);
         }
-        return new CGPoint(viewX - toViewX + point.x, viewY - toViewY + point.y);
+        return new CGPoint(viewX - toViewX + point.getX(), viewY - toViewY + point.getY());
     }
 
 }

@@ -44,23 +44,23 @@ public class UINavigationItemView_MaterialDesign extends UINavigationItemView {
                 if (contentView != null) {
                     x += contentView.getMarginInsets().left;
                     CGSize iSize = contentView.intrinsicContentSize();
-                    if (iSize.width > 0 && iSize.height > 0) {
+                    if (iSize.getWidth() > 0 && iSize.getHeight() > 0) {
                         contentView.setFrame(new CGRect(
                                 x,
                                 0,
-                                iSize.width,
+                                iSize.getWidth(),
                                 getFrame().getHeight())
                         );
-                        x += iSize.width + contentView.getMarginInsets().right;
+                        x += iSize.getWidth() + contentView.getMarginInsets().right;
                     }
                     else {
                         contentView.setFrame(new CGRect(
                                 x,
-                                (getFrame().size.height - contentView.getFrame().size.height) / 2.0,
-                                contentView.getFrame().size.width,
-                                contentView.getFrame().size.height)
+                                (getFrame().getSize().getHeight() - contentView.getFrame().getSize().getHeight()) / 2.0,
+                                contentView.getFrame().getSize().getWidth(),
+                                contentView.getFrame().getSize().getHeight())
                         );
-                        x += contentView.getFrame().size.width + contentView.getMarginInsets().right;
+                        x += contentView.getFrame().getSize().getWidth() + contentView.getMarginInsets().right;
                     }
                 }
             }
@@ -73,20 +73,20 @@ public class UINavigationItemView_MaterialDesign extends UINavigationItemView {
                 x += 12.0;
             }
             CGSize iSize = mTitleView.intrinsicContentSize();
-            if (iSize.width > 0 && iSize.height > 0) {
+            if (iSize.getWidth() > 0 && iSize.getHeight() > 0) {
                 mTitleView.setFrame(new CGRect(
                         x,
-                        (getFrame().size.height - iSize.height) / 2.0,
-                        iSize.width,
-                        iSize.height)
+                        (getFrame().getSize().getHeight() - iSize.getHeight()) / 2.0,
+                        iSize.getWidth(),
+                        iSize.getHeight())
                 );
             }
             else {
                 mTitleView.setFrame(new CGRect(
                         x,
-                        (getFrame().size.height - mTitleView.getFrame().size.height) / 2.0,
-                        mTitleView.getFrame().size.width,
-                        mTitleView.getFrame().size.height)
+                        (getFrame().getSize().getHeight() - mTitleView.getFrame().getSize().getHeight()) / 2.0,
+                        mTitleView.getFrame().getSize().getWidth(),
+                        mTitleView.getFrame().getSize().getHeight())
                 );
             }
         }
