@@ -92,40 +92,40 @@ public class UIImageView extends UIView {
     public void setContentMode(UIViewContentMode contentMode) {
         this.mContentMode = contentMode;
         if (contentMode == UIViewContentMode.ScaleToFill) {
-            this.getLayer().setBitmapGravity(CALayerBitmapPainter.GRAVITY_SCALE_TO_FILL);
+            this.getLayer().setBitmapGravity(CALayer.BitmapGravity.ScaleToFill);
         }
         else if (contentMode == UIViewContentMode.ScaleAspectFit) {
-            this.getLayer().setBitmapGravity(CALayerBitmapPainter.GRAVITY_SCALE_ASPECT_FIT);
+            this.getLayer().setBitmapGravity(CALayer.BitmapGravity.ScaleAspectFit);
         }
         else if (contentMode == UIViewContentMode.ScaleAspectFill) {
-            this.getLayer().setBitmapGravity(CALayerBitmapPainter.GRAVITY_SCALE_ASPECT_FILL);
+            this.getLayer().setBitmapGravity(CALayer.BitmapGravity.ScaleAspectFill);
         }
         else if (contentMode == UIViewContentMode.TopLeft) {
-            this.getLayer().setBitmapGravity(CALayerBitmapPainter.GRAVITY_TOP_LEFT);
+            this.getLayer().setBitmapGravity(CALayer.BitmapGravity.TopLeft);
         }
         else if (contentMode == UIViewContentMode.Top) {
-            this.getLayer().setBitmapGravity(CALayerBitmapPainter.GRAVITY_TOP);
+            this.getLayer().setBitmapGravity(CALayer.BitmapGravity.Top);
         }
         else if (contentMode == UIViewContentMode.TopRight) {
-            this.getLayer().setBitmapGravity(CALayerBitmapPainter.GRAVITY_TOP_RIGHT);
+            this.getLayer().setBitmapGravity(CALayer.BitmapGravity.TopRight);
         }
         else if (contentMode == UIViewContentMode.Left) {
-            this.getLayer().setBitmapGravity(CALayerBitmapPainter.GRAVITY_LEFT);
+            this.getLayer().setBitmapGravity(CALayer.BitmapGravity.Left);
         }
         else if (contentMode == UIViewContentMode.Right) {
-            this.getLayer().setBitmapGravity(CALayerBitmapPainter.GRAVITY_RIGHT);
+            this.getLayer().setBitmapGravity(CALayer.BitmapGravity.Right);
         }
         else if (contentMode == UIViewContentMode.Center) {
-            this.getLayer().setBitmapGravity(CALayerBitmapPainter.GRAVITY_CENTER);
+            this.getLayer().setBitmapGravity(CALayer.BitmapGravity.Center);
         }
         else if (contentMode == UIViewContentMode.BottomLeft) {
-            this.getLayer().setBitmapGravity(CALayerBitmapPainter.GRAVITY_BOTTOM_LEFT);
+            this.getLayer().setBitmapGravity(CALayer.BitmapGravity.BottomLeft);
         }
         else if (contentMode == UIViewContentMode.Bottom) {
-            this.getLayer().setBitmapGravity(CALayerBitmapPainter.GRAVITY_BOTTOM);
+            this.getLayer().setBitmapGravity(CALayer.BitmapGravity.Bottom);
         }
         else if (contentMode == UIViewContentMode.BottomRight) {
-            this.getLayer().setBitmapGravity(CALayerBitmapPainter.GRAVITY_BOTTOM_RIGHT);
+            this.getLayer().setBitmapGravity(CALayer.BitmapGravity.BottomRight);
         }
     }
 

@@ -41,7 +41,7 @@ public class UISwitch extends UIControl {
     private UIView mOffBackgroundView;
     private UIView mOnBackgroundView;
     private UIView mHandleView;
-    private float mHandleRadius = 30; // realRdius(28) + shadowXY(2)
+    private float mHandleRadius = 30; // realRdius_28 + shadowXY_2
     private boolean mOn;
     private boolean mActive;
     private UIViewAnimation mCurrentAnimation = null;

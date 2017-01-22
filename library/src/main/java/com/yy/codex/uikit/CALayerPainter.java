@@ -84,7 +84,7 @@ public class CALayerPainter {
     private static void drawRoundRectBitmap(Canvas canvas, CALayer layer){
         CGRect frameRaw = layer.getFrame();
         Bitmap bitmap = layer.getBitmap();
-        int bitmapGravity = layer.getBitmapGravity();
+        CALayer.BitmapGravity bitmapGravity = layer.getBitmapGravity();
         float scaledDensity = (float) UIScreen.mainScreen.scale();
         CGPoint origin = CALayer.calcOriginInSuperCoordinate(layer);
         CGRect frame = new CGRect(frameRaw.getX() * scaledDensity, frameRaw.getY() * scaledDensity, frameRaw.getWidth() * scaledDensity, frameRaw.getHeight() * scaledDensity);
@@ -154,7 +154,6 @@ public class CALayerPainter {
     private static void drawRectBitmap(Canvas canvas, CALayer layer){
         CGRect frameRaw = layer.getFrame();
         Bitmap bitmap = layer.getBitmap();
-        int bitmapGravity = layer.getBitmapGravity();
         float scaledDensity = (float) UIScreen.mainScreen.scale();
         CGPoint origin = CALayer.calcOriginInSuperCoordinate(layer);
         CGRect frame = new CGRect(frameRaw.getX() * scaledDensity, frameRaw.getY() * scaledDensity, frameRaw.getWidth() * scaledDensity, frameRaw.getHeight() * scaledDensity);
@@ -165,7 +164,7 @@ public class CALayerPainter {
             sPaint.setColorFilter(new PorterDuffColorFilter(bitmapColor.toInt(), PorterDuff.Mode.SRC_IN));
         }
         CGRect bitmapFrame = new CGRect(origin.x, origin.y, frame.size.width, frame.size.height);
-        CALayerBitmapPainter.drawBitmap(canvas, bitmapFrame, bitmap, bitmapGravity, sPaint);
+        CALayerBitmapPainter.drawBitmap(canvas, bitmapFrame, bitmap, layer.getBitmapGravity(), sPaint);
         sPaint.setColorFilter(null);
     }
 
