@@ -160,6 +160,10 @@ public class NSInvocation {
                 if (e instanceof NoSuchMethodException) {
                     clazz = clazz.getSuperclass();
                 }
+                else {
+                    e.printStackTrace();
+                    found = true;
+                }
             }
         }
         return returnValue;

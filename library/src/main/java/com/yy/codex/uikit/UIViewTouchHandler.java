@@ -12,17 +12,17 @@ import java.lang.ref.WeakReference;
 
 public class UIViewTouchHandler {
 
-    @NonNull private final WeakReference<UIView> mViewWeakReference;
+    @NonNull private final UIView mView;
     @Nullable private UIView mHitTestedView;
     private long mEventID;
     private double[] mHash;
 
     UIViewTouchHandler(UIView view) {
-        mViewWeakReference = new WeakReference<>(view);
+        mView = view;
     }
 
     void onTouchEvent(@NonNull MotionEvent event) {
-        UIView view = mViewWeakReference.get();
+        UIView view = mView;
         if (view == null) {
             return;
         }
@@ -55,7 +55,7 @@ public class UIViewTouchHandler {
     }
 
     UITouch[] requestTouches(MotionEvent event) {
-        UIView view = mViewWeakReference.get();
+        UIView view = mView;
         if (view == null) {
             return new UITouch[0];
         }

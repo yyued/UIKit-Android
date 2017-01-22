@@ -29,7 +29,7 @@ class UIGestureRecognizerLooper {
         mHitTestedView = hitTestedView;
         mGestureRecognizers = getGestureRecognizers(hitTestedView);
         for (int i = 0; i < mGestureRecognizers.size(); i++) {
-            mGestureRecognizers.get(i).mLooper = new WeakReference<>(this);
+            mGestureRecognizers.get(i).mLooper = this;
         }
         Collections.sort(mGestureRecognizers, new Comparator<UIGestureRecognizer>() {
             @Override

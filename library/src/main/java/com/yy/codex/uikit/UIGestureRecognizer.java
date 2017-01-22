@@ -17,8 +17,8 @@ import java.util.TimerTask;
 
 public class UIGestureRecognizer {
 
-    @Nullable protected WeakReference<UIView> mWeakView;
-    @Nullable WeakReference<UIGestureRecognizerLooper> mLooper;
+    @Nullable protected UIView mWeakView;
+    @Nullable UIGestureRecognizerLooper mLooper;
     private boolean mEnabled = true;
     @Nullable private NSInvocation[] mActions;
     @Nullable private Runnable mTriggerBlock;
@@ -68,12 +68,12 @@ public class UIGestureRecognizer {
     /* Props */
 
     void didAddToView(@NonNull UIView view) {
-        this.mWeakView = new WeakReference<UIView>(view);
+        this.mWeakView = view;
     }
 
     @Nullable
     public UIView getView() {
-        UIView view = this.mWeakView != null ? this.mWeakView.get() : null;
+        UIView view = this.mWeakView;
         if (view != null) {
             return view;
         }

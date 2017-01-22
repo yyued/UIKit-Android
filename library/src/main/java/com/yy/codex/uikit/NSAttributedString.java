@@ -106,6 +106,9 @@ public class NSAttributedString extends SpannableStringBuilder {
     }
 
     protected void reset(@NonNull final HashMap<String, Object> attrs, @NonNull final NSRange range) {
+        if (range.length <= 0) {
+            return;
+        }
         setSpan(new NSAttributedSpan(attrs), range.location, range.location + range.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         if (attrs.get(NSFontAttributeName) != null && UIFont.class.isAssignableFrom(attrs.get(NSFontAttributeName).getClass())) {
             UIFont font = (UIFont) attrs.get(NSFontAttributeName);
