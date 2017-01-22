@@ -3,7 +3,6 @@ package com.yy.codex.uikit;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Outline;
-import android.graphics.Paint;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,8 +10,6 @@ import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewOutlineProvider;
-
-import com.yy.codex.foundation.NSLog;
 
 /**
  * Created by cuiminghui on 2017/1/17.
@@ -44,20 +41,21 @@ public class UISwitch extends UIControl {
     private UIView mOffBackgroundView;
     private UIView mOnBackgroundView;
     private UIView mHandleView;
+    private float mHandleRadius = 30; // realRdius(28) + shadowXY(2)
     private boolean mOn;
     private boolean mActive;
     private UIViewAnimation mCurrentAnimation = null;
 
     // configuable
     private UIColor mOnThumbColor = UIColor.whiteColor;
-    private UIColor mOnTraceColor = UIColor.greenColor;
+    private UIColor mOnTrackColor = new UIColor(0x00/255.0, 0xe3/255.0, 0x64/255.0, 1);
     private @Nullable Bitmap mOnBitmap = null;
     private UIColor mOffThumbColor = UIColor.whiteColor;
-    private UIColor mOffTraceColor = UIColor.whiteColor;
+    private UIColor mOffTrackColor = UIColor.whiteColor;
     private @Nullable Bitmap mOffBitmap = null;
 
     public void setOffTraceColor(UIColor mOffTraceColor) {
-        this.mOffTraceColor = mOffTraceColor;
+        this.mOffTrackColor = mOffTraceColor;
     }
 
     public void setOffThumbColor(UIColor mOffThumbColor) {
@@ -69,10 +67,19 @@ public class UISwitch extends UIControl {
     }
 
     public void setOnTraceColor(UIColor mOnTraceColor) {
-        this.mOnTraceColor = mOnTraceColor;
+        this.mOnTrackColor = mOnTraceColor;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void defaultValue(){
+        mHandleRadius = 30;
+        mOnThumbColor = UIColor.whiteColor;
+        mOnTrackColor = new UIColor(0x00/255.0, 0xe3/255.0, 0x64/255.0, 1);
+        mOnBitmap = null;
+        mOffThumbColor = UIColor.whiteColor;
+        mOffTrackColor = UIColor.whiteColor;
+        mOffBitmap = null;
+    }
+
     @Override
     protected void init() {
         super.init();
@@ -82,45 +89,26 @@ public class UISwitch extends UIControl {
         mOffBackgroundView.setAlpha(1.0f);
         mOffBackgroundView.setWantsLayer(true);
         mOffBackgroundView.getLayer().setCornerRadius(16).setBorderWidth(2).setBorderColor(new UIColor(0x00/255.0, 0x00/255.0, 0x00/255.0, 0.1));
-        mOffBackgroundView.getLayer().setBackgroundColor(mOffTraceColor);
+        mOffBackgroundView.getLayer().setBackgroundColor(mOffTrackColor);
 
         mOnBackgroundView = new UIView(getContext());
         mOnBackgroundView.setFrame(new CGRect(0, 0, 51, 32));
         mOnBackgroundView.setAlpha(0.0f);
         mOnBackgroundView.setWantsLayer(true);
         mOnBackgroundView.getLayer().setCornerRadius(16);
-        mOnBackgroundView.getLayer().setBackgroundColor(mOnTraceColor);
+        mOnBackgroundView.getLayer().setBackgroundColor(mOnTrackColor);
 
         mHandleView = new UIView(getContext());
-        mHandleView.setFrame(new CGRect(2, 2, 28, 28));
+        mHandleView.setFrame(new CGRect(2, 2, mHandleRadius, mHandleRadius));
         mHandleView.setAlpha(1.0f);
         mHandleView.setWantsLayer(true);
+        mHandleView.getLayer().setShadowX(2).setShadowY(2).setShadowRadius(0.5).setShadowColor(new UIColor(.3, .3, .3, .2));
         mHandleView.getLayer().setCornerRadius(14).setBorderWidth(0.5).setBorderColor(new UIColor(0x00/255.0, 0x00/255.0, 0x00/255.0, 0.15));
         mHandleView.getLayer().setBackgroundColor(mOffThumbColor);
-
-        // mHandleView's shadow
-        mHandleView.setElevation(3);
-        mHandleView.setTranslationZ(8);
-        mHandleView.setOutlineProvider(new ViewOutlineProvider() {
-            @Override
-            public void getOutline(View view, Outline outline) {
-                int shapeSize = 28 * 2;
-                outline.setRoundRect(0, 0, shapeSize, shapeSize, shapeSize/2);
-            }
-        });
 
         addSubview(mOffBackgroundView);
         addSubview(mOnBackgroundView);
         addSubview(mHandleView);
-    }
-
-    private void defaultValue(){
-        mOnThumbColor = UIColor.whiteColor;
-        mOnTraceColor = new UIColor(0x2a/0xff, 0xd7/0xff, 0x68/0xff, 1);
-        mOnBitmap = null;
-        mOffThumbColor = UIColor.whiteColor;
-        mOffTraceColor = UIColor.whiteColor;
-        mOffBitmap = null;
     }
 
     @Override
@@ -164,17 +152,17 @@ public class UISwitch extends UIControl {
                 float widthExpanded = 8;
                 if (isActive) {
                     if (mOn) {
-                        mHandleView.setFrame(new CGRect(21 - widthExpanded, 2, 28 + widthExpanded, 28));
+                        mHandleView.setFrame(new CGRect(21 - widthExpanded, 2, mHandleRadius + widthExpanded, mHandleRadius));
                     } else {
-                        mHandleView.setFrame(new CGRect(2, 2, 28 + widthExpanded, 28));
+                        mHandleView.setFrame(new CGRect(2, 2, mHandleRadius + widthExpanded, mHandleRadius));
                         mOffBackgroundView.getLayer().setBackgroundColor(new UIColor(0x00 / 255.0, 0x00 / 255.0, 0x00 / 255.0, 0.1)); // darken +30%
                     }
                 } else {
                     if (mOn) {
-                        mHandleView.setFrame(new CGRect(21, 2, 28, 28));
+                        mHandleView.setFrame(new CGRect(21, 2, mHandleRadius, mHandleRadius));
                     } else {
-                        mHandleView.setFrame(new CGRect(2, 2, 28, 28));
-                        mOffBackgroundView.getLayer().setBackgroundColor(mOffTraceColor);
+                        mHandleView.setFrame(new CGRect(2, 2, mHandleRadius, mHandleRadius));
+                        mOffBackgroundView.getLayer().setBackgroundColor(mOffTrackColor);
                     }
                 }
             }
@@ -194,15 +182,15 @@ public class UISwitch extends UIControl {
             public void run() {
                 if (mOn) {
                     mOnBackgroundView.setAlpha(1.0f);
-                    mOnBackgroundView.getLayer().setBackgroundColor(mOnTraceColor);
+                    mOnBackgroundView.getLayer().setBackgroundColor(mOnTrackColor);
                     mOffBackgroundView.setAlpha(0.0f);
-                    mHandleView.setFrame(new CGRect(21, 2, 28, 28));
+                    mHandleView.setFrame(new CGRect(21, 2, mHandleRadius, mHandleRadius));
                     mHandleView.getLayer().setBackgroundColor(mOnThumbColor);
                 } else {
                     mOffBackgroundView.setAlpha(1.0f);
-                    mOffBackgroundView.getLayer().setBackgroundColor(mOffTraceColor);
+                    mOffBackgroundView.getLayer().setBackgroundColor(mOffTrackColor);
                     mOnBackgroundView.setAlpha(0.0f);
-                    mHandleView.setFrame(new CGRect(2, 2, 28, 28));
+                    mHandleView.setFrame(new CGRect(2, 2, mHandleRadius, mHandleRadius));
                     mHandleView.getLayer().setBackgroundColor(mOffThumbColor);
                 }
             }
@@ -227,16 +215,16 @@ public class UISwitch extends UIControl {
         this.mOn = isOn;
         if (isOn){
             mOnBackgroundView.setAlpha(1.0f);
-            mOnBackgroundView.getLayer().setBackgroundColor(mOnTraceColor);
+            mOnBackgroundView.getLayer().setBackgroundColor(mOnTrackColor);
             mOffBackgroundView.setAlpha(0.0f);
-            mHandleView.setFrame(new CGRect(21, 2, 28, 28));
+            mHandleView.setFrame(new CGRect(21, 2, mHandleRadius, mHandleRadius));
             mHandleView.getLayer().setBackgroundColor(mOnThumbColor);
         }
         else {
             mOffBackgroundView.setAlpha(1.0f);
-            mOffBackgroundView.getLayer().setBackgroundColor(mOffTraceColor);
+            mOffBackgroundView.getLayer().setBackgroundColor(mOffTrackColor);
             mOnBackgroundView.setAlpha(0.0f);
-            mHandleView.setFrame(new CGRect(2, 2, 28, 28));
+            mHandleView.setFrame(new CGRect(2, 2, mHandleRadius, mHandleRadius));
             mHandleView.getLayer().setBackgroundColor(mOffThumbColor);
         }
     }
