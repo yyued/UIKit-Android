@@ -87,6 +87,7 @@ class TestComponent extends UIView {
 }
 
 class TestXView extends UIView{
+
     public TestXView(@NonNull Context context, @NonNull View view) {
         super(context, view);
     }
@@ -123,4 +124,5 @@ class TestXView extends UIView{
         super.init();
         setLayerType(LAYER_TYPE_SOFTWARE, null);
     }
+
 }

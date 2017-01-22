@@ -67,10 +67,10 @@ public class CALayerPainter {
         float cornerRadius = (float) layer.getCornerRadius() * scaledDensity;
         float halfBorderW = borderWidth / 2.0f;
 
-        RectF rectFCopyed = frame.shrinkToRectF(halfBorderW, origin);
         sPaint.reset();
         sPaint.setAntiAlias(true);
         sPaint.setColor(layer.getBackgroundColor().toInt());
+        RectF rectFCopyed = frame.shrinkToRectF(halfBorderW, origin);
         if (layer.getShadowRadius() > 0) {
             float shadowRadius = (float) layer.getShadowRadius() * scaledDensity;
             float shadowX = (float) layer.getShadowX() * scaledDensity;
@@ -117,16 +117,16 @@ public class CALayerPainter {
         float cornerRadius = (float) layer.getCornerRadius() * scaledDensity;
         float halfBorderW = borderWidth / 2.0f;
 
-        RectF rectFCopyed = frame.shrinkToRectF(halfBorderW, origin);
         sPaint.reset();
         sPaint.setAntiAlias(true);
         sPaint.setStyle(Paint.Style.STROKE);
         sPaint.setStrokeWidth(borderWidth);
         sPaint.setColor(layer.getBorderColor().toInt());
+        RectF rectFCopyed = frame.shrinkToRectF(halfBorderW, origin);
         if (layer.getShadowRadius() > 0){
             float shadowX = (float) layer.getShadowX() * scaledDensity;
             float shadowY = (float) layer.getShadowY() * scaledDensity;
-            rectFCopyed = new RectF(rectFCopyed.left, rectFCopyed.top, rectFCopyed.right-shadowX, rectFCopyed.bottom-shadowY);
+            rectFCopyed = new RectF(rectFCopyed.left, rectFCopyed.top, rectFCopyed.right - shadowX, rectFCopyed.bottom - shadowY);
         }
         canvas.drawRoundRect(rectFCopyed, cornerRadius, cornerRadius, sPaint);
     }
@@ -137,14 +137,17 @@ public class CALayerPainter {
         CGPoint origin = CALayer.calcOriginInSuperCoordinate(layer);
         CGRect frame = new CGRect(frameRaw.getX() * scaledDensity, frameRaw.getY() * scaledDensity, frameRaw.getWidth() * scaledDensity, frameRaw.getHeight() * scaledDensity);
 
+
+        sPaint.reset();
+        sPaint.setColor(layer.getBackgroundColor().toInt());
         RectF rectFCopyed = frame.toRectF(origin);
         if (layer.getShadowRadius() > 0){
+            float shadowRadius = (float) layer.getShadowRadius() * scaledDensity;
             float shadowX = (float) layer.getShadowX() * scaledDensity;
             float shadowY = (float) layer.getShadowY() * scaledDensity;
-            rectFCopyed = new RectF(rectFCopyed.left, rectFCopyed.top, rectFCopyed.right-shadowX, rectFCopyed.bottom-shadowY);
+            sPaint.setShadowLayer(shadowRadius, shadowX, shadowY, layer.getShadowColor().toInt());
+            rectFCopyed = new RectF(rectFCopyed.left, rectFCopyed.top, rectFCopyed.right - shadowX, rectFCopyed.bottom - shadowY);
         }
-        sPaint.reset();
-        sPaint.setColor(layer.getBitmapColor().toInt());
         canvas.drawRect(rectFCopyed, sPaint);
     }
 
@@ -174,16 +177,16 @@ public class CALayerPainter {
         float borderWidth = (float) layer.getBorderWidth() * scaledDensity;
         float halfBorderW = borderWidth / 2.0f;
 
-        RectF rectFCopyed = frame.shrinkToRectF(halfBorderW, origin);
-        if (layer.getShadowRadius() > 0){
-            float shadowX = (float) layer.getShadowX() * scaledDensity;
-            float shadowY = (float) layer.getShadowY() * scaledDensity;
-            rectFCopyed = new RectF(rectFCopyed.left, rectFCopyed.top, rectFCopyed.right-shadowX, rectFCopyed.bottom-shadowY);
-        }
         sPaint.reset();
         sPaint.setStyle(Paint.Style.STROKE);
         sPaint.setStrokeWidth(borderWidth);
         sPaint.setColor(layer.getBorderColor().toInt());
+        RectF rectFCopyed = frame.shrinkToRectF(halfBorderW, origin);
+        if (layer.getShadowRadius() > 0){
+            float shadowX = (float) layer.getShadowX() * scaledDensity;
+            float shadowY = (float) layer.getShadowY() * scaledDensity;
+            rectFCopyed = new RectF(rectFCopyed.left, rectFCopyed.top, rectFCopyed.right - shadowX, rectFCopyed.bottom - shadowY);
+        }
         canvas.drawRect(rectFCopyed, sPaint);
     }
 
