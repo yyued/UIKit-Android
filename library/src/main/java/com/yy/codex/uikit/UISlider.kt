@@ -2,6 +2,7 @@ package com.yy.codex.uikit
 
 import android.content.Context
 import android.graphics.Outline
+import android.graphics.RectF
 import android.os.Build
 import android.support.annotation.RequiresApi
 import android.util.AttributeSet
@@ -21,12 +22,8 @@ class UISlider : UIControl {
     private var trackView: UIView? = null
     private var trackPassedView: UIView? = null
     private var value: Double = 0.toDouble() // range: 0.0 ~ 1.0
-    private var callback: UISliderCallback? = null
-
+    private var slideListener : (Double) -> Unit = {};
     private var thumbRadius = 30.0
-
-    private val active: Boolean = false
-
 
     constructor(context: Context, view: View) : super(context, view) {}
 
@@ -73,12 +70,10 @@ class UISlider : UIControl {
 
     override fun layoutSubviews() {
         super.layoutSubviews()
-        NSLog.warn(frame)
-
         val frameW = frame.size.width
-        trackView!!.frame = CGRect(0.0, 14.0, frameW, 4.0)
+        trackView!!.frame = CGRect(0.0, 14.0, frameW - 4, 4.0)
         trackPassedView!!.frame = CGRect(0.0, 14.0, frameW * value, 4.0)
-        thumbView!!.frame = CGRect(frameW * value - thumbRadius / 2.0, 2.0, thumbRadius, thumbRadius)
+        thumbView!!.frame = CGRect((frameW - thumbRadius) * value, 2.0, thumbRadius, thumbRadius)
     }
 
     override fun onEvent(event: UIControl.Event) {
@@ -86,33 +81,26 @@ class UISlider : UIControl {
         when (event) {
             UIControl.Event.TouchUpOutside, UIControl.Event.TouchUpInside -> {
             }
-        }// reset active = false
-        // is pointInSide?
-        // if YES
-        // ... active = true
-        // ...
-        //            case Touch
+            UIControl.Event.TouchDown -> {
+            }
+        }
     }
 
     override fun onLongPressed(sender: UILongPressGestureRecognizer) {
         super.onLongPressed(sender)
         if (sender.state == UIGestureRecognizerState.Changed) {
-            NSLog.warn(sender.location())
-
-            // location.x -> n%
-            // setValue(n%), slideCallback
+            if (pointInThumbView(sender.location())){
+                val percentValue = (sender.location().x - frame.x) / frame.width
+                setValueAnimated(percentValue)
+            }
         }
     }
 
-    fun onSlide(callback: UISliderCallback) {
-        this.callback = callback // callback.handle(this.value);
+    public fun onSlide(listener: (Double) -> Unit){
+        this.slideListener = listener
     }
 
     private fun setValueAnimated(value: Double) {
-
-    }
-
-    fun setValue(value: Double) {
         if (value < 0.0) {
             this.value = 0.0
         } else if (value > 1.0) {
@@ -120,10 +108,34 @@ class UISlider : UIControl {
         } else {
             this.value = value
         }
+
+        setValue(this.value)
+        this.slideListener(this.value)
     }
 
-    fun getValue(): Double {
+    public fun setValue(value: Double) {
+        if (value < 0.0) {
+            this.value = 0.0
+        } else if (value > 1.0) {
+            this.value = 1.0
+        } else {
+            this.value = value
+        }
+
+        val frameW = frame.size.width
+        trackPassedView!!.frame = CGRect(0.0, 14.0, (frameW - thumbRadius) * this.value, 4.0)
+        thumbView!!.frame = CGRect((frameW - thumbRadius) * this.value, 2.0, thumbRadius, thumbRadius)
+    }
+
+    public fun getValue(): Double {
         return this.value
+    }
+
+    private fun pointInThumbView(point: CGPoint): Boolean {
+//        val touchRadius = thumbRadius/2.0 + 10;
+//        val pointCenter = CGPoint(thumbView!!.frame.x + touchRadius, thumbView!!.frame.y + touchRadius)
+//        return point.inRange(touchRadius, touchRadius, pointCenter)
+        return true
     }
 
 }
