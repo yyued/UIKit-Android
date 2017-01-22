@@ -49,7 +49,7 @@ class UINavigationItem(val mContext: Context) {
         for (subview in frontView.subviews) {
             subview.removeFromSuperview()
         }
-        this.titleView?.let {
+        titleView?.let {
             updateTitle()
             frontView.addSubview(it)
             frontView.titleView = it;

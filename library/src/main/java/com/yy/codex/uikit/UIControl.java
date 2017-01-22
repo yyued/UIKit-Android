@@ -189,7 +189,7 @@ public class UIControl extends UIView {
         super.init();
         setUserInteractionEnabled(true);
         UILongPressGestureRecognizer longPressGestureRecognizer = new UILongPressGestureRecognizer(this, "onLongPressed:");
-        longPressGestureRecognizer.mMinimumPressDuration = 0.05;
+        longPressGestureRecognizer.setMMinimumPressDuration(0.05);
         addGestureRecognizer(longPressGestureRecognizer);
         UITapGestureRecognizer tapGestureRecognizer = new UITapGestureRecognizer(this, "onTapped:");
         addGestureRecognizer(tapGestureRecognizer);
@@ -198,14 +198,14 @@ public class UIControl extends UIView {
     private boolean mInside = true;
 
     protected void onLongPressed(UILongPressGestureRecognizer sender) {
-        if (sender.mState == UIGestureRecognizerState.Began) {
+        if (sender.getState() == UIGestureRecognizerState.Began) {
             mInside = true;
             onEvent(Event.TouchDown);
             mTracking = true;
             mHighlighted = true;
             resetState();
         }
-        else if (sender.mState == UIGestureRecognizerState.Changed) {
+        else if (sender.getState() == UIGestureRecognizerState.Changed) {
             if (isPointInside(sender.location(this))) {
                 onEvent(Event.TouchDragInside);
                 if (!mInside) {
@@ -225,7 +225,7 @@ public class UIControl extends UIView {
                 }
             }
         }
-        else if (sender.mState == UIGestureRecognizerState.Ended) {
+        else if (sender.getState() == UIGestureRecognizerState.Ended) {
             if (isPointInside(sender.location(this))) {
                 onEvent(Event.TouchUpInside);
             }
