@@ -6,6 +6,7 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewOutlineProvider;
 
@@ -22,6 +23,10 @@ public class UISlider extends UIControl {
     private UIView trackPassedView;
     private double value; // range: 0.0 ~ 1.0
     private UISliderCallback callback;
+
+    private double thumbRadius = 30.0;
+
+    private boolean active;
 
 
     public UISlider(@NonNull Context context, @NonNull View view) {
@@ -47,10 +52,9 @@ public class UISlider extends UIControl {
 
     private void defaultValue(){
         value = 0.5;
-//        trackView.setFrame();
+        thumbRadius = 30.0;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void init() {
         super.init();
@@ -68,23 +72,13 @@ public class UISlider extends UIControl {
 
         thumbView = new UIView(getContext());
         thumbView.setWantsLayer(true);
+        thumbView.getLayer().setShadowX(2).setShadowY(2).setShadowRadius(0.5).setShadowColor(new UIColor(.3, .3, .3, .2));
+        thumbView.getLayer().setCornerRadius(thumbRadius/2.0).setBorderWidth(0.5).setBorderColor(new UIColor(0x00/255.0, 0x00/255.0, 0x00/255.0, 0.15));
         thumbView.getLayer().setBackgroundColor(UIColor.whiteColor);
-        thumbView.getLayer().setCornerRadius(14).setBorderWidth(0.5).setBorderColor(new UIColor(0x00/255.0, 0x00/255.0, 0x00/255.0, 0.15));
-//        thumbView.setElevation(3);
-//        thumbView.setTranslationZ(8);
-//        thumbView.setOutlineProvider(new ViewOutlineProvider() {
-//            @Override
-//            public void getOutline(View view, Outline outline) {
-//                int shapeSize = 28 * 2;
-//                outline.setRoundRect(0, 0, shapeSize, shapeSize, shapeSize/2);
-//            }
-//        });
 
         addSubview(trackView);
         addSubview(trackPassedView);
         addSubview(thumbView);
-
-
     }
 
 
@@ -96,16 +90,27 @@ public class UISlider extends UIControl {
         double frameW = getFrame().size.width;
         trackView.setFrame(new CGRect(0, 14, frameW, 4));
         trackPassedView.setFrame(new CGRect(0, 14, frameW * value, 4));
-        thumbView.setFrame(new CGRect(frameW * value - 28/2, 2, 28, 28));
+        thumbView.setFrame(new CGRect(frameW * value - thumbRadius/2.0, 2, thumbRadius, thumbRadius));
     }
 
     @Override
     protected void onEvent(Event event) {
         super.onEvent(event);
         switch (event){
-
+            case TouchUpOutside:
+            case TouchUpInside:
+                // reset active = false
+                 break;
+            case TouchDown:
+                // is pointInSide?
+                // if YES
+                // ... active = true
+                // ...
+//            case Touch
         }
     }
+
+    
 
     public void onSlide(UISliderCallback callback){
         this.callback = callback; // callback.handle(this.value);

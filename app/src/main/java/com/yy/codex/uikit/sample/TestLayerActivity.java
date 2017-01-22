@@ -68,8 +68,8 @@ class TestView1 extends UIView {
     protected void init() {
         super.init();
 
-        testBorder();
-//        testBitmapGravity();
+//        testBorder();
+        testBitmapGravity();
 //        testHierarchy();
     }
 
@@ -88,13 +88,13 @@ class TestView1 extends UIView {
         CALayer a2 = new CALayer(new CGRect(120, 10, 100, 100));
         a2.setBackgroundColor(UIColor.yellowColor)
                 .setBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.img180x180))
-                .setBitmapGravity(CALayerBitmapPainter.GRAVITY_SCALE_ASPECT_FILL);
+                .setBitmapGravity(CALayer.BitmapGravity.ScaleAspectFill);
         mainLayer.addSubLayer(a2);
 
         CALayer a3 = new CALayer(new CGRect(230, 10, 100, 100));
         a3.setBackgroundColor(UIColor.yellowColor)
                 .setBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.img180x180))
-                .setBitmapGravity(CALayerBitmapPainter.GRAVITY_SCALE_ASPECT_FILL)
+                .setBitmapGravity(CALayer.BitmapGravity.ScaleAspectFill)
                 .setBitmapColor(UIColor.redColor);
         mainLayer.addSubLayer(a3);
 
@@ -108,14 +108,14 @@ class TestView1 extends UIView {
         a5.setCornerRadius(10);
         a5.setBackgroundColor(UIColor.yellowColor)
                 .setBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.img180x180))
-                .setBitmapGravity(CALayerBitmapPainter.GRAVITY_SCALE_ASPECT_FILL);
+                .setBitmapGravity(CALayer.BitmapGravity.ScaleAspectFill);
         mainLayer.addSubLayer(a5);
 
         CALayer a6 = new CALayer(new CGRect(230, 120, 100, 100));
         a6.setCornerRadius(10);
         a6.setBackgroundColor(UIColor.yellowColor)
                 .setBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.img180x180))
-                .setBitmapGravity(CALayerBitmapPainter.GRAVITY_SCALE_ASPECT_FILL)
+                .setBitmapGravity(CALayer.BitmapGravity.ScaleAspectFill)
                 .setBitmapColor(UIColor.redColor);
         mainLayer.addSubLayer(a6);
 
@@ -129,14 +129,14 @@ class TestView1 extends UIView {
         a8.setBorderWidth(2).setBorderColor(UIColor.whiteColor).setCornerRadius(10);
         a8.setBackgroundColor(UIColor.yellowColor)
                 .setBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.img180x180))
-                .setBitmapGravity(CALayerBitmapPainter.GRAVITY_SCALE_ASPECT_FILL);
+                .setBitmapGravity(CALayer.BitmapGravity.ScaleAspectFill);
         mainLayer.addSubLayer(a8);
 
         CALayer a9 = new CALayer(new CGRect(230, 230, 100, 100));
         a9.setBorderWidth(2).setBorderColor(UIColor.whiteColor).setCornerRadius(10);
         a9.setBackgroundColor(UIColor.yellowColor)
                 .setBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.img180x180))
-                .setBitmapGravity(CALayerBitmapPainter.GRAVITY_SCALE_ASPECT_FILL)
+                .setBitmapGravity(CALayer.BitmapGravity.ScaleAspectFill)
                 .setBitmapColor(UIColor.redColor);
         mainLayer.addSubLayer(a9);
     }
@@ -158,7 +158,22 @@ class TestView1 extends UIView {
             CALayer layer = new CALayer(rect);
             layer.setClipToBounds(true);
             layer.setBorderWidth(2).setBorderColor(UIColor.greenColor).setCornerRadius(10);
-            layer.setBitmapGravity(idx).setBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.jpg180x180));
+            CALayer.BitmapGravity bitmapGravity = CALayer.BitmapGravity.ScaleAspectFit;
+            switch (idx){
+                case 0: bitmapGravity = CALayer.BitmapGravity.ScaleAspectFit; break;
+                case 1: bitmapGravity = CALayer.BitmapGravity.ScaleAspectFill; break;
+                case 2: bitmapGravity = CALayer.BitmapGravity.ScaleToFill; break;
+                case 3: bitmapGravity = CALayer.BitmapGravity.TopLeft; break;
+                case 4: bitmapGravity = CALayer.BitmapGravity.Top; break;
+                case 5: bitmapGravity = CALayer.BitmapGravity.TopRight; break;
+                case 6: bitmapGravity = CALayer.BitmapGravity.Left; break;
+                case 7: bitmapGravity = CALayer.BitmapGravity.Center; break;
+                case 8: bitmapGravity = CALayer.BitmapGravity.Right; break;
+                case 9: bitmapGravity = CALayer.BitmapGravity.BottomLeft; break;
+                case 10: bitmapGravity = CALayer.BitmapGravity.Bottom; break;
+                case 11: bitmapGravity = CALayer.BitmapGravity.BottomRight; break;
+            }
+            layer.setBitmapGravity(bitmapGravity).setBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.jpg180x180));
             mainLayer.addSubLayer(layer);
             idx++;
         }

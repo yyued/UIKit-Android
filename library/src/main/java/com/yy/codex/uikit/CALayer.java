@@ -19,6 +19,21 @@ import java.util.ArrayList;
 
 public class CALayer {
 
+    public enum BitmapGravity {
+        ScaleAspectFit,
+        ScaleAspectFill,
+        ScaleToFill,
+        TopLeft,
+        Top,
+        TopRight,
+        Left,
+        Center,
+        Right,
+        BottomLeft,
+        Bottom,
+        BottomRight,
+    }
+
     /* layoutProps */
 
     private @NonNull CGRect mFrame = new CGRect(0, 0, 0, 0);
@@ -176,13 +191,13 @@ public class CALayer {
         return this;
     }
 
-    private int mBitmapGravity = CALayerBitmapPainter.GRAVITY_SCALE_ASPECT_FIT;
+    private BitmapGravity mBitmapGravity = BitmapGravity.ScaleAspectFit;
 
-    public int getBitmapGravity() {
+    public BitmapGravity getBitmapGravity() {
         return mBitmapGravity;
     }
 
-    public @NonNull CALayer setBitmapGravity(int mBitmapGravity) {
+    public @NonNull CALayer setBitmapGravity(BitmapGravity mBitmapGravity) {
         if (this.mBitmapGravity != mBitmapGravity){
             this.mBitmapGravity = mBitmapGravity;
             this.setNeedDisplay(true);

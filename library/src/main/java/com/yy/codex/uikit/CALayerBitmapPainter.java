@@ -11,57 +11,42 @@ import android.support.annotation.NonNull;
 
 public class CALayerBitmapPainter {
 
-    /* imageGravity const */
-
-    public static final int GRAVITY_SCALE_ASPECT_FIT = 0x00;
-    public static final int GRAVITY_SCALE_ASPECT_FILL = 0x01;
-    public static final int GRAVITY_SCALE_TO_FILL = 0x02;
-    public static final int GRAVITY_TOP_LEFT = 0x03;
-    public static final int GRAVITY_TOP = 0x04;
-    public static final int GRAVITY_TOP_RIGHT = 0x05;
-    public static final int GRAVITY_LEFT = 0x06;
-    public static final int GRAVITY_CENTER = 0x07;
-    public static final int GRAVITY_RIGHT = 0x08;
-    public static final int GRAVITY_BOTTOM_LEFT = 0x09;
-    public static final int GRAVITY_BOTTOM = 0x0a;
-    public static final int GRAVITY_BOTTOM_RIGHT = 0x0b;
-
-    public static void drawBitmap(@NonNull Canvas canvas, @NonNull CGRect rect, @NonNull Bitmap bitmap, int bitmapGravity, Paint paint){
+    public static void drawBitmap(@NonNull Canvas canvas, @NonNull CGRect rect, @NonNull Bitmap bitmap, CALayer.BitmapGravity bitmapGravity, Paint paint){
         switch (bitmapGravity){
-            case GRAVITY_SCALE_TO_FILL:
+            case ScaleToFill:
                 drawScaleToFill(canvas, rect, bitmap, paint);
                 break;
-            case GRAVITY_SCALE_ASPECT_FIT:
+            case ScaleAspectFit:
                 drawScaleAsceptFit(canvas, rect, bitmap, paint);
                 break;
-            case GRAVITY_SCALE_ASPECT_FILL:
+            case ScaleAspectFill:
                 drawScaleAsceptFill(canvas, rect, bitmap, paint);
                 break;
-            case GRAVITY_CENTER:
+            case Center:
                 drawCenter(canvas, rect, bitmap, paint);
                 break;
-            case GRAVITY_TOP:
+            case Top:
                 drawTop(canvas, rect, bitmap, paint);
                 break;
-            case GRAVITY_TOP_LEFT:
+            case TopLeft:
                 drawTopLeft(canvas, rect, bitmap, paint);
                 break;
-            case GRAVITY_TOP_RIGHT:
+            case TopRight:
                 drawTopRight(canvas, rect, bitmap, paint);
                 break;
-            case GRAVITY_BOTTOM:
+            case Bottom:
                 drawBottom(canvas, rect, bitmap, paint);
                 break;
-            case GRAVITY_BOTTOM_LEFT:
+            case BottomLeft:
                 drawBottomLeft(canvas, rect, bitmap, paint);
                 break;
-            case GRAVITY_BOTTOM_RIGHT:
+            case BottomRight:
                 drawBottomRight(canvas, rect, bitmap, paint);
                 break;
-            case GRAVITY_LEFT:
+            case Left:
                 drawLeft(canvas, rect, bitmap, paint);
                 break;
-            case GRAVITY_RIGHT:
+            case Right:
                 drawRight(canvas, rect, bitmap, paint);
                 break;
         }
