@@ -77,11 +77,11 @@ open class UIViewController(val context: Context) : UIResponder {
         }
         set(view) {
             field?.let {
-                it.setViewController(null)
+                it.viewController = null
             }
             field = view
             field?.let {
-                it.setViewController(this)
+                it.viewController = this
             }
             if (!isViewLoaded) {
                 isViewLoaded = true

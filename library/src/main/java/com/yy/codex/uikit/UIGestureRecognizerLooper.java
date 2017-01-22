@@ -12,7 +12,7 @@ import java.util.Set;
  * Created by cuiminghui on 2017/1/13.
  */
 
-class UIGestureRecognizerLooper {
+public class UIGestureRecognizerLooper {
 
     @NonNull UIView mHitTestedView;
     @NonNull ArrayList<UIGestureRecognizer> mGestureRecognizers;

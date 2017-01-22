@@ -83,7 +83,7 @@ public class CALayer {
             this.mCornerRadius = mCornerRadius;
             this.setNeedDisplay(true);
             if (this.requestRootLayer().mView != null) {
-                UIView.animator.addAnimationState(this.requestRootLayer().mView, "layer.mCornerRadius", oldValue, mCornerRadius);
+                UIViewAnimator.addAnimationState(this.requestRootLayer().mView, "layer.mCornerRadius", oldValue, mCornerRadius);
             }
         }
         return this;
@@ -101,7 +101,7 @@ public class CALayer {
             this.mBorderWidth = mBorderWidth;
             this.setNeedDisplay(true);
             if (this.requestRootLayer().mView != null) {
-                UIView.animator.addAnimationState(this.requestRootLayer().mView, "layer.mBorderWidth", oldValue, mBorderWidth);
+                UIViewAnimator.addAnimationState(this.requestRootLayer().mView, "layer.mBorderWidth", oldValue, mBorderWidth);
             }
         }
         return this;

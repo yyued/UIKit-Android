@@ -184,7 +184,7 @@ public class UIScrollView extends UIView {
                 xOptions.topBounds = 0.0;
                 xOptions.bottomBounds = mContentSize.getWidth() - getFrame().getSize().getWidth();
                 xOptions.viewBounds = getFrame().getSize().getWidth();
-                mCurrentAnimationX = UIView.animator.decayBounds(this, "contentOffset.x", xOptions, null);
+                mCurrentAnimationX = UIViewAnimator.decayBounds(this, "contentOffset.x", xOptions, null);
                 UIViewAnimator.UIViewAnimationDecayBoundsOptions yOptions = new UIViewAnimator.UIViewAnimationDecayBoundsOptions();
                 yOptions.allowBounds = mBounces;
                 yOptions.alwaysBounds = mAlwaysBounceVertical;
@@ -193,7 +193,7 @@ public class UIScrollView extends UIView {
                 yOptions.topBounds = 0.0;
                 yOptions.bottomBounds = mContentSize.getHeight() + mContentInset.bottom - getFrame().getSize().getHeight();
                 yOptions.viewBounds = getFrame().getSize().getHeight();
-                mCurrentAnimationY = UIView.animator.decayBounds(this, "contentOffset.y", yOptions, null);
+                mCurrentAnimationY = UIViewAnimator.decayBounds(this, "contentOffset.y", yOptions, null);
             }
             mHorizontalMoveDiscance = 0;
             mVerticalMoveDiscance = 0;
@@ -305,11 +305,11 @@ public class UIScrollView extends UIView {
             if (mCurrentAnimationY != null) {
                 mCurrentAnimationY.cancel();
             }
-            mCurrentAnimationY = UIView.animator.linear(0.25, new Runnable() {
+            mCurrentAnimationY = UIViewAnimator.linear(0.25, new Runnable() {
                 @Override
                 public void run() {
-                    UIView.animator.addAnimationState(self, "contentOffset.x", oldValue.getX(), mContentOffset.getX());
-                    UIView.animator.addAnimationState(self, "contentOffset.y", oldValue.getY(), mContentOffset.getY());
+                    UIViewAnimator.addAnimationState(self, "contentOffset.x", oldValue.getX(), mContentOffset.getX());
+                    UIViewAnimator.addAnimationState(self, "contentOffset.y", oldValue.getY(), mContentOffset.getY());
                 }
             }, null);
         }
@@ -318,13 +318,13 @@ public class UIScrollView extends UIView {
             if (mDelegate != null) {
                 mDelegate.scrollViewDidScroll(this);
             }
-            UIView.animator.addAnimationState(self, "contentOffset.x", oldValue.getX(), mContentOffset.getX());
-            UIView.animator.addAnimationState(self, "contentOffset.y", oldValue.getY(), mContentOffset.getY());
+            UIViewAnimator.addAnimationState(self, "contentOffset.x", oldValue.getX(), mContentOffset.getX());
+            UIViewAnimator.addAnimationState(self, "contentOffset.y", oldValue.getY(), mContentOffset.getY());
         }
     }
 
     private void setContentOffsetWithSpring(@NonNull final CGPoint contentOffset, double velocity) {
-        mCurrentAnimationY = UIView.animator.springWithOptions(120, 20, velocity, new Runnable() {
+        mCurrentAnimationY = UIViewAnimator.springWithOptions(120, 20, velocity, new Runnable() {
             @Override
             public void run() {
                 setContentOffset(contentOffset, false);

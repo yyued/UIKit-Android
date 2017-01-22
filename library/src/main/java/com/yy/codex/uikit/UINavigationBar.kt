@@ -37,7 +37,7 @@ class UINavigationBar : UIView {
         constraint.top = "0"
         constraint.width = "100%"
         constraint.height = "44"
-        setConstraint(constraint)
+        this.constraint = constraint
     }
 
     override fun willMoveToSuperview(newSuperview: UIView?) {
@@ -205,7 +205,7 @@ class UINavigationBar : UIView {
 
     fun resetItemsProps() {
         for (item in items) {
-            item.setNavigationBar(this)
+            item.navigationBar = this
         }
     }
 
