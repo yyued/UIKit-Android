@@ -16,7 +16,8 @@ public class UIBarButtonItem extends UIBarItem {
         return mSystemBackItem;
     }
 
-    protected NSInvocation mInvocation = null;
+    private Object mTarget;
+    private String mAction;
 
     public UIBarButtonItem() {
 
@@ -24,16 +25,14 @@ public class UIBarButtonItem extends UIBarItem {
 
     public UIBarButtonItem(UIImage image, Object target, String action) {
         mImage = image;
-        if (target != null && action != null) {
-            mInvocation = new NSInvocation(target, action);
-        }
+        mTarget = target;
+        mAction = action;
     }
 
     public UIBarButtonItem(String title, Object target, String action) {
         mTitle = title;
-        if (target != null && action != null) {
-            mInvocation = new NSInvocation(target, action);
-        }
+        mTarget = target;
+        mAction = action;
     }
 
     protected UIView mCustomView = null;
@@ -91,6 +90,9 @@ public class UIBarButtonItem extends UIBarItem {
             }
             button.setFrame(new CGRect(0, 0, button.intrinsicContentSize().width, 44));
             button.setImageEdgeInsets(getImageInsets());
+            if (mTarget != null && mAction != null) {
+                button.addTarget(mTarget, mAction, UIControl.Event.TouchUpInside);
+            }
             mView = button;
             mView.setMarginInsets(getInsets());
         }

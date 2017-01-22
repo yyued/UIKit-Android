@@ -59,20 +59,15 @@ public class UIView extends FrameLayout implements UIResponder {
 
     /* UIResponder */
 
-    private WeakReference<UIViewController> mViewController = null;
+    private UIViewController mViewController = null;
 
     public void setViewController(UIViewController viewController) {
-        if (viewController == null) {
-            mViewController = null;
-        }
-        else {
-            mViewController = new WeakReference<UIViewController>(viewController);
-        }
+        mViewController = viewController;
     }
 
     @Nullable @Override
     public UIResponder getNextResponder() {
-        UIViewController viewController = mViewController != null ? mViewController.get() : null;
+        UIViewController viewController = mViewController;
         if (viewController != null) {
             return viewController;
         }
@@ -319,9 +314,9 @@ public class UIView extends FrameLayout implements UIResponder {
     @NonNull
     public UIView[] getSubviews() {
         ArrayList<UIView> subviews = new ArrayList<>();
-        for(int index = 0; index < getChildCount(); index++) {
+        for(int index = getChildCount() - 1; index >= 0; index--) {
             View nextChild = getChildAt(index);
-            if (UIView.class.isAssignableFrom(nextChild.getClass())) {
+            if (nextChild instanceof UIView) {
                 subviews.add((UIView)nextChild);
             }
         }

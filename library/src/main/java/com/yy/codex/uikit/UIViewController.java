@@ -167,7 +167,7 @@ public class UIViewController implements UIResponder {
     /* ChildViewControllers */
 
     @NonNull private UIViewController[] mChildViewControllers = new UIViewController[0];
-    @Nullable private WeakReference<UIViewController> mParentViewController;
+    @Nullable private UIViewController mParentViewController;
 
     public UIViewController[] getChildViewControllers() {
         return mChildViewControllers;
@@ -175,14 +175,14 @@ public class UIViewController implements UIResponder {
 
     @Nullable
     public UIViewController getParentViewController() {
-        return mParentViewController != null ? mParentViewController.get() : null;
+        return mParentViewController;
     }
 
     public void addChildViewController(@NonNull UIViewController childController) {
         if (childController == null) {
             return;
         }
-        childController.mParentViewController = new WeakReference<UIViewController>(this);
+        childController.mParentViewController = this;
         boolean contains = false;
         for (int i = 0; i < mChildViewControllers.length; i++) {
             if (mChildViewControllers[i] == childController) {
@@ -200,7 +200,7 @@ public class UIViewController implements UIResponder {
     }
 
     public void removeFromParentViewController() {
-        UIViewController parentViewController = mParentViewController != null ? mParentViewController.get() : null;
+        UIViewController parentViewController = mParentViewController;
         if (parentViewController != null) {
             ArrayList<UIViewController> viewControllers = new ArrayList<>();
             for (int i = 0; i < parentViewController.mChildViewControllers.length; i++) {

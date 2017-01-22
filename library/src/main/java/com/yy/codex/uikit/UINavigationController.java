@@ -19,6 +19,7 @@ public class UINavigationController extends UIViewController {
     @Override
     public void viewDidLoad() {
         super.viewDidLoad();
+        getView().addSubview(getWrapperView());
         getView().addSubview(getNavigationBar());
     }
 
@@ -42,6 +43,11 @@ public class UINavigationController extends UIViewController {
         resetNavigationItems();
         resetChildViews();
         beingPush = false;
+        doPushAnimation();
+    }
+
+    private void doPushAnimation() {
+
     }
 
     private boolean beingPop = false;
@@ -64,8 +70,7 @@ public class UINavigationController extends UIViewController {
             UIViewController[] childViewControllers = getChildViewControllers();
             if (childViewControllers.length > 0) {
                 UIView currentView = childViewControllers[childViewControllers.length - 1].getView();
-                currentView.setFrame(new CGRect(0, topLayoutLength(), getView().getFrame().getWidth(), getView().getFrame().getHeight() - topLayoutLength()));
-                getView().addSubview(currentView);
+                getWrapperView().addSubview(currentView);
             }
         }
         else if (beingPop) {
@@ -76,30 +81,31 @@ public class UINavigationController extends UIViewController {
             }
         }
         else {
-            UIView[] subviews = getView().getSubviews();
+            UIView[] subviews = getWrapperView().getSubviews();
             for (int i = 0; i < subviews.length; i++) {
-                if (subviews[i] instanceof UINavigationBar) {
-                    continue;
-                }
                 subviews[i].removeFromSuperview();
             }
             UIViewController[] childViewControllers = getChildViewControllers();
             for (int i = 0; i < childViewControllers.length; i++) {
                 UIView currentView = childViewControllers[i].getView();
-                currentView.setFrame(new CGRect(0, topLayoutLength(), getView().getFrame().getWidth(), getView().getFrame().getHeight() - topLayoutLength()));
-                getView().addSubview(currentView);
+                getWrapperView().addSubview(currentView);
             }
         }
-        getView().bringSubviewToFront(getNavigationBar());
+        resetContentViewsFrame();
     }
 
     @Override
     public void viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews();
-        UIViewController[] childViewControllers = getChildViewControllers();
-        for (int i = 0; i < childViewControllers.length; i++) {
-            UIView currentView = childViewControllers[i].getView();
-            currentView.setFrame(new CGRect(0, topLayoutLength(), getView().getFrame().getWidth(), getView().getFrame().getHeight() - topLayoutLength()));
+        getWrapperView().setFrame(new CGRect(0, 0, getView().getFrame().getWidth(), getView().getFrame().getHeight()));
+        resetContentViewsFrame();
+    }
+
+    private void resetContentViewsFrame() {
+        UIView[] subviews = getWrapperView().getSubviews();
+        for (int i = 0; i < subviews.length; i++) {
+            UIView currentView = subviews[i];
+            currentView.setFrame(new CGRect(0, topLayoutLength(), getWrapperView().getFrame().getWidth(), getWrapperView().getFrame().getHeight() - topLayoutLength()));
         }
     }
 
@@ -116,6 +122,18 @@ public class UINavigationController extends UIViewController {
 
     public void setNavigationBar(UINavigationBar navigationBar) {
         mNavigationBar = navigationBar;
+    }
+
+    /* WrapperView */
+
+    private UIView mWrapperView;
+
+    public UIView getWrapperView() {
+        if (mWrapperView == null) {
+            mWrapperView = new UIView(getContext());
+            mWrapperView.setBackgroundColor(UIColor.whiteColor);
+        }
+        return mWrapperView;
     }
 
 }

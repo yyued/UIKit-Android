@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
@@ -36,12 +37,11 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         UINavigationController navigationController = new UINavigationController(this);
         navigationController.setRootViewController(new TestViewController(this));
         navigationController.getView().setMaterialDesign(true);
-
         setContentView(navigationController.getView());
+
     }
 
 }
@@ -61,7 +61,27 @@ class TestViewController extends UIViewController {
     public void viewDidLoad() {
         super.viewDidLoad();
         setTitle("Test");
+        getNavigationItem().setRightBarButtonItem(new UIBarButtonItem("Next", this, "handleNextButtonTapped"));
     }
+
+    private void handleNextButtonTapped() {
+        navigationController().pushViewController(new NextViewController(getContext()), true);
+    }
+
+}
+
+class NextViewController extends UIViewController {
+
+    public NextViewController(@NonNull Context context) {
+        super(context);
+    }
+
+    @Override
+    public void viewDidLoad() {
+        super.viewDidLoad();
+        setTitle("I'm Next");
+    }
+
 }
 
 class TestView extends UIView {
