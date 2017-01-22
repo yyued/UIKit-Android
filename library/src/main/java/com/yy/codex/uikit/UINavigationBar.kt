@@ -231,7 +231,7 @@ class UINavigationBar : UIView {
         val theItemsView: MutableList<UINavigationItemView> = mutableListOf()
         for ((index, item) in items.withIndex()) {
             val frontView = if (isMaterialDesign) UINavigationItemView_MaterialDesign(context) else UINavigationItemView(context)
-            item.mFrontView = frontView
+            item.frontView = frontView
             item.setNeedsUpdate()
             theItemsView.add(frontView)
             frontView.constraint = UIConstraint.full()

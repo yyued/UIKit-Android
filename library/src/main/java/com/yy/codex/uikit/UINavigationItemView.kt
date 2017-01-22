@@ -24,75 +24,65 @@ open class UINavigationItemView : UIView {
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes) {
     }
 
-    var mLeftViews: List<UIView> = listOf()
-    var mTitleView: UIView? = null
-    var mRightViews: List<UIView> = listOf()
+    var leftViews: List<UIView> = listOf()
+    var titleView: UIView? = null
+    var rightViews: List<UIView> = listOf()
 
     override fun layoutSubviews() {
         super.layoutSubviews()
-        if (mTitleView != null) {
-            val iSize = mTitleView!!.intrinsicContentSize()
+        titleView?.let {
+            val iSize = it.intrinsicContentSize()
             if (iSize.width > 0 && iSize.height > 0) {
-                mTitleView!!.frame = CGRect(
+                it.frame = CGRect(
                         (frame.size.width - iSize.width) / 2.0,
                         (frame.size.height - iSize.height) / 2.0,
                         iSize.width,
                         iSize.height)
             } else {
-                mTitleView!!.frame = CGRect(
-                        (frame.size.width - mTitleView!!.frame.size.width) / 2.0,
-                        (frame.size.height - mTitleView!!.frame.size.height) / 2.0,
-                        mTitleView!!.frame.size.width,
-                        mTitleView!!.frame.size.height)
+                it.frame = CGRect(
+                        (frame.size.width - it.frame.size.width) / 2.0,
+                        (frame.size.height - it.frame.size.height) / 2.0,
+                        it.frame.size.width,
+                        it.frame.size.height)
             }
         }
-        if (mLeftViews != null && mLeftViews!!.size > 0) {
-            var x = 0.0
-            for (i in mLeftViews!!.indices) {
-                val contentView = mLeftViews!![i]
-                if (contentView != null) {
-                    x += contentView.marginInsets.left
-                    val iSize = contentView.intrinsicContentSize()
-                    if (iSize.width > 0 && iSize.height > 0) {
-                        contentView.frame = CGRect(
-                                x,
-                                0.0,
-                                iSize.width,
-                                frame.height)
-                        x += iSize.width + contentView.marginInsets.right
-                    } else {
-                        contentView.frame = CGRect(
-                                x,
-                                (frame.size.height - contentView.frame.size.height) / 2.0,
-                                contentView.frame.size.width,
-                                contentView.frame.size.height)
-                        x += contentView.frame.size.width + contentView.marginInsets.right
-                    }
-                }
+        var x = 0.0
+        for (contentView in leftViews) {
+            x += contentView.marginInsets.left
+            val iSize = contentView.intrinsicContentSize()
+            if (iSize.width > 0 && iSize.height > 0) {
+                contentView.frame = CGRect(
+                        x,
+                        0.0,
+                        iSize.width,
+                        frame.height)
+                x += iSize.width + contentView.marginInsets.right
+            } else {
+                contentView.frame = CGRect(
+                        x,
+                        (frame.size.height - contentView.frame.size.height) / 2.0,
+                        contentView.frame.size.width,
+                        contentView.frame.size.height)
+                x += contentView.frame.size.width + contentView.marginInsets.right
             }
         }
-        if (mRightViews != null && mRightViews!!.size > 0) {
-            var rx = frame.size.width
-            for (i in mRightViews!!.indices) {
-                val contentView = mRightViews!![i]
-                if (contentView != null) {
-                    val iSize = contentView.intrinsicContentSize()
-                    if (iSize.width > 0 && iSize.height > 0) {
-                        contentView.frame = CGRect(
-                                rx - iSize.width - contentView.marginInsets.right,
-                                0.0,
-                                iSize.width,
-                                frame.height)
-                        rx -= iSize.width + contentView.marginInsets.right + contentView.marginInsets.left
-                    } else {
-                        contentView.frame = CGRect(
-                                rx - contentView.frame.size.width - contentView.marginInsets.right,
-                                (frame.size.height - contentView.frame.size.height) / 2.0,
-                                contentView.frame.size.width,
-                                contentView.frame.size.height)
-                        rx -= contentView.frame.size.width + contentView.marginInsets.right + contentView.marginInsets.left
-                    }
-                }
+        var rx = frame.size.width
+        for (contentView in rightViews) {
+            val iSize = contentView.intrinsicContentSize()
+            if (iSize.width > 0 && iSize.height > 0) {
+                contentView.frame = CGRect(
+                        rx - iSize.width - contentView.marginInsets.right,
+                        0.0,
+                        iSize.width,
+                        frame.height)
+                rx -= iSize.width + contentView.marginInsets.right + contentView.marginInsets.left
+            } else {
+                contentView.frame = CGRect(
+                        rx - contentView.frame.size.width - contentView.marginInsets.right,
+                        (frame.size.height - contentView.frame.size.height) / 2.0,
+                        contentView.frame.size.width,
+                        contentView.frame.size.height)
+                rx -= contentView.frame.size.width + contentView.marginInsets.right + contentView.marginInsets.left
             }
         }
     }
@@ -100,22 +90,21 @@ open class UINavigationItemView : UIView {
     internal open fun animateFromFrontToBack(reset: Boolean) {
         if (!reset) {
             layoutSubviews()
-            mTitleView!!.alpha = 1f
-            for (i in mLeftViews!!.indices) {
-                mLeftViews!![i].alpha = 1f
+            titleView?.let { it.alpha = 1f }
+            for (view in leftViews) {
+                view.alpha = 1f
             }
-            for (i in mRightViews!!.indices) {
-                mRightViews!![i].alpha = 1f
+            for (view in rightViews) {
+                view.alpha = 1f
             }
         } else {
             layoutSubviews()
-            mTitleView!!.frame = CGRect(22.0, mTitleView!!.frame.y, mTitleView!!.frame.width, mTitleView!!.frame.height)
-            mTitleView!!.alpha = 0f
-            for (i in mLeftViews!!.indices) {
-                mLeftViews!![i].alpha = 0f
+            titleView?.let { it.frame = it.frame.setX(22.0); it.alpha = 0f; }
+            for (view in leftViews) {
+                view.alpha = 0f
             }
-            for (i in mRightViews!!.indices) {
-                mRightViews!![i].alpha = 0f
+            for (view in rightViews) {
+                view.alpha = 0f
             }
         }
     }
@@ -123,22 +112,21 @@ open class UINavigationItemView : UIView {
     internal open fun animateToFront(reset: Boolean) {
         if (!reset) {
             layoutSubviews()
-            mTitleView!!.frame = CGRect(frame.width - mTitleView!!.frame.width, mTitleView!!.frame.y, mTitleView!!.frame.width, mTitleView!!.frame.height)
-            mTitleView!!.alpha = 0f
-            for (i in mLeftViews!!.indices) {
-                mLeftViews!![i].alpha = 0f
+            titleView?.let { it.frame = it.frame.setX(frame.width - it.frame.width); it.alpha = 0f; }
+            for (view in leftViews) {
+                view.alpha = 0f
             }
-            for (i in mRightViews!!.indices) {
-                mRightViews!![i].alpha = 0f
+            for (view in rightViews) {
+                view.alpha = 0f
             }
         } else {
             layoutSubviews()
-            mTitleView!!.alpha = 1f
-            for (i in mLeftViews!!.indices) {
-                mLeftViews!![i].alpha = 1f
+            titleView?.let { it.alpha = 1f }
+            for (view in leftViews) {
+                view.alpha = 1f
             }
-            for (i in mRightViews!!.indices) {
-                mRightViews!![i].alpha = 1f
+            for (view in rightViews) {
+                view.alpha = 1f
             }
         }
     }
@@ -146,22 +134,21 @@ open class UINavigationItemView : UIView {
     internal open fun animateFromBackToFront(reset: Boolean) {
         if (!reset) {
             layoutSubviews()
-            mTitleView!!.frame = CGRect(22.0, mTitleView!!.frame.y, mTitleView!!.frame.width, mTitleView!!.frame.height)
-            mTitleView!!.alpha = 0f
-            for (i in mLeftViews!!.indices) {
-                mLeftViews!![i].alpha = 0f
+            titleView?.let { it.frame = it.frame.setX(22.0); it.alpha = 0f; }
+            for (view in leftViews) {
+                view.alpha = 0f
             }
-            for (i in mRightViews!!.indices) {
-                mRightViews!![i].alpha = 0f
+            for (view in rightViews) {
+                view.alpha = 0f
             }
         } else {
             layoutSubviews()
-            mTitleView!!.alpha = 1f
-            for (i in mLeftViews!!.indices) {
-                mLeftViews!![i].alpha = 1f
+            titleView?.let { it.alpha = 1f }
+            for (view in leftViews) {
+                view.alpha = 1f
             }
-            for (i in mRightViews!!.indices) {
-                mRightViews!![i].alpha = 1f
+            for (view in rightViews) {
+                view.alpha = 1f
             }
         }
     }
@@ -169,22 +156,21 @@ open class UINavigationItemView : UIView {
     internal open fun animateToGone(reset: Boolean) {
         if (!reset) {
             layoutSubviews()
-            mTitleView!!.alpha = 1f
-            for (i in mLeftViews!!.indices) {
-                mLeftViews!![i].alpha = 1f
+            titleView?.let { it.alpha = 1f }
+            for (view in leftViews) {
+                view.alpha = 1f
             }
-            for (i in mRightViews!!.indices) {
-                mRightViews!![i].alpha = 1f
+            for (view in rightViews) {
+                view.alpha = 1f
             }
         } else {
             layoutSubviews()
-            mTitleView!!.frame = CGRect(frame.width - mTitleView!!.frame.width, mTitleView!!.frame.y, mTitleView!!.frame.width, mTitleView!!.frame.height)
-            mTitleView!!.alpha = 0f
-            for (i in mLeftViews!!.indices) {
-                mLeftViews!![i].alpha = 0f
+            titleView?.let { it.frame = it.frame.setX(frame.width - it.frame.width); it.alpha = 0f; }
+            for (view in leftViews) {
+                view.alpha = 0f
             }
-            for (i in mRightViews!!.indices) {
-                mRightViews!![i].alpha = 0f
+            for (view in rightViews) {
+                view.alpha = 0f
             }
         }
     }

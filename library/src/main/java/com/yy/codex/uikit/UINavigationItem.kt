@@ -21,71 +21,68 @@ class UINavigationItem(val mContext: Context) {
         }
 
     fun updateTitle() {
-        if (titleView is UILabel) {
+        (titleView as? UILabel)?.let {
+            var titleView = it;
             val navigationBar = navigationBar as? UINavigationBar
             if (navigationBar != null && navigationBar.titleTextAttributes != null) {
                 navigationBar.titleTextAttributes?.let {
-                    val titleTextAttributes = it
                     if (title is String) {
-                        (titleView as UILabel).attributedText = NSAttributedString(title as String, titleTextAttributes)
+                        titleView.attributedText = NSAttributedString(title as String, it)
                     }
                     else {
-                        (titleView as UILabel).text = ""
+                        titleView.text = ""
                     }
                 }
             }
             else {
-                (titleView as UILabel).text = title
+                titleView.text = title
             }
-            titleView?.superview?.let(UIView::layoutSubviews)
+            titleView.superview?.let(UIView::layoutSubviews)
         }
     }
 
     /* FrontView */
 
-    internal var mFrontView: UINavigationItemView? = null
+    var frontView: UINavigationItemView = UINavigationItemView(mContext);
 
     fun setNeedsUpdate() {
-        mFrontView?.let {
-            var frontView = it
-            for (subview in frontView.subviews) {
-                subview.removeFromSuperview()
-            }
-            titleView?.let {
-                updateTitle()
-                frontView.addSubview(it)
-            }
-            frontView.mLeftViews = leftBarButtonItems.map { it.getContentView(mContext) }
-            for (view in frontView.mLeftViews) {
-                frontView.addSubview(view)
-            }
-            frontView.mRightViews = rightBarButtonItems.map { it.getContentView(mContext) }
-            for (view in frontView.mRightViews) {
-                frontView.addSubview(view)
-            }
+        for (subview in frontView.subviews) {
+            subview.removeFromSuperview()
+        }
+        this.titleView?.let {
+            updateTitle()
+            frontView.addSubview(it)
+            frontView.titleView = it;
+        }
+        frontView.leftViews = leftBarButtonItems.map { it.getContentView(mContext) }
+        for (view in frontView.leftViews) {
+            frontView.addSubview(view)
+        }
+        frontView.rightViews = rightBarButtonItems.map { it.getContentView(mContext) }
+        for (view in frontView.rightViews) {
+            frontView.addSubview(view)
         }
     }
 
     /* TitleView */
 
-    private var mTitleView: UIView? = null
-
-    var titleView: UIView?
+    var titleView: UIView? = null
         get() {
-            if (mTitleView == null) {
+            if (field == null) {
                 val labelTitleView = UILabel(mContext)
                 labelTitleView.font = UIFont(17f)
                 labelTitleView.textColor = UIColor.blackColor
-                mTitleView = labelTitleView
+                field = labelTitleView
             }
-            return mTitleView
+            return field
         }
         set(titleView) {
-            if (mTitleView != null) {
-                mTitleView!!.removeFromSuperview()
+            field?.let {
+                it.removeFromSuperview()
             }
-            mTitleView = titleView
+            field= titleView
         }
+
 
     /* BarButtonItems */
 
