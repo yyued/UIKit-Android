@@ -52,11 +52,9 @@ open class UIView : FrameLayout, UIResponder {
 
     override val nextResponder: UIResponder?
         get() {
-            val viewController = viewController
             if (viewController != null) {
                 return viewController
             }
-            val superview = superview
             if (superview != null) {
                 return superview
             }

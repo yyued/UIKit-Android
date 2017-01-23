@@ -71,33 +71,87 @@ internal class UINavigationItemView_MaterialDesign : UINavigationItemView {
 
     override fun animateFromBackToFront(reset: Boolean) {
         if (!reset) {
-            alpha = 0f
+            layoutSubviews()
+            titleView?.let { it.frame = it.frame.setX(-it.frame.width); it.alpha = 0f; }
+            for (view in leftViews) {
+                view.alpha = 0f
+            }
+            for (view in rightViews) {
+                view.alpha = 0f
+            }
         } else {
-            alpha = 1f
+            layoutSubviews()
+            titleView?.let { it.alpha = 1f }
+            for (view in leftViews) {
+                view.alpha = 1f
+            }
+            for (view in rightViews) {
+                view.alpha = 1f
+            }
         }
     }
 
     override fun animateToFront(reset: Boolean) {
         if (!reset) {
-            alpha = 0f
+            titleView?.let { it.frame = it.frame.setX(frame.width); it.alpha = 0f; }
+            for (view in leftViews) {
+                view.alpha = 0f
+            }
+            for (view in rightViews) {
+                view.alpha = 0f
+            }
         } else {
-            alpha = 1f
+            layoutSubviews()
+            titleView?.let { it.alpha = 1f }
+            for (view in leftViews) {
+                view.alpha = 1f
+            }
+            for (view in rightViews) {
+                view.alpha = 1f
+            }
         }
     }
 
     override fun animateFromFrontToBack(reset: Boolean) {
         if (!reset) {
-            alpha = 1f
+            layoutSubviews()
+            titleView?.let { it.alpha = 1f }
+            for (view in leftViews) {
+                view.alpha = 1f
+            }
+            for (view in rightViews) {
+                view.alpha = 1f
+            }
         } else {
-            alpha = 0f
+            layoutSubviews()
+            titleView?.let { it.frame = it.frame.setX(-it.frame.width); it.alpha = 0f; }
+            for (view in leftViews) {
+                view.alpha = 0f
+            }
+            for (view in rightViews) {
+                view.alpha = 0f
+            }
         }
     }
 
     override fun animateToGone(reset: Boolean) {
         if (!reset) {
-            alpha = 1f
+            layoutSubviews()
+            titleView?.let { it.alpha = 1f }
+            for (view in leftViews) {
+                view.alpha = 1f
+            }
+            for (view in rightViews) {
+                view.alpha = 1f
+            }
         } else {
-            alpha = 0f
+            titleView?.let { it.frame = it.frame.setX(frame.width); it.alpha = 0f; }
+            for (view in leftViews) {
+                view.alpha = 0f
+            }
+            for (view in rightViews) {
+                view.alpha = 0f
+            }
         }
     }
 

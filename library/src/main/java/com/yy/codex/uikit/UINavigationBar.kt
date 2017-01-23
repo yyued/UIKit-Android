@@ -136,7 +136,7 @@ class UINavigationBar : UIView {
     private var items: List<UINavigationItem> = listOf()
     private var itemsView: List<UINavigationItemView> = listOf()
 
-    fun setItems(items: List<UINavigationItem>, animated: Boolean) {
+    fun setItems(items: List<UINavigationItem>) {
         this.items = items
         resetItemsProps()
         resetBackItems()
@@ -163,7 +163,7 @@ class UINavigationBar : UIView {
             topItemView.animateToFront(false)
             backItemView.alpha = 1f
             backItemView.animateFromFrontToBack(false)
-            UIViewAnimator.linear(0.75, Runnable {
+            UIViewAnimator.springWithOptions(300.0, 40.0, 20.0, Runnable {
                 topItemView.animateToFront(true)
                 backItemView.animateFromFrontToBack(true)
             }, Runnable { backItemView.alpha = 0f })
@@ -189,7 +189,7 @@ class UINavigationBar : UIView {
             backItemView.alpha = 1f
             topItemView.animateToGone(false)
             backItemView.animateFromBackToFront(false)
-            UIViewAnimator.linear(0.75, Runnable {
+            UIViewAnimator.springWithOptions(300.0, 40.0, 20.0, Runnable {
                 topItemView.animateToGone(true)
                 backItemView.animateFromBackToFront(true)
             }, Runnable {
@@ -232,11 +232,18 @@ class UINavigationBar : UIView {
             theItemsView.add(frontView)
             frontView.constraint = UIConstraint.full()
             addSubview(frontView)
+            frontView.layoutSubviews()
             if (index < items.count() - 1) {
                 frontView.alpha = 0f
+                frontView.titleView?.alpha = 0f
+                frontView.leftViews.forEach { it.alpha = 0f }
+                frontView.rightViews.forEach { it.alpha = 0f }
             }
             else {
                 frontView.alpha = 1f
+                frontView.titleView?.alpha = 1f
+                frontView.leftViews.forEach { it.alpha = 1f }
+                frontView.rightViews.forEach { it.alpha = 1f }
             }
         }
         this.itemsView = theItemsView

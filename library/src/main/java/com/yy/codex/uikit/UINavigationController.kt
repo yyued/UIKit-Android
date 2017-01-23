@@ -39,14 +39,16 @@ open class UINavigationController(context: Context) : UIViewController(context) 
     open fun pushViewController(viewController: UIViewController, animated: Boolean) {
         beingPush = true
         addChildViewController(viewController)
-        resetNavigationItems()
         resetChildViews()
         beingPush = false
-        doPushAnimation()
+        navigationBar.pushNavigationItem(viewController.navigationItem, animated)
+        if (animated) {
+            doPushAnimation()
+        }
     }
 
     open fun doPushAnimation() {
-        val subviews = wrapperView.subviews;
+        val subviews = wrapperView.subviews
         if (subviews.count() >= 2) {
             val frontView = subviews.last()
             val backView = subviews[subviews.count() - 2]
@@ -61,15 +63,45 @@ open class UINavigationController(context: Context) : UIViewController(context) 
 
     private val beingPop = false
 
-    fun popViewController(animated: Boolean) {
-
+    open fun popViewController(animated: Boolean) {
+        navigationBar.popNavigationItem(animated)
+        if (animated) {
+            if (childViewControllers.count() >= 2) {
+                doPopAnimation(Runnable {
+                    val lastViewController = childViewControllers.last()
+                    lastViewController.removeFromParentViewController()
+                    resetChildViews()
+                })
+            }
+        }
+        else {
+            if (childViewControllers.count() >= 2) {
+                val lastViewController = childViewControllers.last()
+                lastViewController.removeFromParentViewController()
+                resetChildViews()
+            }
+        }
     }
 
-    fun resetNavigationItems() {
-        navigationBar.setItems(childViewControllers.map { it.navigationItem }, false)
+    open fun doPopAnimation(completion: Runnable) {
+        val subviews = wrapperView.subviews
+        if (subviews.count() >= 2) {
+            val frontView = subviews.last()
+            val backView = subviews[subviews.count() - 2]
+            frontView.frame = frontView.frame.setX(0.0)
+            backView.frame = backView.frame.setX(wrapperView.frame.width * -0.20)
+            UIViewAnimator.springWithOptions(300.0, 40.0, 20.0, Runnable {
+                frontView.frame = frontView.frame.setX(wrapperView.frame.width)
+                backView.frame = backView.frame.setX(0.0)
+            }, completion)
+        }
     }
 
-    fun resetChildViews() {
+    protected fun resetNavigationItems() {
+        navigationBar.setItems(childViewControllers.map { it.navigationItem })
+    }
+
+    protected fun resetChildViews() {
         if (beingPush) {
             val childViewControllers = childViewControllers
             if (childViewControllers.size > 0) {
@@ -107,7 +139,7 @@ open class UINavigationController(context: Context) : UIViewController(context) 
         resetContentViewsFrame()
     }
 
-    private fun resetContentViewsFrame() {
+    protected fun resetContentViewsFrame() {
         val subviews = wrapperView.subviews
         for (subview in subviews) {
             subview.frame = CGRect(0.0, topLayoutLength(), wrapperView.frame.width, wrapperView.frame.height - topLayoutLength())

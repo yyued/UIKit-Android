@@ -30,7 +30,10 @@ open class UIViewController(val context: Context) : UIResponder {
 
     override val nextResponder: UIResponder?
         get() {
-            return parentViewController
+            if (parentViewController != null && parentViewController?.view != null) {
+                return parentViewController?.view
+            }
+            return null
         }
 
     override fun touchesBegan(touches: List<UITouch>, event: UIEvent) {

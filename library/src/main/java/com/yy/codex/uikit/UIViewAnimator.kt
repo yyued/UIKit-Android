@@ -16,24 +16,28 @@ import java.util.HashMap
 
 object UIViewAnimator {
 
-    private var animationState: HashMap<UIView, HashMap<String, UIViewAnimatorState<*>>> = hashMapOf()
+    private var animationState: HashMap<UIView, HashMap<String, UIViewAnimatorState<*>>>? = null
 
     fun addAnimationState(view: UIView, aKey: String, originValue: Double, finalValue: Double) {
-        if (animationState == null) {
-            return
-        }
+        val animationState = animationState ?: return
         if (originValue == finalValue) {
             return
         }
         if (animationState[view] == null) {
             animationState.put(view, HashMap<String, UIViewAnimatorState<*>>())
         }
-        val log = UIViewAnimatorState<Number>()
-        log.valueType = 1
-        log.originValue = originValue
-        log.finalValue = finalValue
-        animationState[view]?.let {
-            it.put(aKey, log)
+        val log: UIViewAnimatorState<Number>? = animationState[view]?.get(aKey) as? UIViewAnimatorState<Number>
+        if (log != null) {
+            log.finalValue = finalValue
+        }
+        else {
+            val newLog = UIViewAnimatorState<Number>()
+            newLog.valueType = 1
+            newLog.originValue = originValue
+            newLog.finalValue = finalValue
+            animationState[view]?.let {
+                it.put(aKey, newLog)
+            }
         }
     }
 
@@ -49,6 +53,8 @@ object UIViewAnimator {
         val animation = UIViewAnimation()
         resetAnimationState()
         animations.run()
+        val animationState = animationState ?: return animation
+        this.animationState = null
         val aniCount = intArrayOf(0)
         for ((key, value) in animationState) {
             for ((key1, log) in value) {
@@ -99,7 +105,6 @@ object UIViewAnimator {
             animation.markFinished()
             completion?.run()
         }
-        animationState = hashMapOf()
         return animation
     }
 
@@ -107,6 +112,8 @@ object UIViewAnimator {
         val animation = UIViewAnimation()
         resetAnimationState()
         animations.run()
+        val animationState = animationState ?: return animation
+        this.animationState = null
         val aniCount = intArrayOf(0)
         val system = SpringSystem.create()
         for ((key, value) in animationState) {
@@ -149,7 +156,6 @@ object UIViewAnimator {
             animation.markFinished()
             completion?.run()
         }
-        animationState = hashMapOf()
         return animation
     }
 
@@ -157,6 +163,8 @@ object UIViewAnimator {
         val animation = UIViewAnimation()
         resetAnimationState()
         animations.run()
+        val animationState = animationState ?: return animation
+        this.animationState = null
         val aniCount = intArrayOf(0)
         val system = SpringSystem.create()
         for ((key, value) in animationState) {
@@ -205,7 +213,6 @@ object UIViewAnimator {
             animation.markFinished()
             completion?.run()
         }
-        animationState = hashMapOf()
         return animation
     }
 
