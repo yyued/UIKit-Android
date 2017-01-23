@@ -18,6 +18,8 @@ import com.yy.codex.foundation.NSLog
 
 class UISlider : UIControl {
 
+    /* UISlider initialize methods */
+
     constructor(context: Context, view: View) : super(context, view) {}
 
     constructor(context: Context) : super(context) {}
@@ -29,30 +31,6 @@ class UISlider : UIControl {
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes) {
     }
-
-    private var thumbView: UIView? = null
-
-    private var trackView: UIView? = null
-
-    private var trackPassedView: UIView? = null
-
-    private var progress: Double = 0.toDouble() // range: 0.0 ~ 1.0
-        set(value) {
-            if (value < 0.0){
-                field = 0.0
-            }
-            else if (value > 1.0){
-                field = 1.0
-            }
-            else {
-                field = value
-            }
-        }
-
-    private var slideListener : (Double) -> Unit = {}
-
-    private var thumbRadius = 30.0
-
 
     private fun defaultValue() {
         progress = 1.5
@@ -66,12 +44,12 @@ class UISlider : UIControl {
         trackView = UIView(context)
         trackView!!.wantsLayer = true
         trackView!!.layer.backgroundColor = UIColor(0xb7 / 255.0, 0xb7 / 255.0, 0xb7 / 255.0, 1.0)
-        trackView!!.layer.cornerRadius = 2.0
+        trackView!!.layer.cornerRadius = 1.0
 
-        trackPassedView = UIView(context)
-        trackPassedView!!.wantsLayer = true
-        trackPassedView!!.layer.backgroundColor = UIColor(0x10 / 255.0, 0x6a / 255.0, 1.0, 1.0)
-        trackPassedView!!.layer.cornerRadius = 2.0
+        trackProgressView = UIView(context)
+        trackProgressView!!.wantsLayer = true
+        trackProgressView!!.layer.backgroundColor = UIColor(0x10 / 255.0, 0x6a / 255.0, 1.0, 1.0)
+        trackProgressView!!.layer.cornerRadius = 1.0
 
         thumbView = UIView(context)
         thumbView!!.wantsLayer = true
@@ -85,27 +63,41 @@ class UISlider : UIControl {
         thumbView!!.layer.backgroundColor = UIColor.whiteColor
 
         addSubview(trackView!!)
-        addSubview(trackPassedView!!)
+        addSubview(trackProgressView!!)
         addSubview(thumbView!!)
     }
 
+    /* UISlider UI Details & Rendering */
+
+    private var thumbView: UIView? = null
+
+    private var trackView: UIView? = null
+
+    private var trackProgressView: UIView? = null
+
+    private var slideListener : (Double) -> Unit = {}
+
+    private var thumbRadius = 30.0
+
+    private var progress: Double = 0.toDouble()
+        set(value) {
+            if (value < 0.0){
+                field = 0.0
+            }
+            else if (value > 1.0){
+                field = 1.0
+            }
+            else {
+                field = value
+            }
+        }
 
     override fun layoutSubviews() {
         super.layoutSubviews()
         val frameW = frame.size.width
-        trackView!!.frame = CGRect(0.0, 14.0, frameW - 4, 4.0)
-        trackPassedView!!.frame = CGRect(0.0, 14.0, frameW * progress, 4.0)
-        thumbView!!.frame = CGRect((frameW - thumbRadius) * progress, 2.0, thumbRadius, thumbRadius)
-    }
-
-    override fun onEvent(event: UIControl.Event) {
-        super.onEvent(event)
-        when (event) {
-            UIControl.Event.TouchUpOutside, UIControl.Event.TouchUpInside -> {
-            }
-            UIControl.Event.TouchDown -> {
-            }
-        }
+        trackView!!.frame = CGRect(0.0, 15.0, frameW - 4, 2.0)
+        trackProgressView!!.frame = CGRect(0.0, 15.0, (frameW - thumbRadius) * this.progress, 2.0)
+        thumbView!!.frame = CGRect((frameW - thumbRadius) * progress, 1.0, thumbRadius, thumbRadius)
     }
 
     override fun onLongPressed(sender: UILongPressGestureRecognizer) {
@@ -113,48 +105,35 @@ class UISlider : UIControl {
         if (sender.state == UIGestureRecognizerState.Changed) {
             if (pointInThumbView(sender.location())){
                 val percentValue = (sender.location().x - frame.x) / frame.width
-                setValueAnimated(percentValue)
+                setValue(percentValue)
+                this.slideListener(this.progress)
             }
         }
     }
+
+    /* UISlider exports methods */
 
     fun onSlide(listener: (Double) -> Unit){
         this.slideListener = listener
     }
 
-    private fun setValueAnimated(value: Double) {
-        this.progress = value
-        setValue(this.progress)
-        this.slideListener(this.progress)
-    }
-
     fun setValue(value: Double) {
         this.progress = value
         val frameW = frame.size.width
-        trackPassedView!!.frame = CGRect(0.0, 14.0, (frameW - thumbRadius) * this.progress, 4.0)
-        thumbView!!.frame = CGRect((frameW - thumbRadius) * this.progress, 2.0, thumbRadius, thumbRadius)
+        trackProgressView!!.frame = CGRect(0.0, 15.0, (frameW - thumbRadius) * this.progress, 2.0)
+        thumbView!!.frame = CGRect((frameW - thumbRadius) * this.progress, 1.0, thumbRadius, thumbRadius)
     }
 
     fun getValue(): Double {
         return this.progress
     }
 
+    /* UISlider supports methods */
+
     private fun pointInThumbView(point: CGPoint): Boolean {
 //        val touchRadius = thumbRadius/2.0 + 10;
 //        val pointCenter = CGPoint(thumbView!!.frame.x + touchRadius, thumbView!!.frame.y + touchRadius)
 //        return point.inRange(touchRadius, touchRadius, pointCenter)
         return true
-    }
-
-    // test
-    fun test() {
-        val n = 10
-        var str = "$n and ${n+10}"
-
-        val text = """
-        sdf sf
-        """
-
-
     }
 }
