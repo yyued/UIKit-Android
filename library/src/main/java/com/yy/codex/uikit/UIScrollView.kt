@@ -15,7 +15,7 @@ import java.util.TimerTask
  * Created by it on 17/1/6.
  */
 
-class UIScrollView : UIView {
+open class UIScrollView : UIView {
 
     interface UIScrollViewDelegate {
         fun scrollViewDidScroll(scrollView: UIScrollView)
