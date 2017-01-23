@@ -63,7 +63,7 @@ open class UIScrollView : UIView {
 
     private var mPanGestureRecognizer: UIPanGestureRecognizer? = null
     private var mContentOffset = CGPoint(0.0, 0.0)
-    protected var contentSize = CGSize(0.0, 0.0)
+    var contentSize = CGSize(0.0, 0.0)
     private var mContentInset: UIEdgeInsets = UIEdgeInsets.zero
 
     protected open var delegate: UIScrollViewDelegate? = null
