@@ -43,37 +43,44 @@ class UISwitch : UIControl {
         super.init()
         defaultValue()
         mOffBackgroundView = UIView(context)
-        mOffBackgroundView!!.frame = CGRect(0.0, 0.0, 51.0, 32.0)
-        mOffBackgroundView!!.alpha = 1.0f
-        mOffBackgroundView!!.wantsLayer = true
-        mOffBackgroundView!!.layer.cornerRadius = 16.0
-        mOffBackgroundView!!.layer.borderWidth = 2.0
-        mOffBackgroundView!!.layer.borderColor = UIColor(0x00 / 255.0, 0x00 / 255.0, 0x00 / 255.0, 0.1)
-        mOffBackgroundView!!.layer.backgroundColor = mOffTrackColor
+        mOffBackgroundView?.let {
+            it.frame = CGRect(0.0, 0.0, 51.0, 32.0)
+            it.alpha = 1.0f
+            it.wantsLayer = true
+            it.layer.cornerRadius = 16.0
+            it.layer.borderWidth = 2.0
+            it.layer.borderColor = UIColor(0x00 / 255.0, 0x00 / 255.0, 0x00 / 255.0, 0.1)
+            it.layer.backgroundColor = mOffTrackColor
+            addSubview(it)
+        }
+
 
         mOnBackgroundView = UIView(context)
-        mOnBackgroundView!!.frame = CGRect(0.0, 0.0, 51.0, 32.0)
-        mOnBackgroundView!!.alpha = 0.0f
-        mOnBackgroundView!!.wantsLayer = true
-        mOnBackgroundView!!.layer.cornerRadius = 16.0
-        mOnBackgroundView!!.layer.backgroundColor = mOnTrackColor
+        mOnBackgroundView?.let {
+            it.frame = CGRect(0.0, 0.0, 51.0, 32.0)
+            it.alpha = 0.0f
+            it.wantsLayer = true
+            it.layer.cornerRadius = 16.0
+            it.layer.backgroundColor = mOnTrackColor
+            addSubview(it)
+        }
+
 
         mHandleView = UIView(context)
-        mHandleView!!.frame = CGRect(2.0, 2.0, mHandleRadius.toDouble(), mHandleRadius.toDouble())
-        mHandleView!!.alpha = 1.0f
-        mHandleView!!.wantsLayer = true
-        mHandleView!!.layer.shadowX = 2.0
-        mHandleView!!.layer.shadowY = 2.0
-        mHandleView!!.layer.shadowRadius = 0.5
-        mHandleView!!.layer.shadowColor = UIColor(.3, .3, .3, .2)
-        mHandleView!!.layer.cornerRadius = 14.0
-        mHandleView!!.layer.borderWidth = 0.5
-        mHandleView!!.layer.borderColor = UIColor(0x00 / 255.0, 0x00 / 255.0, 0x00 / 255.0, 0.15)
-        mHandleView!!.layer.backgroundColor = mOffThumbColor
-
-        addSubview(mOffBackgroundView!!)
-        addSubview(mOnBackgroundView!!)
-        addSubview(mHandleView!!)
+        mHandleView?.let {
+            it.frame = CGRect(2.0, 2.0, mHandleRadius.toDouble(), mHandleRadius.toDouble())
+            it.alpha = 1.0f
+            it.wantsLayer = true
+            it.layer.shadowX = 2.0
+            it.layer.shadowY = 2.0
+            it.layer.shadowRadius = 0.5
+            it.layer.shadowColor = UIColor(.3, .3, .3, .2)
+            it.layer.cornerRadius = 14.0
+            it.layer.borderWidth = 0.5
+            it.layer.borderColor = UIColor(0x00 / 255.0, 0x00 / 255.0, 0x00 / 255.0, 0.15)
+            it.layer.backgroundColor = mOffThumbColor
+            addSubview(it)
+        }
     }
 
     /* UISwitch UI Details */
@@ -123,17 +130,29 @@ class UISwitch : UIControl {
         cancelAnimation()
         mCurrentAnimation = UIViewAnimator.spring(Runnable {
             if (mOn) {
-                mOnBackgroundView!!.alpha = 1.0f
-                mOnBackgroundView!!.layer.backgroundColor = mOnTrackColor
-                mOffBackgroundView!!.alpha = 0.0f
-                mHandleView!!.frame = CGRect(21.0, 2.0, mHandleRadius.toDouble(), mHandleRadius.toDouble())
-                mHandleView!!.layer.backgroundColor = mOnThumbColor
+                mOffBackgroundView?.let {
+                    it.alpha = 0.0f
+                }
+                mOnBackgroundView?.let {
+                    it.alpha = 1.0f
+                    it.layer.backgroundColor = mOnTrackColor
+                }
+                mHandleView?.let {
+                    it.frame = CGRect(21.0, 2.0, mHandleRadius.toDouble(), mHandleRadius.toDouble())
+                    it.layer.backgroundColor = mOnThumbColor
+                }
             } else {
-                mOffBackgroundView!!.alpha = 1.0f
-                mOffBackgroundView!!.layer.backgroundColor = mOffTrackColor
-                mOnBackgroundView!!.alpha = 0.0f
-                mHandleView!!.frame = CGRect(2.0, 2.0, mHandleRadius.toDouble(), mHandleRadius.toDouble())
-                mHandleView!!.layer.backgroundColor = mOffThumbColor
+                mOffBackgroundView?.let {
+                    it.alpha = 1.0f
+                    it.layer.backgroundColor = mOffTrackColor
+                }
+                mOnBackgroundView?.let {
+                    it.alpha = 0.0f
+                }
+                mHandleView?.let {
+                    it.frame = CGRect(2.0, 2.0, mHandleRadius.toDouble(), mHandleRadius.toDouble())
+                    it.layer.backgroundColor = mOffThumbColor
+                }
             }
         }, Runnable { mActive = false })
     }
@@ -144,17 +163,29 @@ class UISwitch : UIControl {
         }
         this.mOn = isOn
         if (isOn) {
-            mOnBackgroundView!!.alpha = 1.0f
-            mOnBackgroundView!!.layer.backgroundColor = mOnTrackColor
-            mOffBackgroundView!!.alpha = 0.0f
-            mHandleView!!.frame = CGRect(21.0, 2.0, mHandleRadius.toDouble(), mHandleRadius.toDouble())
-            mHandleView!!.layer.backgroundColor = mOnThumbColor
+            mOffBackgroundView?.let {
+                it.alpha = 0.0f
+            }
+            mOnBackgroundView?.let {
+                it.alpha = 1.0f
+                it.layer.backgroundColor = mOnTrackColor
+            }
+            mHandleView?.let {
+                it.frame = CGRect(21.0, 2.0, mHandleRadius.toDouble(), mHandleRadius.toDouble())
+                it.layer.backgroundColor = mOnThumbColor
+            }
         } else {
-            mOffBackgroundView!!.alpha = 1.0f
-            mOffBackgroundView!!.layer.backgroundColor = mOffTrackColor
-            mOnBackgroundView!!.alpha = 0.0f
-            mHandleView!!.frame = CGRect(2.0, 2.0, mHandleRadius.toDouble(), mHandleRadius.toDouble())
-            mHandleView!!.layer.backgroundColor = mOffThumbColor
+            mOffBackgroundView?.let {
+                it.alpha = 1.0f
+                it.layer.backgroundColor = mOffTrackColor
+            }
+            mOnBackgroundView?.let {
+                it.alpha = 0.0f
+            }
+            mHandleView?.let {
+                it.frame = CGRect(2.0, 2.0, mHandleRadius.toDouble(), mHandleRadius.toDouble())
+                it.layer.backgroundColor = mOffThumbColor
+            }
         }
     }
 
@@ -183,17 +214,29 @@ class UISwitch : UIControl {
             val widthExpanded = 8f
             if (isActive) {
                 if (mOn) {
-                    mHandleView!!.frame = CGRect((21 - widthExpanded).toDouble(), 2.0, (mHandleRadius + widthExpanded).toDouble(), mHandleRadius.toDouble())
+                    mHandleView?.let {
+                        it.frame = CGRect((21 - widthExpanded).toDouble(), 2.0, (mHandleRadius + widthExpanded).toDouble(), mHandleRadius.toDouble())
+                    }
                 } else {
-                    mHandleView!!.frame = CGRect(2.0, 2.0, (mHandleRadius + widthExpanded).toDouble(), mHandleRadius.toDouble())
-                    mOffBackgroundView!!.layer.backgroundColor = UIColor(0x00 / 255.0, 0x00 / 255.0, 0x00 / 255.0, 0.1) // darken +30%
+                    mHandleView?.let {
+                        it.frame = CGRect(2.0, 2.0, (mHandleRadius + widthExpanded).toDouble(), mHandleRadius.toDouble())
+                    }
+                    mOffBackgroundView?.let {
+                        it.layer.backgroundColor = UIColor(0x00 / 255.0, 0x00 / 255.0, 0x00 / 255.0, 0.1) // darken +30%
+                    }
                 }
             } else {
                 if (mOn) {
-                    mHandleView!!.frame = CGRect(21.0, 2.0, mHandleRadius.toDouble(), mHandleRadius.toDouble())
+                    mHandleView?.let {
+                        it.frame = CGRect(21.0, 2.0, mHandleRadius.toDouble(), mHandleRadius.toDouble())
+                    }
                 } else {
-                    mHandleView!!.frame = CGRect(2.0, 2.0, mHandleRadius.toDouble(), mHandleRadius.toDouble())
-                    mOffBackgroundView!!.layer.backgroundColor = mOffTrackColor
+                    mHandleView?.let {
+                        it.frame = CGRect(2.0, 2.0, mHandleRadius.toDouble(), mHandleRadius.toDouble())
+                    }
+                    mOffBackgroundView?.let {
+                        it.layer.backgroundColor = mOffTrackColor
+                    }
                 }
             }
         }, Runnable { mActive = false })
