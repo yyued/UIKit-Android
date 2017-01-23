@@ -64,13 +64,13 @@ class MyTestView extends UIView {
         scrollView.setConstraint(constraint);
         scrollView.setBounces(true);
         scrollView.setPagingEnabled(true);
-        scrollView.setBackgroundColor(UIColor.blackColor.colorWithAlpha(0.1));
+        scrollView.setBackgroundColor(UIColor.Companion.getBlackColor().colorWithAlpha(0.1));
         for (int i = 0; i < 100; i++) {
             UIView redView = new UIView(getContext());
             redView.setFrame(new CGRect(100 * i, 0,20,20));
             redView.setBackgroundColor(new UIColor(1, 0, 0, 1.0 - (i / 100.0)));
             if (i == 0) {
-                redView.setBackgroundColor(UIColor.blueColor);
+                redView.setBackgroundColor(UIColor.Companion.getBlueColor());
             }
             scrollView.addSubview(redView);
         }

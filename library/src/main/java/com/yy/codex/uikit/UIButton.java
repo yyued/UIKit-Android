@@ -129,7 +129,7 @@ public class UIButton extends UIControl {
         }
         else {
             if (state.contains(State.Disabled)) {
-                return UIColor.blackColor.colorWithAlpha(0.3);
+                return UIColor.Companion.getBlackColor().colorWithAlpha(0.3);
             }
             if (state.contains(State.Highlighted) && state.contains(State.Normal)) {
                 return getTintColor().colorWithAlpha(0.3);

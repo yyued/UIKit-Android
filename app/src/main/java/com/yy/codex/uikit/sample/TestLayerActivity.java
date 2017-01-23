@@ -77,67 +77,73 @@ class TestView1 extends UIView {
     /* test style */
 
     private void testBorder(){
-        UIView view = createAndAddSubview(null, UIColor.grayColor);
+        UIView view = createAndAddSubview(null, UIColor.Companion.getGrayColor());
         CALayer mainLayer = view.getLayer();
 
         // #1
         CALayer a1 = new CALayer(new CGRect(10, 10, 100, 100));
-        a1.setBackgroundColor(UIColor.yellowColor);
+        a1.setBackgroundColor(UIColor.Companion.getYellowColor());
         mainLayer.addSubLayer(a1);
 
         CALayer a2 = new CALayer(new CGRect(120, 10, 100, 100));
-        a2.setBackgroundColor(UIColor.yellowColor)
-                .setBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.img180x180))
-                .setBitmapGravity(CALayer.BitmapGravity.ScaleAspectFill);
+        a2.setBackgroundColor(UIColor.Companion.getYellowColor());
+        a2.setBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.img180x180));
+        a2.setBitmapGravity(CALayer.BitmapGravity.ScaleAspectFill);
         mainLayer.addSubLayer(a2);
 
         CALayer a3 = new CALayer(new CGRect(230, 10, 100, 100));
-        a3.setBackgroundColor(UIColor.yellowColor)
-                .setBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.img180x180))
-                .setBitmapGravity(CALayer.BitmapGravity.ScaleAspectFill)
-                .setBitmapColor(UIColor.redColor);
+        a3.setBackgroundColor(UIColor.Companion.getYellowColor());
+        a3.setBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.img180x180));
+        a3.setBitmapGravity(CALayer.BitmapGravity.ScaleAspectFill);
+        a3.setBitmapColor(UIColor.Companion.getRedColor());
         mainLayer.addSubLayer(a3);
 
         // #2
         CALayer a4 = new CALayer(new CGRect(10, 120, 100, 100));
         a4.setCornerRadius(10);
-        a4.setBackgroundColor(UIColor.yellowColor);
+        a4.setBackgroundColor(UIColor.Companion.getYellowColor());
         mainLayer.addSubLayer(a4);
 
         CALayer a5 = new CALayer(new CGRect(120, 120, 100, 100));
         a5.setCornerRadius(10);
-        a5.setBackgroundColor(UIColor.yellowColor)
-                .setBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.img180x180))
-                .setBitmapGravity(CALayer.BitmapGravity.ScaleAspectFill);
+        a5.setBackgroundColor(UIColor.Companion.getYellowColor());
+        a5.setBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.img180x180));
+        a5.setBitmapGravity(CALayer.BitmapGravity.ScaleAspectFill);
         mainLayer.addSubLayer(a5);
 
         CALayer a6 = new CALayer(new CGRect(230, 120, 100, 100));
         a6.setCornerRadius(10);
-        a6.setBackgroundColor(UIColor.yellowColor)
-                .setBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.img180x180))
-                .setBitmapGravity(CALayer.BitmapGravity.ScaleAspectFill)
-                .setBitmapColor(UIColor.redColor);
+        a6.setBackgroundColor(UIColor.Companion.getYellowColor());
+        a6.setBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.img180x180));
+        a6.setBitmapGravity(CALayer.BitmapGravity.ScaleAspectFill);
+        a6.setBitmapColor(UIColor.Companion.getRedColor());
         mainLayer.addSubLayer(a6);
 
         // #3
         CALayer a7 = new CALayer(new CGRect(10, 230, 100, 100));
-        a7.setBorderWidth(2).setBorderColor(UIColor.whiteColor).setCornerRadius(10);
-        a7.setBackgroundColor(UIColor.yellowColor);
+        a7.setBorderWidth(2);
+        a7.setBorderColor(UIColor.Companion.getWhiteColor());
+        a7.setCornerRadius(10);
+        a7.setBackgroundColor(UIColor.Companion.getYellowColor());
         mainLayer.addSubLayer(a7);
 
         CALayer a8 = new CALayer(new CGRect(120, 230, 100, 100));
-        a8.setBorderWidth(2).setBorderColor(UIColor.whiteColor).setCornerRadius(10);
-        a8.setBackgroundColor(UIColor.yellowColor)
-                .setBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.img180x180))
-                .setBitmapGravity(CALayer.BitmapGravity.ScaleAspectFill);
+        a8.setBorderWidth(2);
+        a8.setBorderColor(UIColor.Companion.getWhiteColor());
+        a8.setCornerRadius(10);
+        a8.setBackgroundColor(UIColor.Companion.getYellowColor());
+        a8.setBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.img180x180));
+        a8.setBitmapGravity(CALayer.BitmapGravity.ScaleAspectFill);
         mainLayer.addSubLayer(a8);
 
         CALayer a9 = new CALayer(new CGRect(230, 230, 100, 100));
-        a9.setBorderWidth(2).setBorderColor(UIColor.whiteColor).setCornerRadius(10);
-        a9.setBackgroundColor(UIColor.yellowColor)
-                .setBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.img180x180))
-                .setBitmapGravity(CALayer.BitmapGravity.ScaleAspectFill)
-                .setBitmapColor(UIColor.redColor);
+        a9.setBorderWidth(2);
+        a9.setBorderColor(UIColor.Companion.getWhiteColor());
+        a9.setCornerRadius(10);
+        a9.setBackgroundColor(UIColor.Companion.getYellowColor());
+        a9.setBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.img180x180));
+        a9.setBitmapGravity(CALayer.BitmapGravity.ScaleAspectFill);
+        a9.setBitmapColor(UIColor.Companion.getRedColor());
         mainLayer.addSubLayer(a9);
     }
 
@@ -145,7 +151,7 @@ class TestView1 extends UIView {
 
     private void testBitmapGravity(){
 
-        UIView view = createAndAddSubview(null, UIColor.orangeColor);
+        UIView view = createAndAddSubview(null, UIColor.Companion.getOrangeColor());
         CALayer mainLayer = view.getLayer();
 
         CGRect[] rects = {new CGRect(10, 10, 100, 100), new CGRect(120, 10, 100, 100), new CGRect(230, 10, 100, 100),
@@ -157,7 +163,9 @@ class TestView1 extends UIView {
         for (CGRect rect : rects){
             CALayer layer = new CALayer(rect);
             layer.setClipToBounds(true);
-            layer.setBorderWidth(2).setBorderColor(UIColor.greenColor).setCornerRadius(10);
+            layer.setBorderWidth(2);
+            layer.setBorderColor(UIColor.Companion.getGreenColor());
+            layer.setCornerRadius(10);
             CALayer.BitmapGravity bitmapGravity = CALayer.BitmapGravity.ScaleAspectFit;
             switch (idx){
                 case 0: bitmapGravity = CALayer.BitmapGravity.ScaleAspectFit; break;
@@ -173,7 +181,8 @@ class TestView1 extends UIView {
                 case 10: bitmapGravity = CALayer.BitmapGravity.Bottom; break;
                 case 11: bitmapGravity = CALayer.BitmapGravity.BottomRight; break;
             }
-            layer.setBitmapGravity(bitmapGravity).setBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.jpg180x180));
+            layer.setBitmapGravity(bitmapGravity);
+            layer.setBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.jpg180x180));
             mainLayer.addSubLayer(layer);
             idx++;
         }
@@ -184,20 +193,20 @@ class TestView1 extends UIView {
     private void testHierarchy(){
         // 测试层级坐标 clipToBound transform 情况
 
-        UIView view = createAndAddSubview(null, UIColor.grayColor);
+        UIView view = createAndAddSubview(null, UIColor.Companion.getGrayColor());
         CALayer mainLayer = view.getLayer();
 
         // 测试坐标, clipToBound = NO
-        CALayer a1 = createSubLayer(mainLayer, new CGRect(10, 10, 100, 100), UIColor.whiteColor);
-        CALayer b1 = createSubLayer(mainLayer, new CGRect(120, 10, 100, 100), UIColor.blackColor);
-        CALayer a11 = createSubLayer(a1, new CGRect(10, -10, 80, 80), UIColor.orangeColor);
-        CALayer a111 = createSubLayer(a11, new CGRect(10, -20, 50, 50), UIColor.yellowColor);
+        CALayer a1 = createSubLayer(mainLayer, new CGRect(10, 10, 100, 100), UIColor.Companion.getWhiteColor());
+        CALayer b1 = createSubLayer(mainLayer, new CGRect(120, 10, 100, 100), UIColor.Companion.getBlackColor());
+        CALayer a11 = createSubLayer(a1, new CGRect(10, -10, 80, 80), UIColor.Companion.getOrangeColor());
+        CALayer a111 = createSubLayer(a11, new CGRect(10, -20, 50, 50), UIColor.Companion.getYellowColor());
 
         // 测试坐标, clipToBound = YES
-        CALayer c1 = createSubLayer(mainLayer, new CGRect(10, 120, 100, 100), UIColor.whiteColor);
-        CALayer d2 = createSubLayer(mainLayer, new CGRect(120, 120, 100, 100), UIColor.blackColor);
-        CALayer c11 = createSubLayer(c1, new CGRect(10, -10, 80, 80), UIColor.orangeColor);
-        CALayer c111 = createSubLayer(c11, new CGRect(10, -20, 50, 50), UIColor.yellowColor);
+        CALayer c1 = createSubLayer(mainLayer, new CGRect(10, 120, 100, 100), UIColor.Companion.getWhiteColor());
+        CALayer d2 = createSubLayer(mainLayer, new CGRect(120, 120, 100, 100), UIColor.Companion.getBlackColor());
+        CALayer c11 = createSubLayer(c1, new CGRect(10, -10, 80, 80), UIColor.Companion.getOrangeColor());
+        CALayer c111 = createSubLayer(c11, new CGRect(10, -20, 50, 50), UIColor.Companion.getYellowColor());
         c1.setClipToBounds(true); // @Bug 导致子层 Transform 无效
         CGTransform[] tfs = {new CGTransformRotation(30), new CGTransformTranslation(10, 10)};
         c11.setTransforms(tfs);

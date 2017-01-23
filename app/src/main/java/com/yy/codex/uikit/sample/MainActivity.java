@@ -118,7 +118,7 @@ class TestView extends UIView {
         constraint.width = "100%";
         constraint.height = "100%";
         scrollView.setConstraint(constraint);
-        scrollView.setBackgroundColor(UIColor.whiteColor);
+        scrollView.setBackgroundColor(UIColor.Companion.getWhiteColor());
         for (int i = 0; i < 20; i++) {
             UILabel label = new UILabel(getContext());
             label.setFrame(new CGRect(0,100 * i,100,22));

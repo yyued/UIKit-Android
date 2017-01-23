@@ -47,11 +47,11 @@ public class UISwitch extends UIControl {
     private UIViewAnimation mCurrentAnimation = null;
 
     // configuable
-    private UIColor mOnThumbColor = UIColor.whiteColor;
+    private UIColor mOnThumbColor = UIColor.Companion.getWhiteColor();
     private UIColor mOnTrackColor = new UIColor(0x00/255.0, 0xe3/255.0, 0x64/255.0, 1);
     private @Nullable Bitmap mOnBitmap = null;
-    private UIColor mOffThumbColor = UIColor.whiteColor;
-    private UIColor mOffTrackColor = UIColor.whiteColor;
+    private UIColor mOffThumbColor = UIColor.Companion.getWhiteColor();
+    private UIColor mOffTrackColor = UIColor.Companion.getWhiteColor();
     private @Nullable Bitmap mOffBitmap = null;
 
     public void setOffTraceColor(UIColor mOffTraceColor) {
@@ -72,11 +72,11 @@ public class UISwitch extends UIControl {
 
     private void defaultValue(){
         mHandleRadius = 30;
-        mOnThumbColor = UIColor.whiteColor;
+        mOnThumbColor = UIColor.Companion.getWhiteColor();
         mOnTrackColor = new UIColor(0x00/255.0, 0xe3/255.0, 0x64/255.0, 1);
         mOnBitmap = null;
-        mOffThumbColor = UIColor.whiteColor;
-        mOffTrackColor = UIColor.whiteColor;
+        mOffThumbColor = UIColor.Companion.getWhiteColor();
+        mOffTrackColor = UIColor.Companion.getWhiteColor();
         mOffBitmap = null;
     }
 
@@ -88,7 +88,9 @@ public class UISwitch extends UIControl {
         mOffBackgroundView.setFrame(new CGRect(0, 0, 51, 32));
         mOffBackgroundView.setAlpha(1.0f);
         mOffBackgroundView.setWantsLayer(true);
-        mOffBackgroundView.getLayer().setCornerRadius(16).setBorderWidth(2).setBorderColor(new UIColor(0x00/255.0, 0x00/255.0, 0x00/255.0, 0.1));
+        mOffBackgroundView.getLayer().setCornerRadius(16);
+        mOffBackgroundView.getLayer().setBorderWidth(2);
+        mOffBackgroundView.getLayer().setBorderColor(new UIColor(0x00/255.0, 0x00/255.0, 0x00/255.0, 0.1));
         mOffBackgroundView.getLayer().setBackgroundColor(mOffTrackColor);
 
         mOnBackgroundView = new UIView(getContext());
@@ -102,8 +104,13 @@ public class UISwitch extends UIControl {
         mHandleView.setFrame(new CGRect(2, 2, mHandleRadius, mHandleRadius));
         mHandleView.setAlpha(1.0f);
         mHandleView.setWantsLayer(true);
-        mHandleView.getLayer().setShadowX(2).setShadowY(2).setShadowRadius(0.5).setShadowColor(new UIColor(.3, .3, .3, .2));
-        mHandleView.getLayer().setCornerRadius(14).setBorderWidth(0.5).setBorderColor(new UIColor(0x00/255.0, 0x00/255.0, 0x00/255.0, 0.15));
+        mHandleView.getLayer().setShadowX(2);
+        mHandleView.getLayer().setShadowY(2);
+        mHandleView.getLayer().setShadowRadius(0.5);
+        mHandleView.getLayer().setShadowColor(new UIColor(.3, .3, .3, .2));
+        mHandleView.getLayer().setCornerRadius(14);
+        mHandleView.getLayer().setBorderWidth(0.5);
+        mHandleView.getLayer().setBorderColor(new UIColor(0x00/255.0, 0x00/255.0, 0x00/255.0, 0.15));
         mHandleView.getLayer().setBackgroundColor(mOffThumbColor);
 
         addSubview(mOffBackgroundView);
@@ -146,7 +153,7 @@ public class UISwitch extends UIControl {
     private void setActiveAnimated(final boolean isActive){
         this.mActive = isActive;
         cancelAnimation();
-        mCurrentAnimation = UIViewAnimator.spring(new Runnable() {
+        mCurrentAnimation = UIViewAnimator.INSTANCE.spring(new Runnable() {
             @Override
             public void run() {
                 float widthExpanded = 8;
@@ -177,7 +184,7 @@ public class UISwitch extends UIControl {
     public void setOnAnimated(boolean isOn){
         this.mOn = isOn;
         cancelAnimation();
-        mCurrentAnimation = UIViewAnimator.spring(new Runnable() {
+        mCurrentAnimation = UIViewAnimator.INSTANCE.spring(new Runnable() {
             @Override
             public void run() {
                 if (mOn) {

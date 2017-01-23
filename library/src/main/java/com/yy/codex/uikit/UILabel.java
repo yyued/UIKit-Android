@@ -81,7 +81,7 @@ public class UILabel extends UIView {
 
     /* TextColor */
 
-    private UIColor mTextColor = UIColor.blackColor;
+    private UIColor mTextColor = UIColor.Companion.getBlackColor();
 
     public UIColor getTextColor() {
         return mTextColor;

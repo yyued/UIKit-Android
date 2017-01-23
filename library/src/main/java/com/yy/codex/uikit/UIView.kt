@@ -126,9 +126,7 @@ open class UIView : FrameLayout, UIResponder {
     var constraint: UIConstraint? = null
         set(constraint) {
             field = constraint
-            superview?.let {
-                it.layoutSubviews()
-            }
+            superview?.let(UIView::layoutSubviews)
         }
 
     open var maxWidth = 0.0

@@ -58,8 +58,13 @@ class UISlider : UIControl {
 
         thumbView = UIView(context)
         thumbView!!.isWantsLayer = true
-        thumbView!!.layer.setShadowX(2.0).setShadowY(2.0).setShadowRadius(0.5).shadowColor = UIColor(.3, .3, .3, .2)
-        thumbView!!.layer.setCornerRadius(thumbRadius / 2.0).setBorderWidth(0.5).borderColor = UIColor(0x00 / 255.0, 0x00 / 255.0, 0x00 / 255.0, 0.15)
+        thumbView!!.layer.shadowX = 2.0
+        thumbView!!.layer.shadowY = 2.0
+        thumbView!!.layer.shadowRadius = 2.0
+        thumbView!!.layer.shadowColor = UIColor(.3, .3, .3, .2)
+        thumbView!!.layer.cornerRadius = (thumbRadius / 2.0)
+        thumbView!!.layer.borderWidth = 0.5
+        thumbView!!.layer.borderColor = UIColor(0x00 / 255.0, 0x00 / 255.0, 0x00 / 255.0, 0.15)
         thumbView!!.layer.backgroundColor = UIColor.whiteColor
 
         addSubview(trackView!!)

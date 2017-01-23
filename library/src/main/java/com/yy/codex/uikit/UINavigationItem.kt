@@ -54,11 +54,11 @@ class UINavigationItem(val mContext: Context) {
             frontView.addSubview(it)
             frontView.titleView = it;
         }
-        frontView.leftViews = leftBarButtonItems.map { it.getContentView(mContext) }
+        frontView.leftViews = leftBarButtonItems.mapNotNull { it.getContentView(mContext) }
         for (view in frontView.leftViews) {
             frontView.addSubview(view)
         }
-        frontView.rightViews = rightBarButtonItems.map { it.getContentView(mContext) }
+        frontView.rightViews = rightBarButtonItems.mapNotNull { it.getContentView(mContext) }
         for (view in frontView.rightViews) {
             frontView.addSubview(view)
         }
@@ -129,9 +129,9 @@ class UINavigationItem(val mContext: Context) {
                 }
                 field = UIBarButtonItem(arrowImage, null, null)
                 field!!.insets = UIEdgeInsets.zero
-                field!!.mSystemBackItem = true
+                field!!.isSystemBackItem = true
             } else if (field == null) {
-                field = UIBarButtonItem(if (title == null) "Back" else title, null, null)
+                field = UIBarButtonItem(title ?: "Back", null, null)
                 if (UIScreen.mainScreen.scale() == 1.0) {
                     val arrowImage = UIImage("iVBORw0KGgoAAAANSUhEUgAAABoAAAAsCAYAAAB7aah+AAAAAXNSR0IArs4c6QAAATpJREFUWAm92LsNwjAQANAzFIzATJQwCAPQABJiAMagoUCCHegYgwkQlfEFQkLikPviJo5t3fNHyiUB8Cj7OGyGHTQb1Pe7OIIrHGERl/VYoX6jriNygwNEmLxjrWAb1li3g9pIOe8Cs4G6kQ/WOrSyh3ztR3Df7roV0ZAzjGEqhxgIzMNDBjERPAY+JED4kBDhQQqEDikRGmSA9ENGyG/IEOmGjJE85IC0ISfkG3JEKsgZeUF/QBCivpxEHKwpr6c3bVWnlMBmmFskYJUmaFiRLSVYBeE0HbFvyBFrQ05YHnLAuiFj7DdkiPVDRhgNMsDokBLjQQqMDwkxGSTA5BAT00EMjJr4MGS+YH5KH1rpu+ScH5BaA1z0Kyqjd6WYAaxhE1Z2EIJN7I1gly1Ux9J24Uqwya9kftE8AedMD8V9MQduAAAAAElFTkSuQmCC")
                     arrowImage.scale = 1.0
@@ -146,7 +146,7 @@ class UINavigationItem(val mContext: Context) {
                     field!!.image = arrowImage
                 }
                 field!!.imageInsets = UIEdgeInsets(0.0, 0.0, 0.0, 0.0)
-                field!!.mSystemBackItem = true
+                field!!.isSystemBackItem = true
             }
             return field
         }

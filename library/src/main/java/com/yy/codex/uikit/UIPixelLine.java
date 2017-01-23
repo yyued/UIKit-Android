@@ -36,7 +36,7 @@ public class UIPixelLine extends UIView {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 
-    private UIColor mColor = UIColor.blackColor;
+    private UIColor mColor = UIColor.Companion.getBlackColor();
 
     public void setColor(UIColor color) {
         mColor = color;
