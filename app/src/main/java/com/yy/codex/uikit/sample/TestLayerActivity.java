@@ -65,7 +65,7 @@ class TestView1 extends UIView {
 
 
     @Override
-    protected void init() {
+    public void init() {
         super.init();
 
 //        testBorder();

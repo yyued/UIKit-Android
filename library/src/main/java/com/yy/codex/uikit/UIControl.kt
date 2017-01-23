@@ -126,37 +126,37 @@ open class UIControl : UIView {
         super.init()
         isUserInteractionEnabled = true
         val longPressGestureRecognizer = UILongPressGestureRecognizer(this, "onLongPressed:")
-        longPressGestureRecognizer.mMinimumPressDuration = 0.05
+        longPressGestureRecognizer.minimumPressDuration = 0.05
         addGestureRecognizer(longPressGestureRecognizer)
         val tapGestureRecognizer = UITapGestureRecognizer(this, "onTapped:")
         addGestureRecognizer(tapGestureRecognizer)
     }
 
-    var isTouchInside = true
+    var touchingInside = true
         private set
 
     protected open fun onLongPressed(sender: UILongPressGestureRecognizer) {
         if (sender.state == UIGestureRecognizerState.Began) {
-            isTouchInside = true
+            touchingInside = true
             onEvent(Event.TouchDown)
-            isTracking = true
-            isHighlighted = true
+            tracking = true
+            highlighted = true
             resetState()
         } else if (sender.state == UIGestureRecognizerState.Changed) {
             if (isPointInside(sender.location(this))) {
                 onEvent(Event.TouchDragInside)
-                if (!isTouchInside) {
+                if (!touchingInside) {
                     onEvent(Event.TouchDragEnter)
-                    isTouchInside = true
-                    isHighlighted = true
+                    touchingInside = true
+                    highlighted = true
                     resetState()
                 }
             } else {
                 onEvent(Event.TouchDragOutside)
-                if (isTouchInside) {
+                if (touchingInside) {
                     onEvent(Event.TouchDragExit)
-                    isTouchInside = false
-                    isHighlighted = false
+                    touchingInside = false
+                    highlighted = false
                     resetState()
                 }
             }
@@ -166,8 +166,8 @@ open class UIControl : UIView {
             } else {
                 onEvent(Event.TouchUpOutside)
             }
-            isTracking = false
-            isHighlighted = false
+            tracking = false
+            highlighted = false
             resetState()
         }
     }
@@ -197,64 +197,42 @@ open class UIControl : UIView {
         return point.inRange(xRange + 22, yRange + 22, CGPoint(xRange, yRange))
     }
 
-    /* Enabled */
+    var enable = true
+        set(value) {
+            field = value
+            isUserInteractionEnabled = enable
+            resetState()
+        }
 
-    private var mEnabled = true
+    var select = false
+        set(value) {
+            field = value
+            resetState()
+        }
 
-    override fun setEnabled(enabled: Boolean) {
-        this.mEnabled = enabled
-        isUserInteractionEnabled = enabled
-        resetState()
-    }
-
-    override fun isEnabled(): Boolean {
-        return mEnabled
-    }
-
-    /* Selected */
-
-    private var mSelected = false
-
-    override fun setSelected(selected: Boolean) {
-        this.mSelected = selected
-        resetState()
-    }
-
-    override fun isSelected(): Boolean {
-        return mSelected
-    }
-
-    /* Highlighted */
-
-    var isHighlighted = false
+    var highlighted = false
         private set
 
-    /* State */
+    var tracking = false
+        private set
 
-    var state = EnumSet.of(State.Normal)
+    var state: EnumSet<State> = EnumSet.of(State.Normal)
         private set
 
     protected open fun resetState() {
         val state = EnumSet.of(State.Normal)
-        if (isTracking && isHighlighted) {
+        if (tracking && highlighted) {
             state.add(State.Highlighted)
         }
-        if (isSelected) {
+        if (select) {
             state.remove(State.Normal)
             state.add(State.Selected)
         }
-        if (!isEnabled) {
+        if (!enable) {
             state.add(State.Disabled)
         }
         this.state = state
     }
-
-    /* Tracking */
-
-    var isTracking = false
-        private set
-
-    /* ContentAlignment */
 
     var contentVerticalAlignment = ContentVerticalAlignment.Center
 

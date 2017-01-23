@@ -41,19 +41,11 @@ open class UIGestureRecognizer {
             actions = listOf()
             return
         }
-        val actions: MutableList<NSInvocation> = mutableListOf()
-        for (action in this.actions) {
-            if (target != null && action.target === target && selector != null && action.selector === selector) {
-                continue
-            } else if (target == null && selector != null && action.selector === selector) {
-                continue
-            } else if (target != null && action.target === target && selector == null) {
-                continue
-            } else {
-                actions.add(action)
-            }
+        actions = actions.filter {
+            !(target != null && it.target === target && selector != null && it.selector === selector) &&
+            !(target == null && selector != null && it.selector === selector) &&
+            !(target != null && it.target === target && selector == null)
         }
-        this.actions = actions.toList()
     }
 
     /* Props */
@@ -128,33 +120,27 @@ open class UIGestureRecognizer {
         return 0
     }
 
-    protected var mGestureRecognizersRequiresFailed: List<UIGestureRecognizer> = listOf()
-    protected var mGestureRecognizerRequiresFailedTimer: Timer? = null
+    protected var gestureRecognizersRequiresFailed: List<UIGestureRecognizer> = listOf()
+    protected var gestureRecognizerRequiresFailedTimer: Timer? = null
 
     fun requireGestureRecognizerToFail(otherGestureRecognizer: UIGestureRecognizer) {
-        val mutableList = mGestureRecognizersRequiresFailed.toMutableList()
+        val mutableList = gestureRecognizersRequiresFailed.toMutableList()
         mutableList.add(otherGestureRecognizer)
-        mGestureRecognizersRequiresFailed = mutableList.toList()
+        gestureRecognizersRequiresFailed = mutableList.toList()
     }
 
     protected fun waitOtherGesture(runnable: Runnable) {
         val handler = Handler()
-        if (mGestureRecognizersRequiresFailed.size > 0) {
-            if (mGestureRecognizerRequiresFailedTimer == null) {
-                mGestureRecognizerRequiresFailedTimer = Timer()
-                mGestureRecognizerRequiresFailedTimer?.schedule(object : TimerTask() {
+        if (gestureRecognizersRequiresFailed.size > 0) {
+            if (gestureRecognizerRequiresFailedTimer == null) {
+                gestureRecognizerRequiresFailedTimer = Timer()
+                gestureRecognizerRequiresFailedTimer?.schedule(object : TimerTask() {
                     override fun run() {
-                        mGestureRecognizerRequiresFailedTimer = null
+                        gestureRecognizerRequiresFailedTimer = null
                         if (state == UIGestureRecognizerState.Failed) {
                             return
                         }
-                        var allFailed = true
-                        for (recognizer in mGestureRecognizersRequiresFailed) {
-                            if (recognizer.state != UIGestureRecognizerState.Failed) {
-                                allFailed = false
-                            }
-                        }
-                        if (allFailed) {
+                        if (gestureRecognizersRequiresFailed.none { it.state != UIGestureRecognizerState.Failed }) {
                             handler.post(runnable)
                         } else {
                             handler.post { waitOtherGesture(runnable) }

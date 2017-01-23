@@ -8,13 +8,13 @@ import android.graphics.Paint
  * Created by adi on 17/1/16.
  */
 
-object CALayerBitmapPainter {
+internal object CALayerBitmapPainter {
 
     fun drawBitmap(canvas: Canvas, rect: CGRect, bitmap: Bitmap, bitmapGravity: CALayer.BitmapGravity, paint: Paint) {
         when (bitmapGravity) {
             CALayer.BitmapGravity.ScaleToFill -> drawScaleToFill(canvas, rect, bitmap, paint)
-            CALayer.BitmapGravity.ScaleAspectFit -> drawScaleAsceptFit(canvas, rect, bitmap, paint)
-            CALayer.BitmapGravity.ScaleAspectFill -> drawScaleAsceptFill(canvas, rect, bitmap, paint)
+            CALayer.BitmapGravity.ScaleAspectFit -> drawScaleAspectFit(canvas, rect, bitmap, paint)
+            CALayer.BitmapGravity.ScaleAspectFill -> drawScaleAspectFill(canvas, rect, bitmap, paint)
             CALayer.BitmapGravity.Center -> drawCenter(canvas, rect, bitmap, paint)
             CALayer.BitmapGravity.Top -> drawTop(canvas, rect, bitmap, paint)
             CALayer.BitmapGravity.TopLeft -> drawTopLeft(canvas, rect, bitmap, paint)
@@ -35,7 +35,7 @@ object CALayerBitmapPainter {
         canvas.drawBitmap(bitmap, imageRect.toRect(), frameRect.toRect(), paint)
     }
 
-    private fun drawScaleAsceptFit(canvas: Canvas, rect: CGRect, bitmap: Bitmap, paint: Paint) {
+    private fun drawScaleAspectFit(canvas: Canvas, rect: CGRect, bitmap: Bitmap, paint: Paint) {
         val imageW = bitmap.width.toDouble()
         val imageH = bitmap.height.toDouble()
         val imageRatio = imageW / imageH
@@ -56,7 +56,7 @@ object CALayerBitmapPainter {
         canvas.drawBitmap(bitmap, imageRect.toRect(), frameRect.toRect(), paint)
     }
 
-    private fun drawScaleAsceptFill(canvas: Canvas, rect: CGRect, bitmap: Bitmap, paint: Paint) {
+    private fun drawScaleAspectFill(canvas: Canvas, rect: CGRect, bitmap: Bitmap, paint: Paint) {
         val imageW = bitmap.width.toDouble()
         val imageH = bitmap.height.toDouble()
         val imageRatio = imageW / imageH

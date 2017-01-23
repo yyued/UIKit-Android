@@ -81,7 +81,7 @@ public class UISwitch extends UIControl {
     }
 
     @Override
-    protected void init() {
+    public void init() {
         super.init();
         defaultValue();
         mOffBackgroundView = new UIView(getContext());

@@ -21,7 +21,6 @@ open class UIView : FrameLayout, UIResponder {
     /* FrameLayout initialize methods */
 
     constructor(context: Context, view: View) : super(context) {
-        init()
         addView(view)
     }
 
@@ -42,9 +41,8 @@ open class UIView : FrameLayout, UIResponder {
         init()
     }
 
-    protected open fun init() {
-        UIScreen.mainScreen.setContext(context)
-        this.layer.bindView(this)
+    open fun init() {
+        UIScreen.mainScreen.context = context
         setWillNotDraw(false)
     }
 
@@ -67,20 +65,18 @@ open class UIView : FrameLayout, UIResponder {
 
     /* category Material Design */
 
-    protected var mMaterialDesign = false
-
-    var isMaterialDesign: Boolean
+    var materialDesign = false
         get() {
-            var materialDesign = mMaterialDesign
+            var materialDesign = field
             var superview = superview
-            while (materialDesign == false && superview != null) {
-                materialDesign = superview.mMaterialDesign
+            while (!materialDesign && superview != null) {
+                materialDesign = superview.materialDesign
                 superview = superview.superview
             }
             return materialDesign
         }
-        set(materialDesign) {
-            mMaterialDesign = materialDesign
+        set(value) {
+            field = value
             materialDesignDidChanged()
         }
 
@@ -341,14 +337,14 @@ open class UIView : FrameLayout, UIResponder {
             if (field != value) {
                 field = value
                 if (field) {
+                    layer.bindView(this)
                     setLayerType(View.LAYER_TYPE_SOFTWARE, null)
                 }
                 invalidate()
             }
         }
 
-    var layer = CALayer()
-        private set
+    val layer: CALayer = CALayer()
 
     fun drawRect(canvas: Canvas, rect: CGRect) {
         if (wantsLayer) {
@@ -373,13 +369,13 @@ open class UIView : FrameLayout, UIResponder {
         gestureRecognizer.didAddToView(this)
     }
 
-    protected var mTouchHandler: UIViewTouchHandler? = null
+    protected var touchHandler: UIViewTouchHandler? = null
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
-        if (mTouchHandler == null) {
-            mTouchHandler = UIViewTouchHandler(this)
+        if (touchHandler == null) {
+            touchHandler = UIViewTouchHandler(this)
         }
-        mTouchHandler!!.onTouchEvent(event)
+        touchHandler?.let { it.onTouchEvent(event) }
         return true
     }
 
@@ -396,38 +392,38 @@ open class UIView : FrameLayout, UIResponder {
     }
 
     override fun touchesBegan(touches: List<UITouch>, event: UIEvent) {
-        if (nextResponder != null) {
-            nextResponder!!.touchesBegan(touches, event)
+        nextResponder?.let {
+            it.touchesBegan(touches, event)
         }
         if (UIGestureRecognizerLooper.isHitTestedView(touches, this)) {
-            if (gestureRecognizerLooper == null || gestureRecognizerLooper!!.isFinished || gestureRecognizerLooper!!.mGestureRecognizers.size == 0) {
+            if (gestureRecognizerLooper == null || gestureRecognizerLooper?.isFinished ?: false || gestureRecognizerLooper?.gestureRecognizers?.size == 0) {
                 gestureRecognizerLooper = UIGestureRecognizerLooper(this)
             }
-            gestureRecognizerLooper!!.onTouchesBegan(touches, event)
+            gestureRecognizerLooper?.let { it.onTouchesBegan(touches, event) }
         }
     }
 
     override fun touchesMoved(touches: List<UITouch>, event: UIEvent) {
-        if (nextResponder != null) {
-            nextResponder!!.touchesMoved(touches, event)
+        nextResponder?.let {
+            it.touchesMoved(touches, event)
         }
         if (UIGestureRecognizerLooper.isHitTestedView(touches, this)) {
-            if (gestureRecognizerLooper == null || gestureRecognizerLooper!!.isFinished) {
+            if (gestureRecognizerLooper == null || gestureRecognizerLooper?.isFinished ?: false) {
                 gestureRecognizerLooper = UIGestureRecognizerLooper(this)
             }
-            gestureRecognizerLooper!!.onTouchesMoved(touches, event)
+            gestureRecognizerLooper?.let { it.onTouchesMoved(touches, event) }
         }
     }
 
     override fun touchesEnded(touches: List<UITouch>, event: UIEvent) {
-        if (nextResponder != null) {
-            nextResponder!!.touchesEnded(touches, event)
+        nextResponder?.let {
+            it.touchesEnded(touches, event)
         }
         if (UIGestureRecognizerLooper.isHitTestedView(touches, this)) {
-            if (gestureRecognizerLooper == null || gestureRecognizerLooper!!.isFinished) {
+            if (gestureRecognizerLooper == null || gestureRecognizerLooper?.isFinished ?: false) {
                 gestureRecognizerLooper = UIGestureRecognizerLooper(this)
             }
-            gestureRecognizerLooper!!.onTouchesEnded(touches, event)
+            gestureRecognizerLooper?.let { it.onTouchesEnded(touches, event) }
         }
     }
 

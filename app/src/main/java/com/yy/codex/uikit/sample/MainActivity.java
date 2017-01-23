@@ -108,7 +108,7 @@ class TestView extends UIView {
     }
 
     @Override
-    protected void init() {
+    public void init() {
         super.init();
 //        setAutomaticallyAdjustsSpace(true);
         UIScrollView scrollView = new UIScrollView(getContext());

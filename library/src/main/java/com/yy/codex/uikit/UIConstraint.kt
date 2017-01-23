@@ -15,15 +15,12 @@ class UIConstraint {
     }
 
     var disabled = false
-
     var alignmentRelate = LayoutRelate.RelateToGroup
     var centerHorizontally = false
     var centerVertically = false
-
     var sizeRelate = LayoutRelate.RelateToGroup
     var width: String? = null
     var height: String? = null
-
     var pinRelate = LayoutRelate.RelateToGroup
     var top: String? = null
     var left: String? = null

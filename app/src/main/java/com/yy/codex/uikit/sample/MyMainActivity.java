@@ -53,7 +53,7 @@ class MyTestView extends UIView {
     }
 
     @Override
-    protected void init() {
+    public void init() {
         super.init();
         UIScrollView scrollView = new UIScrollView(getContext());
         UIConstraint constraint = new UIConstraint();

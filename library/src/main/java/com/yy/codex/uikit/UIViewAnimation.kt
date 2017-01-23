@@ -6,17 +6,17 @@ package com.yy.codex.uikit
 
 class UIViewAnimation {
 
-    var isCancelled = false
+    var cancelled = false
         private set
-    var isFinished = false
+    var finished = false
         private set
 
     fun cancel() {
-        isCancelled = true
+        cancelled = true
     }
 
     fun markFinished() {
-        isFinished = true
+        finished = true
     }
 
 }

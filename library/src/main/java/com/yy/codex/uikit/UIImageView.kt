@@ -46,10 +46,8 @@ class UIImageView : UIView {
     /* UIView */
 
     override fun intrinsicContentSize(): CGSize {
-        if (image == null) {
-            return CGSize(0.0, 0.0)
-        }
-        return CGSize(image!!.size.width, image!!.size.height)
+        val image = image ?: return CGSize(.0, .0)
+        return CGSize(image.size.width, image.size.height)
     }
 
     /* UIImageView Props */
@@ -100,43 +98,43 @@ class UIImageView : UIView {
 
     /* Animated Image */
 
-    private var mAnimator: ValueAnimator? = null
-    var animationImages: Array<UIImage?> = arrayOfNulls(0)
+    private var animator: ValueAnimator? = null
+
+    var animationImages: List<UIImage> = listOf()
         set(animationImages) {
             stopAnimating()
             field = animationImages
-            this.animationDuration = this.animationImages!!.size * (1.0 / 30.0)
+            this.animationDuration = animationImages.size * (1.0 / 30.0)
         }   // The array must contain UIImages. Setting hides the single mImage. default is nil
+
     var animationDuration = 0.0     // for one cycle of images. default is number of images * 1/30th of a second (i.e. 30 fps)
     var animationRepeatCount = 0       // 0 means infinite (default is 0)
 
     fun startAnimating() {
         stopAnimating()
-        if (animationImages != null && animationImages!!.size > 0) {
-            val valueAnimator = ValueAnimator.ofInt(0, animationImages!!.size)
-            valueAnimator.setDuration((animationDuration * 1000).toLong())
+        if (animationImages.size > 0) {
+            val valueAnimator = ValueAnimator.ofInt(0, animationImages.size)
+            valueAnimator.duration = (animationDuration * 1000).toLong()
             if (animationRepeatCount == 0) {
-                valueAnimator.setRepeatCount(99999)
+                valueAnimator.repeatCount = 99999
             } else {
-                valueAnimator.setRepeatCount(animationRepeatCount)
+                valueAnimator.repeatCount = animationRepeatCount
             }
-            valueAnimator.addUpdateListener(ValueAnimator.AnimatorUpdateListener { valueAnimator ->
+            valueAnimator.addUpdateListener({ valueAnimator ->
                 val currentIndex = valueAnimator.animatedValue as Int
-                if (currentIndex < animationImages!!.size) {
-                    image = animationImages!![currentIndex]
+                if (currentIndex < animationImages.size) {
+                    image = animationImages[currentIndex]
                 }
             })
             valueAnimator.start()
-            this.mAnimator = valueAnimator
+            this.animator = valueAnimator
         }
     }
 
     fun stopAnimating() {
-        if (this.mAnimator != null) {
-            this.mAnimator!!.cancel()
-        }
+        animator?.let { it.cancel() }
     }
 
     val isAnimating: Boolean
-        get() = this.mAnimator != null && this.mAnimator!!.isRunning
+        get() = animator?.isRunning ?: false
 }

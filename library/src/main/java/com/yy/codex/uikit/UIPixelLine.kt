@@ -26,26 +26,25 @@ class UIPixelLine : UIView {
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes) {
     }
 
-    private var mColor = UIColor.blackColor
+    var color = UIColor.blackColor
+        set(value) {
+            field = value
+            invalidate()
+        }
 
-    fun setColor(color: UIColor) {
-        mColor = color
-        invalidate()
-    }
+    var vertical = false
+        set(value) {
+            field = value
+            invalidate()
+        }
 
-    private var mVertical = false
-
-    fun setVertical(vertical: Boolean) {
-        mVertical = vertical
-        invalidate()
-    }
+    private val paint = Paint()
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        val paint = Paint()
-        paint.color = mColor.toInt()
+        paint.color = color.toInt()
         paint.strokeWidth = 1.0f
-        if (mVertical) {
+        if (vertical) {
             canvas.drawLine(0f, 0f, 0f, canvas.height.toFloat(), paint)
         } else {
             canvas.drawLine(0f, 0f, canvas.width.toFloat(), 0f, paint)

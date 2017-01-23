@@ -20,11 +20,11 @@ class UITouch(val hitTestedView: UIView, val relativePoint: CGPoint, val absolut
     var timestamp: Long = 0
     var tapCount = 1
         private set
-    private var mEventID: Long = 0
+    private var eventID: Long = 0
 
     init {
         timestamp = System.currentTimeMillis()
-        mEventID = eventID
+        this.eventID = eventID
         resetTapCount()
     }
 
@@ -33,7 +33,7 @@ class UITouch(val hitTestedView: UIView, val relativePoint: CGPoint, val absolut
         var found = false
         for (i in tapCountStore.indices) {
             if (tapCountStore[i].absolutePoint.inRange(22.0, 22.0, this.absolutePoint)) {
-                if (tapCountStore[i].mEventID != this.mEventID) {
+                if (tapCountStore[i].eventID != this.eventID) {
                     if (tapCountStore[i].timestamp <= System.currentTimeMillis() - 300) {
                         tapCount = 1
                     } else {
@@ -71,7 +71,6 @@ class UITouch(val hitTestedView: UIView, val relativePoint: CGPoint, val absolut
     }
 
     companion object {
-
         internal var tapCountStore = ArrayList<UITouch>()
     }
 }

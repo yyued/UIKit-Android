@@ -10,29 +10,29 @@ import java.lang.ref.WeakReference
 
 class UIViewTouchHandler internal constructor(private val view: UIView) {
 
-    private var mHitTestedView: UIView? = null
-    private var mEventID: Long = 0
-    private var mHash: DoubleArray? = null
+    private var hitTestedView: UIView? = null
+    private var eventID: Long = 0
+    private var hash: DoubleArray? = null
 
     internal fun onTouchEvent(event: MotionEvent) {
         if (event.action == MotionEvent.ACTION_DOWN) {
             val touchPoint = CGPoint(event.x / UIScreen.mainScreen.scale(), event.y / UIScreen.mainScreen.scale())
-            mHitTestedView = view.hitTest(touchPoint, event)
-            mEventID = System.currentTimeMillis()
+            hitTestedView = view.hitTest(touchPoint, event)
+            eventID = System.currentTimeMillis()
         }
-        mHitTestedView?.let {
+        hitTestedView?.let {
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
-                    mHash = null
+                    hash = null
                     it.touchesBegan(requestTouches(event), UIEvent())
                 }
                 MotionEvent.ACTION_UP -> it.touchesEnded(requestTouches(event), UIEvent())
                 MotionEvent.ACTION_POINTER_UP, MotionEvent.ACTION_MOVE, MotionEvent.ACTION_POINTER_DOWN -> {
                     val cHash = requestHash(event)
-                    if (mHash != null && isHashSame(mHash!!, cHash)) {
+                    if (hash != null && isHashSame(hash!!, cHash)) {
                         return
                     }
-                    mHash = cHash
+                    hash = cHash
                     it.touchesMoved(requestTouches(event), UIEvent())
                 }
             }
@@ -40,7 +40,7 @@ class UIViewTouchHandler internal constructor(private val view: UIView) {
     }
 
     internal fun requestTouches(event: MotionEvent): List<UITouch> {
-        val hitTestedView = mHitTestedView ?: return emptyList()
+        val hitTestedView = hitTestedView ?: return emptyList()
         val pointerCount = event.pointerCount
         val touches: MutableList<UITouch> = mutableListOf()
         val offsetX = (event.rawX - event.getX(0)) / UIScreen.mainScreen.scale()
@@ -48,9 +48,9 @@ class UIViewTouchHandler internal constructor(private val view: UIView) {
         for (i in 0..pointerCount - 1) {
             val x = event.getX(i) / UIScreen.mainScreen.scale()
             val y = event.getY(i) / UIScreen.mainScreen.scale()
-            val convertedPoint = view.convertPoint(CGPoint(x, y), mHitTestedView!!)
+            val convertedPoint = view.convertPoint(CGPoint(x, y), this.hitTestedView!!)
             val rawPoint = CGPoint(x + offsetX, y + offsetY)
-            touches.add(UITouch(hitTestedView, convertedPoint, rawPoint, requestPhase(event), mEventID))
+            touches.add(UITouch(hitTestedView, convertedPoint, rawPoint, requestPhase(event), eventID))
         }
         return touches.toList()
     }

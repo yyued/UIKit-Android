@@ -8,9 +8,9 @@ import com.yy.codex.foundation.NSLog
 
 open class UIPanGestureRecognizer : UIGestureRecognizer {
 
-    internal var mMaxTouches: List<UITouch> = listOf()
-    internal var mTranslatePoint: List<CGPoint> = listOf()
-    internal var mVelocityPoint = CGPoint(0.0, 0.0)
+    internal var maxTouches: List<UITouch> = listOf()
+    internal var translatePoint: List<CGPoint> = listOf()
+    internal var velocityPoint = CGPoint(0.0, 0.0)
 
     constructor(target: Any, selector: String) : super(target, selector) {}
 
@@ -22,7 +22,7 @@ open class UIPanGestureRecognizer : UIGestureRecognizer {
             state = UIGestureRecognizerState.Failed
             return
         }
-        mMaxTouches = touches.toList()
+        maxTouches = touches.toList()
         setTranslation(CGPoint(0.0, 0.0))
     }
 
@@ -36,10 +36,10 @@ open class UIPanGestureRecognizer : UIGestureRecognizer {
             state = UIGestureRecognizerState.Began
             sendActions()
         } else if (state == UIGestureRecognizerState.Began || state == UIGestureRecognizerState.Changed) {
-            if (touches.size > mMaxTouches.size) {
-                mMaxTouches = touches.toList()
+            if (touches.size > maxTouches.size) {
+                maxTouches = touches.toList()
                 bonusTranslation()
-            } else if (touches.size < mMaxTouches.size) {
+            } else if (touches.size < maxTouches.size) {
                 state = UIGestureRecognizerState.Ended
                 sendActions()
                 return
@@ -62,12 +62,12 @@ open class UIPanGestureRecognizer : UIGestureRecognizer {
     }
 
     fun translation(): CGPoint {
-        if (lastPoints.size > 0 && lastPoints.size == mTranslatePoint.size) {
+        if (lastPoints.size > 0 && lastPoints.size == translatePoint.size) {
             var sumX = 0.0
             var sumY = 0.0
             for (i in 0..lastPoints.size - 1) {
-                sumX += lastPoints[i].absolutePoint.x - mTranslatePoint[i].x
-                sumY += lastPoints[i].absolutePoint.y - mTranslatePoint[i].y
+                sumX += lastPoints[i].absolutePoint.x - translatePoint[i].x
+                sumY += lastPoints[i].absolutePoint.y - translatePoint[i].y
             }
             return CGPoint(sumX, sumY)
         }
@@ -76,26 +76,26 @@ open class UIPanGestureRecognizer : UIGestureRecognizer {
 
     fun setTranslation(point: CGPoint) {
         if (lastPoints.size > 0) {
-            mTranslatePoint = lastPoints.map { CGPoint(it.absolutePoint.x + point.x, it.absolutePoint.y + point.y) }
+            translatePoint = lastPoints.map { CGPoint(it.absolutePoint.x + point.x, it.absolutePoint.y + point.y) }
         }
     }
 
     fun bonusTranslation() {
-        if (mTranslatePoint.size < lastPoints.size) {
+        if (translatePoint.size < lastPoints.size) {
             val translatePoint: MutableList<CGPoint> = mutableListOf()
             for (i in 0..lastPoints.size - 1) {
-                if (i < mTranslatePoint.size) {
-                    translatePoint[i] = mTranslatePoint[i]
+                if (i < this.translatePoint.size) {
+                    translatePoint[i] = this.translatePoint[i]
                 } else {
                     translatePoint[i] = lastPoints[i].absolutePoint
                 }
             }
-            mTranslatePoint = translatePoint.toList()
+            this.translatePoint = translatePoint.toList()
         }
     }
 
     fun velocity(): CGPoint {
-        return mVelocityPoint
+        return velocityPoint
     }
 
     private fun resetVelocity(nextTouches: List<UITouch>) {
@@ -105,7 +105,7 @@ open class UIPanGestureRecognizer : UIGestureRecognizer {
             } else {
                 val vx = (nextTouches[0].absolutePoint.x - lastPoints[0].absolutePoint.x) / ts
                 val vy = (nextTouches[0].absolutePoint.y - lastPoints[0].absolutePoint.y) / ts
-                mVelocityPoint = CGPoint(vx, vy)
+                velocityPoint = CGPoint(vx, vy)
             }
         }
     }
@@ -116,8 +116,8 @@ open class UIPanGestureRecognizer : UIGestureRecognizer {
         val allowableMovement = 8.0
         for (i in touches.indices) {
             val p0 = touches[i].locationInView(view)
-            for (j in mMaxTouches.indices) {
-                val p1 = mMaxTouches[j].locationInView(view)
+            for (j in maxTouches.indices) {
+                val p1 = maxTouches[j].locationInView(view)
                 if (!p0.inRange(allowableMovement, allowableMovement, p1)) {
                     accepted++
                     break

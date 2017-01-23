@@ -16,29 +16,29 @@ import java.util.HashMap
 
 object UIViewAnimator {
 
-    private var sAnimationState: HashMap<UIView, HashMap<String, UIViewAnimatorState<*>>> = hashMapOf()
+    private var animationState: HashMap<UIView, HashMap<String, UIViewAnimatorState<*>>> = hashMapOf()
 
     fun addAnimationState(view: UIView, aKey: String, originValue: Double, finalValue: Double) {
-        if (sAnimationState == null) {
+        if (animationState == null) {
             return
         }
         if (originValue == finalValue) {
             return
         }
-        if (sAnimationState[view] == null) {
-            sAnimationState.put(view, HashMap<String, UIViewAnimatorState<*>>())
+        if (animationState[view] == null) {
+            animationState.put(view, HashMap<String, UIViewAnimatorState<*>>())
         }
         val log = UIViewAnimatorState<Number>()
         log.valueType = 1
         log.originValue = originValue
         log.finalValue = finalValue
-        sAnimationState[view]?.let {
+        animationState[view]?.let {
             it.put(aKey, log)
         }
     }
 
     private fun resetAnimationState() {
-        sAnimationState = hashMapOf()
+        animationState = hashMapOf()
     }
 
     fun linear(animations: Runnable): UIViewAnimation {
@@ -50,7 +50,7 @@ object UIViewAnimator {
         resetAnimationState()
         animations.run()
         val aniCount = intArrayOf(0)
-        for ((key, value) in sAnimationState) {
+        for ((key, value) in animationState) {
             for ((key1, log) in value) {
                 if (log.valueType == 1) {
                     aniCount[0]++
@@ -58,7 +58,7 @@ object UIViewAnimator {
                     val animator = ValueAnimator.ofFloat((log.originValue as Double).toFloat(), (log.finalValue as Double).toFloat())
                     animator.duration = (duration * 1000).toLong()
                     animator.addUpdateListener(ValueAnimator.AnimatorUpdateListener { valueAnimator ->
-                        if (animation.isCancelled) {
+                        if (animation.cancelled) {
                             return@AnimatorUpdateListener
                         }
                         val currentValue = valueAnimator.animatedValue as Float
@@ -70,7 +70,7 @@ object UIViewAnimator {
                         }
 
                         override fun onAnimationEnd(animator: Animator) {
-                            if (animation.isCancelled) {
+                            if (animation.cancelled) {
                                 return
                             }
                             aniCount[0]--
@@ -99,17 +99,17 @@ object UIViewAnimator {
             animation.markFinished()
             completion?.run()
         }
-        sAnimationState = hashMapOf()
+        animationState = hashMapOf()
         return animation
     }
 
-    @JvmOverloads fun spring(animations: Runnable, completion: Runnable? = null): UIViewAnimation {
+    fun spring(animations: Runnable, completion: Runnable? = null): UIViewAnimation {
         val animation = UIViewAnimation()
         resetAnimationState()
         animations.run()
         val aniCount = intArrayOf(0)
         val system = SpringSystem.create()
-        for ((key, value) in sAnimationState) {
+        for ((key, value) in animationState) {
             for ((key1, log) in value) {
                 if (log.valueType == 1) {
                     aniCount[0]++
@@ -118,7 +118,7 @@ object UIViewAnimator {
                     spring.currentValue = (log.originValue as Double).toFloat().toDouble()
                     spring.addListener(object : SpringListener {
                         override fun onSpringUpdate(spring: Spring) {
-                            if (animation.isCancelled) {
+                            if (animation.cancelled) {
                                 return
                             }
                             val currentValue = spring.currentValue.toFloat()
@@ -126,7 +126,7 @@ object UIViewAnimator {
                         }
 
                         override fun onSpringAtRest(spring: Spring) {
-                            if (animation.isCancelled) {
+                            if (animation.cancelled) {
                                 return
                             }
                             val currentValue = spring.currentValue.toFloat()
@@ -149,7 +149,7 @@ object UIViewAnimator {
             animation.markFinished()
             completion?.run()
         }
-        sAnimationState = hashMapOf()
+        animationState = hashMapOf()
         return animation
     }
 
@@ -159,7 +159,7 @@ object UIViewAnimator {
         animations.run()
         val aniCount = intArrayOf(0)
         val system = SpringSystem.create()
-        for ((key, value) in sAnimationState) {
+        for ((key, value) in animationState) {
             for ((key1, log) in value) {
                 if (log.valueType == 1) {
                     aniCount[0]++
@@ -171,7 +171,7 @@ object UIViewAnimator {
                     spring.velocity = velocity
                     spring.addListener(object : SpringListener {
                         override fun onSpringUpdate(spring: Spring) {
-                            if (animation.isCancelled) {
+                            if (animation.cancelled) {
                                 return
                             }
                             val currentValue = spring.currentValue.toFloat()
@@ -179,7 +179,7 @@ object UIViewAnimator {
                         }
 
                         override fun onSpringAtRest(spring: Spring) {
-                            if (animation.isCancelled) {
+                            if (animation.cancelled) {
                                 return
                             }
                             val currentValue = spring.currentValue.toFloat()
@@ -205,7 +205,7 @@ object UIViewAnimator {
             animation.markFinished()
             completion?.run()
         }
-        sAnimationState = hashMapOf()
+        animationState = hashMapOf()
         return animation
     }
 
@@ -220,7 +220,7 @@ object UIViewAnimator {
         valueAnimator.duration = 16
         valueAnimator.repeatCount = 9999999
         valueAnimator.addUpdateListener(ValueAnimator.AnimatorUpdateListener { valueAnimator ->
-            if (animation.isCancelled) {
+            if (animation.cancelled) {
                 valueAnimator.cancel()
                 return@AnimatorUpdateListener
             }
@@ -306,7 +306,7 @@ object UIViewAnimator {
         val finalBackStartValue = backStartValue
         val finalBackEndValue = backEndValue
         valueAnimator.addUpdateListener(ValueAnimator.AnimatorUpdateListener { valueAnimator ->
-            if (animation.isCancelled) {
+            if (animation.cancelled) {
                 valueAnimator.cancel()
                 return@AnimatorUpdateListener
             }
@@ -348,7 +348,7 @@ object UIViewAnimator {
                 spring.springConfig = config
                 spring.addListener(object : SpringListener {
                     override fun onSpringUpdate(spring: Spring) {
-                        if (animation.isCancelled) {
+                        if (animation.cancelled) {
                             return
                         }
                         val currentValue = spring.currentValue.toFloat()
@@ -356,7 +356,7 @@ object UIViewAnimator {
                     }
 
                     override fun onSpringAtRest(spring: Spring) {
-                        if (animation.isCancelled) {
+                        if (animation.cancelled) {
                             return
                         }
                         completion?.run()

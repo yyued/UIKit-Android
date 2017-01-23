@@ -6,7 +6,7 @@ import android.content.Context
  * Created by PonyCui_Home on 2017/1/20.
  */
 
-class UINavigationController(context: Context) : UIViewController(context) {
+open class UINavigationController(context: Context) : UIViewController(context) {
 
     val navigationBar: UINavigationBar = UINavigationBar(context)
     val wrapperView: UIView = UIView(context)
@@ -64,13 +64,15 @@ class UINavigationController(context: Context) : UIViewController(context) {
             val childViewControllers = childViewControllers
             if (childViewControllers.size > 0) {
                 val currentView = childViewControllers[childViewControllers.size - 1].view
-                wrapperView.addSubview(currentView!!)
+                currentView?.let {
+                    wrapperView.addSubview(it)
+                }
             }
         } else if (beingPop) {
             val childViewControllers = childViewControllers
             if (childViewControllers.size > 0) {
                 val currentView = childViewControllers[childViewControllers.size - 1].view
-                currentView!!.removeFromSuperview()
+                currentView?.let(UIView::removeFromSuperview)
             }
         } else {
             val subviews = wrapperView.subviews

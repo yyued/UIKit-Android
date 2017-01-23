@@ -15,8 +15,8 @@ class UISwipeGestureRecognizer : UIGestureRecognizer {
 
     var direction = Direction.Right
 
-    private var mOriginalPoint = CGPoint(0.0, 0.0)
-    private var mVelocityPoint = CGPoint(0.0, 0.0)
+    private var originalPoint = CGPoint(0.0, 0.0)
+    private var velocityPoint = CGPoint(0.0, 0.0)
 
     constructor(target: Any, selector: String) : super(target, selector) {}
 
@@ -25,7 +25,7 @@ class UISwipeGestureRecognizer : UIGestureRecognizer {
     override fun touchesBegan(touches: List<UITouch>, event: UIEvent) {
         super.touchesBegan(touches, event)
         if (touches.size > 0) {
-            mOriginalPoint = touches[0].absolutePoint
+            originalPoint = touches[0].absolutePoint
         } else {
             state = UIGestureRecognizerState.Failed
         }
@@ -41,53 +41,53 @@ class UISwipeGestureRecognizer : UIGestureRecognizer {
         }
         super.touchesMoved(touches, event)
         if (direction == Direction.Right) {
-            val distance = touches[0].absolutePoint.x - mOriginalPoint.x
+            val distance = touches[0].absolutePoint.x - originalPoint.x
             if (distance < -22.0) {
                 state = UIGestureRecognizerState.Failed
             } else {
-                if (distance > 100.0 && mVelocityPoint.x > 1000.0) {
+                if (distance > 100.0 && velocityPoint.x > 1000.0) {
                     state = UIGestureRecognizerState.Ended
                     sendActions()
-                } else if (mVelocityPoint.x > 500.0) {
+                } else if (velocityPoint.x > 500.0) {
                     state = UIGestureRecognizerState.Ended
                     sendActions()
                 }
             }
         } else if (direction == Direction.Left) {
-            val distance = touches[0].absolutePoint.x - mOriginalPoint.x
+            val distance = touches[0].absolutePoint.x - originalPoint.x
             if (distance > 22.0) {
                 state = UIGestureRecognizerState.Failed
             } else {
-                if (distance < -100.0 && mVelocityPoint.x < -1000.0) {
+                if (distance < -100.0 && velocityPoint.x < -1000.0) {
                     state = UIGestureRecognizerState.Ended
                     sendActions()
-                } else if (mVelocityPoint.x < -500.0) {
+                } else if (velocityPoint.x < -500.0) {
                     state = UIGestureRecognizerState.Ended
                     sendActions()
                 }
             }
         } else if (direction == Direction.Down) {
-            val distance = touches[0].absolutePoint.y - mOriginalPoint.y
+            val distance = touches[0].absolutePoint.y - originalPoint.y
             if (distance < -22.0) {
                 state = UIGestureRecognizerState.Failed
             } else {
-                if (distance > 100.0 && mVelocityPoint.y > 1000.0) {
+                if (distance > 100.0 && velocityPoint.y > 1000.0) {
                     state = UIGestureRecognizerState.Ended
                     sendActions()
-                } else if (mVelocityPoint.y > 500.0) {
+                } else if (velocityPoint.y > 500.0) {
                     state = UIGestureRecognizerState.Ended
                     sendActions()
                 }
             }
         } else if (direction == Direction.Up) {
-            val distance = touches[0].absolutePoint.y - mOriginalPoint.y
+            val distance = touches[0].absolutePoint.y - originalPoint.y
             if (distance > 22.0) {
                 state = UIGestureRecognizerState.Failed
             } else {
-                if (distance < -100.0 && mVelocityPoint.y < -1000.0) {
+                if (distance < -100.0 && velocityPoint.y < -1000.0) {
                     state = UIGestureRecognizerState.Ended
                     sendActions()
-                } else if (mVelocityPoint.y < -500.0) {
+                } else if (velocityPoint.y < -500.0) {
                     state = UIGestureRecognizerState.Ended
                     sendActions()
                 }
@@ -103,7 +103,7 @@ class UISwipeGestureRecognizer : UIGestureRecognizer {
     }
 
     fun velocity(): CGPoint {
-        return mVelocityPoint
+        return velocityPoint
     }
 
     private fun resetVelocity(nextTouches: List<UITouch>) {
@@ -113,7 +113,7 @@ class UISwipeGestureRecognizer : UIGestureRecognizer {
             } else {
                 val vx = (nextTouches[0].absolutePoint.x - lastPoints[0].absolutePoint.x) / ts
                 val vy = (nextTouches[0].absolutePoint.y - lastPoints[0].absolutePoint.y) / ts
-                mVelocityPoint = CGPoint(vx, vy)
+                velocityPoint = CGPoint(vx, vy)
             }
         }
     }

@@ -10,7 +10,7 @@ import android.view.View
  * Created by cuiminghui on 2017/1/19.
  */
 
-class UINavigationItemView_MaterialDesign : UINavigationItemView {
+internal class UINavigationItemView_MaterialDesign : UINavigationItemView {
 
     constructor(context: Context, view: View) : super(context, view) {}
 

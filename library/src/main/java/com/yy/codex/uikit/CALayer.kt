@@ -2,13 +2,7 @@ package com.yy.codex.uikit
 
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import android.graphics.Matrix
-import android.graphics.Paint
-import android.graphics.PorterDuff
-import android.graphics.PorterDuffXfermode
-import android.graphics.RectF
-
-import java.util.ArrayList
+import java.util.*
 
 
 /**
@@ -195,7 +189,7 @@ open class CALayer {
 
     /* hierarchyProps */
 
-    private var view: UIView? = null
+    protected var view: UIView? = null
 
     fun bindView(view: UIView) {
         this.view = view
@@ -282,7 +276,7 @@ open class CALayer {
     /* category CALayer Appearance */
 
     fun drawRect(canvas: Canvas, rect: CGRect) {
-        if (this.askIfNeedDispaly()) {
+        if (this.askIfNeedDisplay()) {
             this.resetNeedDisplayToFalse()
             drawAllLayers(canvas, rect)
         }
@@ -313,7 +307,7 @@ open class CALayer {
         }
     }
 
-    private fun askIfNeedDispaly(): Boolean {
+    private fun askIfNeedDisplay(): Boolean {
         return true
     }
 
