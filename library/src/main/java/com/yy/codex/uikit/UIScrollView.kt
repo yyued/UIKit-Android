@@ -17,7 +17,7 @@ import java.util.TimerTask
 
 open class UIScrollView : UIView {
 
-    interface UIScrollViewDelegate {
+    open interface UIScrollViewDelegate {
         fun scrollViewDidScroll(scrollView: UIScrollView)
         fun scrollViewWillBeginDragging(scrollView: UIScrollView)
         fun scrollViewDidEndDragging(scrollView: UIScrollView, willDecelerate: Boolean)
@@ -63,14 +63,10 @@ open class UIScrollView : UIView {
 
     private var mPanGestureRecognizer: UIPanGestureRecognizer? = null
     private var mContentOffset = CGPoint(0.0, 0.0)
-    var contentSize = CGSize(0.0, 0.0)
+    protected var contentSize = CGSize(0.0, 0.0)
     private var mContentInset: UIEdgeInsets = UIEdgeInsets.zero
 
-    private var mDelegate: UIScrollViewDelegate? = null
-
-    fun setDelegate(delegate: UIScrollViewDelegate) {
-        this.mDelegate = delegate
-    }
+    protected open var delegate: UIScrollViewDelegate? = null
 
     var contentInset: UIEdgeInsets
         get() = this.mContentInset
@@ -130,8 +126,8 @@ open class UIScrollView : UIView {
             mTracking = true
             mTrackingPoint = CGPoint(originX, originY)
             panGestureRecognizer.setTranslation(mContentOffset)
-            if (mDelegate != null) {
-                mDelegate!!.scrollViewWillBeginDragging(this)
+            if (delegate != null) {
+                delegate!!.scrollViewWillBeginDragging(this)
             }
             return
         }
@@ -146,8 +142,8 @@ open class UIScrollView : UIView {
         } else if (panGestureRecognizer.state === UIGestureRecognizerState.Ended) {
             /* Ended */
             mTracking = false
-            if (mDelegate != null) {
-                mDelegate!!.scrollViewDidEndDragging(this, false)
+            if (delegate != null) {
+                delegate!!.scrollViewDidEndDragging(this, false)
             }
             val velocity = panGestureRecognizer.velocity()
 
@@ -269,7 +265,7 @@ open class UIScrollView : UIView {
         }
     }
 
-    @JvmOverloads fun setContentOffset(contentOffset: CGPoint, animated: Boolean = false) {
+    @JvmOverloads open fun setContentOffset(contentOffset: CGPoint, animated: Boolean = false) {
         val oldValue = mContentOffset
         val self = this
         mContentOffset = contentOffset
@@ -283,8 +279,8 @@ open class UIScrollView : UIView {
             }, null)
         } else {
             scrollTo((mContentOffset.x * UIScreen.mainScreen.scale()).toInt(), (mContentOffset.y * UIScreen.mainScreen.scale() - mContentInset!!.top).toInt())
-            if (mDelegate != null) {
-                mDelegate!!.scrollViewDidScroll(this)
+            if (delegate != null) {
+                delegate!!.scrollViewDidScroll(this)
             }
             UIViewAnimator.addAnimationState(self, "contentOffset.x", oldValue.x, mContentOffset.x)
             UIViewAnimator.addAnimationState(self, "contentOffset.y", oldValue.y, mContentOffset.y)
