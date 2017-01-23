@@ -31,7 +31,7 @@ public class TestLayerActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        NSLog.warn(0x01 == 1);
+        NSLog.INSTANCE.warn(0x01 == 1);
         super.onCreate(savedInstanceState);
         setContentView(new TestView1(this));
     }
