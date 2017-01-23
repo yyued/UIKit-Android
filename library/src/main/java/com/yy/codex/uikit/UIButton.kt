@@ -114,7 +114,7 @@ class UIButton : UIControl {
                 return UIColor.blackColor.colorWithAlpha(0.3)
             }
             if (state.contains(UIControl.State.Highlighted) && state.contains(UIControl.State.Normal)) {
-                return tintColor!!.colorWithAlpha(0.3)
+                return tintColor?.colorWithAlpha(0.3) ?: tintColor
             }
             return tintColor
         }

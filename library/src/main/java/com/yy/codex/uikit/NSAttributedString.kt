@@ -70,8 +70,10 @@ open class NSAttributedString : SpannableStringBuilder {
             val font = attrs[NSFontAttributeName] as UIFont
             setSpan(TypefaceSpan(font.fontFamily), range.location, range.location + range.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             setSpan(AbsoluteSizeSpan(font.fontSize.toInt(), true), range.location, range.location + range.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            if (font.fontFamily!!.equals("SystemBold", ignoreCase = true)) {
-                setSpan(NSBoldSpan(), range.location, range.location + range.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            font.fontFamily?.let {
+                if (it.equals("SystemBold", ignoreCase = true)) {
+                    setSpan(NSBoldSpan(), range.location, range.location + range.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                }
             }
         }
         if (attrs[NSParagraphStyleAttributeName] != null && attrs[NSParagraphStyleAttributeName] is NSParagraphStyle) {

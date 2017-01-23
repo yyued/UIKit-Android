@@ -114,10 +114,7 @@ open class UIControl : UIView {
     }
 
     fun addBlock(runnable: Runnable, event: Event) {
-        if (!this.runnable.containsKey(event)) {
-            this.runnable.put(event, listOf())
-        }
-        val allRunnable: MutableList<Runnable> = this.runnable[event]!!.toMutableList()
+        val allRunnable: MutableList<Runnable> = this.runnable[event]?.toMutableList() ?: mutableListOf()
         allRunnable.add(runnable)
         this.runnable.put(event, allRunnable.toList())
     }

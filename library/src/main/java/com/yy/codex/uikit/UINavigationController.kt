@@ -36,7 +36,7 @@ open class UINavigationController(context: Context) : UIViewController(context) 
 
     private var beingPush = false
 
-    fun pushViewController(viewController: UIViewController, animated: Boolean) {
+    open fun pushViewController(viewController: UIViewController, animated: Boolean) {
         beingPush = true
         addChildViewController(viewController)
         resetNavigationItems()
@@ -45,7 +45,7 @@ open class UINavigationController(context: Context) : UIViewController(context) 
         doPushAnimation()
     }
 
-    private fun doPushAnimation() {
+    open fun doPushAnimation() {
 
     }
 
@@ -91,7 +91,9 @@ open class UINavigationController(context: Context) : UIViewController(context) 
 
     override fun viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
-        wrapperView.frame = CGRect(0.0, 0.0, view!!.frame.width, view!!.frame.height)
+        view?.let {
+            wrapperView.frame = CGRect(0.0, 0.0, it.frame.width, it.frame.height)
+        }
         resetContentViewsFrame()
     }
 

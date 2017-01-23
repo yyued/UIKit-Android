@@ -44,7 +44,7 @@ class UIBarButtonItem(val target: Any?, val action: String?) : UIBarItem() {
             button.frame = CGRect(0.0, 0.0, button.intrinsicContentSize().width, 44.0)
             button.imageEdgeInsets = imageInsets
             if (target != null && action != null) {
-                button.addTarget(target!!, action!!, UIControl.Event.TouchUpInside)
+                button.addTarget(target, action, UIControl.Event.TouchUpInside)
             }
             view = button
             view?.marginInsets = insets

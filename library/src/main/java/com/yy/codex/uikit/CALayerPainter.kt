@@ -88,7 +88,9 @@ internal object CALayerPainter {
         if (bitmapColor != null) {
             mixPaint.colorFilter = PorterDuffColorFilter(bitmapColor.toInt(), PorterDuff.Mode.SRC_IN)
         }
-        CALayerBitmapPainter.drawBitmap(resultCanvas, maskFrame, bitmap!!, bitmapGravity, mixPaint)
+        bitmap?.let {
+            CALayerBitmapPainter.drawBitmap(resultCanvas, maskFrame, it, bitmapGravity, mixPaint)
+        }
         paint.reset()
         if (bitmapColor != null) {
             paint.colorFilter = PorterDuffColorFilter(bitmapColor.toInt(), PorterDuff.Mode.SRC_IN)
@@ -146,13 +148,14 @@ internal object CALayerPainter {
         val origin = CALayer.calcOriginInSuperCoordinate(layer)
         val frame = CGRect(frameRaw.x * scaledDensity, frameRaw.y * scaledDensity, frameRaw.width * scaledDensity, frameRaw.height * scaledDensity)
         val bitmapColor = layer.bitmapColor
-
         paint.reset()
         if (bitmapColor != null) {
             paint.colorFilter = PorterDuffColorFilter(bitmapColor.toInt(), PorterDuff.Mode.SRC_IN)
         }
         val bitmapFrame = CGRect(origin.x, origin.y, frame.size.width, frame.size.height)
-        CALayerBitmapPainter.drawBitmap(canvas, bitmapFrame, bitmap!!, layer.bitmapGravity, paint)
+        bitmap?.let {
+            CALayerBitmapPainter.drawBitmap(canvas, bitmapFrame, it, layer.bitmapGravity, paint)
+        }
         paint.colorFilter = null
     }
 
@@ -215,7 +218,7 @@ internal object CALayerPainter {
         paint.reset()
         val bitmapMixed = createEmptyBitmap(layer)
         val canvasMixed = Canvas(bitmapMixed)
-        if (layer.transforms != null && layer.transforms!!.size > 0) {
+        if (layer.transforms.size > 0) {
             val matrix = createMatrix(layer)
             if (layer.clipToBounds) {
                 canvasMixed.drawBitmap(maskBitmap, matrix, paint)

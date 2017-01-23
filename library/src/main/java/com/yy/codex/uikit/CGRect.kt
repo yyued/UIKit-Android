@@ -78,15 +78,11 @@ class CGRect(x: Double, y: Double, width: Double, height: Double) {
         get() = size.height
 
     override fun equals(obj: Any?): Boolean {
-        if (obj != null && CGRect::class.java.isAssignableFrom(obj.javaClass)) {
-            val anObj = obj as CGRect?
-            val equal = Math.abs(origin.x - anObj!!.origin.x) < 0.01 &&
-                    Math.abs(origin.y - anObj.origin.y) < 0.01 &&
-                    Math.abs(size.width - anObj.size.width) < 0.01 &&
-                    Math.abs(size.height - anObj.size.height) < 0.01
-            return equal
-        }
-        return false
+        var obj = obj as? CGRect ?: return false
+        return Math.abs(origin.x - obj.origin.x) < 0.01 &&
+            Math.abs(origin.y - obj.origin.y) < 0.01 &&
+            Math.abs(size.width - obj.size.width) < 0.01 &&
+            Math.abs(size.height - obj.size.height) < 0.01
     }
 
     override fun toString(): String {

@@ -29,8 +29,10 @@ class UIViewTouchHandler internal constructor(private val view: UIView) {
                 MotionEvent.ACTION_UP -> it.touchesEnded(requestTouches(event), UIEvent())
                 MotionEvent.ACTION_POINTER_UP, MotionEvent.ACTION_MOVE, MotionEvent.ACTION_POINTER_DOWN -> {
                     val cHash = requestHash(event)
-                    if (hash != null && isHashSame(hash!!, cHash)) {
-                        return
+                    if (hash is DoubleArray) {
+                        if (isHashSame(hash as DoubleArray, cHash)) {
+                            return
+                        }
                     }
                     hash = cHash
                     it.touchesMoved(requestTouches(event), UIEvent())
@@ -48,7 +50,7 @@ class UIViewTouchHandler internal constructor(private val view: UIView) {
         for (i in 0..pointerCount - 1) {
             val x = event.getX(i) / UIScreen.mainScreen.scale()
             val y = event.getY(i) / UIScreen.mainScreen.scale()
-            val convertedPoint = view.convertPoint(CGPoint(x, y), this.hitTestedView!!)
+            val convertedPoint = view.convertPoint(CGPoint(x, y), hitTestedView)
             val rawPoint = CGPoint(x + offsetX, y + offsetY)
             touches.add(UITouch(hitTestedView, convertedPoint, rawPoint, requestPhase(event), eventID))
         }

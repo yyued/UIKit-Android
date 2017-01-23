@@ -72,7 +72,7 @@ class UILabel : UIView {
             if (numberOfLines <= 0) {
                 numberOfLines = 99999
             }
-            textView!!.maxLines = numberOfLines
+            textView?.let { it.maxLines = numberOfLines }
         }
 
     /* Line-Break Mode */
@@ -81,10 +81,10 @@ class UILabel : UIView {
         set(linebreakMode) {
             field = linebreakMode
             when (linebreakMode) {
-                NSLineBreakMode.ByTruncatingHead -> textView!!.ellipsize = TextUtils.TruncateAt.START
-                NSLineBreakMode.ByTruncatingMiddle -> textView!!.ellipsize = TextUtils.TruncateAt.MIDDLE
-                NSLineBreakMode.ByTruncatingTail -> textView!!.ellipsize = TextUtils.TruncateAt.END
-                else -> textView!!.ellipsize = null
+                NSLineBreakMode.ByTruncatingHead -> textView?.ellipsize = TextUtils.TruncateAt.START
+                NSLineBreakMode.ByTruncatingMiddle -> textView?.ellipsize = TextUtils.TruncateAt.MIDDLE
+                NSLineBreakMode.ByTruncatingTail -> textView?.ellipsize = TextUtils.TruncateAt.END
+                else -> textView?.ellipsize = null
             }
             updateTextAppearance()
         }
@@ -100,7 +100,7 @@ class UILabel : UIView {
     private var needsUpdate = false
 
     var text: String? = null
-        get() = if (attributedText != null) attributedText!!.toString() else null
+        get() = attributedText?.toString()
         set(value) {
             field = value
             val text = value ?: ""
@@ -150,7 +150,7 @@ class UILabel : UIView {
         get() = super.maxWidth
         set(maxWidth) {
             super.maxWidth = maxWidth
-            textView!!.maxWidth = (maxWidth * UIScreen.mainScreen.scale()).toInt()
+            textView?.maxWidth = (maxWidth * UIScreen.mainScreen.scale()).toInt()
         }
 
     override fun intrinsicContentSize(): CGSize {
