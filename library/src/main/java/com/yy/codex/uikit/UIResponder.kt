@@ -8,10 +8,10 @@ interface UIResponder {
 
     val nextResponder: UIResponder?
 
-    fun touchesBegan(touches: Array<UITouch>, event: UIEvent)
+    fun touchesBegan(touches: List<UITouch>, event: UIEvent)
 
-    fun touchesMoved(touches: Array<UITouch>, event: UIEvent)
+    fun touchesMoved(touches: List<UITouch>, event: UIEvent)
 
-    fun touchesEnded(touches: Array<UITouch>, event: UIEvent)
+    fun touchesEnded(touches: List<UITouch>, event: UIEvent)
 
 }

@@ -15,11 +15,11 @@ class UIPinchGestureRecognizer : UIGestureRecognizer {
 
     constructor(triggerBlock: Runnable) : super(triggerBlock) {}
 
-    override fun touchesBegan(touches: Array<UITouch>, event: UIEvent) {
+    override fun touchesBegan(touches: List<UITouch>, event: UIEvent) {
         super.touchesBegan(touches, event)
     }
 
-    override fun touchesMoved(touches: Array<UITouch>, event: UIEvent) {
+    override fun touchesMoved(touches: List<UITouch>, event: UIEvent) {
         super.touchesMoved(touches, event)
         if (state == UIGestureRecognizerState.Possible) {
             if (touches.size < 2) {
@@ -40,7 +40,7 @@ class UIPinchGestureRecognizer : UIGestureRecognizer {
         }
     }
 
-    override fun touchesEnded(touches: Array<UITouch>, event: UIEvent) {
+    override fun touchesEnded(touches: List<UITouch>, event: UIEvent) {
         super.touchesEnded(touches, event)
         if (state == UIGestureRecognizerState.Began || state == UIGestureRecognizerState.Changed) {
             state = UIGestureRecognizerState.Ended

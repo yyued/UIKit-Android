@@ -222,7 +222,7 @@ class UIButton : UIControl {
         }
         val titleLabel = mTitleLabel as UILabel
         val imageView = mImageView as UIImageView
-        titleLabel.setMaxWidth(999999.0)
+        titleLabel.maxWidth = 999999.0
         var contentWidth = titleLabel.intrinsicContentSize().width + imageView.intrinsicContentSize().width
         contentWidth += mContentEdgeInsets.left + mContentEdgeInsets.right + mImageEdgeInsets.left + mImageEdgeInsets.right + mTitleEdgeInsets.left + mTitleEdgeInsets.right
         var contentHeight = titleLabel.intrinsicContentSize().height + imageView.intrinsicContentSize().height
@@ -256,7 +256,7 @@ class UIButton : UIControl {
         }
         val titleLabel = mTitleLabel as UILabel
         val imageView = mImageView as UIImageView
-        titleLabel.setMaxWidth(frame.size.width - imageView.intrinsicContentSize().width - (mContentEdgeInsets.left + mContentEdgeInsets.right + mImageEdgeInsets.left + mImageEdgeInsets.right + mTitleEdgeInsets.left + mTitleEdgeInsets.right))
+        titleLabel.maxWidth = frame.size.width - imageView.intrinsicContentSize().width - (mContentEdgeInsets.left + mContentEdgeInsets.right + mImageEdgeInsets.left + mImageEdgeInsets.right + mTitleEdgeInsets.left + mTitleEdgeInsets.right)
         var contentWidth = titleLabel.intrinsicContentSize().width + imageView.intrinsicContentSize().width
         contentWidth += mContentEdgeInsets.left + mContentEdgeInsets.right + mImageEdgeInsets.left + mImageEdgeInsets.right + mTitleEdgeInsets.left + mTitleEdgeInsets.right
         var imageViewOriginY = 0.0

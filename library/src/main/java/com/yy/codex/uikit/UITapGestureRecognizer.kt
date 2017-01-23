@@ -18,12 +18,12 @@ class UITapGestureRecognizer : UIGestureRecognizer {
 
     constructor(triggerBlock: Runnable) : super(triggerBlock) {}
 
-    override fun touchesBegan(touches: Array<UITouch>, event: UIEvent) {
+    override fun touchesBegan(touches: List<UITouch>, event: UIEvent) {
         super.touchesBegan(touches, event)
         mStartTouches = touches.toList()
     }
 
-    override fun touchesMoved(touches: Array<UITouch>, event: UIEvent) {
+    override fun touchesMoved(touches: List<UITouch>, event: UIEvent) {
         super.touchesMoved(touches, event)
         if (touches.size > mStartTouches.size) {
             mStartTouches = touches.toList()
@@ -35,7 +35,7 @@ class UITapGestureRecognizer : UIGestureRecognizer {
 
     private var multiTapTimer: Timer? = null
 
-    override fun touchesEnded(touches: Array<UITouch>, event: UIEvent) {
+    override fun touchesEnded(touches: List<UITouch>, event: UIEvent) {
         super.touchesEnded(touches, event)
         if (state == UIGestureRecognizerState.Failed) {
             return
@@ -77,7 +77,7 @@ class UITapGestureRecognizer : UIGestureRecognizer {
         }
     }
 
-    private fun moveOutOfBounds(touches: Array<UITouch>): Boolean {
+    private fun moveOutOfBounds(touches: List<UITouch>): Boolean {
         val view = view ?: return true
         val allowableMovement = 12.0
         var accepted = 0

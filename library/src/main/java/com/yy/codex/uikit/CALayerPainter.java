@@ -60,7 +60,7 @@ public class CALayerPainter {
 
     private static void drawRoundRect(Canvas canvas, CALayer layer){
         CGRect frameRaw = layer.getFrame();
-        float scaledDensity = (float) UIScreen.mainScreen.scale();
+        float scaledDensity = (float) UIScreen.Companion.getMainScreen().scale();
         CGPoint origin = CALayer.Companion.calcOriginInSuperCoordinate(layer);
         CGRect frame = new CGRect(frameRaw.getX() * scaledDensity, frameRaw.getY() * scaledDensity, frameRaw.getWidth() * scaledDensity, frameRaw.getHeight() * scaledDensity);
         float borderWidth = (float) layer.getBorderWidth() * scaledDensity;
@@ -85,7 +85,7 @@ public class CALayerPainter {
         CGRect frameRaw = layer.getFrame();
         Bitmap bitmap = layer.getBitmap();
         CALayer.BitmapGravity bitmapGravity = layer.getBitmapGravity();
-        float scaledDensity = (float) UIScreen.mainScreen.scale();
+        float scaledDensity = (float) UIScreen.Companion.getMainScreen().scale();
         CGPoint origin = CALayer.Companion.calcOriginInSuperCoordinate(layer);
         CGRect frame = new CGRect(frameRaw.getX() * scaledDensity, frameRaw.getY() * scaledDensity, frameRaw.getWidth() * scaledDensity, frameRaw.getHeight() * scaledDensity);
         float cornerRadius = (float) layer.getCornerRadius() * scaledDensity;
@@ -110,7 +110,7 @@ public class CALayerPainter {
 
     private static void drawRoundRectBorder(Canvas canvas, CALayer layer){
         CGRect frameRaw = layer.getFrame();
-        float scaledDensity = (float) UIScreen.mainScreen.scale();
+        float scaledDensity = (float) UIScreen.Companion.getMainScreen().scale();
         CGPoint origin = CALayer.Companion.calcOriginInSuperCoordinate(layer);
         CGRect frame = new CGRect(frameRaw.getX() * scaledDensity, frameRaw.getY() * scaledDensity, frameRaw.getWidth() * scaledDensity, frameRaw.getHeight() * scaledDensity);
         float borderWidth = (float) layer.getBorderWidth() * scaledDensity;
@@ -133,7 +133,7 @@ public class CALayerPainter {
 
     private static void drawRect(Canvas canvas, CALayer layer){
         CGRect frameRaw = layer.getFrame();
-        float scaledDensity = (float) UIScreen.mainScreen.scale();
+        float scaledDensity = (float) UIScreen.Companion.getMainScreen().scale();
         CGPoint origin = CALayer.Companion.calcOriginInSuperCoordinate(layer);
         CGRect frame = new CGRect(frameRaw.getX() * scaledDensity, frameRaw.getY() * scaledDensity, frameRaw.getWidth() * scaledDensity, frameRaw.getHeight() * scaledDensity);
 
@@ -154,7 +154,7 @@ public class CALayerPainter {
     private static void drawRectBitmap(Canvas canvas, CALayer layer){
         CGRect frameRaw = layer.getFrame();
         Bitmap bitmap = layer.getBitmap();
-        float scaledDensity = (float) UIScreen.mainScreen.scale();
+        float scaledDensity = (float) UIScreen.Companion.getMainScreen().scale();
         CGPoint origin = CALayer.Companion.calcOriginInSuperCoordinate(layer);
         CGRect frame = new CGRect(frameRaw.getX() * scaledDensity, frameRaw.getY() * scaledDensity, frameRaw.getWidth() * scaledDensity, frameRaw.getHeight() * scaledDensity);
         UIColor bitmapColor = layer.getBitmapColor();
@@ -170,7 +170,7 @@ public class CALayerPainter {
 
     private static void drawRectBorder(Canvas canvas, CALayer layer){
         CGRect frameRaw = layer.getFrame();
-        float scaledDensity = (float) UIScreen.mainScreen.scale();
+        float scaledDensity = (float) UIScreen.Companion.getMainScreen().scale();
         CGPoint origin = CALayer.Companion.calcOriginInSuperCoordinate(layer);
         CGRect frame = new CGRect(frameRaw.getX() * scaledDensity, frameRaw.getY() * scaledDensity, frameRaw.getWidth() * scaledDensity, frameRaw.getHeight() * scaledDensity);
         float borderWidth = (float) layer.getBorderWidth() * scaledDensity;
@@ -198,7 +198,7 @@ public class CALayerPainter {
 
     private static Bitmap createEmptyBitmap(CALayer layer){
         CGPoint origin = CALayer.Companion.calcOriginInSuperCoordinate(layer);
-        float scaledDensity = (float) UIScreen.mainScreen.scale();
+        float scaledDensity = (float) UIScreen.Companion.getMainScreen().scale();
         int bitmapW = (int) (layer.getFrame().getSize().getWidth() * scaledDensity  + origin.getX());
         int bitmapH = (int) (layer.getFrame().getSize().getHeight() * scaledDensity + origin.getY());
         Bitmap bitmap = Bitmap.createBitmap(bitmapW, bitmapH, Bitmap.Config.ARGB_8888);
@@ -213,7 +213,7 @@ public class CALayerPainter {
 
     private static Bitmap createBitmapWithMaskLayer(CALayer layer){
         CGPoint origin = CALayer.Companion.calcOriginInSuperCoordinate(layer);
-        float scaledDensity = (float) UIScreen.mainScreen.scale();
+        float scaledDensity = (float) UIScreen.Companion.getMainScreen().scale();
         float cornerRaidus = (float) layer.getCornerRadius() * scaledDensity;
         int bitmapW = (int) (layer.getFrame().getSize().getWidth() * scaledDensity  + origin.getX());
         int bitmapH = (int) (layer.getFrame().getSize().getHeight() * scaledDensity + origin.getY());
@@ -254,7 +254,7 @@ public class CALayerPainter {
     }
 
     private static Matrix createMatrix(CALayer layer){
-        float scaledDensity = (float) UIScreen.mainScreen.scale();
+        float scaledDensity = (float) UIScreen.Companion.getMainScreen().scale();
         CGTransform[] transforms = layer.getTransforms();
         Matrix matrix = new Matrix();
         if (transforms == null || transforms.length == 0){

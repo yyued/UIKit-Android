@@ -22,7 +22,7 @@ class UISwipeGestureRecognizer : UIGestureRecognizer {
 
     constructor(triggerBlock: Runnable) : super(triggerBlock) {}
 
-    override fun touchesBegan(touches: Array<UITouch>, event: UIEvent) {
+    override fun touchesBegan(touches: List<UITouch>, event: UIEvent) {
         super.touchesBegan(touches, event)
         if (touches.size > 0) {
             mOriginalPoint = touches[0].absolutePoint
@@ -31,7 +31,7 @@ class UISwipeGestureRecognizer : UIGestureRecognizer {
         }
     }
 
-    override fun touchesMoved(touches: Array<UITouch>, event: UIEvent) {
+    override fun touchesMoved(touches: List<UITouch>, event: UIEvent) {
         if (touches.size <= 0) {
             state = UIGestureRecognizerState.Failed
             return
@@ -95,7 +95,7 @@ class UISwipeGestureRecognizer : UIGestureRecognizer {
         }
     }
 
-    override fun touchesEnded(touches: Array<UITouch>, event: UIEvent) {
+    override fun touchesEnded(touches: List<UITouch>, event: UIEvent) {
         super.touchesEnded(touches, event)
         if (state != UIGestureRecognizerState.Ended) {
             state = UIGestureRecognizerState.Failed
@@ -106,7 +106,7 @@ class UISwipeGestureRecognizer : UIGestureRecognizer {
         return mVelocityPoint
     }
 
-    private fun resetVelocity(nextTouches: Array<UITouch>) {
+    private fun resetVelocity(nextTouches: List<UITouch>) {
         if (lastPoints.size > 0 && nextTouches.size > 0) {
             val ts = (nextTouches[0].timestamp - lastPoints[0].timestamp) / 1000.0
             if (ts == 0.0) {

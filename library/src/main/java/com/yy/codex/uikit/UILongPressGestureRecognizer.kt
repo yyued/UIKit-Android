@@ -22,7 +22,7 @@ class UILongPressGestureRecognizer : UIGestureRecognizer {
 
     constructor(triggerBlock: Runnable) : super(triggerBlock) {}
 
-    override fun touchesBegan(touches: Array<UITouch>, event: UIEvent) {
+    override fun touchesBegan(touches: List<UITouch>, event: UIEvent) {
         super.touchesBegan(touches, event)
         mStartTouches = touches.toList()
         if (touches.size >= mNumberOfTouchesRequired) {
@@ -51,7 +51,7 @@ class UILongPressGestureRecognizer : UIGestureRecognizer {
         }, (mMinimumPressDuration * 1000).toLong())
     }
 
-    override fun touchesMoved(touches: Array<UITouch>, event: UIEvent) {
+    override fun touchesMoved(touches: List<UITouch>, event: UIEvent) {
         super.touchesMoved(touches, event)
         if (state == UIGestureRecognizerState.Possible && touches.size > mStartTouches.size && touches.size >= mNumberOfTouchesRequired) {
             mStartTouches = touches.toList()
@@ -65,7 +65,7 @@ class UILongPressGestureRecognizer : UIGestureRecognizer {
         }
     }
 
-    override fun touchesEnded(touches: Array<UITouch>, event: UIEvent) {
+    override fun touchesEnded(touches: List<UITouch>, event: UIEvent) {
         super.touchesEnded(touches, event)
         mStartTimer?.let(Timer::cancel)
         if (state == UIGestureRecognizerState.Began || state == UIGestureRecognizerState.Changed) {
@@ -76,7 +76,7 @@ class UILongPressGestureRecognizer : UIGestureRecognizer {
         }
     }
 
-    private fun moveOutOfBounds(touches: Array<UITouch>): Boolean {
+    private fun moveOutOfBounds(touches: List<UITouch>): Boolean {
         val view = view ?: return true
         var accepted = 0
         for (i in touches.indices) {

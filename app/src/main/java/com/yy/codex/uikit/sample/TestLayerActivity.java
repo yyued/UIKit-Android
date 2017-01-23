@@ -221,7 +221,7 @@ class TestView1 extends UIView {
     private UIView createAndAddSubview(@Nullable CGRect rect, @Nullable UIColor bgColor){
         UIView view = new UIView(getContext());
         view.setWantsLayer(true);
-        view.setFrame(rect == null ? UIScreen.mainScreen.bounds() : rect);
+        view.setFrame(rect == null ? UIScreen.Companion.getMainScreen().bounds() : rect);
         view.setBackgroundColor(bgColor.toInt());
         addSubview(view);
         return view;

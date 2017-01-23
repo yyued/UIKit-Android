@@ -66,28 +66,28 @@ open class UIGestureRecognizer {
 
     /* Events */
 
-    open fun touchesBegan(touches: Array<UITouch>, event: UIEvent) {
+    open fun touchesBegan(touches: List<UITouch>, event: UIEvent) {
         if (!enabled) {
             state = UIGestureRecognizerState.Failed
         }
         lastPoints = touches.toList()
     }
 
-    open fun touchesMoved(touches: Array<UITouch>, event: UIEvent) {
+    open fun touchesMoved(touches: List<UITouch>, event: UIEvent) {
         if (!enabled) {
             state = UIGestureRecognizerState.Failed
         }
         lastPoints = touches.toList()
     }
 
-    open fun touchesEnded(touches: Array<UITouch>, event: UIEvent) {
+    open fun touchesEnded(touches: List<UITouch>, event: UIEvent) {
         if (!enabled) {
             state = UIGestureRecognizerState.Failed
         }
         lastPoints = touches.toList()
     }
 
-    fun touchesCancelled(touches: Array<UITouch>, event: UIEvent) {
+    fun touchesCancelled(touches: List<UITouch>, event: UIEvent) {
         lastPoints = touches.toList()
         state = UIGestureRecognizerState.Cancelled
     }

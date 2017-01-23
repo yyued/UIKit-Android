@@ -395,7 +395,7 @@ open class UIView : FrameLayout, UIResponder {
         return UIViewHelpers.convertPoint(this, point, toView)
     }
 
-    override fun touchesBegan(touches: Array<UITouch>, event: UIEvent) {
+    override fun touchesBegan(touches: List<UITouch>, event: UIEvent) {
         if (nextResponder != null) {
             nextResponder!!.touchesBegan(touches, event)
         }
@@ -407,7 +407,7 @@ open class UIView : FrameLayout, UIResponder {
         }
     }
 
-    override fun touchesMoved(touches: Array<UITouch>, event: UIEvent) {
+    override fun touchesMoved(touches: List<UITouch>, event: UIEvent) {
         if (nextResponder != null) {
             nextResponder!!.touchesMoved(touches, event)
         }
@@ -419,7 +419,7 @@ open class UIView : FrameLayout, UIResponder {
         }
     }
 
-    override fun touchesEnded(touches: Array<UITouch>, event: UIEvent) {
+    override fun touchesEnded(touches: List<UITouch>, event: UIEvent) {
         if (nextResponder != null) {
             nextResponder!!.touchesEnded(touches, event)
         }
