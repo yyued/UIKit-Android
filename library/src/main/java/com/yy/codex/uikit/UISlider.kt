@@ -47,17 +47,17 @@ class UISlider : UIControl {
         defaultValue()
 
         trackView = UIView(context)
-        trackView!!.isWantsLayer = true
+        trackView!!.wantsLayer = true
         trackView!!.layer.backgroundColor = UIColor(0xb7 / 255.0, 0xb7 / 255.0, 0xb7 / 255.0, 1.0)
         trackView!!.layer.cornerRadius = 2.0
 
         trackPassedView = UIView(context)
-        trackPassedView!!.isWantsLayer = true
+        trackPassedView!!.wantsLayer = true
         trackPassedView!!.layer.backgroundColor = UIColor(0x10 / 255.0, 0x6a / 255.0, 1.0, 1.0)
         trackPassedView!!.layer.cornerRadius = 2.0
 
         thumbView = UIView(context)
-        thumbView!!.isWantsLayer = true
+        thumbView!!.wantsLayer = true
         thumbView!!.layer.shadowX = 2.0
         thumbView!!.layer.shadowY = 2.0
         thumbView!!.layer.shadowRadius = 2.0

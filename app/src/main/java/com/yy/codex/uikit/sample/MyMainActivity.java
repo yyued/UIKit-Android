@@ -57,10 +57,10 @@ class MyTestView extends UIView {
         super.init();
         UIScrollView scrollView = new UIScrollView(getContext());
         UIConstraint constraint = new UIConstraint();
-        constraint.centerHorizontally = true;
-        constraint.centerVertically = true;
-        constraint.width = "100%";
-        constraint.height = "100%";
+        constraint.setCenterHorizontally(true);
+        constraint.setCenterVertically(true);
+        constraint.setWidth("100%");
+        constraint.setHeight("100%");
         scrollView.setConstraint(constraint);
         scrollView.setBounces(true);
         scrollView.setPagingEnabled(true);

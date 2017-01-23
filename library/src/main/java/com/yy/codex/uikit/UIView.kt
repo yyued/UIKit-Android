@@ -336,25 +336,22 @@ open class UIView : FrameLayout, UIResponder {
 
     /* category UIView Layer-Backed Service */
 
-    protected var mWantsLayer = false
-    var layer = CALayer()
-        protected set
-
-    var isWantsLayer: Boolean
-        get() = mWantsLayer
-        set(wantsLayer) {
-            if (this.mWantsLayer != wantsLayer) {
-                this.mWantsLayer = wantsLayer
-                if (wantsLayer) {
+    var wantsLayer = false
+        set(value) {
+            if (field != value) {
+                field = value
+                if (field) {
                     setLayerType(View.LAYER_TYPE_SOFTWARE, null)
                 }
                 invalidate()
             }
         }
 
+    var layer = CALayer()
+        private set
+
     fun drawRect(canvas: Canvas, rect: CGRect) {
-        // TODO: 2017/1/3 adi
-        if (mWantsLayer) {
+        if (wantsLayer) {
             layer.drawRect(canvas, rect)
         }
     }

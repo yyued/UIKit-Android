@@ -163,13 +163,13 @@ public class UILabel extends UIView {
         }
         NSAttributedString attributedString = new NSAttributedString(text, new HashMap(){{
             if (getFont() != null) {
-                put(NSAttributedString.NSFontAttributeName, getFont());
+                put(NSAttributedString.Companion.getNSFontAttributeName(), getFont());
             }
-            put(NSAttributedString.NSForegroundColorAttributeName, getTextColor());
+            put(NSAttributedString.Companion.getNSForegroundColorAttributeName(), getTextColor());
             NSParagraphStyle paragraphStyle = new NSParagraphStyle();
-            paragraphStyle.lineBreakMode = getLinebreakMode();
-            paragraphStyle.alignment = getAlignment();
-            put(NSAttributedString.NSParagraphStyleAttributeName, paragraphStyle);
+            paragraphStyle.setLineBreakMode(getLinebreakMode());
+            paragraphStyle.setAlignment(getAlignment());
+            put(NSAttributedString.Companion.getNSParagraphStyleAttributeName(), paragraphStyle);
         }});
         setAttributedText(attributedString);
         mNeedsUpdate = true;

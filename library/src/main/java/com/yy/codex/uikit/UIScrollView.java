@@ -191,7 +191,7 @@ public class UIScrollView extends UIView {
                 yOptions.setFromValue(mContentOffset.getY());
                 yOptions.setVelocity(-velocity.getY() / 1000.0);
                 yOptions.setTopBounds(0.0);
-                yOptions.setBottomBounds(mContentSize.getHeight() + mContentInset.bottom - getFrame().getSize().getHeight());
+                yOptions.setBottomBounds(mContentSize.getHeight() + mContentInset.getBottom() - getFrame().getSize().getHeight());
                 yOptions.setViewBounds(getFrame().getSize().getHeight());
                 mCurrentAnimationY = UIViewAnimator.INSTANCE.decayBounds(this, "contentOffset.y", yOptions, null);
             }
@@ -251,7 +251,7 @@ public class UIScrollView extends UIView {
         boolean mAlwaysBounceOrientation = isX ? mAlwaysBounceHorizontal : mAlwaysBounceVertical;
 
         double retValue = xOry;
-        double deltaBottom = calculateContentSizeValue + mContentInset.bottom + mContentInset.top - calculateThisValue;
+        double deltaBottom = calculateContentSizeValue + mContentInset.getBottom() + mContentInset.getTop() - calculateThisValue;
         double over = xOry - deltaBottom;
 
         if (calculateContentSizeValue < calculateThisValue) {
@@ -271,7 +271,7 @@ public class UIScrollView extends UIView {
             }
 
             //out of bottom
-            if (xOry > Math.abs(calculateContentSizeValue + mContentInset.bottom + mContentInset.top - calculateThisValue)) {
+            if (xOry > Math.abs(calculateContentSizeValue + mContentInset.getBottom() + mContentInset.getTop() - calculateThisValue)) {
                 retValue = deltaBottom;
                 if (mBounces) {
                     // can Bounces
@@ -314,7 +314,7 @@ public class UIScrollView extends UIView {
             }, null);
         }
         else {
-            scrollTo((int)(mContentOffset.getX() * UIScreen.mainScreen.scale()), (int)(mContentOffset.getY() * UIScreen.mainScreen.scale() - mContentInset.top));
+            scrollTo((int)(mContentOffset.getX() * UIScreen.mainScreen.scale()), (int)(mContentOffset.getY() * UIScreen.mainScreen.scale() - mContentInset.getTop()));
             if (mDelegate != null) {
                 mDelegate.scrollViewDidScroll(this);
             }

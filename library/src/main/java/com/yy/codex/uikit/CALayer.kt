@@ -35,133 +35,133 @@ open class CALayer {
     /* layoutProps */
 
     var frame = CGRect(0.0, 0.0, 0.0, 0.0)
-    set(value) {
-        val x = field.origin.x.toFloat()
-        val y = field.origin.y.toFloat()
-        val w = field.size.width.toFloat()
-        val h = field.size.height.toFloat()
-        val newValue = CGRect(x.toDouble(), y.toDouble(), w.toDouble(), h.toDouble())
-        if (field != newValue) {
-            field = newValue
-            this.setNeedDisplay(true)
+        set(value) {
+            val x = field.origin.x.toFloat()
+            val y = field.origin.y.toFloat()
+            val w = field.size.width.toFloat()
+            val h = field.size.height.toFloat()
+            val newValue = CGRect(x.toDouble(), y.toDouble(), w.toDouble(), h.toDouble())
+            if (field != newValue) {
+                field = newValue
+                this.setNeedDisplay(true)
+            }
+            field = value
         }
-        field = value
-    }
 
     /* styleProps */
 
     var backgroundColor = UIColor.clearColor
-    set(value) {
-        if (field != backgroundColor) {
-            field = backgroundColor
-            this.setNeedDisplay(true)
-        }
-    }
-
-    var cornerRadius = 0.0
-    set(value) {
-        if (!doubleEqual(field, value)) {
-            val oldValue = field
-            field = value
-            this.setNeedDisplay(true)
-            requestRootLayer().view?.let {
-                UIViewAnimator.addAnimationState(it, "layer.mCornerRadius", oldValue, value)
+        set(value) {
+            if (field != value) {
+                field = value
+                this.setNeedDisplay(true)
             }
         }
-    }
+
+    var cornerRadius = 0.0
+        set(value) {
+            if (!doubleEqual(field, value)) {
+                val oldValue = field
+                field = value
+                this.setNeedDisplay(true)
+                requestRootLayer().view?.let {
+                    UIViewAnimator.addAnimationState(it, "layer.mCornerRadius", oldValue, value)
+                }
+            }
+        }
 
 
     var borderWidth = 0.0
-    set(value) {
-        val oldValue = field
-        if (!doubleEqual(field, value)) {
-            field = value
-            this.setNeedDisplay(true)
-            requestRootLayer().view?.let {
-                UIViewAnimator.addAnimationState(it, "layer.mBorderWidth", oldValue, value)
+        set(value) {
+            val oldValue = field
+            if (!doubleEqual(field, value)) {
+                field = value
+                this.setNeedDisplay(true)
+                requestRootLayer().view?.let {
+                    UIViewAnimator.addAnimationState(it, "layer.mBorderWidth", oldValue, value)
+                }
             }
         }
-    }
 
     var borderColor = UIColor.blackColor
-    set(value) {
-        if (field != value) {
-            field = value
-            this.setNeedDisplay(true)
+        set(value) {
+            if (field != value) {
+                field = value
+                this.setNeedDisplay(true)
+            }
         }
-    }
 
     var shadowX = 2.0
-    set(value) {
-        if (!doubleEqual(field, value)) {
-            field = value
-            this.setNeedDisplay(true)
+        set(value) {
+            if (!doubleEqual(field, value)) {
+                field = value
+                this.setNeedDisplay(true)
+            }
         }
-    }
 
     var shadowY = 2.0
-    set(value) {
-        if (!doubleEqual(field, value)) {
-            field = value
-            this.setNeedDisplay(true)
+        set(value) {
+            if (!doubleEqual(field, value)) {
+                field = value
+                this.setNeedDisplay(true)
+            }
         }
-    }
 
     var shadowRadius = 0.0
-    set(value) {
-        if (!doubleEqual(field, value)) {
-            field = value
-            this.setNeedDisplay(true)
+        set(value) {
+            if (!doubleEqual(field, value)) {
+                field = value
+                this.setNeedDisplay(true)
+            }
         }
-    }
 
     var shadowColor = UIColor.blackColor
-    set(value) {
-        if (field != value) {
-            field = value
-            this.setNeedDisplay(true)
+        set(value) {
+            if (field != value) {
+                field = value
+                this.setNeedDisplay(true)
+            }
         }
-    }
 
     var bitmap: Bitmap? = null
-    set(value) {
-        if (field != value) {
-            field = value
-            this.setNeedDisplay(true)
+        set(value) {
+            if (field != value) {
+                field = value
+                this.setNeedDisplay(true)
+            }
         }
-    }
 
     var bitmapGravity = BitmapGravity.ScaleAspectFit
-    set(value) {
-        if (field != value) {
-            field = value
-            this.setNeedDisplay(true)
+        set(value) {
+            if (field != value) {
+                field = value
+                this.setNeedDisplay(true)
+            }
         }
-    }
 
     var bitmapColor: UIColor? = null
-    set(value) {
-        if (field != value) {
-            field = value
-            this.setNeedDisplay(true)
+        set(value) {
+            if (field != value) {
+                field = value
+                this.setNeedDisplay(true)
+            }
         }
-    }
 
     var clipToBounds = false
-    set(value) {
-        if (field != value) {
-            field = value
-            this.setNeedDisplay(true)
+        set(value) {
+            if (field != value) {
+                field = value
+                this.setNeedDisplay(true)
+            }
         }
-    }
 
     var hidden = false
-    set(value) {
-        if (field != value) {
-            field = value
-            this.setNeedDisplay(true)
+        set(value) {
+            if (field != value) {
+                field = value
+                this.setNeedDisplay(true)
+            }
         }
-    }
 
     /* renderProps */
 

@@ -100,7 +100,7 @@ public class CALayerPainter {
         if (bitmapColor != null) {
             mixPaint.setColorFilter(new PorterDuffColorFilter(bitmapColor.toInt(), PorterDuff.Mode.SRC_IN));
         }
-        CALayerBitmapPainter.drawBitmap(resultCanvas, maskFrame, bitmap, bitmapGravity, mixPaint);
+        CALayerBitmapPainter.INSTANCE.drawBitmap(resultCanvas, maskFrame, bitmap, bitmapGravity, mixPaint);
         sPaint.reset();
         if (bitmapColor != null) {
             sPaint.setColorFilter(new PorterDuffColorFilter(bitmapColor.toInt(), PorterDuff.Mode.SRC_IN));
@@ -164,7 +164,7 @@ public class CALayerPainter {
             sPaint.setColorFilter(new PorterDuffColorFilter(bitmapColor.toInt(), PorterDuff.Mode.SRC_IN));
         }
         CGRect bitmapFrame = new CGRect(origin.getX(), origin.getY(), frame.getSize().getWidth(), frame.getSize().getHeight());
-        CALayerBitmapPainter.drawBitmap(canvas, bitmapFrame, bitmap, layer.getBitmapGravity(), sPaint);
+        CALayerBitmapPainter.INSTANCE.drawBitmap(canvas, bitmapFrame, bitmap, layer.getBitmapGravity(), sPaint);
         sPaint.setColorFilter(null);
     }
 
@@ -262,7 +262,7 @@ public class CALayerPainter {
         }
         RectF rectF = layer.getFrame().toRectF();
         for (CGTransform transform : transforms){
-            if (!transform.enable){
+            if (!transform.getEnable()){
                 continue;
             }
             if (transform instanceof CGTransformRotation){
@@ -274,7 +274,7 @@ public class CALayerPainter {
             }
             else if (transform instanceof CGTransformScale){
                 CGTransformScale scale = (CGTransformScale)transform;
-                matrix.postScale((float) scale.sx, (float) scale.sy, rectF.centerX() * (float) scaledDensity, rectF.centerY() * (float) scaledDensity);
+                matrix.postScale((float) scale.getSx(), (float) scale.getSy(), rectF.centerX() * (float) scaledDensity, rectF.centerY() * (float) scaledDensity);
             }
             else if (transform instanceof CGTransformMatrix){
                 // @TODO
