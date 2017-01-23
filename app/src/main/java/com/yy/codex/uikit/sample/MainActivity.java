@@ -10,6 +10,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.util.AttributeSet;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
 
@@ -21,6 +22,7 @@ import com.yy.codex.uikit.UIColor;
 import com.yy.codex.uikit.UIConstraint;
 import com.yy.codex.uikit.UIFont;
 import com.yy.codex.uikit.UILabel;
+import com.yy.codex.uikit.UINavigationActivity;
 import com.yy.codex.uikit.UINavigationBar;
 import com.yy.codex.uikit.UINavigationController;
 import com.yy.codex.uikit.UINavigationItem;
@@ -32,16 +34,13 @@ import com.yy.codex.uikit.UIViewController;
 import java.io.File;
 import java.util.HashMap;
 
-public class MainActivity extends Activity {
+public class MainActivity extends UINavigationActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        UINavigationController navigationController = new UINavigationController(this);
-        navigationController.setRootViewController(new TestViewController(this));
-        navigationController.getView().setMaterialDesign(true);
-        setContentView(navigationController.getView());
-
+        getNavigationController().getView().setMaterialDesign(true);
+        getNavigationController().setRootViewController(new TestViewController(this));
     }
 
 }

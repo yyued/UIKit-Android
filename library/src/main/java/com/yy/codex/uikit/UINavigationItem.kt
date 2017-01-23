@@ -79,12 +79,17 @@ class UINavigationItem(val mContext: Context) {
         set(titleView) {
             field?.let(UIView::removeFromSuperview)
             field = titleView
+            setNeedsUpdate()
         }
 
 
     /* BarButtonItems */
 
     var leftBarButtonItems: List<UIBarButtonItem> = listOf()
+        set(value) {
+            field = value
+            setNeedsUpdate()
+        }
 
     fun setLeftBarButtonItem(leftBarButtonItem: UIBarButtonItem?) {
         if (leftBarButtonItem == null) {
@@ -96,6 +101,10 @@ class UINavigationItem(val mContext: Context) {
     }
 
     var rightBarButtonItems: List<UIBarButtonItem> = listOf()
+        set(value) {
+            field = value
+            setNeedsUpdate()
+        }
 
     fun setRightBarButtonItem(rightBarButtonItem: UIBarButtonItem?) {
         if (rightBarButtonItem == null) {

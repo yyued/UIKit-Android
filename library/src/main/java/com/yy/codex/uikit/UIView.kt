@@ -5,10 +5,7 @@ import android.graphics.Canvas
 import android.os.Build
 import android.support.annotation.RequiresApi
 import android.util.AttributeSet
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewGroup
-import android.view.ViewParent
+import android.view.*
 import android.widget.FrameLayout
 import java.util.ArrayList
 
@@ -389,10 +386,32 @@ open class UIView : FrameLayout, UIResponder {
         return UIViewHelpers.convertPoint(this, point, toView)
     }
 
-    override fun touchesBegan(touches: List<UITouch>, event: UIEvent) {
-        nextResponder?.let {
-            it.touchesBegan(touches, event)
+    /* UIResponder */
+
+    override fun canBecomeFirstResponder(): Boolean {
+        return false
+    }
+
+    override fun becomeFirstResponder() {
+        UIResponder.firstResponder = this
+    }
+
+    override fun canResignFirstResponder(): Boolean {
+        return true
+    }
+
+    override fun resignFirstResponder() {
+        if (isFirstResponder()) {
+            UIResponder.firstResponder = null
         }
+    }
+
+    override fun isFirstResponder(): Boolean {
+        return UIResponder.firstResponder === this
+    }
+
+    override fun touchesBegan(touches: List<UITouch>, event: UIEvent) {
+        nextResponder?.touchesBegan(touches, event)
         if (UIGestureRecognizerLooper.isHitTestedView(touches, this)) {
             if (gestureRecognizerLooper == null || gestureRecognizerLooper?.isFinished ?: false || gestureRecognizerLooper?.gestureRecognizers?.size == 0) {
                 gestureRecognizerLooper = UIGestureRecognizerLooper(this)
@@ -402,9 +421,7 @@ open class UIView : FrameLayout, UIResponder {
     }
 
     override fun touchesMoved(touches: List<UITouch>, event: UIEvent) {
-        nextResponder?.let {
-            it.touchesMoved(touches, event)
-        }
+        nextResponder?.touchesMoved(touches, event)
         if (UIGestureRecognizerLooper.isHitTestedView(touches, this)) {
             if (gestureRecognizerLooper == null || gestureRecognizerLooper?.isFinished ?: false) {
                 gestureRecognizerLooper = UIGestureRecognizerLooper(this)
@@ -414,15 +431,21 @@ open class UIView : FrameLayout, UIResponder {
     }
 
     override fun touchesEnded(touches: List<UITouch>, event: UIEvent) {
-        nextResponder?.let {
-            it.touchesEnded(touches, event)
-        }
+        nextResponder?.touchesEnded(touches, event)
         if (UIGestureRecognizerLooper.isHitTestedView(touches, this)) {
             if (gestureRecognizerLooper == null || gestureRecognizerLooper?.isFinished ?: false) {
                 gestureRecognizerLooper = UIGestureRecognizerLooper(this)
             }
             gestureRecognizerLooper?.let { it.onTouchesEnded(touches, event) }
         }
+    }
+
+    override fun keyboardPressDown(event: UIKeyEvent) {
+        nextResponder?.keyboardPressDown(event)
+    }
+
+    override fun keyboardPressUp(event: UIKeyEvent) {
+        nextResponder?.keyboardPressUp(event)
     }
 
     open fun animate(aKey: String, aValue: Float) {

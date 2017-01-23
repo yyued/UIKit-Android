@@ -1,6 +1,7 @@
 package com.yy.codex.uikit
 
 import android.content.Context
+import android.view.KeyEvent
 
 /**
  * Created by PonyCui_Home on 2017/1/20.
@@ -23,7 +24,17 @@ open class UINavigationController(context: Context) : UIViewController(context) 
         }
     }
 
+    override fun keyboardPressUp(event: UIKeyEvent) {
+        super.keyboardPressUp(event)
+        if (event.keyCode == KeyEvent.KEYCODE_BACK) {
+            popViewController(true)
+        }
+    }
+
+    private var currentAnimation: UIViewAnimation? = null
+
     fun setViewControllers(viewControllers: Array<UIViewController>) {
+        currentAnimation?.cancel()
         for (childViewController in childViewControllers) {
             childViewController.removeFromParentViewController()
         }
@@ -37,6 +48,11 @@ open class UINavigationController(context: Context) : UIViewController(context) 
     private var beingPush = false
 
     open fun pushViewController(viewController: UIViewController, animated: Boolean) {
+        if (childViewControllers.count() > 0) {
+            childViewControllers.last().viewWillDisappear(animated)
+        }
+        viewController.viewWillAppear(animated)
+        currentAnimation?.cancel()
         beingPush = true
         addChildViewController(viewController)
         resetChildViews()
@@ -44,6 +60,12 @@ open class UINavigationController(context: Context) : UIViewController(context) 
         navigationBar.pushNavigationItem(viewController.navigationItem, animated)
         if (animated) {
             doPushAnimation()
+        }
+        else {
+            if (childViewControllers.count() > 1) {
+                childViewControllers[childViewControllers.count() - 2].viewDidDisappear(animated)
+            }
+            viewController.viewDidAppear(animated)
         }
     }
 
@@ -54,31 +76,47 @@ open class UINavigationController(context: Context) : UIViewController(context) 
             val backView = subviews[subviews.count() - 2]
             frontView.frame = frontView.frame.setX(wrapperView.frame.width)
             backView.frame = backView.frame.setX(0.0)
-            UIViewAnimator.springWithOptions(300.0, 40.0, 20.0, Runnable {
+            currentAnimation = UIViewAnimator.springWithOptions(300.0, 40.0, 20.0, Runnable {
                 frontView.frame = frontView.frame.setX(0.0)
                 backView.frame = backView.frame.setX(wrapperView.frame.width * -0.20)
-            }, null)
+            }, Runnable {
+                if (childViewControllers.count() > 1) {
+                    childViewControllers[childViewControllers.count() - 2].viewDidDisappear(true)
+                    childViewControllers[childViewControllers.count() - 1].viewDidAppear(true)
+                }
+            })
         }
     }
 
     private val beingPop = false
 
     open fun popViewController(animated: Boolean) {
+        currentAnimation?.cancel()
         navigationBar.popNavigationItem(animated)
         if (animated) {
             if (childViewControllers.count() >= 2) {
+                val lastViewController = childViewControllers.last()
+                val backViewController = childViewControllers[childViewControllers.count() - 2]
+                lastViewController.viewWillDisappear(true)
+                backViewController.viewWillAppear(true)
                 doPopAnimation(Runnable {
-                    val lastViewController = childViewControllers.last()
                     lastViewController.removeFromParentViewController()
                     resetChildViews()
+                    lastViewController.viewDidDisappear(false)
+                    backViewController.viewDidAppear(false)
                 })
             }
         }
         else {
             if (childViewControllers.count() >= 2) {
                 val lastViewController = childViewControllers.last()
+                val backViewController = childViewControllers[childViewControllers.count() - 2]
+                lastViewController.viewWillDisappear(false)
+                backViewController.viewWillAppear(false)
                 lastViewController.removeFromParentViewController()
                 resetChildViews()
+                lastViewController.viewDidDisappear(false)
+                backViewController.viewDidAppear(false)
             }
         }
     }
@@ -90,7 +128,7 @@ open class UINavigationController(context: Context) : UIViewController(context) 
             val backView = subviews[subviews.count() - 2]
             frontView.frame = frontView.frame.setX(0.0)
             backView.frame = backView.frame.setX(wrapperView.frame.width * -0.20)
-            UIViewAnimator.springWithOptions(300.0, 40.0, 20.0, Runnable {
+            currentAnimation = UIViewAnimator.springWithOptions(300.0, 40.0, 20.0, Runnable {
                 frontView.frame = frontView.frame.setX(wrapperView.frame.width)
                 backView.frame = backView.frame.setX(0.0)
             }, completion)

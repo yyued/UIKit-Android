@@ -135,8 +135,10 @@ class UINavigationBar : UIView {
 
     private var items: List<UINavigationItem> = listOf()
     private var itemsView: List<UINavigationItemView> = listOf()
+    private var currentAnimation: UIViewAnimation? = null
 
     fun setItems(items: List<UINavigationItem>) {
+        currentAnimation?.cancel()
         this.items = items
         resetItemsProps()
         resetBackItems()
@@ -144,6 +146,7 @@ class UINavigationBar : UIView {
     }
 
     fun pushNavigationItem(item: UINavigationItem, animated: Boolean) {
+        currentAnimation?.cancel()
         val mutableItems = items.toMutableList()
         mutableItems.add(item)
         this.items = mutableItems.toList()
@@ -163,7 +166,7 @@ class UINavigationBar : UIView {
             topItemView.animateToFront(false)
             backItemView.alpha = 1f
             backItemView.animateFromFrontToBack(false)
-            UIViewAnimator.springWithOptions(300.0, 40.0, 20.0, Runnable {
+            currentAnimation = UIViewAnimator.springWithOptions(300.0, 40.0, 20.0, Runnable {
                 topItemView.animateToFront(true)
                 backItemView.animateFromFrontToBack(true)
             }, Runnable { backItemView.alpha = 0f })
@@ -171,9 +174,16 @@ class UINavigationBar : UIView {
     }
 
     fun popNavigationItem(animated: Boolean) {
+        currentAnimation?.cancel()
         if (animated) {
-            doPopAnimation(Runnable { popNavigationItem(false) })
-        } else {
+            doPopAnimation(Runnable {
+                val mutableItems = items.toMutableList()
+                mutableItems.removeAt(mutableItems.count() - 1)
+                this.items = mutableItems.toList()
+                resetItemsView()
+            })
+        }
+        else {
             val mutableItems = items.toMutableList()
             mutableItems.removeAt(mutableItems.count() - 1)
             this.items = mutableItems.toList()
@@ -189,7 +199,7 @@ class UINavigationBar : UIView {
             backItemView.alpha = 1f
             topItemView.animateToGone(false)
             backItemView.animateFromBackToFront(false)
-            UIViewAnimator.springWithOptions(300.0, 40.0, 20.0, Runnable {
+            currentAnimation = UIViewAnimator.springWithOptions(300.0, 40.0, 20.0, Runnable {
                 topItemView.animateToGone(true)
                 backItemView.animateFromBackToFront(true)
             }, Runnable {

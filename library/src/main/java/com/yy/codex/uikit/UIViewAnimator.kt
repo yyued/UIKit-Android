@@ -51,6 +51,7 @@ object UIViewAnimator {
 
     fun linear(duration: Double, animations: Runnable, completion: Runnable?): UIViewAnimation {
         val animation = UIViewAnimation()
+        animation.completion = completion
         resetAnimationState()
         animations.run()
         val animationState = animationState ?: return animation
@@ -110,6 +111,7 @@ object UIViewAnimator {
 
     fun spring(animations: Runnable, completion: Runnable? = null): UIViewAnimation {
         val animation = UIViewAnimation()
+        animation.completion = completion
         resetAnimationState()
         animations.run()
         val animationState = animationState ?: return animation
@@ -161,6 +163,7 @@ object UIViewAnimator {
 
     fun springWithOptions(tension: Double, friction: Double, velocity: Double, animations: Runnable, completion: Runnable?): UIViewAnimation {
         val animation = UIViewAnimation()
+        animation.completion = completion
         resetAnimationState()
         animations.run()
         val animationState = animationState ?: return animation
@@ -220,6 +223,7 @@ object UIViewAnimator {
 
     fun decay(animationView: UIView, animationKey: String, fromValue: Double, velocity: Double, completion: Runnable?): UIViewAnimation {
         val animation = UIViewAnimation()
+        animation.completion = completion
         val startTime = System.currentTimeMillis()
         val deceleration = decayDeceleration
         val finalValue = fromValue + velocity / (1.0 - deceleration) * (1 - Math.exp(-(1 - deceleration) * 999999999))
@@ -307,6 +311,7 @@ object UIViewAnimator {
         }
         val startTime = System.currentTimeMillis()
         val animation = UIViewAnimation()
+        animation.completion = completion
         val valueAnimator = ValueAnimator.ofInt(0, 1)
         valueAnimator.duration = 16
         valueAnimator.repeatCount = 9999999

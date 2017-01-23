@@ -11,12 +11,18 @@ class UIViewAnimation {
     var finished = false
         private set
 
+    internal var completion: Runnable? = null
+
     fun cancel() {
-        cancelled = true
+        if (!finished) {
+            cancelled = true
+            completion?.run()
+        }
     }
 
     fun markFinished() {
         finished = true
+        completion = null
     }
 
 }

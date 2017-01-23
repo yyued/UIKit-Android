@@ -24,9 +24,9 @@ class UIViewTouchHandler internal constructor(private val view: UIView) {
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
                     hash = null
-                    it.touchesBegan(requestTouches(event), UIEvent())
+                    it.touchesBegan(requestTouches(event), UIEvent(UIEvent.Type.Touches, UIEvent.SubType.Unknown))
                 }
-                MotionEvent.ACTION_UP -> it.touchesEnded(requestTouches(event), UIEvent())
+                MotionEvent.ACTION_UP -> it.touchesEnded(requestTouches(event), UIEvent(UIEvent.Type.Touches, UIEvent.SubType.Unknown))
                 MotionEvent.ACTION_POINTER_UP, MotionEvent.ACTION_MOVE, MotionEvent.ACTION_POINTER_DOWN -> {
                     val cHash = requestHash(event)
                     if (hash is DoubleArray) {
@@ -35,7 +35,7 @@ class UIViewTouchHandler internal constructor(private val view: UIView) {
                         }
                     }
                     hash = cHash
-                    it.touchesMoved(requestTouches(event), UIEvent())
+                    it.touchesMoved(requestTouches(event), UIEvent(UIEvent.Type.Touches, UIEvent.SubType.Unknown))
                 }
             }
         }

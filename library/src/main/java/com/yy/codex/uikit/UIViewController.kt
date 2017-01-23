@@ -36,22 +36,47 @@ open class UIViewController(val context: Context) : UIResponder {
             return null
         }
 
-    override fun touchesBegan(touches: List<UITouch>, event: UIEvent) {
-        nextResponder?.let {
-            it.touchesBegan(touches, event)
+    override fun canBecomeFirstResponder(): Boolean {
+        val navigationController = navigationController() ?: return false
+        return navigationController.childViewControllers.last() == this
+    }
+
+    override fun becomeFirstResponder() {
+        UIResponder.firstResponder = this
+    }
+
+    override fun canResignFirstResponder(): Boolean {
+        return true
+    }
+
+    override fun resignFirstResponder() {
+        if (isFirstResponder()) {
+            UIResponder.firstResponder = null
         }
+    }
+
+    override fun isFirstResponder(): Boolean {
+        return UIResponder.firstResponder === this
+    }
+
+    override fun touchesBegan(touches: List<UITouch>, event: UIEvent) {
+        nextResponder?.touchesBegan(touches, event)
     }
 
     override fun touchesMoved(touches: List<UITouch>, event: UIEvent) {
-        nextResponder?.let {
-            it.touchesMoved(touches, event)
-        }
+        nextResponder?.touchesMoved(touches, event)
     }
 
     override fun touchesEnded(touches: List<UITouch>, event: UIEvent) {
-        nextResponder?.let {
-            it.touchesEnded(touches, event)
-        }
+        nextResponder?.touchesEnded(touches, event)
+    }
+
+    override fun keyboardPressDown(event: UIKeyEvent) {
+        nextResponder?.keyboardPressDown(event)
+    }
+
+    override fun keyboardPressUp(event: UIKeyEvent) {
+        nextResponder?.keyboardPressUp(event)
     }
 
     /* Props */
@@ -117,6 +142,7 @@ open class UIViewController(val context: Context) : UIResponder {
     }
 
     fun viewWillDisappear(animated: Boolean) {
+        resignFirstResponder()
         for (childViewController in childViewControllers) {
             childViewController.viewWillDisappear(animated)
         }
