@@ -14,12 +14,7 @@ import android.view.View
 import android.view.ViewOutlineProvider
 
 import com.yy.codex.foundation.NSLog
-import com.yy.codex.uikit.CGRect
-import com.yy.codex.uikit.UIColor
-import com.yy.codex.uikit.UIControl
-import com.yy.codex.uikit.UISlider
-import com.yy.codex.uikit.UISwitch
-import com.yy.codex.uikit.UIView
+import com.yy.codex.uikit.*
 
 /**
  * Created by adi on 17/1/18.
@@ -60,11 +55,14 @@ internal class TestComponent : UIView {
         uiSlider.onSlide({ value -> NSLog.warn(value) })
         addSubview(uiSlider)
 
+        val uiStepper = UIStepper(context)
+        uiStepper.frame = CGRect(10.0, 200.0, 100.0, 30.0)
+        addSubview(uiStepper)
 
-        val view1 = TestXView(context)
-        view1.frame = CGRect(10.0, 200.0, 100.0, 100.0)
-        //        view1.setBackgroundColor(UIColor.orangeColor);
-        addSubview(view1)
+//        val view1 = TestXView(context)
+//        view1.frame = CGRect(10.0, 200.0, 100.0, 100.0)
+//        view1.setBackgroundColor(UIColor.orangeColor);
+//        addSubview(view1)
     }
 }
 
