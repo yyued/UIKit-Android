@@ -96,7 +96,7 @@ class UISlider : UIControl {
         }
     }
 
-    public fun onSlide(listener: (Double) -> Unit){
+    fun onSlide(listener: (Double) -> Unit){
         this.slideListener = listener
     }
 
@@ -113,7 +113,7 @@ class UISlider : UIControl {
         this.slideListener(this.value)
     }
 
-    public fun setValue(value: Double) {
+    fun setValue(value: Double) {
         if (value < 0.0) {
             this.value = 0.0
         } else if (value > 1.0) {
@@ -127,7 +127,7 @@ class UISlider : UIControl {
         thumbView!!.frame = CGRect((frameW - thumbRadius) * this.value, 2.0, thumbRadius, thumbRadius)
     }
 
-    public fun getValue(): Double {
+    fun getValue(): Double {
         return this.value
     }
 
@@ -138,4 +138,15 @@ class UISlider : UIControl {
         return true
     }
 
+    // test
+    fun test() {
+        val n = 10
+        var str = "$n and ${n+10}"
+
+        val text = """
+        sdf sf
+        """
+
+
+    }
 }
