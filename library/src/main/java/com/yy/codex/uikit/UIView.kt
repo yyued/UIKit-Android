@@ -93,20 +93,16 @@ open class UIView : FrameLayout, UIResponder {
 
     /* category UIView Layout */
 
-    protected var mFrame = CGRect(0.0, 0.0, 0.0, 0.0)
-
-    var frame: CGRect
-        get() = mFrame
+    var frame: CGRect = CGRect(0.0, 0.0, 0.0, 0.0)
         set(frame) {
-            if (this.frame == frame) {
+            if (field == frame) {
                 return
             }
-            val oldValue = this.mFrame
-            this.mFrame = frame
+            val oldValue = field
+            field = frame
             layoutSubviews()
             this.x = (frame.origin.x * UIScreen.mainScreen.scale()).toFloat()
             this.y = (frame.origin.y * UIScreen.mainScreen.scale()).toFloat()
-
             var mWidth = frame.size.width * UIScreen.mainScreen.scale()
             var mHeight = frame.size.height * UIScreen.mainScreen.scale()
             if (Math.ceil(mWidth) - mWidth < 0.1) {
@@ -125,16 +121,14 @@ open class UIView : FrameLayout, UIResponder {
         }
 
     val center: CGPoint
-        get() = CGPoint((mFrame.origin.x + mFrame.size.width) / 2.0, (mFrame.origin.y + mFrame.size.height) / 2.0)
+        get() = CGPoint((frame.origin.x + frame.size.width) / 2.0, (frame.origin.y + frame.size.height) / 2.0)
 
-    protected var mConstraint: UIConstraint? = null
-
-    var constraint: UIConstraint?
-        get() = mConstraint
+    var constraint: UIConstraint? = null
         set(constraint) {
-            this.mConstraint = constraint
-            val superview = superview
-            superview?.layoutSubviews()
+            field = constraint
+            superview?.let {
+                it.layoutSubviews()
+            }
         }
 
     open var maxWidth = 0.0
@@ -145,24 +139,22 @@ open class UIView : FrameLayout, UIResponder {
             nextResponder.viewWillLayoutSubviews()
         }
         var previous: UIView? = null
-        val subviews = subviews
-        for (i in subviews.indices) {
-            val subview = subviews[i]
-            if (subview.mConstraint != null && !subview.mConstraint!!.disabled) {
-                subview.frame = subview.mConstraint!!.requestFrame(subview, this, previous)
+        for (subview in subviews) {
+            subview.constraint?.let {
+                if (!it.disabled) {
+                    subview.frame = it.requestFrame(subview, this, previous)
+                }
             }
             subview.automaticallyAdjustsTopSpace()
             previous = subview
         }
-        if (nextResponder != null && nextResponder is UIViewController) {
-            postDelayed({ nextResponder.viewDidLayoutSubviews() }, 1)
-        }
+        (nextResponder as? UIViewController)?.let { postDelayed({it.viewDidLayoutSubviews()}, 1) }
     }
 
-    private var mAutomaticallyAdjustsSpace = false
+    var automaticallyAdjustsSpace = false
 
     private fun automaticallyAdjustsTopSpace() {
-        if (mAutomaticallyAdjustsSpace) {
+        if (automaticallyAdjustsSpace) {
             var nextResponder = nextResponder
             while (nextResponder != null) {
                 if (nextResponder is UIViewController) {
@@ -170,8 +162,8 @@ open class UIView : FrameLayout, UIResponder {
                     val bottomSpace = nextResponder.bottomLayoutLength()
                     var frame = frame
                     frame = frame.setY(topSpace)
-                    if (superview != null) {
-                        frame = frame.setHeight(superview!!.frame.height - topSpace - bottomSpace)
+                    superview?.let {
+                        frame = frame.setHeight(it.frame.height - topSpace - bottomSpace)
                     }
                     frame = frame
                     break
@@ -179,10 +171,6 @@ open class UIView : FrameLayout, UIResponder {
                 nextResponder = nextResponder.nextResponder
             }
         }
-    }
-
-    fun setAutomaticallyAdjustsSpace(automaticallyAdjustsSpace: Boolean) {
-        mAutomaticallyAdjustsSpace = automaticallyAdjustsSpace
     }
 
     var marginInsets: UIEdgeInsets = UIEdgeInsets.zero
@@ -202,22 +190,22 @@ open class UIView : FrameLayout, UIResponder {
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        var widthMeasureSpec = widthMeasureSpec
-        var heightMeasureSpec = heightMeasureSpec
+        var thisWidthMeasureSpec = widthMeasureSpec
+        var thisHeightMeasureSpec = heightMeasureSpec
         if (View.MeasureSpec.getMode(widthMeasureSpec) == View.MeasureSpec.AT_MOST) {
-            widthMeasureSpec = View.MeasureSpec.makeMeasureSpec((frame.width * UIScreen.mainScreen.scale()).toInt(), View.MeasureSpec.AT_MOST)
+            thisWidthMeasureSpec = View.MeasureSpec.makeMeasureSpec((frame.width * UIScreen.mainScreen.scale()).toInt(), View.MeasureSpec.AT_MOST)
         }
         if (View.MeasureSpec.getMode(heightMeasureSpec) == View.MeasureSpec.AT_MOST) {
-            heightMeasureSpec = View.MeasureSpec.makeMeasureSpec((frame.height * UIScreen.mainScreen.scale()).toInt(), View.MeasureSpec.AT_MOST)
+            thisHeightMeasureSpec = View.MeasureSpec.makeMeasureSpec((frame.height * UIScreen.mainScreen.scale()).toInt(), View.MeasureSpec.AT_MOST)
         }
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+        super.onMeasure(thisWidthMeasureSpec, thisHeightMeasureSpec)
     }
 
     /* category UIView Rendering */
 
     fun setBackgroundColor(color: UIColor?) {
-        if (color != null) {
-            setBackgroundColor(color.toInt())
+        color?.let {
+            setBackgroundColor(it.toInt())
         }
     }
 
@@ -227,14 +215,12 @@ open class UIView : FrameLayout, UIResponder {
         UIViewAnimator.addAnimationState(this, "alpha", oldValue.toDouble(), alpha.toDouble())
     }
 
-    protected var mTintColor: UIColor? = null
-
-    var tintColor: UIColor
+    var tintColor: UIColor? = null
         get() {
-            var tintColor = mTintColor
+            var tintColor = field
             var superview = superview
             while (tintColor == null && superview != null) {
-                tintColor = superview.mTintColor
+                tintColor = superview.tintColor
                 superview = superview.superview
             }
             if (tintColor == null) {
@@ -243,14 +229,13 @@ open class UIView : FrameLayout, UIResponder {
             return tintColor
         }
         set(tintColor) {
-            this.mTintColor = tintColor
+            field = tintColor
             tintColorDidChanged()
         }
 
     open fun tintColorDidChanged() {
-        val subviews = subviews
-        for (i in subviews.indices) {
-            subviews[i].tintColorDidChanged()
+        for (subview in subviews) {
+            subview.tintColorDidChanged()
         }
     }
 
@@ -328,20 +313,20 @@ open class UIView : FrameLayout, UIResponder {
     fun didMoveToWindow() {}
 
     override fun onViewAdded(child: View) {
-        if (UIView::class.java.isAssignableFrom(child.javaClass)) {
-            (child as UIView).willMoveToSuperview(this)
+        if (child is UIView) {
+            child.willMoveToSuperview(this)
         }
         super.onViewAdded(child)
-        if (UIView::class.java.isAssignableFrom(child.javaClass)) {
-            didAddSubview(child as UIView)
+        if (child is UIView) {
+            didAddSubview(child)
             child.didMoveToSuperview()
         }
     }
 
     override fun onViewRemoved(child: View) {
         super.onViewRemoved(child)
-        if (UIView::class.java.isAssignableFrom(child.javaClass)) {
-            willRemoveSubview(child as UIView)
+        if (child is UIView) {
+            willRemoveSubview(child)
         }
     }
 
@@ -420,10 +405,10 @@ open class UIView : FrameLayout, UIResponder {
             nextResponder!!.touchesBegan(touches, event)
         }
         if (UIGestureRecognizerLooper.isHitTestedView(touches, this)) {
-            if (sGestureRecognizerLooper == null || sGestureRecognizerLooper!!.isFinished || sGestureRecognizerLooper!!.mGestureRecognizers.size == 0) {
-                sGestureRecognizerLooper = UIGestureRecognizerLooper(this)
+            if (gestureRecognizerLooper == null || gestureRecognizerLooper!!.isFinished || gestureRecognizerLooper!!.mGestureRecognizers.size == 0) {
+                gestureRecognizerLooper = UIGestureRecognizerLooper(this)
             }
-            sGestureRecognizerLooper!!.onTouchesBegan(touches, event)
+            gestureRecognizerLooper!!.onTouchesBegan(touches, event)
         }
     }
 
@@ -432,10 +417,10 @@ open class UIView : FrameLayout, UIResponder {
             nextResponder!!.touchesMoved(touches, event)
         }
         if (UIGestureRecognizerLooper.isHitTestedView(touches, this)) {
-            if (sGestureRecognizerLooper == null || sGestureRecognizerLooper!!.isFinished) {
-                sGestureRecognizerLooper = UIGestureRecognizerLooper(this)
+            if (gestureRecognizerLooper == null || gestureRecognizerLooper!!.isFinished) {
+                gestureRecognizerLooper = UIGestureRecognizerLooper(this)
             }
-            sGestureRecognizerLooper!!.onTouchesMoved(touches, event)
+            gestureRecognizerLooper!!.onTouchesMoved(touches, event)
         }
     }
 
@@ -444,22 +429,22 @@ open class UIView : FrameLayout, UIResponder {
             nextResponder!!.touchesEnded(touches, event)
         }
         if (UIGestureRecognizerLooper.isHitTestedView(touches, this)) {
-            if (sGestureRecognizerLooper == null || sGestureRecognizerLooper!!.isFinished) {
-                sGestureRecognizerLooper = UIGestureRecognizerLooper(this)
+            if (gestureRecognizerLooper == null || gestureRecognizerLooper!!.isFinished) {
+                gestureRecognizerLooper = UIGestureRecognizerLooper(this)
             }
-            sGestureRecognizerLooper!!.onTouchesEnded(touches, event)
+            gestureRecognizerLooper!!.onTouchesEnded(touches, event)
         }
     }
 
     open fun animate(aKey: String, aValue: Float) {
         if (aKey.equals("frame.origin.x", ignoreCase = true)) {
-            frame = this.mFrame.setX(aValue.toDouble())
+            frame = this.frame.setX(aValue.toDouble())
         } else if (aKey.equals("frame.origin.y", ignoreCase = true)) {
-            frame = this.mFrame.setY(aValue.toDouble())
+            frame = this.frame.setY(aValue.toDouble())
         } else if (aKey.equals("frame.size.mWidth", ignoreCase = true)) {
-            frame = this.mFrame.setWidth(aValue.toDouble())
+            frame = this.frame.setWidth(aValue.toDouble())
         } else if (aKey.equals("frame.size.height", ignoreCase = true)) {
-            frame = this.mFrame.setHeight(aValue.toDouble())
+            frame = this.frame.setHeight(aValue.toDouble())
         } else if (aKey.equals("alpha", ignoreCase = true)) {
             alpha = aValue
         } else if (aKey.startsWith("layer.")) {
@@ -469,7 +454,7 @@ open class UIView : FrameLayout, UIResponder {
 
     companion object {
 
-        var sGestureRecognizerLooper: UIGestureRecognizerLooper? = null
+        internal var gestureRecognizerLooper: UIGestureRecognizerLooper? = null
 
     }
 

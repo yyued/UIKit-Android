@@ -27,49 +27,44 @@ class UINavigationItemView_MaterialDesign : UINavigationItemView {
     override fun layoutSubviews() {
         super.layoutSubviews()
         var x = 0.0
-        if (mLeftViews != null && mLeftViews.count() > 0) {
-            for (i in 0..mLeftViews.count() - 1) {
-                val contentView = mLeftViews[i]
-                if (contentView != null) {
-                    x += contentView.marginInsets.left
-                    val iSize = contentView.intrinsicContentSize()
-                    if (iSize.width > 0 && iSize.height > 0) {
-                        contentView.frame = CGRect(
-                                x,
-                                0.0,
-                                iSize.width,
-                                frame.height)
-                        x += iSize.width + contentView.marginInsets.right
-                    } else {
-                        contentView.frame = CGRect(
-                                x,
-                                (frame.size.height - contentView.frame.size.height) / 2.0,
-                                contentView.frame.size.width,
-                                contentView.frame.size.height)
-                        x += contentView.frame.size.width + contentView.marginInsets.right
-                    }
-                }
+        for (contentView in leftViews) {
+            x += contentView.marginInsets.left
+            val iSize = contentView.intrinsicContentSize()
+            if (iSize.width > 0 && iSize.height > 0) {
+                contentView.frame = CGRect(
+                        x,
+                        0.0,
+                        iSize.width,
+                        frame.height)
+                x += iSize.width + contentView.marginInsets.right
+            } else {
+                contentView.frame = CGRect(
+                        x,
+                        (frame.size.height - contentView.frame.size.height) / 2.0,
+                        contentView.frame.size.width,
+                        contentView.frame.size.height)
+                x += contentView.frame.size.width + contentView.marginInsets.right
             }
         }
-        if (mTitleView != null) {
-            if (mLeftViews != null && mLeftViews.count() > 0) {
+        titleView?.let {
+            if (leftViews.count() > 0) {
                 x += 0.0
             } else {
                 x += 12.0
             }
-            val iSize = mTitleView!!.intrinsicContentSize()
+            val iSize = it.intrinsicContentSize()
             if (iSize.width > 0 && iSize.height > 0) {
-                mTitleView!!.frame = CGRect(
+                it.frame = CGRect(
                         x,
                         (frame.size.height - iSize.height) / 2.0,
                         iSize.width,
                         iSize.height)
             } else {
-                mTitleView!!.frame = CGRect(
+                it.frame = CGRect(
                         x,
-                        (frame.size.height - mTitleView!!.frame.size.height) / 2.0,
-                        mTitleView!!.frame.size.width,
-                        mTitleView!!.frame.size.height)
+                        (frame.size.height - it.frame.size.height) / 2.0,
+                        it.frame.size.width,
+                        it.frame.size.height)
             }
         }
     }

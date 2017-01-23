@@ -17,16 +17,18 @@ class UINavigationController(context: Context) : UIViewController(context) {
 
     override fun viewDidLoad() {
         super.viewDidLoad()
-        view!!.addSubview(wrapperView)
-        view!!.addSubview(navigationBar)
+        view?.let {
+            it.addSubview(wrapperView)
+            it.addSubview(navigationBar)
+        }
     }
 
     fun setViewControllers(viewControllers: Array<UIViewController>) {
         for (childViewController in childViewControllers) {
-            childViewController?.let(UIViewController::removeFromParentViewController)
+            childViewController.removeFromParentViewController()
         }
         for (childViewController in viewControllers) {
-            childViewController?.let { addChildViewController(it) }
+            addChildViewController(childViewController)
         }
         resetNavigationItems()
         resetChildViews()

@@ -30,7 +30,7 @@ public class UIScreenEdgePanGestureRecognizer extends UIPanGestureRecognizer {
     public void touchesBegan(@NonNull UITouch[] touches, @NonNull UIEvent event) {
         super.touchesBegan(touches, event);
         if (!checkEdge(touches)) {
-            mState = UIGestureRecognizerState.Failed;
+            setState(UIGestureRecognizerState.Failed);
         }
     }
 

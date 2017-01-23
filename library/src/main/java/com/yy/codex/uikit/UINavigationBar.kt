@@ -159,16 +159,14 @@ class UINavigationBar : UIView {
         if (itemsView.size >= 2) {
             val topItemView = itemsView[itemsView.size - 1]
             val backItemView = itemsView[itemsView.size - 2]
-            if (topItemView != null && backItemView != null) {
-                topItemView.alpha = 1f
-                topItemView.animateToFront(false)
-                backItemView.alpha = 1f
-                backItemView.animateFromFrontToBack(false)
-                UIViewAnimator.linear(0.75, Runnable {
-                    topItemView.animateToFront(true)
-                    backItemView.animateFromFrontToBack(true)
-                }, Runnable { backItemView.alpha = 0f })
-            }
+            topItemView.alpha = 1f
+            topItemView.animateToFront(false)
+            backItemView.alpha = 1f
+            backItemView.animateFromFrontToBack(false)
+            UIViewAnimator.linear(0.75, Runnable {
+                topItemView.animateToFront(true)
+                backItemView.animateFromFrontToBack(true)
+            }, Runnable { backItemView.alpha = 0f })
         }
     }
 
@@ -187,19 +185,17 @@ class UINavigationBar : UIView {
         if (itemsView.size >= 2) {
             val topItemView = itemsView[itemsView.size - 1]
             val backItemView = itemsView[itemsView.size - 2]
-            if (topItemView != null && backItemView != null) {
-                topItemView.alpha = 1f
-                backItemView.alpha = 1f
-                topItemView.animateToGone(false)
-                backItemView.animateFromBackToFront(false)
-                UIViewAnimator.linear(0.75, Runnable {
-                    topItemView.animateToGone(true)
-                    backItemView.animateFromBackToFront(true)
-                }, Runnable {
-                    topItemView.alpha = 0f
-                    completion?.let { it.run() }
-                })
-            }
+            topItemView.alpha = 1f
+            backItemView.alpha = 1f
+            topItemView.animateToGone(false)
+            backItemView.animateFromBackToFront(false)
+            UIViewAnimator.linear(0.75, Runnable {
+                topItemView.animateToGone(true)
+                backItemView.animateFromBackToFront(true)
+            }, Runnable {
+                topItemView.alpha = 0f
+                completion.run()
+            })
         }
     }
 
@@ -231,7 +227,7 @@ class UINavigationBar : UIView {
         val theItemsView: MutableList<UINavigationItemView> = mutableListOf()
         for ((index, item) in items.withIndex()) {
             val frontView = if (isMaterialDesign) UINavigationItemView_MaterialDesign(context) else UINavigationItemView(context)
-            item.mFrontView = frontView
+            item.frontView = frontView
             item.setNeedsUpdate()
             theItemsView.add(frontView)
             frontView.constraint = UIConstraint.full()

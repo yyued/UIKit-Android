@@ -101,51 +101,43 @@ open class UIViewController(val context: Context) : UIResponder {
 
     open fun viewDidLoad() {
         for (childViewController in childViewControllers) {
-            childViewController?.let(UIViewController::loadViewIfNeeded)
+            childViewController.loadViewIfNeeded()
         }
     }
 
     fun viewWillAppear(animated: Boolean) {
         for (childViewController in childViewControllers) {
-            childViewController?.let {
-                it.viewWillAppear(animated)
-            }
+            childViewController.viewWillAppear(animated)
         }
     }
 
     fun viewDidAppear(animated: Boolean) {
         for (childViewController in childViewControllers) {
-            childViewController?.let {
-                it.viewDidAppear(animated)
-            }
+            childViewController.viewDidAppear(animated)
         }
     }
 
     fun viewWillDisappear(animated: Boolean) {
         for (childViewController in childViewControllers) {
-            childViewController?.let {
-                it.viewWillDisappear(animated)
-            }
+            childViewController.viewWillDisappear(animated)
         }
     }
 
     fun viewDidDisappear(animated: Boolean) {
         for (childViewController in childViewControllers) {
-            childViewController?.let {
-                it.viewDidDisappear(animated)
-            }
+            childViewController.viewDidDisappear(animated)
         }
     }
 
     open fun viewWillLayoutSubviews() {
         for (childViewController in childViewControllers) {
-            childViewController?.let(UIViewController::viewWillLayoutSubviews)
+            childViewController.viewWillLayoutSubviews()
         }
     }
 
     fun viewDidLayoutSubviews() {
         for (childViewController in childViewControllers) {
-            childViewController?.let(UIViewController::viewDidLayoutSubviews)
+            childViewController.viewDidLayoutSubviews()
         }
     }
 
@@ -169,7 +161,7 @@ open class UIViewController(val context: Context) : UIResponder {
     fun removeFromParentViewController() {
         parentViewController?.let {
             it.childViewControllers = it.childViewControllers.filter {
-                it != this
+                it !== this
             }
         }
     }
