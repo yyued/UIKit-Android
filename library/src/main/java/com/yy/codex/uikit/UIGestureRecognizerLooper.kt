@@ -23,7 +23,7 @@ internal class UIGestureRecognizerLooper internal constructor(internal var mHitT
         resetState()
     }
 
-    internal fun onTouchesBegan(touches: Array<UITouch>, event: UIEvent) {
+    internal fun onTouchesBegan(touches: List<UITouch>, event: UIEvent) {
         val copyList = ArrayList(mGestureRecognizers)
         for (i in copyList.indices) {
             if (checkState(copyList[i])) {
@@ -34,7 +34,7 @@ internal class UIGestureRecognizerLooper internal constructor(internal var mHitT
         markFailed()
     }
 
-    internal fun onTouchesMoved(touches: Array<UITouch>, event: UIEvent) {
+    internal fun onTouchesMoved(touches: List<UITouch>, event: UIEvent) {
         val copyList = ArrayList(mGestureRecognizers)
         for (i in copyList.indices) {
             if (checkState(copyList[i])) {
@@ -45,7 +45,7 @@ internal class UIGestureRecognizerLooper internal constructor(internal var mHitT
         markFailed()
     }
 
-    internal fun onTouchesEnded(touches: Array<UITouch>, event: UIEvent) {
+    internal fun onTouchesEnded(touches: List<UITouch>, event: UIEvent) {
         val copyList = ArrayList(mGestureRecognizers)
         for (i in copyList.indices) {
             if (checkState(copyList[i])) {
@@ -106,7 +106,7 @@ internal class UIGestureRecognizerLooper internal constructor(internal var mHitT
 
     companion object {
 
-        internal fun isHitTestedView(touches: Array<UITouch>, theView: UIView): Boolean {
+        internal fun isHitTestedView(touches: List<UITouch>, theView: UIView): Boolean {
             if (touches.size > 0) {
                 return touches[0].hitTestedView === theView
             }

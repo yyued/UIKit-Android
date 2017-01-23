@@ -37,19 +37,19 @@ open class UIViewController(val context: Context) : UIResponder {
             return null
         }
 
-    override fun touchesBegan(touches: Array<UITouch>, event: UIEvent) {
+    override fun touchesBegan(touches: List<UITouch>, event: UIEvent) {
         nextResponder?.let {
             it.touchesBegan(touches, event)
         }
     }
 
-    override fun touchesMoved(touches: Array<UITouch>, event: UIEvent) {
+    override fun touchesMoved(touches: List<UITouch>, event: UIEvent) {
         nextResponder?.let {
             it.touchesMoved(touches, event)
         }
     }
 
-    override fun touchesEnded(touches: Array<UITouch>, event: UIEvent) {
+    override fun touchesEnded(touches: List<UITouch>, event: UIEvent) {
         nextResponder?.let {
             it.touchesEnded(touches, event)
         }

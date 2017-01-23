@@ -113,12 +113,12 @@ class TestView extends UIView {
 //        setAutomaticallyAdjustsSpace(true);
         UIScrollView scrollView = new UIScrollView(getContext());
         UIConstraint constraint = new UIConstraint();
-        constraint.centerHorizontally = true;
-        constraint.centerVertically = true;
-        constraint.width = "100%";
-        constraint.height = "100%";
+        constraint.setCenterHorizontally(true);
+        constraint.setCenterVertically(true);
+        constraint.setWidth("100%");
+        constraint.setHeight("100%");
         scrollView.setConstraint(constraint);
-        scrollView.setBackgroundColor(UIColor.whiteColor);
+        scrollView.setBackgroundColor(UIColor.Companion.getWhiteColor());
         for (int i = 0; i < 20; i++) {
             UILabel label = new UILabel(getContext());
             label.setFrame(new CGRect(0,100 * i,100,22));

@@ -16,7 +16,7 @@ open class UIPanGestureRecognizer : UIGestureRecognizer {
 
     constructor(triggerBlock: Runnable) : super(triggerBlock) {}
 
-    override fun touchesBegan(touches: Array<UITouch>, event: UIEvent) {
+    override fun touchesBegan(touches: List<UITouch>, event: UIEvent) {
         super.touchesBegan(touches, event)
         if (touches.size > 1) {
             state = UIGestureRecognizerState.Failed
@@ -26,7 +26,7 @@ open class UIPanGestureRecognizer : UIGestureRecognizer {
         setTranslation(CGPoint(0.0, 0.0))
     }
 
-    override fun touchesMoved(touches: Array<UITouch>, event: UIEvent) {
+    override fun touchesMoved(touches: List<UITouch>, event: UIEvent) {
         if (state == UIGestureRecognizerState.Began || state == UIGestureRecognizerState.Changed) {
             resetVelocity(touches)
         }
@@ -49,7 +49,7 @@ open class UIPanGestureRecognizer : UIGestureRecognizer {
         }
     }
 
-    override fun touchesEnded(touches: Array<UITouch>, event: UIEvent) {
+    override fun touchesEnded(touches: List<UITouch>, event: UIEvent) {
         super.touchesEnded(touches, event)
         if (state == UIGestureRecognizerState.Began || state == UIGestureRecognizerState.Changed) {
             state = UIGestureRecognizerState.Ended
@@ -98,7 +98,7 @@ open class UIPanGestureRecognizer : UIGestureRecognizer {
         return mVelocityPoint
     }
 
-    private fun resetVelocity(nextTouches: Array<UITouch>) {
+    private fun resetVelocity(nextTouches: List<UITouch>) {
         if (lastPoints.size > 0 && nextTouches.size > 0) {
             val ts = (nextTouches[0].timestamp - lastPoints[0].timestamp).toDouble() / 1000.0
             if (ts == 0.0) {
@@ -110,7 +110,7 @@ open class UIPanGestureRecognizer : UIGestureRecognizer {
         }
     }
 
-    private fun moveOutOfBounds(touches: Array<UITouch>): Boolean {
+    private fun moveOutOfBounds(touches: List<UITouch>): Boolean {
         val view = view ?: return true
         var accepted = 0
         val allowableMovement = 8.0

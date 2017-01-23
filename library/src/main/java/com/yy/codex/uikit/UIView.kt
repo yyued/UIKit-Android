@@ -126,9 +126,7 @@ open class UIView : FrameLayout, UIResponder {
     var constraint: UIConstraint? = null
         set(constraint) {
             field = constraint
-            superview?.let {
-                it.layoutSubviews()
-            }
+            superview?.let(UIView::layoutSubviews)
         }
 
     open var maxWidth = 0.0
@@ -338,25 +336,22 @@ open class UIView : FrameLayout, UIResponder {
 
     /* category UIView Layer-Backed Service */
 
-    protected var mWantsLayer = false
-    var layer = CALayer()
-        protected set
-
-    var isWantsLayer: Boolean
-        get() = mWantsLayer
-        set(wantsLayer) {
-            if (this.mWantsLayer != wantsLayer) {
-                this.mWantsLayer = wantsLayer
-                if (wantsLayer) {
+    var wantsLayer = false
+        set(value) {
+            if (field != value) {
+                field = value
+                if (field) {
                     setLayerType(View.LAYER_TYPE_SOFTWARE, null)
                 }
                 invalidate()
             }
         }
 
+    var layer = CALayer()
+        private set
+
     fun drawRect(canvas: Canvas, rect: CGRect) {
-        // TODO: 2017/1/3 adi
-        if (mWantsLayer) {
+        if (wantsLayer) {
             layer.drawRect(canvas, rect)
         }
     }
@@ -400,7 +395,7 @@ open class UIView : FrameLayout, UIResponder {
         return UIViewHelpers.convertPoint(this, point, toView)
     }
 
-    override fun touchesBegan(touches: Array<UITouch>, event: UIEvent) {
+    override fun touchesBegan(touches: List<UITouch>, event: UIEvent) {
         if (nextResponder != null) {
             nextResponder!!.touchesBegan(touches, event)
         }
@@ -412,7 +407,7 @@ open class UIView : FrameLayout, UIResponder {
         }
     }
 
-    override fun touchesMoved(touches: Array<UITouch>, event: UIEvent) {
+    override fun touchesMoved(touches: List<UITouch>, event: UIEvent) {
         if (nextResponder != null) {
             nextResponder!!.touchesMoved(touches, event)
         }
@@ -424,7 +419,7 @@ open class UIView : FrameLayout, UIResponder {
         }
     }
 
-    override fun touchesEnded(touches: Array<UITouch>, event: UIEvent) {
+    override fun touchesEnded(touches: List<UITouch>, event: UIEvent) {
         if (nextResponder != null) {
             nextResponder!!.touchesEnded(touches, event)
         }

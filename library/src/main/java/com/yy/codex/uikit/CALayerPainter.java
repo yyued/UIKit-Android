@@ -29,7 +29,7 @@ public class CALayerPainter {
     }
 
     public static void drawCurrentLayer(CALayer layer, Canvas canvas){
-        if (layer.isHidden()){
+        if (layer.getHidden()){
             return;
         }
         if (layer.getCornerRadius() > 0){
@@ -60,8 +60,8 @@ public class CALayerPainter {
 
     private static void drawRoundRect(Canvas canvas, CALayer layer){
         CGRect frameRaw = layer.getFrame();
-        float scaledDensity = (float) UIScreen.mainScreen.scale();
-        CGPoint origin = CALayer.calcOriginInSuperCoordinate(layer);
+        float scaledDensity = (float) UIScreen.Companion.getMainScreen().scale();
+        CGPoint origin = CALayer.Companion.calcOriginInSuperCoordinate(layer);
         CGRect frame = new CGRect(frameRaw.getX() * scaledDensity, frameRaw.getY() * scaledDensity, frameRaw.getWidth() * scaledDensity, frameRaw.getHeight() * scaledDensity);
         float borderWidth = (float) layer.getBorderWidth() * scaledDensity;
         float cornerRadius = (float) layer.getCornerRadius() * scaledDensity;
@@ -85,8 +85,8 @@ public class CALayerPainter {
         CGRect frameRaw = layer.getFrame();
         Bitmap bitmap = layer.getBitmap();
         CALayer.BitmapGravity bitmapGravity = layer.getBitmapGravity();
-        float scaledDensity = (float) UIScreen.mainScreen.scale();
-        CGPoint origin = CALayer.calcOriginInSuperCoordinate(layer);
+        float scaledDensity = (float) UIScreen.Companion.getMainScreen().scale();
+        CGPoint origin = CALayer.Companion.calcOriginInSuperCoordinate(layer);
         CGRect frame = new CGRect(frameRaw.getX() * scaledDensity, frameRaw.getY() * scaledDensity, frameRaw.getWidth() * scaledDensity, frameRaw.getHeight() * scaledDensity);
         float cornerRadius = (float) layer.getCornerRadius() * scaledDensity;
         UIColor bitmapColor = layer.getBitmapColor();
@@ -100,7 +100,7 @@ public class CALayerPainter {
         if (bitmapColor != null) {
             mixPaint.setColorFilter(new PorterDuffColorFilter(bitmapColor.toInt(), PorterDuff.Mode.SRC_IN));
         }
-        CALayerBitmapPainter.drawBitmap(resultCanvas, maskFrame, bitmap, bitmapGravity, mixPaint);
+        CALayerBitmapPainter.INSTANCE.drawBitmap(resultCanvas, maskFrame, bitmap, bitmapGravity, mixPaint);
         sPaint.reset();
         if (bitmapColor != null) {
             sPaint.setColorFilter(new PorterDuffColorFilter(bitmapColor.toInt(), PorterDuff.Mode.SRC_IN));
@@ -110,8 +110,8 @@ public class CALayerPainter {
 
     private static void drawRoundRectBorder(Canvas canvas, CALayer layer){
         CGRect frameRaw = layer.getFrame();
-        float scaledDensity = (float) UIScreen.mainScreen.scale();
-        CGPoint origin = CALayer.calcOriginInSuperCoordinate(layer);
+        float scaledDensity = (float) UIScreen.Companion.getMainScreen().scale();
+        CGPoint origin = CALayer.Companion.calcOriginInSuperCoordinate(layer);
         CGRect frame = new CGRect(frameRaw.getX() * scaledDensity, frameRaw.getY() * scaledDensity, frameRaw.getWidth() * scaledDensity, frameRaw.getHeight() * scaledDensity);
         float borderWidth = (float) layer.getBorderWidth() * scaledDensity;
         float cornerRadius = (float) layer.getCornerRadius() * scaledDensity;
@@ -133,8 +133,8 @@ public class CALayerPainter {
 
     private static void drawRect(Canvas canvas, CALayer layer){
         CGRect frameRaw = layer.getFrame();
-        float scaledDensity = (float) UIScreen.mainScreen.scale();
-        CGPoint origin = CALayer.calcOriginInSuperCoordinate(layer);
+        float scaledDensity = (float) UIScreen.Companion.getMainScreen().scale();
+        CGPoint origin = CALayer.Companion.calcOriginInSuperCoordinate(layer);
         CGRect frame = new CGRect(frameRaw.getX() * scaledDensity, frameRaw.getY() * scaledDensity, frameRaw.getWidth() * scaledDensity, frameRaw.getHeight() * scaledDensity);
 
 
@@ -154,8 +154,8 @@ public class CALayerPainter {
     private static void drawRectBitmap(Canvas canvas, CALayer layer){
         CGRect frameRaw = layer.getFrame();
         Bitmap bitmap = layer.getBitmap();
-        float scaledDensity = (float) UIScreen.mainScreen.scale();
-        CGPoint origin = CALayer.calcOriginInSuperCoordinate(layer);
+        float scaledDensity = (float) UIScreen.Companion.getMainScreen().scale();
+        CGPoint origin = CALayer.Companion.calcOriginInSuperCoordinate(layer);
         CGRect frame = new CGRect(frameRaw.getX() * scaledDensity, frameRaw.getY() * scaledDensity, frameRaw.getWidth() * scaledDensity, frameRaw.getHeight() * scaledDensity);
         UIColor bitmapColor = layer.getBitmapColor();
 
@@ -164,14 +164,14 @@ public class CALayerPainter {
             sPaint.setColorFilter(new PorterDuffColorFilter(bitmapColor.toInt(), PorterDuff.Mode.SRC_IN));
         }
         CGRect bitmapFrame = new CGRect(origin.getX(), origin.getY(), frame.getSize().getWidth(), frame.getSize().getHeight());
-        CALayerBitmapPainter.drawBitmap(canvas, bitmapFrame, bitmap, layer.getBitmapGravity(), sPaint);
+        CALayerBitmapPainter.INSTANCE.drawBitmap(canvas, bitmapFrame, bitmap, layer.getBitmapGravity(), sPaint);
         sPaint.setColorFilter(null);
     }
 
     private static void drawRectBorder(Canvas canvas, CALayer layer){
         CGRect frameRaw = layer.getFrame();
-        float scaledDensity = (float) UIScreen.mainScreen.scale();
-        CGPoint origin = CALayer.calcOriginInSuperCoordinate(layer);
+        float scaledDensity = (float) UIScreen.Companion.getMainScreen().scale();
+        CGPoint origin = CALayer.Companion.calcOriginInSuperCoordinate(layer);
         CGRect frame = new CGRect(frameRaw.getX() * scaledDensity, frameRaw.getY() * scaledDensity, frameRaw.getWidth() * scaledDensity, frameRaw.getHeight() * scaledDensity);
         float borderWidth = (float) layer.getBorderWidth() * scaledDensity;
         float halfBorderW = borderWidth / 2.0f;
@@ -197,8 +197,8 @@ public class CALayerPainter {
     }
 
     private static Bitmap createEmptyBitmap(CALayer layer){
-        CGPoint origin = CALayer.calcOriginInSuperCoordinate(layer);
-        float scaledDensity = (float) UIScreen.mainScreen.scale();
+        CGPoint origin = CALayer.Companion.calcOriginInSuperCoordinate(layer);
+        float scaledDensity = (float) UIScreen.Companion.getMainScreen().scale();
         int bitmapW = (int) (layer.getFrame().getSize().getWidth() * scaledDensity  + origin.getX());
         int bitmapH = (int) (layer.getFrame().getSize().getHeight() * scaledDensity + origin.getY());
         Bitmap bitmap = Bitmap.createBitmap(bitmapW, bitmapH, Bitmap.Config.ARGB_8888);
@@ -212,8 +212,8 @@ public class CALayerPainter {
     }
 
     private static Bitmap createBitmapWithMaskLayer(CALayer layer){
-        CGPoint origin = CALayer.calcOriginInSuperCoordinate(layer);
-        float scaledDensity = (float) UIScreen.mainScreen.scale();
+        CGPoint origin = CALayer.Companion.calcOriginInSuperCoordinate(layer);
+        float scaledDensity = (float) UIScreen.Companion.getMainScreen().scale();
         float cornerRaidus = (float) layer.getCornerRadius() * scaledDensity;
         int bitmapW = (int) (layer.getFrame().getSize().getWidth() * scaledDensity  + origin.getX());
         int bitmapH = (int) (layer.getFrame().getSize().getHeight() * scaledDensity + origin.getY());
@@ -254,7 +254,7 @@ public class CALayerPainter {
     }
 
     private static Matrix createMatrix(CALayer layer){
-        float scaledDensity = (float) UIScreen.mainScreen.scale();
+        float scaledDensity = (float) UIScreen.Companion.getMainScreen().scale();
         CGTransform[] transforms = layer.getTransforms();
         Matrix matrix = new Matrix();
         if (transforms == null || transforms.length == 0){
@@ -262,7 +262,7 @@ public class CALayerPainter {
         }
         RectF rectF = layer.getFrame().toRectF();
         for (CGTransform transform : transforms){
-            if (!transform.enable){
+            if (!transform.getEnable()){
                 continue;
             }
             if (transform instanceof CGTransformRotation){
@@ -274,7 +274,7 @@ public class CALayerPainter {
             }
             else if (transform instanceof CGTransformScale){
                 CGTransformScale scale = (CGTransformScale)transform;
-                matrix.postScale((float) scale.sx, (float) scale.sy, rectF.centerX() * (float) scaledDensity, rectF.centerY() * (float) scaledDensity);
+                matrix.postScale((float) scale.getSx(), (float) scale.getSy(), rectF.centerX() * (float) scaledDensity, rectF.centerY() * (float) scaledDensity);
             }
             else if (transform instanceof CGTransformMatrix){
                 // @TODO
