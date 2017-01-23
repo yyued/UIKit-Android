@@ -246,7 +246,7 @@ open class UIView : FrameLayout, UIResponder {
 
     val subviews: List<UIView>
         get() {
-            return (childCount - 1 downTo 0).map { getChildAt(it) }.filterIsInstance<UIView>()
+            return (0..childCount - 1).map { getChildAt(it) }.filterIsInstance<UIView>()
         }
 
     fun removeFromSuperview() {

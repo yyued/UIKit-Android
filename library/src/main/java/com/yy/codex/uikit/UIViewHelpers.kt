@@ -9,7 +9,7 @@ import android.view.MotionEvent
 internal object UIViewHelpers {
 
     fun hitTest(view: UIView, point: CGPoint, event: MotionEvent): UIView? {
-        val views = view.subviews
+        val views = view.subviews.reversed()
         if (!view.isUserInteractionEnabled && view.alpha <= 0) {
             return null
         }

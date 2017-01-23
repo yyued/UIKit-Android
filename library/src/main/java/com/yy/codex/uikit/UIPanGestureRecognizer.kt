@@ -85,9 +85,9 @@ open class UIPanGestureRecognizer : UIGestureRecognizer {
             val translatePoint: MutableList<CGPoint> = mutableListOf()
             for (i in 0..lastPoints.size - 1) {
                 if (i < this.translatePoint.size) {
-                    translatePoint[i] = this.translatePoint[i]
+                    translatePoint.add(this.translatePoint[i])
                 } else {
-                    translatePoint[i] = lastPoints[i].absolutePoint
+                    translatePoint.add(lastPoints[i].absolutePoint)
                 }
             }
             this.translatePoint = translatePoint.toList()

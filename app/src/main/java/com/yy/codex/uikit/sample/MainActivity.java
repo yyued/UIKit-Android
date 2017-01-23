@@ -80,6 +80,7 @@ class NextViewController extends UIViewController {
     public void viewDidLoad() {
         super.viewDidLoad();
         setTitle("I'm Next");
+        getView().setBackgroundColor(UIColor.Companion.getGrayColor());
     }
 
 }

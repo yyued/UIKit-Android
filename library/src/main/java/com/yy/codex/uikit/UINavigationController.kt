@@ -46,7 +46,17 @@ open class UINavigationController(context: Context) : UIViewController(context) 
     }
 
     open fun doPushAnimation() {
-
+        val subviews = wrapperView.subviews;
+        if (subviews.count() >= 2) {
+            val frontView = subviews.last()
+            val backView = subviews[subviews.count() - 2]
+            frontView.frame = frontView.frame.setX(wrapperView.frame.width)
+            backView.frame = backView.frame.setX(0.0)
+            UIViewAnimator.springWithOptions(300.0, 40.0, 20.0, Runnable {
+                frontView.frame = frontView.frame.setX(0.0)
+                backView.frame = backView.frame.setX(wrapperView.frame.width * -0.20)
+            }, null)
+        }
     }
 
     private val beingPop = false
