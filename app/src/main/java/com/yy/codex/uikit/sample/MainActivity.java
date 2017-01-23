@@ -80,6 +80,7 @@ class NextViewController extends UIViewController {
     public void viewDidLoad() {
         super.viewDidLoad();
         setTitle("I'm Next");
+        getView().setBackgroundColor(UIColor.Companion.getGrayColor());
     }
 
 }
@@ -108,7 +109,7 @@ class TestView extends UIView {
     }
 
     @Override
-    protected void init() {
+    public void init() {
         super.init();
 //        setAutomaticallyAdjustsSpace(true);
         UIScrollView scrollView = new UIScrollView(getContext());

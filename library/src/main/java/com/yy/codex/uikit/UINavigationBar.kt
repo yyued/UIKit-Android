@@ -67,7 +67,7 @@ class UINavigationBar : UIView {
     /* Layout Length */
 
     fun length(): Double {
-        if (isMaterialDesign) {
+        if (materialDesign) {
             return 48.0
         }
         return 44.0
@@ -75,12 +75,12 @@ class UINavigationBar : UIView {
 
     /* Material Design */
 
-    private var mMaterialDesignInitialized = false
+    private var materialDesignInitialized = false
 
     override fun materialDesignDidChanged() {
         super.materialDesignDidChanged()
-        if (!mMaterialDesignInitialized && isMaterialDesign) {
-            mMaterialDesignInitialized = true
+        if (!materialDesignInitialized && materialDesign) {
+            materialDesignInitialized = true
             barTintColor = UIColor(0x3f / 255.0, 0x51 / 255.0, 0xb5 / 255.0, 1.0)
             tintColor = UIColor.whiteColor
             titleTextAttributes = object : HashMap<String, Any>() {
@@ -89,8 +89,8 @@ class UINavigationBar : UIView {
                     put(NSAttributedString.NSFontAttributeName, UIFont.systemBold(17f))
                 }
             }
-            if (constraint != null) {
-                constraint!!.height = "48"
+            constraint?.let {
+                it.height = "48"
             }
             layoutSubviews()
             resetItemsView()
@@ -124,7 +124,7 @@ class UINavigationBar : UIView {
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        if (!isMaterialDesign) {
+        if (!materialDesign) {
             val paint = Paint()
             paint.color = bottomLineColor.toInt()
             canvas.drawLine(0f, (canvas.height - 1).toFloat(), canvas.width.toFloat(), (canvas.height - 1).toFloat(), paint)
@@ -226,7 +226,7 @@ class UINavigationBar : UIView {
         }
         val theItemsView: MutableList<UINavigationItemView> = mutableListOf()
         for ((index, item) in items.withIndex()) {
-            val frontView = if (isMaterialDesign) UINavigationItemView_MaterialDesign(context) else UINavigationItemView(context)
+            val frontView = if (materialDesign) UINavigationItemView_MaterialDesign(context) else UINavigationItemView(context)
             item.frontView = frontView
             item.setNeedsUpdate()
             theItemsView.add(frontView)

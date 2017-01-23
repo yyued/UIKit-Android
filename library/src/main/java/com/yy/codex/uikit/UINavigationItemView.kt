@@ -10,7 +10,7 @@ import android.view.View
  * Created by cuiminghui on 2017/1/18.
  */
 
-open class UINavigationItemView : UIView {
+open internal class UINavigationItemView : UIView {
 
     constructor(context: Context, view: View) : super(context, view) {}
 
@@ -87,7 +87,7 @@ open class UINavigationItemView : UIView {
         }
     }
 
-    internal open fun animateFromFrontToBack(reset: Boolean) {
+    open fun animateFromFrontToBack(reset: Boolean) {
         if (!reset) {
             layoutSubviews()
             titleView?.let { it.alpha = 1f }
@@ -109,7 +109,7 @@ open class UINavigationItemView : UIView {
         }
     }
 
-    internal open fun animateToFront(reset: Boolean) {
+    open fun animateToFront(reset: Boolean) {
         if (!reset) {
             layoutSubviews()
             titleView?.let { it.frame = it.frame.setX(frame.width - it.frame.width); it.alpha = 0f; }
@@ -131,7 +131,7 @@ open class UINavigationItemView : UIView {
         }
     }
 
-    internal open fun animateFromBackToFront(reset: Boolean) {
+    open fun animateFromBackToFront(reset: Boolean) {
         if (!reset) {
             layoutSubviews()
             titleView?.let { it.frame = it.frame.setX(22.0); it.alpha = 0f; }
@@ -153,7 +153,7 @@ open class UINavigationItemView : UIView {
         }
     }
 
-    internal open fun animateToGone(reset: Boolean) {
+    open fun animateToGone(reset: Boolean) {
         if (!reset) {
             layoutSubviews()
             titleView?.let { it.alpha = 1f }

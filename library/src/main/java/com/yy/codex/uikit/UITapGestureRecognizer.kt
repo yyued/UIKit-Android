@@ -53,7 +53,7 @@ class UITapGestureRecognizer : UIGestureRecognizer {
 
         if (tapCountPass && touchCountPass) {
             multiTapTimer?.let(Timer::cancel)
-            if (mGestureRecognizersRequiresFailed.count() > 0) {
+            if (gestureRecognizersRequiresFailed.count() > 0) {
                 waitOtherGesture(Runnable {
                     state = UIGestureRecognizerState.Ended
                     sendActions()

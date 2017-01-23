@@ -20,33 +20,23 @@ import java.util.HashMap
 
 class UILabel : UIView {
 
-    private var mTextView: TextView? = null
+    var textView: TextView? = null
+        private set
 
-    constructor(context: Context, view: View) : super(context, view) {
-        init()
-    }
+    constructor(context: Context, view: View) : super(context, view) {}
 
-    constructor(context: Context) : super(context) {
-        init()
-    }
+    constructor(context: Context) : super(context) {}
 
-    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
-        init()
-    }
+    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {}
 
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
-        init()
-    }
+    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {}
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes) {
-        init()
-    }
+    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes) {}
 
-    override fun init() {
-        super.init()
-        mTextView = TextView(context)
-        mTextView!!.maxLines = 1
+    init {
+        textView = TextView(context)
+        textView?.let { it.maxLines = 1 }
         resetTextView()
     }
 
@@ -82,7 +72,7 @@ class UILabel : UIView {
             if (numberOfLines <= 0) {
                 numberOfLines = 99999
             }
-            mTextView!!.maxLines = numberOfLines
+            textView?.let { it.maxLines = numberOfLines }
         }
 
     /* Line-Break Mode */
@@ -91,10 +81,10 @@ class UILabel : UIView {
         set(linebreakMode) {
             field = linebreakMode
             when (linebreakMode) {
-                NSLineBreakMode.ByTruncatingHead -> mTextView!!.ellipsize = TextUtils.TruncateAt.START
-                NSLineBreakMode.ByTruncatingMiddle -> mTextView!!.ellipsize = TextUtils.TruncateAt.MIDDLE
-                NSLineBreakMode.ByTruncatingTail -> mTextView!!.ellipsize = TextUtils.TruncateAt.END
-                else -> mTextView!!.ellipsize = null
+                NSLineBreakMode.ByTruncatingHead -> textView?.ellipsize = TextUtils.TruncateAt.START
+                NSLineBreakMode.ByTruncatingMiddle -> textView?.ellipsize = TextUtils.TruncateAt.MIDDLE
+                NSLineBreakMode.ByTruncatingTail -> textView?.ellipsize = TextUtils.TruncateAt.END
+                else -> textView?.ellipsize = null
             }
             updateTextAppearance()
         }
@@ -107,15 +97,13 @@ class UILabel : UIView {
 
     /* Text */
 
-    private var mNeedsUpdate = false
+    private var needsUpdate = false
 
-    var text: String?
-        get() = if (attributedText != null) attributedText!!.toString() else null
-        set(text) {
-            var text = text
-            if (text == null) {
-                text = ""
-            }
+    var text: String? = null
+        get() = attributedText?.toString()
+        set(value) {
+            field = value
+            val text = value ?: ""
             val paragraphStyle = NSParagraphStyle()
             paragraphStyle.lineBreakMode = linebreakMode
             paragraphStyle.alignment = alignment
@@ -125,30 +113,30 @@ class UILabel : UIView {
                     Pair(NSAttributedString.NSParagraphStyleAttributeName, paragraphStyle)
             ))
             attributedText = attributedString
-            mNeedsUpdate = true
+            needsUpdate = true
         }
 
     private fun updateTextAppearance() {
-        if (mNeedsUpdate && text != null) {
-            var text = text
-            text = text
+        if (needsUpdate && text != null) {
+            this.text = text
         }
     }
 
-    var attributedText: NSAttributedString?
+    var attributedText: NSAttributedString? = null
         get() {
-            if (this.mTextView!!.text != null && SpannedString::class.java.isAssignableFrom(this.mTextView!!.text.javaClass)) {
-                return NSAttributedString(this.mTextView!!.text as SpannedString)
+            val text = textView?.text as? SpannedString
+            if (text != null) {
+                return NSAttributedString(text)
             }
             return null
         }
         set(attributedText) {
-            this.mTextView!!.text = attributedText
-            resetTextViewStyles()
-            if (constraint != null) {
-                constraint!!.setNeedsLayout()
-                val superview = superview
-                superview?.layoutSubviews()
+            field = attributedText
+            textView?.let {
+                it.text = attributedText
+                resetTextViewStyles()
+                constraint?.let(UIConstraint::setNeedsLayout)
+                superview?.let(UIView::layoutSubviews)
             }
         }
 
@@ -162,19 +150,22 @@ class UILabel : UIView {
         get() = super.maxWidth
         set(maxWidth) {
             super.maxWidth = maxWidth
-            mTextView!!.maxWidth = (maxWidth * UIScreen.mainScreen.scale()).toInt()
+            textView?.maxWidth = (maxWidth * UIScreen.mainScreen.scale()).toInt()
         }
 
     override fun intrinsicContentSize(): CGSize {
-        mTextView!!.measure(0, 0)
-        val width = mTextView!!.measuredWidth
-        val height = mTextView!!.measuredHeight
+        val textView = textView ?: return CGSize(.0, .0)
+        textView.measure(0, 0)
+        val width = textView.measuredWidth
+        val height = textView.measuredHeight
         return CGSize(Math.ceil(width / UIScreen.mainScreen.scale()), Math.ceil(height / UIScreen.mainScreen.scale()))
     }
 
     private fun resetTextView() {
-        removeView(mTextView)
-        addView(mTextView, FrameLayout.LayoutParams((this.frame.size.width * UIScreen.mainScreen.scale()).toInt(), (this.frame.size.height * UIScreen.mainScreen.scale()).toInt()))
+        textView?.let {
+            removeView(textView)
+            addView(textView, FrameLayout.LayoutParams((this.frame.size.width * UIScreen.mainScreen.scale()).toInt(), (this.frame.size.height * UIScreen.mainScreen.scale()).toInt()))
+        }
     }
 
 }

@@ -23,6 +23,9 @@ import com.yy.codex.uikit.UIColor;
 import com.yy.codex.uikit.UIScreen;
 import com.yy.codex.uikit.UIView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by adi on 17/1/17.
  */
@@ -31,7 +34,7 @@ public class TestLayerActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        NSLog.warn(0x01 == 1);
+        NSLog.INSTANCE.warn(0x01 == 1);
         super.onCreate(savedInstanceState);
         setContentView(new TestView1(this));
     }
@@ -65,7 +68,7 @@ class TestView1 extends UIView {
 
 
     @Override
-    protected void init() {
+    public void init() {
         super.init();
 
 //        testBorder();
@@ -208,7 +211,10 @@ class TestView1 extends UIView {
         CALayer c11 = createSubLayer(c1, new CGRect(10, -10, 80, 80), UIColor.Companion.getOrangeColor());
         CALayer c111 = createSubLayer(c11, new CGRect(10, -20, 50, 50), UIColor.Companion.getYellowColor());
         c1.setClipToBounds(true); // @Bug 导致子层 Transform 无效
-        CGTransform[] tfs = {new CGTransformRotation(30), new CGTransformTranslation(10, 10)};
+        List<CGTransform> tfs = new ArrayList(){{
+            new CGTransformRotation(30);
+            new CGTransformTranslation(10, 10);
+        }};
         c11.setTransforms(tfs);
     }
 

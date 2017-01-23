@@ -6,10 +6,10 @@ package com.yy.codex.uikit
 
 class UIPinchGestureRecognizer : UIGestureRecognizer {
 
-    private var mScaleCurrent = 1.0
-    private var mScaleCurrentPoints: List<CGPoint> = listOf()
-    private var mScaleInitial = 1.0
-    private var mScaleInitialPoints: List<CGPoint> = listOf()
+    private var scaleCurrent = 1.0
+    private var scaleCurrentPoints: List<CGPoint> = listOf()
+    private var scaleInitial = 1.0
+    private var scaleInitialPoints: List<CGPoint> = listOf()
 
     constructor(target: Any, selector: String) : super(target, selector) {}
 
@@ -53,28 +53,28 @@ class UIPinchGestureRecognizer : UIGestureRecognizer {
     }
 
     var scale: Double
-        get() = mScaleCurrent
+        get() = scaleCurrent
         set(scale) {
-            mScaleCurrent = scale
-            mScaleInitial = scale
+            scaleCurrent = scale
+            scaleInitial = scale
             resetScaleInitialPoints()
         }
 
     private fun resetScale() {
         if (lastPoints.size >= 2) {
-            mScaleCurrentPoints = listOf(lastPoints[0].absolutePoint, lastPoints[1].absolutePoint)
+            scaleCurrentPoints = listOf(lastPoints[0].absolutePoint, lastPoints[1].absolutePoint)
         }
-        if (mScaleInitialPoints.count() >= 2) {
-            val initialLength = Math.sqrt(Math.pow(mScaleInitialPoints[0].x - mScaleInitialPoints[1].x, 2.0) + Math.pow(mScaleInitialPoints[0].y - mScaleInitialPoints[1].y, 2.0))
-            val currentLength = Math.sqrt(Math.pow(mScaleCurrentPoints[0].x - mScaleCurrentPoints[1].x, 2.0) + Math.pow(mScaleCurrentPoints[0].y - mScaleCurrentPoints[1].y, 2.0))
+        if (scaleInitialPoints.count() >= 2) {
+            val initialLength = Math.sqrt(Math.pow(scaleInitialPoints[0].x - scaleInitialPoints[1].x, 2.0) + Math.pow(scaleInitialPoints[0].y - scaleInitialPoints[1].y, 2.0))
+            val currentLength = Math.sqrt(Math.pow(scaleCurrentPoints[0].x - scaleCurrentPoints[1].x, 2.0) + Math.pow(scaleCurrentPoints[0].y - scaleCurrentPoints[1].y, 2.0))
             val screenLength = Math.sqrt(Math.pow(UIScreen.mainScreen.bounds().size.width, 2.0) + Math.pow(UIScreen.mainScreen.bounds().size.height, 2.0))
-            mScaleCurrent = mScaleInitial + (currentLength - initialLength) / screenLength
+            scaleCurrent = scaleInitial + (currentLength - initialLength) / screenLength
         }
     }
 
     private fun resetScaleInitialPoints() {
         if (lastPoints.size >= 2) {
-            mScaleInitialPoints = listOf(lastPoints[0].absolutePoint, lastPoints[1].absolutePoint)
+            scaleInitialPoints = listOf(lastPoints[0].absolutePoint, lastPoints[1].absolutePoint)
         }
     }
 

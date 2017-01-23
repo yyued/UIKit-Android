@@ -2,13 +2,7 @@ package com.yy.codex.uikit
 
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import android.graphics.Matrix
-import android.graphics.Paint
-import android.graphics.PorterDuff
-import android.graphics.PorterDuffXfermode
-import android.graphics.RectF
-
-import java.util.ArrayList
+import java.util.*
 
 
 /**
@@ -195,7 +189,7 @@ open class CALayer {
 
     /* hierarchyProps */
 
-    private var view: UIView? = null
+    protected var view: UIView? = null
 
     fun bindView(view: UIView) {
         this.view = view
@@ -204,18 +198,15 @@ open class CALayer {
     var superLayer: CALayer? = null
         private set
 
-    private val mSubLayers = ArrayList<CALayer>()
-
-    val subLayers: Array<CALayer>
-        get() = mSubLayers.toTypedArray()
+    var subLayers: MutableList<CALayer> = mutableListOf()
+        private set
 
     /* transformProp */
 
-    var transforms: Array<CGTransform>? = null
+    var transforms: List<CGTransform> = listOf()
 
     fun setTransform(a: CGTransform) {
-        val tf = arrayOf(a)
-        this.transforms = tf
+        this.transforms = listOf(a)
     }
 
     /* category CALayer Constructor */
@@ -233,46 +224,46 @@ open class CALayer {
     /* category CALayer Hierarchy */
 
     fun removeFromSuperLayer() {
-        if (this.superLayer != null) {
-            this.superLayer!!.mSubLayers.remove(this)
+        superLayer?.let {
+            it.subLayers.remove(this)
         }
     }
 
     fun addSubLayer(layer: CALayer) {
         layer.removeFromSuperLayer()
         layer.superLayer = this
-        mSubLayers.add(layer)
+        this.subLayers.add(layer)
     }
 
     fun insertSubLayerAtIndex(subLayer: CALayer, index: Int) {
         subLayer.removeFromSuperLayer()
         if (index < 1) {
-            this.mSubLayers.add(0, subLayer)
-        } else if (index > this.mSubLayers.size - 1) {
-            this.mSubLayers.add(subLayer)
+            this.subLayers.add(0, subLayer)
+        } else if (index > this.subLayers.size - 1) {
+            this.subLayers.add(subLayer)
         } else {
-            this.mSubLayers.add(index, subLayer)
+            this.subLayers.add(index, subLayer)
         }
     }
 
     fun insertBelowSubLayer(subLayer: CALayer, siblingSubview: CALayer) {
-        val idx = mSubLayers.indexOf(siblingSubview)
+        val idx = this.subLayers.indexOf(siblingSubview)
         if (idx > -1) {
             subLayer.removeFromSuperLayer()
-            mSubLayers.add(idx, subLayer)
+            this.subLayers.add(idx, subLayer)
         }
     }
 
     fun insertAboveSubLayer(subLayer: CALayer, siblingSubview: CALayer) {
-        val idx = mSubLayers.indexOf(siblingSubview)
+        val idx = this.subLayers.indexOf(siblingSubview)
         if (idx > -1) {
             subLayer.removeFromSuperLayer()
-            mSubLayers.add(idx + 1, subLayer)
+            this.subLayers.add(idx + 1, subLayer)
         }
     }
 
     fun replaceSubLayer(subLayer: CALayer, newLayer: CALayer) {
-        val idx = mSubLayers.indexOf(subLayer)
+        val idx = this.subLayers.indexOf(subLayer)
         if (idx > -1) {
             subLayer.removeFromSuperLayer()
             insertSubLayerAtIndex(newLayer, idx)
@@ -282,7 +273,7 @@ open class CALayer {
     /* category CALayer Appearance */
 
     fun drawRect(canvas: Canvas, rect: CGRect) {
-        if (this.askIfNeedDispaly()) {
+        if (this.askIfNeedDisplay()) {
             this.resetNeedDisplayToFalse()
             drawAllLayers(canvas, rect)
         }
@@ -296,7 +287,7 @@ open class CALayer {
             CALayerPainter.drawLayerTree(this, canvas)
         } else {
             this.drawInCanvas(canvas)
-            for (item in mSubLayers) {
+            for (item in this.subLayers) {
                 item.drawAllLayers(canvas, rect)
             }
         }
@@ -308,18 +299,18 @@ open class CALayer {
 
     fun drawLayerTreeInCanvas(canvas: Canvas) {
         this.drawInCanvas(canvas)
-        for (item in mSubLayers) {
+        for (item in this.subLayers) {
             item.drawLayerTreeInCanvas(canvas)
         }
     }
 
-    private fun askIfNeedDispaly(): Boolean {
+    private fun askIfNeedDisplay(): Boolean {
         return true
     }
 
     private fun resetNeedDisplayToFalse() {
         this.needDisplay = false
-        for (item in mSubLayers) {
+        for (item in this.subLayers) {
             item.resetNeedDisplayToFalse()
         }
     }
@@ -327,13 +318,13 @@ open class CALayer {
     private fun requestRootLayer(): CALayer {
         var root: CALayer = this
         while (root.superLayer != null) {
-            root = root.superLayer!!
+            root = root.superLayer as CALayer
         }
         return root
     }
 
-    private fun doubleEqual(a: Double?, b: Double?): Boolean {
-        if (Math.abs(a!! - b!!) < 0.01) {
+    private fun doubleEqual(a: Double, b: Double): Boolean {
+        if (Math.abs(a - b) < 0.01) {
             return true
         }
         return false

@@ -11,12 +11,12 @@ import java.util.TimerTask
 
 class UILongPressGestureRecognizer : UIGestureRecognizer {
 
-    private var mStartTouches: List<UITouch> = listOf()
-    private var mStartTimer: Timer? = null
+    private var startTouches: List<UITouch> = listOf()
+    private var startTimer: Timer? = null
 
-    var mMinimumPressDuration = 0.5
-    var mAllowableMovement = 10.0
-    var mNumberOfTouchesRequired = 1
+    var minimumPressDuration = 0.5
+    var allowableMovement = 10.0
+    var numberOfTouchesRequired = 1
 
     constructor(target: Any, selector: String) : super(target, selector) {}
 
@@ -24,8 +24,8 @@ class UILongPressGestureRecognizer : UIGestureRecognizer {
 
     override fun touchesBegan(touches: List<UITouch>, event: UIEvent) {
         super.touchesBegan(touches, event)
-        mStartTouches = touches.toList()
-        if (touches.size >= mNumberOfTouchesRequired) {
+        startTouches = touches.toList()
+        if (touches.size >= numberOfTouchesRequired) {
             setupTimer()
         }
     }
@@ -33,8 +33,8 @@ class UILongPressGestureRecognizer : UIGestureRecognizer {
     private fun setupTimer() {
         val self = this
         val handler = Handler()
-        mStartTimer = Timer()
-        mStartTimer?.schedule(object : TimerTask() {
+        startTimer = Timer()
+        startTimer?.schedule(object : TimerTask() {
             override fun run() {
                 handler.post {
                     if (state != UIGestureRecognizerState.Failed) {
@@ -48,17 +48,17 @@ class UILongPressGestureRecognizer : UIGestureRecognizer {
                     }
                 }
             }
-        }, (mMinimumPressDuration * 1000).toLong())
+        }, (minimumPressDuration * 1000).toLong())
     }
 
     override fun touchesMoved(touches: List<UITouch>, event: UIEvent) {
         super.touchesMoved(touches, event)
-        if (state == UIGestureRecognizerState.Possible && touches.size > mStartTouches.size && touches.size >= mNumberOfTouchesRequired) {
-            mStartTouches = touches.toList()
+        if (state == UIGestureRecognizerState.Possible && touches.size > startTouches.size && touches.size >= numberOfTouchesRequired) {
+            startTouches = touches.toList()
             setupTimer()
-        } else if (state == UIGestureRecognizerState.Possible && mStartTouches.size >= mNumberOfTouchesRequired && moveOutOfBounds(touches)) {
+        } else if (state == UIGestureRecognizerState.Possible && startTouches.size >= numberOfTouchesRequired && moveOutOfBounds(touches)) {
             state = UIGestureRecognizerState.Failed
-            mStartTimer?.let(Timer::cancel)
+            startTimer?.let(Timer::cancel)
         } else if (state == UIGestureRecognizerState.Began || state == UIGestureRecognizerState.Changed) {
             state = UIGestureRecognizerState.Changed
             sendActions()
@@ -67,7 +67,7 @@ class UILongPressGestureRecognizer : UIGestureRecognizer {
 
     override fun touchesEnded(touches: List<UITouch>, event: UIEvent) {
         super.touchesEnded(touches, event)
-        mStartTimer?.let(Timer::cancel)
+        startTimer?.let(Timer::cancel)
         if (state == UIGestureRecognizerState.Began || state == UIGestureRecognizerState.Changed) {
             state = UIGestureRecognizerState.Ended
             sendActions()
@@ -81,15 +81,15 @@ class UILongPressGestureRecognizer : UIGestureRecognizer {
         var accepted = 0
         for (i in touches.indices) {
             val p0 = touches[i].locationInView(view)
-            for (j in mStartTouches.indices) {
-                val p1 = mStartTouches[j].locationInView(view)
-                if (p0.inRange(mAllowableMovement, mAllowableMovement, p1)) {
+            for (j in startTouches.indices) {
+                val p1 = startTouches[j].locationInView(view)
+                if (p0.inRange(allowableMovement, allowableMovement, p1)) {
                     accepted++
                     break
                 }
             }
         }
-        return accepted < mNumberOfTouchesRequired
+        return accepted < numberOfTouchesRequired
     }
 
 }

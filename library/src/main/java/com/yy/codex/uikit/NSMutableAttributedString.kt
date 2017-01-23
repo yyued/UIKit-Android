@@ -30,16 +30,16 @@ class NSMutableAttributedString : NSAttributedString {
 
     fun addAttributes(attrs: HashMap<String, Any>, range: NSRange) {
         for (i in 0..range.length - 1) {
-            val values = getAttributes(range.location + i)
-            values!!.putAll(attrs)
+            val values = getAttributes(range.location + i) ?: HashMap<String, Any>()
+            values.putAll(attrs)
             setAttributes(values, NSRange(range.location + i, 1))
         }
     }
 
     fun removeAttribute(name: String, range: NSRange) {
         for (i in 0..range.length - 1) {
-            val values = getAttributes(range.location + i)
-            values!!.remove(name)
+            val values = getAttributes(range.location + i) ?: HashMap<String, Any>()
+            values.remove(name)
             setAttributes(values, NSRange(range.location + i, 1))
         }
     }

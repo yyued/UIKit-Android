@@ -32,22 +32,22 @@ class UIBarButtonItem(val target: Any?, val action: String?) : UIBarItem() {
             customView?.marginInsets = insets
             return customView
         }
-        else if (mView == null) {
+        else if (view == null) {
             val button = UIButton(context)
             title?.let {
-                button.setFont(UIFont(17f))
+                button.font = UIFont(17f)
                 button.setTitle(it, UIControl.State.Normal)
             }
             image?.let {
                 button.setImage(it, UIControl.State.Normal)
             }
             button.frame = CGRect(0.0, 0.0, button.intrinsicContentSize().width, 44.0)
-            button.setImageEdgeInsets(imageInsets)
+            button.imageEdgeInsets = imageInsets
             if (target != null && action != null) {
-                button.addTarget(target!!, action!!, UIControl.Event.TouchUpInside)
+                button.addTarget(target, action, UIControl.Event.TouchUpInside)
             }
-            mView = button
-            mView?.marginInsets = insets
+            view = button
+            view?.marginInsets = insets
         }
         return super.getContentView(context)
     }

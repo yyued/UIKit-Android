@@ -28,19 +28,17 @@ class UIScreenEdgePanGestureRecognizer : UIPanGestureRecognizer {
     }
 
     private fun checkEdge(touches: List<UITouch>): Boolean {
-        val view = view ?: return false
-        for (i in touches.indices) {
-            val firstPoint = touches[i].absolutePoint
-            if (edge == Edge.Left && firstPoint.x < edgeLength) {
-                return true
-            } else if (edge == Edge.Right && UIScreen.mainScreen.bounds().size.width - firstPoint.x < edgeLength) {
-                return true
-            } else if (edge == Edge.Top && firstPoint.y < edgeLength) {
-                return true
-            } else if (edge == Edge.Bottom && UIScreen.mainScreen.bounds().size.height - firstPoint.y < edgeLength) {
-                return true
+        touches.forEach {
+                if (edge == Edge.Left && it.absolutePoint.x < edgeLength) {
+                    return true
+                } else if (edge == Edge.Right && UIScreen.mainScreen.bounds().size.width - it.absolutePoint.x < edgeLength) {
+                    return true
+                } else if (edge == Edge.Top && it.absolutePoint.y < edgeLength) {
+                    return true
+                } else if (edge == Edge.Bottom && UIScreen.mainScreen.bounds().size.height - it.absolutePoint.y < edgeLength) {
+                    return true
+                }
             }
-        }
         return false
     }
 

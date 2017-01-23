@@ -10,14 +10,11 @@ import android.view.WindowManager
 
 class UIScreen {
 
-    private var mContext: Context? = null
-
-    fun setContext(context: Context) {
-        mContext = context
-    }
+    var context: Context? = null
+        internal set
 
     fun scale(): Double {
-        val scale: Double = mContext?.resources?.displayMetrics?.scaledDensity?.toDouble() ?: 1.0
+        val scale: Double = context?.resources?.displayMetrics?.scaledDensity?.toDouble() ?: 1.0
         if (scale == 0.0) {
             return 1.0
         }
@@ -27,14 +24,11 @@ class UIScreen {
     }
 
     fun bounds(): CGRect {
-        if (mContext != null && scale() > 0.0) {
-            val windowManager = mContext?.getSystemService(Context.WINDOW_SERVICE) as? WindowManager
-            val rect = Rect()
-            windowManager?.defaultDisplay?.getRectSize(rect)
-            return CGRect(rect.left / scale(), rect.top / scale(), rect.width() / scale(), rect.height() / scale())
-        } else {
-            return CGRect(0.0, 0.0, 0.0, 0.0)
-        }
+        val context = context ?: return CGRect(.0, .0, .0, .0)
+        val windowManager = context?.getSystemService(Context.WINDOW_SERVICE) as? WindowManager
+        val rect = Rect()
+        windowManager?.defaultDisplay?.getRectSize(rect)
+        return CGRect(rect.left / scale(), rect.top / scale(), rect.width() / scale(), rect.height() / scale())
     }
 
     companion object {

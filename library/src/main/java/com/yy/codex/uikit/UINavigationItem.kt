@@ -10,7 +10,7 @@ import java.util.ArrayList
 
 class UINavigationItem(val mContext: Context) {
 
-    var navigationBar: UINavigationBar? = null
+    internal var navigationBar: UINavigationBar? = null
 
     /* Title */
 
@@ -43,7 +43,7 @@ class UINavigationItem(val mContext: Context) {
 
     /* FrontView */
 
-    var frontView: UINavigationItemView = UINavigationItemView(mContext);
+    internal var frontView: UINavigationItemView = UINavigationItemView(mContext);
 
     fun setNeedsUpdate() {
         for (subview in frontView.subviews) {
@@ -52,7 +52,7 @@ class UINavigationItem(val mContext: Context) {
         titleView?.let {
             updateTitle()
             frontView.addSubview(it)
-            frontView.titleView = it;
+            frontView.titleView = it
         }
         frontView.leftViews = leftBarButtonItems.mapNotNull { it.getContentView(mContext) }
         for (view in frontView.leftViews) {
@@ -77,10 +77,8 @@ class UINavigationItem(val mContext: Context) {
             return field
         }
         set(titleView) {
-            field?.let {
-                it.removeFromSuperview()
-            }
-            field= titleView
+            field?.let(UIView::removeFromSuperview)
+            field = titleView
         }
 
 
@@ -112,10 +110,11 @@ class UINavigationItem(val mContext: Context) {
 
     var backBarButtonItem: UIBarButtonItem? = null
         get() {
-            if (navigationBar != null && navigationBar!!.isMaterialDesign && !backBarButtonItemUsingMaterialDesign && field != null && field!!.isSystemBackItem) {
+            val navigationBar = navigationBar ?: return null
+            if (navigationBar.materialDesign && !backBarButtonItemUsingMaterialDesign && (field?.isSystemBackItem ?: false)) {
                 field = null
             }
-            if (field == null && navigationBar!!.isMaterialDesign) {
+            if (field == null && navigationBar.materialDesign) {
                 val arrowImage: UIImage
                 if (UIScreen.mainScreen.scale() == 1.0) {
                     arrowImage = UIImage("iVBORw0KGgoAAAANSUhEUgAAAAkAAAAQCAYAAADESFVDAAAAAXNSR0IArs4c6QAAASRJREFUKBV1kc1LAlEUxc8bxVaBuygt06IiENq0Nqn/IBL/Qhsezj4IsmlfIEoQtGghFJUf26y8njtPGwbtwX0f9/zuufPeGPw3rJTxA0s5TC1lrBziFy1qBcbELEBNOcA3biFYo/aKDCpJyJc9TAgA6zB4QwonqJkn78/Jlx1W30QA8E7gVAHVHWSlSKDFyDH3yawCjwro8BBIgbdQYJMtBsycoW66TnazhzGa3OothgwF2k6KZ203nh3TdFqJpXin0AXFZ66rbHkFX45j2e3cEwSSxxdCpkqMUfThdfMwh93tzk0PaVTp+EIhS8drWDmaQ8nHvJRtCiGhLa79qLBmOklISwMpzVrn6fzBguoipKCVXf5gddzg6X455MB9gg263U0BPnZUSRYFI58AAAAASUVORK5CYII=")
@@ -128,25 +127,26 @@ class UINavigationItem(val mContext: Context) {
                     arrowImage.scale = 3.0
                 }
                 field = UIBarButtonItem(arrowImage, null, null)
-                field!!.insets = UIEdgeInsets.zero
-                field!!.isSystemBackItem = true
-            } else if (field == null) {
+                field?.insets = UIEdgeInsets.zero
+                field?.isSystemBackItem = true
+            }
+            else if (field == null) {
                 field = UIBarButtonItem(title ?: "Back", null, null)
                 if (UIScreen.mainScreen.scale() == 1.0) {
                     val arrowImage = UIImage("iVBORw0KGgoAAAANSUhEUgAAABoAAAAsCAYAAAB7aah+AAAAAXNSR0IArs4c6QAAATpJREFUWAm92LsNwjAQANAzFIzATJQwCAPQABJiAMagoUCCHegYgwkQlfEFQkLikPviJo5t3fNHyiUB8Cj7OGyGHTQb1Pe7OIIrHGERl/VYoX6jriNygwNEmLxjrWAb1li3g9pIOe8Cs4G6kQ/WOrSyh3ztR3Df7roV0ZAzjGEqhxgIzMNDBjERPAY+JED4kBDhQQqEDikRGmSA9ENGyG/IEOmGjJE85IC0ISfkG3JEKsgZeUF/QBCivpxEHKwpr6c3bVWnlMBmmFskYJUmaFiRLSVYBeE0HbFvyBFrQ05YHnLAuiFj7DdkiPVDRhgNMsDokBLjQQqMDwkxGSTA5BAT00EMjJr4MGS+YH5KH1rpu+ScH5BaA1z0Kyqjd6WYAaxhE1Z2EIJN7I1gly1Ux9J24Uqwya9kftE8AedMD8V9MQduAAAAAElFTkSuQmCC")
                     arrowImage.scale = 1.0
-                    field!!.image = arrowImage
+                    field?.image = arrowImage
                 } else if (UIScreen.mainScreen.scale() == 2.0) {
                     val arrowImage = UIImage("iVBORw0KGgoAAAANSUhEUgAAABoAAAAsCAYAAAB7aah+AAAAAXNSR0IArs4c6QAAATpJREFUWAm92LsNwjAQANAzFIzATJQwCAPQABJiAMagoUCCHegYgwkQlfEFQkLikPviJo5t3fNHyiUB8Cj7OGyGHTQb1Pe7OIIrHGERl/VYoX6jriNygwNEmLxjrWAb1li3g9pIOe8Cs4G6kQ/WOrSyh3ztR3Df7roV0ZAzjGEqhxgIzMNDBjERPAY+JED4kBDhQQqEDikRGmSA9ENGyG/IEOmGjJE85IC0ISfkG3JEKsgZeUF/QBCivpxEHKwpr6c3bVWnlMBmmFskYJUmaFiRLSVYBeE0HbFvyBFrQ05YHnLAuiFj7DdkiPVDRhgNMsDokBLjQQqMDwkxGSTA5BAT00EMjJr4MGS+YH5KH1rpu+ScH5BaA1z0Kyqjd6WYAaxhE1Z2EIJN7I1gly1Ux9J24Uqwya9kftE8AedMD8V9MQduAAAAAElFTkSuQmCC")
                     arrowImage.scale = 2.0
-                    field!!.image = arrowImage
+                    field?.image = arrowImage
                 } else {
                     val arrowImage = UIImage("iVBORw0KGgoAAAANSUhEUgAAACcAAABCCAYAAADUms/cAAAAAXNSR0IArs4c6QAAAbFJREFUaAXt2stNxDAQBuDfSNQBpWwVcORRBhHSXqALkOBCG1SCdkUfeD2CKC8ncex5+MAcR5b8aRxLmUmA/1iowKO/QuMvYivOYkm1XONv8IMPeHzGgE4NMt6IYMBrgLUFOsBhhyd3bJfa4Kaw1jMA6uPmYROgLm4dNgDq4dJhLfBLB7cV5sIdBu7lcZmwcGvfZHEFMDpbOVwhTA7HAJPBMcH4cYwwXhwzjA8nAOPBCcHKcYKwMpwwLB+nAMvDKcG24xRh23DKsHScASwNZwRbxxnClnHGsHlcBbA4rhLYFFcRbIirDNbhKoQR7nfC4zO6MB/mQ8LRtYY51fO4w7N7lzJ2ONqhMuAQlwsMcw0aH3BXcIrLBQoccRxXCXAeVwFwGWcMXMcZAtNwRsB0nAFwG04ZuB2nCMzDKQHzcQrAMpwwsBwnCOTBCQH5cAJAXhwzkB/HCJTB5QJHb9RyOAagLK4QKI8rAOrgCPjgb0Pr/tL7VYOyS6H0Gb0lpPbFDkecY6dXuVTgHwx7d9DHEXKugj0YLbPBxYAjmC2uDwS+6Rmjo6R0PdH4a+z9ZT2gRMkJbMiClVJCMU0AAAAASUVORK5CYII=")
                     arrowImage.scale = 3.0
-                    field!!.image = arrowImage
+                    field?.image = arrowImage
                 }
-                field!!.imageInsets = UIEdgeInsets(0.0, 0.0, 0.0, 0.0)
-                field!!.isSystemBackItem = true
+                field?.imageInsets = UIEdgeInsets(0.0, 0.0, 0.0, 0.0)
+                field?.isSystemBackItem = true
             }
             return field
         }
