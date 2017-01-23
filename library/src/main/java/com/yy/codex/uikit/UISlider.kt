@@ -18,13 +18,6 @@ import com.yy.codex.foundation.NSLog
 
 class UISlider : UIControl {
 
-    private var thumbView: UIView? = null
-    private var trackView: UIView? = null
-    private var trackPassedView: UIView? = null
-    private var value: Double = 0.toDouble() // range: 0.0 ~ 1.0
-    private var slideListener : (Double) -> Unit = {};
-    private var thumbRadius = 30.0
-
     constructor(context: Context, view: View) : super(context, view) {}
 
     constructor(context: Context) : super(context) {}
@@ -37,8 +30,32 @@ class UISlider : UIControl {
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes) {
     }
 
+    private var thumbView: UIView? = null
+
+    private var trackView: UIView? = null
+
+    private var trackPassedView: UIView? = null
+
+    private var progress: Double = 0.toDouble() // range: 0.0 ~ 1.0
+        set(value) {
+            if (value < 0.0){
+                field = 0.0
+            }
+            else if (value > 1.0){
+                field = 1.0
+            }
+            else {
+                field = value
+            }
+        }
+
+    private var slideListener : (Double) -> Unit = {}
+
+    private var thumbRadius = 30.0
+
+
     private fun defaultValue() {
-        value = 0.5
+        progress = 1.5
         thumbRadius = 30.0
     }
 
@@ -72,8 +89,8 @@ class UISlider : UIControl {
         super.layoutSubviews()
         val frameW = frame.size.width
         trackView!!.frame = CGRect(0.0, 14.0, frameW - 4, 4.0)
-        trackPassedView!!.frame = CGRect(0.0, 14.0, frameW * value, 4.0)
-        thumbView!!.frame = CGRect((frameW - thumbRadius) * value, 2.0, thumbRadius, thumbRadius)
+        trackPassedView!!.frame = CGRect(0.0, 14.0, frameW * progress, 4.0)
+        thumbView!!.frame = CGRect((frameW - thumbRadius) * progress, 2.0, thumbRadius, thumbRadius)
     }
 
     override fun onEvent(event: UIControl.Event) {
@@ -101,34 +118,20 @@ class UISlider : UIControl {
     }
 
     private fun setValueAnimated(value: Double) {
-        if (value < 0.0) {
-            this.value = 0.0
-        } else if (value > 1.0) {
-            this.value = 1.0
-        } else {
-            this.value = value
-        }
-
-        setValue(this.value)
-        this.slideListener(this.value)
+        this.progress = value
+        setValue(this.progress)
+        this.slideListener(this.progress)
     }
 
     fun setValue(value: Double) {
-        if (value < 0.0) {
-            this.value = 0.0
-        } else if (value > 1.0) {
-            this.value = 1.0
-        } else {
-            this.value = value
-        }
-
+        this.progress = value
         val frameW = frame.size.width
-        trackPassedView!!.frame = CGRect(0.0, 14.0, (frameW - thumbRadius) * this.value, 4.0)
-        thumbView!!.frame = CGRect((frameW - thumbRadius) * this.value, 2.0, thumbRadius, thumbRadius)
+        trackPassedView!!.frame = CGRect(0.0, 14.0, (frameW - thumbRadius) * this.progress, 4.0)
+        thumbView!!.frame = CGRect((frameW - thumbRadius) * this.progress, 2.0, thumbRadius, thumbRadius)
     }
 
     fun getValue(): Double {
-        return this.value
+        return this.progress
     }
 
     private fun pointInThumbView(point: CGPoint): Boolean {

@@ -56,7 +56,7 @@ internal class TestComponent : UIView {
 
         val uiSlider = UISlider(context)
         uiSlider.frame = CGRect(10.0, 100.0, 200.0, 32.0)
-        uiSlider.setValue(0.3)
+//        uiSlider.setValue(0.3)
         uiSlider.onSlide({ value -> NSLog.warn(value) })
         addSubview(uiSlider)
 
