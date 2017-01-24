@@ -20,4 +20,3 @@ open class UIEvent(val eventType: Type, val subType: SubType) {
 
 }
 
-class UIKeyEvent(val keyCode: Int): UIEvent(Type.Keyboard, SubType.Unknown);

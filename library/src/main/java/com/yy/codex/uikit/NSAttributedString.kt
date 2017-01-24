@@ -2,21 +2,9 @@ package com.yy.codex.uikit
 
 import android.graphics.Color
 import android.os.Build
-import android.text.Layout
-import android.text.Spannable
-import android.text.SpannableStringBuilder
-import android.text.SpannedString
-import android.text.TextPaint
-import android.text.style.AbsoluteSizeSpan
-import android.text.style.AlignmentSpan
-import android.text.style.BackgroundColorSpan
-import android.text.style.CharacterStyle
-import android.text.style.ForegroundColorSpan
-import android.text.style.StrikethroughSpan
-import android.text.style.TypefaceSpan
-import android.text.style.UnderlineSpan
-
-import java.util.HashMap
+import android.text.*
+import android.text.style.*
+import java.util.*
 
 /**
  * Created by PonyCui_Home on 2017/1/4.
@@ -141,16 +129,3 @@ open class NSAttributedString : SpannableStringBuilder {
 
 }
 
-internal class NSAttributedSpan(var mAttrs: HashMap<String, Any>) : CharacterStyle() {
-
-    override fun updateDrawState(textPaint: TextPaint) {}
-
-}
-
-internal class NSBoldSpan : CharacterStyle() {
-
-    override fun updateDrawState(textPaint: TextPaint) {
-        textPaint.isFakeBoldText = true
-    }
-
-}

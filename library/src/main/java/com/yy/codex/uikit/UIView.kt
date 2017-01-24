@@ -7,6 +7,7 @@ import android.support.annotation.RequiresApi
 import android.util.AttributeSet
 import android.view.*
 import android.widget.FrameLayout
+import com.yy.codex.coreanimation.CALayer
 import java.util.ArrayList
 
 /**

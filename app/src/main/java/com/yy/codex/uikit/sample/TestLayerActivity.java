@@ -12,9 +12,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.AttributeSet;
 import android.view.View;
 
+import com.yy.codex.coreanimation.CALayer;
 import com.yy.codex.foundation.NSLog;
-import com.yy.codex.uikit.CALayer;
-import com.yy.codex.uikit.CALayerBitmapPainter;
 import com.yy.codex.uikit.CGRect;
 import com.yy.codex.uikit.CGTransform;
 import com.yy.codex.uikit.CGTransformRotation;

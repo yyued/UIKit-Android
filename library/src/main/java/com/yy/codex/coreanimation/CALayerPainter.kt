@@ -1,5 +1,6 @@
-package com.yy.codex.uikit
+package com.yy.codex.coreanimation
 import android.graphics.*
+import com.yy.codex.uikit.*
 
 /**
  * Created by adi on 17/1/17.

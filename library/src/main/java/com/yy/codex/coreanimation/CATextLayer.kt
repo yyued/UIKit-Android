@@ -1,9 +1,11 @@
-package com.yy.codex.uikit
+package com.yy.codex.coreanimation
 
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Rect
+import com.yy.codex.uikit.CGRect
+import com.yy.codex.uikit.UIScreen
 
 /**
  * Created by adi on 17/1/10.

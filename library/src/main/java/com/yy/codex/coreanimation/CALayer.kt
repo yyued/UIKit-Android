@@ -1,7 +1,9 @@
-package com.yy.codex.uikit
+package com.yy.codex.coreanimation
 
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import com.yy.codex.foundation.doubleEquals
+import com.yy.codex.uikit.*
 import java.util.*
 
 
@@ -28,7 +30,7 @@ open class CALayer {
 
     /* layoutProps */
 
-    var frame = CGRect(0.0, 0.0, 0.0, 0.0)
+    var frame = com.yy.codex.uikit.CGRect(0.0, 0.0, 0.0, 0.0)
         set(value) {
             if (field != value) {
                 field = value
@@ -38,7 +40,7 @@ open class CALayer {
 
     /* styleProps */
 
-    var backgroundColor = UIColor.clearColor
+    var backgroundColor = com.yy.codex.uikit.UIColor.Companion.clearColor
         set(value) {
             if (field != value) {
                 field = value
@@ -48,12 +50,12 @@ open class CALayer {
 
     var cornerRadius = 0.0
         set(value) {
-            if (!doubleEqual(field, value)) {
+            if (!doubleEquals(field, value)) {
                 val oldValue = field
                 field = value
                 this.setNeedDisplay(true)
                 requestRootLayer().view?.let {
-                    UIViewAnimator.addAnimationState(it, "layer.mCornerRadius", oldValue, value)
+                    com.yy.codex.uikit.UIViewAnimator.addAnimationState(it, "layer.mCornerRadius", oldValue, value)
                 }
             }
         }
@@ -62,16 +64,16 @@ open class CALayer {
     var borderWidth = 0.0
         set(value) {
             val oldValue = field
-            if (!doubleEqual(field, value)) {
+            if (!doubleEquals(field, value)) {
                 field = value
                 this.setNeedDisplay(true)
                 requestRootLayer().view?.let {
-                    UIViewAnimator.addAnimationState(it, "layer.mBorderWidth", oldValue, value)
+                    com.yy.codex.uikit.UIViewAnimator.addAnimationState(it, "layer.mBorderWidth", oldValue, value)
                 }
             }
         }
 
-    var borderColor = UIColor.blackColor
+    var borderColor = com.yy.codex.uikit.UIColor.Companion.blackColor
         set(value) {
             if (field != value) {
                 field = value
@@ -81,7 +83,7 @@ open class CALayer {
 
     var shadowX = 2.0
         set(value) {
-            if (!doubleEqual(field, value)) {
+            if (!doubleEquals(field, value)) {
                 field = value
                 this.setNeedDisplay(true)
             }
@@ -89,7 +91,7 @@ open class CALayer {
 
     var shadowY = 2.0
         set(value) {
-            if (!doubleEqual(field, value)) {
+            if (!doubleEquals(field, value)) {
                 field = value
                 this.setNeedDisplay(true)
             }
@@ -97,13 +99,13 @@ open class CALayer {
 
     var shadowRadius = 0.0
         set(value) {
-            if (!doubleEqual(field, value)) {
+            if (!doubleEquals(field, value)) {
                 field = value
                 this.setNeedDisplay(true)
             }
         }
 
-    var shadowColor = UIColor.blackColor
+    var shadowColor = com.yy.codex.uikit.UIColor.Companion.blackColor
         set(value) {
             if (field != value) {
                 field = value
@@ -111,7 +113,7 @@ open class CALayer {
             }
         }
 
-    var bitmap: Bitmap? = null
+    var bitmap: android.graphics.Bitmap? = null
         set(value) {
             if (field != value) {
                 field = value
@@ -119,7 +121,7 @@ open class CALayer {
             }
         }
 
-    var bitmapGravity = BitmapGravity.ScaleAspectFit
+    var bitmapGravity = com.yy.codex.coreanimation.CALayer.BitmapGravity.ScaleAspectFit
         set(value) {
             if (field != value) {
                 field = value
@@ -127,7 +129,7 @@ open class CALayer {
             }
         }
 
-    var bitmapColor: UIColor? = null
+    var bitmapColor: com.yy.codex.uikit.UIColor? = null
         set(value) {
             if (field != value) {
                 field = value
@@ -158,7 +160,7 @@ open class CALayer {
     fun setNeedDisplay(mNeedDisplay: Boolean) {
         this.needDisplay = mNeedDisplay
         if (mNeedDisplay) {
-            requestRootLayer().view?.let(UIView::invalidate)
+            requestRootLayer().view?.let(com.yy.codex.uikit.UIView::invalidate)
         }
     }
 
@@ -323,13 +325,6 @@ open class CALayer {
             root = root.superLayer as CALayer
         }
         return root
-    }
-
-    private fun doubleEqual(a: Double, b: Double): Boolean {
-        if (Math.abs(a - b) < 0.01) {
-            return true
-        }
-        return false
     }
 
     /* Animation */

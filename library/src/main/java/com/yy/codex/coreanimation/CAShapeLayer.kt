@@ -1,4 +1,4 @@
-package com.yy.codex.uikit
+package com.yy.codex.coreanimation
 
 import android.graphics.*
 

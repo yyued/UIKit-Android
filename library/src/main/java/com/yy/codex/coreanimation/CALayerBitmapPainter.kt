@@ -1,8 +1,9 @@
-package com.yy.codex.uikit
+package com.yy.codex.coreanimation
 
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
+import com.yy.codex.uikit.CGRect
 
 /**
  * Created by adi on 17/1/16.

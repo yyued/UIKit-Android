@@ -9,7 +9,6 @@ import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.yy.codex.uikit.CALayer;
 import com.yy.codex.uikit.CGRect;
 import com.yy.codex.uikit.CGSize;
 import com.yy.codex.uikit.UIBarButtonItem;

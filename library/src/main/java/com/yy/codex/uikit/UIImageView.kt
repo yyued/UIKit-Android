@@ -7,6 +7,7 @@ import android.os.Build
 import android.support.annotation.RequiresApi
 import android.util.AttributeSet
 import android.view.View
+import com.yy.codex.coreanimation.CALayer
 
 /**
  * Created by cuiminghui on 2017/1/10.
