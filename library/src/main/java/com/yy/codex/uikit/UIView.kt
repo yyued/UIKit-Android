@@ -105,6 +105,7 @@ open class UIView : FrameLayout, UIResponder {
             this.minimumWidth = mWidth.toInt()
             this.minimumHeight = mHeight.toInt()
             this.layer.frame = CGRect(0.0, 0.0, frame.size.width, frame.size.height)
+            layerShadowView?.let { resetShadowView() }
             UIViewAnimator.addAnimationState(this, "frame.origin.x", oldValue.origin.x, frame.origin.x)
             UIViewAnimator.addAnimationState(this, "frame.origin.y", oldValue.origin.y, frame.origin.y)
             UIViewAnimator.addAnimationState(this, "frame.size.mWidth", oldValue.size.width, frame.size.width)
@@ -250,6 +251,7 @@ open class UIView : FrameLayout, UIResponder {
         }
 
     fun removeFromSuperview() {
+        layerShadowView?.let(UIView::removeFromSuperview)
         superview?.let { it.removeView(this) }
     }
 
@@ -345,9 +347,44 @@ open class UIView : FrameLayout, UIResponder {
         }
 
     val layer: CALayer = CALayer()
+    var layerShadowView: UIView? = null
+    var wantShadow: Boolean = false
+        get() = layer.shadowColor != null
+
+    fun createShadowView() {
+        val shadowView = UIView(context)
+        shadowView.tag = -1
+        shadowView.wantsLayer = true
+        shadowView.wantsLayer = true
+        val contentLayer = CALayer()
+        shadowView.layer.addSubLayer(contentLayer)
+        superview?.let {
+            it.insertBelowSubview(shadowView, this)
+        }
+        layerShadowView = shadowView
+    }
+
+    fun resetShadowView() {
+        layerShadowView?.let {
+            val enlargeRadiusX = layer.shadowX + layer.shadowRadius
+            val enlargeRadiusY = layer.shadowY + layer.shadowRadius
+            it.frame = CGRect(frame.x - enlargeRadiusX, frame.y - enlargeRadiusY, frame.width + enlargeRadiusX * 2, frame.height + enlargeRadiusY * 2)
+            val contentLayer = it.layer.subLayers.first()
+            this.layer.copyProps(contentLayer)
+            contentLayer.frame = CGRect(enlargeRadiusX, enlargeRadiusY, frame.width, frame.height)
+        }
+    }
 
     fun drawRect(canvas: Canvas, rect: CGRect) {
         if (wantsLayer) {
+            if (wantShadow && tag != -1) {
+                if (layerShadowView == null) {
+                    createShadowView()
+                }
+                resetShadowView()
+                return
+            }
+            layerShadowView?.let(UIView::removeFromSuperview)
             layer.drawRect(canvas, rect)
         }
     }

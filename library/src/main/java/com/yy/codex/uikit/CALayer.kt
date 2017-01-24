@@ -340,6 +340,26 @@ open class CALayer {
         }
     }
 
+    /* Copy */
+
+    open fun copyProps(toLayer: CALayer) {
+        toLayer.frame = frame
+        toLayer.backgroundColor = backgroundColor
+        toLayer.cornerRadius = cornerRadius
+        toLayer.borderWidth = borderWidth
+        toLayer.borderColor = borderColor
+        toLayer.shadowX = shadowX
+        toLayer.shadowY = shadowY
+        toLayer.shadowRadius = shadowRadius
+        toLayer.shadowColor = shadowColor
+        toLayer.bitmap = bitmap
+        toLayer.bitmapGravity = bitmapGravity
+        toLayer.bitmapColor = bitmapColor
+        toLayer.clipToBounds = clipToBounds
+        toLayer.hidden = hidden
+        toLayer.mask = mask
+    }
+
     companion object {
 
         /* category CALayer support method */
@@ -357,5 +377,9 @@ open class CALayer {
             return CGPoint(oriX * scaledDensity, oriY * scaledDensity)
         }
     }
+
+
+
+
 
 }

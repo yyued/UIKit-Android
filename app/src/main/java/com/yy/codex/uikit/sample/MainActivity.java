@@ -9,6 +9,7 @@ import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
 import android.view.View;
 
+import com.yy.codex.uikit.CALayer;
 import com.yy.codex.uikit.CGRect;
 import com.yy.codex.uikit.CGSize;
 import com.yy.codex.uikit.UIBarButtonItem;
@@ -20,6 +21,7 @@ import com.yy.codex.uikit.UINavigationController;
 import com.yy.codex.uikit.UINavigationController_ActivityBase;
 import com.yy.codex.uikit.UIScrollView;
 import com.yy.codex.uikit.UIView;
+import com.yy.codex.uikit.UIViewAnimator;
 import com.yy.codex.uikit.UIViewController;
 
 import org.jetbrains.annotations.NotNull;
@@ -111,18 +113,28 @@ class TestView extends UIView {
     @Override
     public void init() {
         super.init();
-        UIView testView = new UIView(getContext());
+        final UIView testView = new UIView(getContext());
         testView.setFrame(new CGRect(44, 44, 44, 44));
         testView.setWantsLayer(true);
+        testView.getLayer().setBackgroundColor(UIColor.Companion.getOrangeColor());
         testView.getLayer().setCornerRadius(22.0);
-        testView.getLayer().setClipToBounds(true);
-        testView.setBackgroundColor(UIColor.Companion.getOrangeColor());
-        testView.getLayer().setShadowColor(UIColor.Companion.getBlackColor());
+        testView.getLayer().setShadowColor(UIColor.Companion.getBlackColor().colorWithAlpha(0.5));
         testView.getLayer().setShadowRadius(8.0);
         testView.getLayer().setShadowX(2);
         testView.getLayer().setShadowY(2);
+        testView.setBackgroundColor(UIColor.Companion.getOrangeColor());
         addSubview(testView);
-
+        postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                UIViewAnimator.INSTANCE.linear(3.0, new Runnable() {
+                    @Override
+                    public void run() {
+                        testView.setFrame(new CGRect(200, 200, 44, 44));
+                    }
+                }, null);
+            }
+        }, 3000);
     }
 
 }
