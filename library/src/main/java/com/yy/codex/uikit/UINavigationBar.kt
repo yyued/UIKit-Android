@@ -166,7 +166,7 @@ class UINavigationBar : UIView {
             topItemView.animateToFront(false)
             backItemView.alpha = 1f
             backItemView.animateFromFrontToBack(false)
-            currentAnimation = UIViewAnimator.springWithOptions(300.0, 40.0, 20.0, Runnable {
+            currentAnimation = UIViewAnimator.springWithBounciness(1.0, 75.0, Runnable {
                 topItemView.animateToFront(true)
                 backItemView.animateFromFrontToBack(true)
             }, Runnable { backItemView.alpha = 0f })
@@ -205,7 +205,7 @@ class UINavigationBar : UIView {
             backItemView.alpha = 1f
             topItemView.animateToGone(false)
             backItemView.animateFromBackToFront(false)
-            currentAnimation = UIViewAnimator.springWithOptions(300.0, 40.0, 20.0, Runnable {
+            currentAnimation = UIViewAnimator.springWithBounciness(1.0, 75.0, Runnable {
                 topItemView.animateToGone(true)
                 backItemView.animateFromBackToFront(true)
             }, Runnable {

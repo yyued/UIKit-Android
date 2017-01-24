@@ -154,7 +154,7 @@ class UINavigationItem(val mContext: Context) {
                     arrowImage.scale = 3.0
                     field?.image = arrowImage
                 }
-                field?.imageInsets = UIEdgeInsets(0.0, 0.0, 0.0, 0.0)
+                field?.imageInsets = UIEdgeInsets(0.0, 0.0, 0.0, 4.0)
                 field?.isSystemBackItem = true
             }
             return field

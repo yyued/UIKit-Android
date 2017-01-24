@@ -161,7 +161,7 @@ object UIViewAnimator {
         return animation
     }
 
-    fun springWithOptions(tension: Double, friction: Double, velocity: Double, animations: Runnable, completion: Runnable?): UIViewAnimation {
+    fun springWithOptions(tension: Double, friction: Double, animations: Runnable, completion: Runnable?): UIViewAnimation {
         val animation = UIViewAnimation()
         animation.completion = completion
         resetAnimationState()
@@ -179,7 +179,63 @@ object UIViewAnimator {
                     spring.currentValue = (log.originValue as Double).toFloat().toDouble()
                     val config = SpringConfig(tension, friction)
                     spring.springConfig = config
-                    spring.velocity = velocity
+                    spring.addListener(object : SpringListener {
+                        override fun onSpringUpdate(spring: Spring) {
+                            if (animation.cancelled) {
+                                return
+                            }
+                            val currentValue = spring.currentValue.toFloat()
+                            key.animate(key1, currentValue)
+                        }
+
+                        override fun onSpringAtRest(spring: Spring) {
+                            if (animation.cancelled) {
+                                return
+                            }
+                            val currentValue = spring.currentValue.toFloat()
+                            key.animate(key1, currentValue)
+                            aniCount[0]--
+                            if (aniCount[0] <= 0) {
+                                animation.markFinished()
+                            }
+                            if (aniCount[0] <= 0 && completion != null) {
+                                completion.run()
+                            }
+                        }
+
+                        override fun onSpringActivate(spring: Spring) {}
+
+                        override fun onSpringEndStateChange(spring: Spring) {}
+                    })
+                    spring.endValue = (log.finalValue as Double).toFloat().toDouble()
+                }
+            }
+        }
+        if (aniCount[0] <= 0) {
+            animation.markFinished()
+            completion?.run()
+        }
+        return animation
+    }
+
+    fun springWithBounciness(bounciness: Double, speed: Double, animations: Runnable, completion: Runnable?): UIViewAnimation {
+        val animation = UIViewAnimation()
+        animation.completion = completion
+        resetAnimationState()
+        animations.run()
+        val animationState = animationState ?: return animation
+        this.animationState = null
+        val aniCount = intArrayOf(0)
+        val system = SpringSystem.create()
+        for ((key, value) in animationState) {
+            for ((key1, log) in value) {
+                if (log.valueType == 1) {
+                    aniCount[0]++
+                    key.animate(key1, (log.originValue as Double).toFloat())
+                    val spring = system.createSpring()
+                    spring.currentValue = (log.originValue as Double).toFloat().toDouble()
+                    val config = SpringConfig.fromBouncinessAndSpeed(bounciness, speed)
+                    spring.springConfig = config
                     spring.addListener(object : SpringListener {
                         override fun onSpringUpdate(spring: Spring) {
                             if (animation.cancelled) {

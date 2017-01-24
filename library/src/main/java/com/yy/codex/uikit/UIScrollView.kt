@@ -288,7 +288,7 @@ open class UIScrollView : UIView {
     }
 
     private fun setContentOffsetWithSpring(contentOffset: CGPoint, velocity: Double) {
-        mCurrentAnimationY = UIViewAnimator.springWithOptions(120.0, 20.0, velocity, Runnable { setContentOffset(contentOffset, false) }, null)
+        mCurrentAnimationY = UIViewAnimator.springWithOptions(120.0, 20.0, Runnable { setContentOffset(contentOffset, false) }, null)
     }
 
     private fun overBoundsCheck(point: CGPoint): CGPoint {

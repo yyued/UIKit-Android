@@ -80,7 +80,7 @@ open class UINavigationController(context: Context) : UIViewController(context) 
             val backView = subviews[subviews.count() - 2]
             frontView.frame = frontView.frame.setX(wrapperView.frame.width)
             backView.frame = backView.frame.setX(0.0)
-            currentAnimation = UIViewAnimator.springWithOptions(300.0, 40.0, 20.0, Runnable {
+            currentAnimation = UIViewAnimator.springWithBounciness(1.0, 75.0, Runnable {
                 frontView.frame = frontView.frame.setX(0.0)
                 backView.frame = backView.frame.setX(wrapperView.frame.width * -0.20)
             }, Runnable {
@@ -132,7 +132,7 @@ open class UINavigationController(context: Context) : UIViewController(context) 
             val backView = subviews[subviews.count() - 2]
             frontView.frame = frontView.frame.setX(0.0)
             backView.frame = backView.frame.setX(wrapperView.frame.width * -0.20)
-            currentAnimation = UIViewAnimator.springWithOptions(300.0, 40.0, 20.0, Runnable {
+            currentAnimation = UIViewAnimator.springWithBounciness(1.0, 75.0, Runnable {
                 frontView.frame = frontView.frame.setX(wrapperView.frame.width)
                 backView.frame = backView.frame.setX(0.0)
             }, completion)

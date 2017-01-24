@@ -30,19 +30,14 @@ public class MainActivity extends UINavigationActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getNavigationController().getView().setMaterialDesign(true);
-        CGSize size = new CGSize(100, 100);
-        CGSize size2 = new CGSize(100, 100);
-        if (size.equals(size2)) {
-            System.gc();
-        }
+//        getNavigationController().getView().setMaterialDesign(true);
     }
 
-    @NotNull
-    @Override
-    public UINavigationController createNavigationController() {
-        return new UINavigationController_ActivityBase(this);
-    }
+//    @NotNull
+//    @Override
+//    public UINavigationController createNavigationController() {
+//        return new UINavigationController_ActivityBase(this);
+//    }
 
     @NotNull
     @Override
