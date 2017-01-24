@@ -30,8 +30,14 @@ open class UINavigationActivity: UIActivity() {
 
     private fun nextViewController(): UIViewController? {
         if (intent is Intent) {
-            val hashCode = intent.getIntExtra("com.yy.codex.uikit.UINavigationController_ActivityBase.nextViewController.hashCode", 0)
-            return UINavigationController_ActivityBase.nextViewControllers[hashCode]
+            val toViewControllerHashCode = intent.getIntExtra("com.yy.codex.uikit.UINavigationController_ActivityBase.toViewController.hashCode", 0)
+            val fromViewControllerHashCode = UINavigationController_ActivityBase.linkingReversingContexts[toViewControllerHashCode]
+            val toViewController = UINavigationController_ActivityBase.hashedViewControllers[toViewControllerHashCode] ?: return null
+            val fromViewController = UINavigationController_ActivityBase.hashedViewControllers[fromViewControllerHashCode] ?: return null
+            val backBarButtonItem = fromViewController.navigationItem.backBarButtonItem ?: return toViewController
+            backBarButtonItem.isSystemBackItem = false
+            toViewController.navigationItem.setLeftBarButtonItem(backBarButtonItem)
+            return toViewController
         }
         else {
             return null

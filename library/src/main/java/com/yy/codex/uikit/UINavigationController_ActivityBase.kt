@@ -13,36 +13,59 @@ class UINavigationController_ActivityBase(context: Context) : UINavigationContro
 
     companion object {
 
-        internal var prevViewControllers: HashMap<Int, UIViewController> = hashMapOf()
-        internal var nextViewControllers: HashMap<Int, UIViewController> = hashMapOf()
+        internal var linkingContexts: HashMap<Int, Int> = hashMapOf()
+        internal var linkingReversingContexts: HashMap<Int, Int> = hashMapOf()
+        internal var hashedViewControllers: HashMap<Int, UIViewController> = hashMapOf()
 
     }
 
     override fun pushViewController(viewController: UIViewController, animated: Boolean) {
         if (context is UINavigationActivity) {
-            this.viewWillDisappear(animated)
-            viewController.viewWillAppear(animated)
+            val fromViewController = childViewControllers.last()
+            val toViewController = viewController
+            fromViewController.viewWillDisappear(animated)
+            toViewController.viewWillAppear(animated)
             val intent = Intent(context, context.javaClass)
-            prevViewControllers.put(viewController.hashCode(), this)
-            nextViewControllers.put(viewController.hashCode(), viewController)
-            intent.putExtra("com.yy.codex.uikit.UINavigationController_ActivityBase.nextViewController.hashCode", viewController.hashCode())
+            configureLinking(fromViewController, toViewController)
+            intent.putExtra("com.yy.codex.uikit.UINavigationController_ActivityBase.toViewController.hashCode", toViewController.hashCode())
             context.startActivity(intent)
-            this.viewDidDisappear(animated)
-            viewController.viewDidAppear(animated)
+            fromViewController.viewDidDisappear(animated)
+            toViewController.viewDidAppear(animated)
         }
     }
 
     override fun popViewController(animated: Boolean) {
-        this.viewWillDisappear(true)
-        prevViewControllers[this.hashCode()]?.let {
-            it.viewWillAppear(true)
+        val activeViewController = childViewControllers.last()
+        linkingContexts[activeViewController.hashCode()]?.let {
+            hashedViewControllers[it]?.let {
+                it.navigationController()?.popViewController(animated)
+                return
+            }
         }
+        val fromViewController = childViewControllers.last()
+        val fromViewControllerHashCode = fromViewController.hashCode()
+        val toViewControllerHashCode = linkingReversingContexts[fromViewControllerHashCode] ?: return
+        val toViewController = hashedViewControllers[toViewControllerHashCode] ?: return
+        fromViewController.viewWillDisappear(animated)
+        toViewController.viewWillAppear(animated)
         val context = context as? Activity ?: return
         context.finish()
-        prevViewControllers[this.hashCode()]?.let {
-            it.viewDidAppear(true)
-        }
-        this.viewDidDisappear(true)
+        fromViewController.viewDidDisappear(animated)
+        toViewController.viewDidAppear(animated)
+        removeLinking(fromViewController, toViewController)
+    }
+
+    fun configureLinking(fromViewController: UIViewController, toViewController: UIViewController) {
+        linkingContexts.put(fromViewController.hashCode(), toViewController.hashCode())
+        linkingReversingContexts.put(toViewController.hashCode(), fromViewController.hashCode())
+        hashedViewControllers.put(fromViewController.hashCode(), fromViewController)
+        hashedViewControllers.put(toViewController.hashCode(), toViewController)
+    }
+
+    fun removeLinking(fromViewController: UIViewController, toViewController: UIViewController) {
+        linkingContexts.remove(toViewController.hashCode())
+        linkingReversingContexts.remove(fromViewController.hashCode())
+        hashedViewControllers.remove(fromViewController.hashCode())
     }
 
 }
