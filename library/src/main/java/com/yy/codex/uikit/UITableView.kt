@@ -1,6 +1,7 @@
 package com.yy.codex.uikit
 
 import android.content.Context
+import com.yy.codex.foundation.lets
 
 /**
  * Created by it on 17/1/23.
@@ -32,6 +33,8 @@ open class UITableView(context: Context) : UIScrollView(context) {
             field = value
         }
 
+    var loadingSection = 0
+    var willLoadNumberOfRow= 0
 
     var visibleCells: MutableList<UITableViewCell> = mutableListOf()
     var indexPathsForVisibleRows: MutableList<NSIndexPath> = mutableListOf()
@@ -56,8 +59,8 @@ open class UITableView(context: Context) : UIScrollView(context) {
 
     }
 
-    fun cellForRowAtIndexPath(indexPath: NSIndexPath): UITableViewCell {
-        return UITableViewCell(context)
+    fun cellForRowAtIndexPath(indexPath: NSIndexPath): UITableViewCell? {
+        return null
     }
 
     override fun didMoveToSuperview() {
@@ -72,15 +75,19 @@ open class UITableView(context: Context) : UIScrollView(context) {
         var contentSizeHeight: Double = 0.00
         var loadCellComplete = false
         for (i in 0..numberOfSections) {
+            loadingSection = 0
 
             var headerFooterView = delegateWantsHeaderTitleForSection(i)
             headerFooterView?.let {
                 contentView.addSubview(it)
                 contentSizeHeight += it.frame.size.height
+                it.frame = it.frame.setY(contentSizeHeight)
             }
 
             var numberOfRowsInSection = dataSource?.tableViewNumberOfRowsInSection(this, i) ?: 0
+            willLoadNumberOfRow = numberOfRowsInSection
             for (j in 0..numberOfRowsInSection) {
+
                 var indexPath = NSIndexPath(j, i)
                 var cell = dataSource?.tableViewCellForRowAtIndexPath(this, indexPath) as UITableViewCell
                 visibleCells.add(cell)
@@ -121,29 +128,52 @@ open class UITableView(context: Context) : UIScrollView(context) {
         var topCell = visibleCells.first()
         var bottomCell = visibleCells.last()
 
+        var topIndexPath = indexPathsForVisibleRows.first()
+        var bottomIndexPath = indexPathsForVisibleRows.last()
+
         var actionCell: UITableViewCell? = null;
+        var actionIndexPath: NSIndexPath? = null;
 
         //top or bottom cell out off table view
         if (Math.abs(contentOffset.y) - contentOffsetY >= topCell.frame.size.height) {
             actionCell = topCell
-
+            actionIndexPath = NSIndexPath(bottomIndexPath.row + 1, bottomIndexPath.section)
         }
         else if (Math.abs(contentOffset.y) - contentOffsetY >= bottomCell.frame.size.height) {
             actionCell = bottomCell
+            actionIndexPath = NSIndexPath(bottomIndexPath.row - 1, bottomIndexPath.section)
         }
 
-        actionCell?.let {
+        lets(actionCell, actionIndexPath) { actionCell, actionIndexPath ->
             contentOffsetY = Math.abs(contentOffset.y)
-            addReuseableCell(it)
+            addReuseableCell(actionCell)
 
-            if (visibleCells.contains(it)) {
-                visibleCells.remove(it)
+            if (visibleCells.contains(actionCell)) {
+                visibleCells.remove(actionCell)
             }
 
-            var indexPatch = NSIndexPath(0, 0)
+            if (actionIndexPath.section < numberOfSections) {
+                if (actionIndexPath.row >= willLoadNumberOfRow) {
+                    var headerFooterView = delegateWantsHeaderTitleForSection(actionIndexPath.section + 1)
+                    headerFooterView?.let {
+                        contentView.addSubview(it)
+                        it.frame = it.frame.setY(bottomCell.frame.size.height + bottomCell.frame.origin.y)
+                    }
+                }
+            }
+
+            if (actionIndexPath.row <= 0 && actionIndexPath.section > 0) {
+                var headerFooterView = delegateWantsHeaderTitleForSection(actionIndexPath.section - 1)
+                headerFooterView?.let {
+                    contentView.addSubview(it)
+                    it.frame = it.frame.setY(topCell.frame.size.height + topCell.frame.origin.y)
+                }
+            }
+
+            var indexPatch = NSIndexPath(actionIndexPath.row, 0)
             var cell = dataSource?.tableViewCellForRowAtIndexPath(this, indexPatch) as UITableViewCell
             if (Math.abs(contentOffset.y) - contentOffsetY >= topCell.frame.size.height) {
-                cell.frame = cell.frame.setY(it.frame.origin.y + it.frame.size.height)
+                cell.frame = cell.frame.setY(actionCell.frame.origin.y + actionCell.frame.size.height)
 
             }
             else if (Math.abs(contentOffset.y) - contentOffsetY >= bottomCell.frame.size.height) {
@@ -189,5 +219,9 @@ open class UITableView(context: Context) : UIScrollView(context) {
 
     public fun numberOfRowsInSection(section: Int): Int {
         return 0
+    }
+
+    public fun dequeueReusableHeaderFooterViewWithIdentifier(identifier: String) {
+
     }
 }

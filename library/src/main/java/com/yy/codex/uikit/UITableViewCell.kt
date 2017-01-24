@@ -6,7 +6,11 @@ import android.content.Context
  * Created by it on 17/1/23.
  */
 
-open class UITableViewCell(context: Context) : UIView(context) {
+enum class UITableViewCellStyle {
+    UITableViewCellStyleDefault
+}
 
-    var reuseIdentifier = ""
+open class UITableViewCell(context: Context, val style: UITableViewCellStyle, val reuseIdentifier: String) : UIView(context) {
+
+
 }
