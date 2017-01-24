@@ -175,19 +175,25 @@ class UINavigationBar : UIView {
 
     fun popNavigationItem(animated: Boolean) {
         currentAnimation?.cancel()
-        if (animated) {
-            doPopAnimation(Runnable {
-                val mutableItems = items.toMutableList()
-                mutableItems.removeAt(mutableItems.count() - 1)
-                this.items = mutableItems.toList()
-                resetItemsView()
-            })
-        }
-        else {
-            val mutableItems = items.toMutableList()
-            mutableItems.removeAt(mutableItems.count() - 1)
-            this.items = mutableItems.toList()
-            resetItemsView()
+        if (items.count() >= 2) {
+            if (animated) {
+                doPopAnimation(Runnable {
+                    if (items.count() >= 2) {
+                        val mutableItems = items.toMutableList()
+                        mutableItems.removeAt(mutableItems.count() - 1)
+                        items = mutableItems.toList()
+                        resetItemsView()
+                    }
+                })
+            }
+            else {
+                if (items.count() >= 2) {
+                    val mutableItems = items.toMutableList()
+                    mutableItems.removeAt(mutableItems.count() - 1)
+                    items = mutableItems.toList()
+                    resetItemsView()
+                }
+            }
         }
     }
 

@@ -2,6 +2,7 @@ package com.yy.codex.uikit.sample;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -25,11 +26,14 @@ import com.yy.codex.uikit.UILabel;
 import com.yy.codex.uikit.UINavigationActivity;
 import com.yy.codex.uikit.UINavigationBar;
 import com.yy.codex.uikit.UINavigationController;
+import com.yy.codex.uikit.UINavigationController_ActivityBase;
 import com.yy.codex.uikit.UINavigationItem;
 import com.yy.codex.uikit.UIScrollView;
 import com.yy.codex.uikit.UISwitch;
 import com.yy.codex.uikit.UIView;
 import com.yy.codex.uikit.UIViewController;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.HashMap;
@@ -40,7 +44,18 @@ public class MainActivity extends UINavigationActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getNavigationController().getView().setMaterialDesign(true);
-        getNavigationController().setRootViewController(new TestViewController(this));
+    }
+
+    @NotNull
+    @Override
+    public UINavigationController createNavigationController() {
+        return new UINavigationController_ActivityBase(this);
+    }
+
+    @NotNull
+    @Override
+    public UIViewController rootViewController() {
+        return new TestViewController(this);
     }
 
 }
