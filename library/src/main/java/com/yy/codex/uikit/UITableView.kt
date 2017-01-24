@@ -140,7 +140,8 @@ open class UITableView(context: Context) : UIScrollView(context) {
                 visibleCells.remove(it)
             }
 
-            var cell = dataSource?.tableViewCellForRowAtIndexPath(this, NSIndexPath()) as UITableViewCell
+            var indexPatch = NSIndexPath(0, 0)
+            var cell = dataSource?.tableViewCellForRowAtIndexPath(this, indexPatch) as UITableViewCell
             if (Math.abs(contentOffset.y) - contentOffsetY >= topCell.frame.size.height) {
                 cell.frame = cell.frame.setY(it.frame.origin.y + it.frame.size.height)
 
@@ -172,7 +173,7 @@ open class UITableView(context: Context) : UIScrollView(context) {
     private fun updateContentSize() {
         var contentSizeHeight: Double = 0.00
         for (i in 0..numberOfSections) {
-            contentSizeHeight += delegate()?.tableViewHeightForRowAtIndexPath(this, NSIndexPath()) ?: 0.00
+            contentSizeHeight += delegate()?.tableViewHeightForRowAtIndexPath(this, NSIndexPath(0, 0)) ?: 0.00
         }
         this.contentSize = CGSize(0.0, contentSizeHeight)
     }
