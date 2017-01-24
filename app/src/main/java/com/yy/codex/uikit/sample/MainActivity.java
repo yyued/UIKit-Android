@@ -132,10 +132,11 @@ class TestView extends UIView {
         postDelayed(new Runnable() {
             @Override
             public void run() {
-                UIViewAnimator.INSTANCE.linear(3.0, new Runnable() {
+                UIViewAnimator.INSTANCE.spring(new Runnable() {
                     @Override
                     public void run() {
-                        testView.setFrame(new CGRect(200, 200, 44, 44));
+                        testView.setFrame(new CGRect(200, 200, 88, 88));
+                        testView.getLayer().setCornerRadius(44.0);
                     }
                 }, null);
             }
