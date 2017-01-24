@@ -77,12 +77,9 @@ class CGRect(x: Double, y: Double, width: Double, height: Double) {
     val height: Double
         get() = size.height
 
-    override fun equals(obj: Any?): Boolean {
-        var obj = obj as? CGRect ?: return false
-        return Math.abs(origin.x - obj.origin.x) < 0.01 &&
-            Math.abs(origin.y - obj.origin.y) < 0.01 &&
-            Math.abs(size.width - obj.size.width) < 0.01 &&
-            Math.abs(size.height - obj.size.height) < 0.01
+    override fun equals(other: Any?): Boolean {
+        var other = other as? CGRect ?: return false
+        return origin == other.origin && size == other.size
     }
 
     override fun toString(): String {

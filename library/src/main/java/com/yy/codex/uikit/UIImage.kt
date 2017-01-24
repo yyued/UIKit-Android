@@ -64,6 +64,11 @@ class UIImage {
             return CGSize(Math.ceil(bitmap.width / scale), Math.ceil(bitmap.height / scale))
         }
 
+    override fun equals(other: Any?): Boolean {
+        var other = other as? UIImage ?: return false
+        return scale == other.scale && renderingMode == other.renderingMode && bitmap == other.bitmap;
+    }
+
     companion object {
         private val sResCache = LruCache<Number, Bitmap>(8 * 1024 * 1024)
     }

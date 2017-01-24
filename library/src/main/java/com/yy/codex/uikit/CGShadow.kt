@@ -22,4 +22,9 @@ class CGShadow(val radius: Double, val offsetX: Double, val offsetY: Double, val
         return CGShadow(this.radius, offsetX, this.offsetY, color)
     }
 
+    override fun equals(other: Any?): Boolean {
+        var other = other as? CGShadow ?: return false
+        return Math.abs(radius - other.radius) < 0.01 && Math.abs(offsetX - other.offsetX) < 0.01 && Math.abs(offsetY - other.offsetY) < 0.01 && color == other.color
+    }
+
 }

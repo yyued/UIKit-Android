@@ -18,6 +18,11 @@ class CGPoint(val x: Double, val y: Double) {
         return Math.abs(toPoint.x - this.x) < xRange && Math.abs(toPoint.y - this.y) < yRange
     }
 
+    override fun equals(other: Any?): Boolean {
+        var other = other as? CGPoint ?: return false
+        return Math.abs(x - other.x) < 0.01 && Math.abs(y - other.y) < 0.01
+    }
+
     override fun toString(): String {
         return "CGPoint{x=$x,y=$y}"
     }

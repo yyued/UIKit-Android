@@ -30,16 +30,10 @@ open class CALayer {
 
     var frame = CGRect(0.0, 0.0, 0.0, 0.0)
         set(value) {
-            val x = field.origin.x.toFloat()
-            val y = field.origin.y.toFloat()
-            val w = field.size.width.toFloat()
-            val h = field.size.height.toFloat()
-            val newValue = CGRect(x.toDouble(), y.toDouble(), w.toDouble(), h.toDouble())
-            if (field != newValue) {
-                field = newValue
+            if (field != value) {
+                field = value
                 this.setNeedDisplay(true)
             }
-            field = value
         }
 
     /* styleProps */

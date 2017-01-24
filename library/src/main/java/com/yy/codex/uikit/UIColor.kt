@@ -16,6 +16,11 @@ class UIColor(val r: Double, val g: Double, val b: Double, val a: Double) {
         return Color.argb((a * 255).toInt(), (r * 255).toInt(), (g * 255).toInt(), (b * 255).toInt())
     }
 
+    override fun equals(other: Any?): Boolean {
+        var other = other as? UIColor ?: return false
+        return Math.abs(r - other.r) < 0.01 && Math.abs(g - other.g) < 0.01 && Math.abs(b - other.b) < 0.01 && Math.abs(a - other.a) < 0.01
+    }
+
     override fun toString(): String {
         return "UIColor, r = $r, g = $g, b = $b, a = $a"
     }

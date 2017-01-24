@@ -14,8 +14,13 @@ class CGSize(val width: Double, val height: Double) {
         return CGSize(width, height)
     }
 
+    override fun equals(other: Any?): Boolean {
+        var other = other as? CGSize ?: return false
+        return Math.abs(width - other.width) < 0.01 && Math.abs(height - other.height) < 0.01
+    }
+
     override fun toString(): String {
-        return "CGSize{mWidth=$width,height=$height}"
+        return "CGSize{width=$width,height=$height}"
     }
 
 }
