@@ -1,42 +1,28 @@
 package com.yy.codex.uikit.sample;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
-import android.support.v7.app.AppCompatActivity;
 import android.util.AttributeSet;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.WindowManager;
 
 import com.yy.codex.uikit.CGRect;
 import com.yy.codex.uikit.CGSize;
-import com.yy.codex.uikit.NSAttributedString;
 import com.yy.codex.uikit.UIBarButtonItem;
 import com.yy.codex.uikit.UIColor;
 import com.yy.codex.uikit.UIConstraint;
-import com.yy.codex.uikit.UIFont;
 import com.yy.codex.uikit.UILabel;
 import com.yy.codex.uikit.UINavigationActivity;
-import com.yy.codex.uikit.UINavigationBar;
 import com.yy.codex.uikit.UINavigationController;
 import com.yy.codex.uikit.UINavigationController_ActivityBase;
-import com.yy.codex.uikit.UINavigationItem;
 import com.yy.codex.uikit.UIScrollView;
-import com.yy.codex.uikit.UISwitch;
 import com.yy.codex.uikit.UIView;
 import com.yy.codex.uikit.UIViewController;
 
 import org.jetbrains.annotations.NotNull;
-
-import java.io.File;
-import java.util.HashMap;
 
 public class MainActivity extends UINavigationActivity {
 
@@ -125,26 +111,18 @@ class TestView extends UIView {
     @Override
     public void init() {
         super.init();
-//        setAutomaticallyAdjustsSpace(true);
-        UIScrollView scrollView = new UIScrollView(getContext());
-        UIConstraint constraint = new UIConstraint();
-        constraint.setCenterHorizontally(true);
-        constraint.setCenterVertically(true);
-        constraint.setWidth("100%");
-        constraint.setHeight("100%");
-        scrollView.setConstraint(constraint);
-        scrollView.setBackgroundColor(UIColor.Companion.getWhiteColor());
-        for (int i = 0; i < 20; i++) {
-            UILabel label = new UILabel(getContext());
-            label.setFrame(new CGRect(0,100 * i,100,22));
-//            label.setBackgroundColor(new UIColor(1, 0, 0, 1.0 - (i / 100.0)));
-            label.setText("i = " + i);
-            scrollView.addSubview(label);
-        }
-        scrollView.setBounces(true);
-        scrollView.setAlwaysBounceVertical(true);
-        scrollView.setContentSize(new CGSize(0, 2000));
-        addSubview(scrollView);
+        UIView testView = new UIView(getContext());
+        testView.setFrame(new CGRect(44, 44, 44, 44));
+        testView.setWantsLayer(true);
+        testView.getLayer().setCornerRadius(22.0);
+        testView.getLayer().setClipToBounds(true);
+        testView.setBackgroundColor(UIColor.Companion.getOrangeColor());
+        testView.getLayer().setShadowColor(UIColor.Companion.getBlackColor());
+        testView.getLayer().setShadowRadius(8.0);
+        testView.getLayer().setShadowX(2);
+        testView.getLayer().setShadowY(2);
+        addSubview(testView);
+
     }
 
 }

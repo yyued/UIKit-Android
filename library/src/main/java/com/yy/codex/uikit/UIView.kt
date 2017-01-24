@@ -194,7 +194,12 @@ open class UIView : FrameLayout, UIResponder {
 
     fun setBackgroundColor(color: UIColor?) {
         color?.let {
-            setBackgroundColor(it.toInt())
+            if (wantsLayer) {
+                layer.backgroundColor = color
+            }
+            else {
+                setBackgroundColor(it.toInt())
+            }
         }
     }
 
