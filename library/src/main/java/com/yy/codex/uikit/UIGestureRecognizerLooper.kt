@@ -82,7 +82,7 @@ internal class UIGestureRecognizerLooper internal constructor(internal var hitTe
     }
 
     private fun getGestureRecognizers(view: UIView): ArrayList<UIGestureRecognizer> {
-        if (!view.isUserInteractionEnabled) {
+        if (!view.userInteractionEnabled) {
             return ArrayList()
         } else {
             val gestureRecognizers = ArrayList(view.gestureRecognizers)

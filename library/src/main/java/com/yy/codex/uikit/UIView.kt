@@ -353,6 +353,7 @@ open class UIView : FrameLayout, UIResponder {
 
     fun createShadowView() {
         val shadowView = UIView(context)
+        shadowView.userInteractionEnabled = false
         shadowView.tag = -1
         shadowView.wantsLayer = true
         shadowView.wantsLayer = true
@@ -369,7 +370,7 @@ open class UIView : FrameLayout, UIResponder {
             val enlargeRadiusX = layer.shadowX + layer.shadowRadius
             val enlargeRadiusY = layer.shadowY + layer.shadowRadius
             it.frame = CGRect(frame.x - enlargeRadiusX, frame.y - enlargeRadiusY, frame.width + enlargeRadiusX * 2, frame.height + enlargeRadiusY * 2)
-            val contentLayer = it.layer.subLayers.first()
+            val contentLayer = it.layer.sublayers.first()
             this.layer.copyProps(contentLayer)
             contentLayer.frame = CGRect(enlargeRadiusX, enlargeRadiusY, frame.width, frame.height)
         }
@@ -396,7 +397,7 @@ open class UIView : FrameLayout, UIResponder {
 
     /* category: UIView touch events */
 
-    var isUserInteractionEnabled = true
+    var userInteractionEnabled = true
 
     var gestureRecognizers = ArrayList<UIGestureRecognizer>()
         protected set

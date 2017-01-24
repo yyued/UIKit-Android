@@ -175,7 +175,7 @@ open class CALayer {
     */
     var isNewCanvasContext = false
         get() {
-            val result = this.transforms != null && this.transforms!!.size > 0 || this.subLayers.size > 0 && this.clipToBounds
+            val result = this.transforms != null && this.transforms!!.size > 0 || this.sublayers.size > 0 && this.clipToBounds
             return result
         }
 
@@ -186,6 +186,14 @@ open class CALayer {
                 this.setNeedDisplay(true)
             }
         }
+
+    /* transformProp */
+
+    var transforms: List<CGTransform> = listOf()
+
+    fun setTransform(a: CGTransform) {
+        this.transforms = listOf(a)
+    }
 
     /* hierarchyProps */
 
@@ -198,16 +206,8 @@ open class CALayer {
     var superLayer: CALayer? = null
         private set
 
-    var subLayers: MutableList<CALayer> = mutableListOf()
+    var sublayers: MutableList<CALayer> = mutableListOf()
         private set
-
-    /* transformProp */
-
-    var transforms: List<CGTransform> = listOf()
-
-    fun setTransform(a: CGTransform) {
-        this.transforms = listOf(a)
-    }
 
     /* category CALayer Constructor */
 
@@ -223,47 +223,54 @@ open class CALayer {
 
     /* category CALayer Hierarchy */
 
+    fun resetBelongings() {
+        for (sublayer in sublayers) {
+            sublayer.superLayer = this
+            sublayer.resetBelongings()
+        }
+    }
+
     fun removeFromSuperLayer() {
         superLayer?.let {
-            it.subLayers.remove(this)
+            it.sublayers.remove(this)
         }
     }
 
     fun addSubLayer(layer: CALayer) {
         layer.removeFromSuperLayer()
         layer.superLayer = this
-        this.subLayers.add(layer)
+        this.sublayers.add(layer)
     }
 
     fun insertSubLayerAtIndex(subLayer: CALayer, index: Int) {
         subLayer.removeFromSuperLayer()
         if (index < 1) {
-            this.subLayers.add(0, subLayer)
-        } else if (index > this.subLayers.size - 1) {
-            this.subLayers.add(subLayer)
+            this.sublayers.add(0, subLayer)
+        } else if (index > this.sublayers.size - 1) {
+            this.sublayers.add(subLayer)
         } else {
-            this.subLayers.add(index, subLayer)
+            this.sublayers.add(index, subLayer)
         }
     }
 
     fun insertBelowSubLayer(subLayer: CALayer, siblingSubview: CALayer) {
-        val idx = this.subLayers.indexOf(siblingSubview)
+        val idx = this.sublayers.indexOf(siblingSubview)
         if (idx > -1) {
             subLayer.removeFromSuperLayer()
-            this.subLayers.add(idx, subLayer)
+            this.sublayers.add(idx, subLayer)
         }
     }
 
     fun insertAboveSubLayer(subLayer: CALayer, siblingSubview: CALayer) {
-        val idx = this.subLayers.indexOf(siblingSubview)
+        val idx = this.sublayers.indexOf(siblingSubview)
         if (idx > -1) {
             subLayer.removeFromSuperLayer()
-            this.subLayers.add(idx + 1, subLayer)
+            this.sublayers.add(idx + 1, subLayer)
         }
     }
 
     fun replaceSubLayer(subLayer: CALayer, newLayer: CALayer) {
-        val idx = this.subLayers.indexOf(subLayer)
+        val idx = this.sublayers.indexOf(subLayer)
         if (idx > -1) {
             subLayer.removeFromSuperLayer()
             insertSubLayerAtIndex(newLayer, idx)
@@ -273,6 +280,7 @@ open class CALayer {
     /* category CALayer Appearance */
 
     fun drawRect(canvas: Canvas, rect: CGRect) {
+        resetBelongings()
         if (this.askIfNeedDisplay()) {
             this.resetNeedDisplayToFalse()
             drawAllLayers(canvas, rect)
@@ -287,7 +295,7 @@ open class CALayer {
             CALayerPainter.drawLayerTree(this, canvas)
         } else {
             this.drawInCanvas(canvas)
-            for (item in this.subLayers) {
+            for (item in this.sublayers) {
                 item.drawAllLayers(canvas, rect)
             }
         }
@@ -299,7 +307,7 @@ open class CALayer {
 
     fun drawLayerTreeInCanvas(canvas: Canvas) {
         this.drawInCanvas(canvas)
-        for (item in this.subLayers) {
+        for (item in this.sublayers) {
             item.drawLayerTreeInCanvas(canvas)
         }
     }
@@ -310,7 +318,7 @@ open class CALayer {
 
     private fun resetNeedDisplayToFalse() {
         this.needDisplay = false
-        for (item in this.subLayers) {
+        for (item in this.sublayers) {
             item.resetNeedDisplayToFalse()
         }
     }
@@ -358,6 +366,7 @@ open class CALayer {
         toLayer.clipToBounds = clipToBounds
         toLayer.hidden = hidden
         toLayer.mask = mask
+        toLayer.sublayers = sublayers
     }
 
     companion object {

@@ -121,7 +121,7 @@ open class UIControl : UIView {
 
     override fun init() {
         super.init()
-        isUserInteractionEnabled = true
+        userInteractionEnabled = true
         val longPressGestureRecognizer = UILongPressGestureRecognizer(this, "onLongPressed:")
         longPressGestureRecognizer.minimumPressDuration = 0.05
         addGestureRecognizer(longPressGestureRecognizer)
@@ -197,7 +197,7 @@ open class UIControl : UIView {
     var enable = true
         set(value) {
             field = value
-            isUserInteractionEnabled = enable
+            userInteractionEnabled = enable
             resetState()
         }
 

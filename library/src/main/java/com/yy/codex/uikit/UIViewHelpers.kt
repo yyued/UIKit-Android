@@ -10,12 +10,12 @@ internal object UIViewHelpers {
 
     fun hitTest(view: UIView, point: CGPoint, event: MotionEvent): UIView? {
         val views = view.subviews.reversed()
-        if (!view.isUserInteractionEnabled && view.alpha <= 0) {
+        if (!view.userInteractionEnabled && view.alpha <= 0) {
             return null
         }
         if (pointInside(view, point)) {
             for (subview in views) {
-                if (!subview.isUserInteractionEnabled || subview.alpha <= 0) {
+                if (!subview.userInteractionEnabled || subview.alpha <= 0) {
                     continue
                 }
                 val convertedPoint = view.convertPoint(point, subview)
