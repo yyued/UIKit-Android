@@ -1,18 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <com.yy.codex.uikit.UIView xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#000000">
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="#ffffff">
     <com.yy.codex.uikit.UIView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="#ff0000"
+        android:id="@+id/roundView"
         app:constraint.enabled="true"
         app:constraint.centerHorizontally="true"
         app:constraint.centerVertically="true"
         app:constraint.width="44"
         app:constraint.height="44"
+        app:title="Testing"
+        android:background="#ff0000"
         >
     </com.yy.codex.uikit.UIView>
 </com.yy.codex.uikit.UIView>

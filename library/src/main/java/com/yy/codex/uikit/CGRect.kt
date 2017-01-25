@@ -89,7 +89,7 @@ class CGRect(x: Double, y: Double, width: Double, height: Double) {
 
     companion object {
 
-        fun create(attributes: TypedArray): CGRect {
+        fun create(attributes: TypedArray, target: UIView): CGRect {
             return CGRect(
                 attributes.getFloat(R.styleable.UIView_frame_x, 0.0f).toDouble(),
                 attributes.getFloat(R.styleable.UIView_frame_y, 0.0f).toDouble(),

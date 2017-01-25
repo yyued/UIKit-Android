@@ -1,5 +1,6 @@
 package com.yy.codex.coreanimation
 
+import android.content.res.TypedArray
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import com.yy.codex.foundation.doubleEquals
@@ -358,11 +359,29 @@ open class CALayer {
         toLayer.sublayers = sublayers
     }
 
+    open fun resetProps(attributes: TypedArray) {
+        if (attributes.getColor(R.styleable.UIView_layer_backgroundColor, -1) != -1) {
+            backgroundColor = UIColor(attributes.getColor(R.styleable.UIView_layer_backgroundColor, -1))
+        }
+        cornerRadius = attributes.getFloat(R.styleable.UIView_layer_cornerRadius, 0.0f).toDouble()
+        borderWidth = attributes.getFloat(R.styleable.UIView_layer_borderWidth, 0.0f).toDouble()
+        if (attributes.getColor(R.styleable.UIView_layer_borderColor, -1) != -1) {
+            borderColor = UIColor(attributes.getColor(R.styleable.UIView_layer_borderColor, -1))
+        }
+        shadowX = attributes.getFloat(R.styleable.UIView_layer_shadowX, 0.0f).toDouble()
+        shadowY = attributes.getFloat(R.styleable.UIView_layer_shadowY, 0.0f).toDouble()
+        shadowRadius = attributes.getFloat(R.styleable.UIView_layer_shadowRadius, 0.0f).toDouble()
+        if (attributes.getColor(R.styleable.UIView_layer_shadowColor, -1) != -1) {
+            shadowColor = UIColor(attributes.getColor(R.styleable.UIView_layer_shadowColor, -1))
+        }
+        clipToBounds = attributes.getBoolean(R.styleable.UIView_layer_clipToBounds, false)
+    }
+
     companion object {
 
         /* category CALayer support method */
 
-        fun calcOriginInSuperCoordinate(layer: CALayer): CGPoint {
+        fun calculateOriginInSuperCoordinate(layer: CALayer): CGPoint {
             val scaledDensity = UIScreen.mainScreen.scale().toFloat()
             var oriX = layer.frame.origin.x
             var oriY = layer.frame.origin.y
@@ -375,9 +394,6 @@ open class CALayer {
             return CGPoint(oriX * scaledDensity, oriY * scaledDensity)
         }
     }
-
-
-
 
 
 }

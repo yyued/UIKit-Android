@@ -5,6 +5,7 @@ import android.os.Build
 import android.support.annotation.RequiresApi
 import android.util.AttributeSet
 import android.view.View
+import com.yy.codex.foundation.lets
 
 import java.util.EnumSet
 import java.util.HashMap
@@ -14,6 +15,37 @@ import java.util.HashMap
  */
 
 class UIButton : UIControl {
+
+    /* Props */
+
+    lateinit var titleLabel: UILabel
+        private set
+    private var titles = HashMap<EnumSet<UIControl.State>, String>()
+    private var titleColors = HashMap<EnumSet<UIControl.State>, UIColor>()
+    private var attributedTitles = HashMap<EnumSet<UIControl.State>, NSAttributedString>()
+    var font = UIFont(17f)
+        set(value) {
+            field = value
+            resetTitleLabel()
+        }
+    lateinit var imageView: UIImageView
+        private set
+    private var images = HashMap<EnumSet<UIControl.State>, UIImage>()
+    var contentEdgeInsets = UIEdgeInsets(0.0, 0.0, 0.0, 0.0)
+        set(value) {
+            field = value
+            layoutSubviews()
+        }
+    var titleEdgeInsets = UIEdgeInsets(0.0, 0.0, 0.0, 0.0)
+        set(value) {
+            field = value
+            layoutSubviews()
+        }
+    var imageEdgeInsets = UIEdgeInsets(0.0, 0.0, 0.0, 0.0)
+        set(value) {
+            field = value
+            layoutSubviews()
+        }
 
     constructor(context: Context, view: View) : super(context, view) {}
 
@@ -26,9 +58,28 @@ class UIButton : UIControl {
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes) {}
 
-    init {
+    override fun init() {
+        super.init()
         initTitleLabel()
         initImageView()
+    }
+
+    override fun prepareProps(attrs: AttributeSet) {
+        initializeAttributes = context.theme.obtainStyledAttributes(attrs, R.styleable.UIButton, 0, 0)
+    }
+
+    override fun resetProps() {
+        super.resetProps()
+        initializeAttributes?.let {
+            it.getString(R.styleable.UIButton_title)?.let {
+                setTitle(it, State.Normal)
+            }
+            it.getResourceId(R.styleable.UIButton_image, -1)?.let {
+                if (it != -1) {
+                    setImage(UIImage(context, it), State.Normal)
+                }
+            }
+        }
     }
 
     /* UIControl */
@@ -49,16 +100,11 @@ class UIButton : UIControl {
 
     /* Title */
 
-    var titleLabel: UILabel? = null
-        private set
-
     private fun initTitleLabel() {
         titleLabel = UILabel(context)
-        titleLabel?.let {
-            it.numberOfLines = 1
-            it.linebreakMode = NSLineBreakMode.ByTruncatingMiddle
-            addSubview(it)
-        }
+        titleLabel.numberOfLines = 1
+        titleLabel.linebreakMode = NSLineBreakMode.ByTruncatingMiddle
+        addSubview(titleLabel)
     }
 
     private fun resetTitleLabel() {
@@ -76,14 +122,12 @@ class UIButton : UIControl {
         }
     }
 
-    private val titleTexts = HashMap<EnumSet<UIControl.State>, String>()
-
     fun currentTitle(): String? {
         val state = state
-        if (titleTexts[state] != null) {
-            return titleTexts[state]
-        } else if (titleTexts[EnumSet.of(UIControl.State.Normal)] != null) {
-            return titleTexts[EnumSet.of(UIControl.State.Normal)]
+        if (titles[state] != null) {
+            return titles[state]
+        } else if (titles[EnumSet.of(UIControl.State.Normal)] != null) {
+            return titles[EnumSet.of(UIControl.State.Normal)]
         } else {
             return ""
         }
@@ -97,11 +141,9 @@ class UIButton : UIControl {
         if (state.contains(UIControl.State.Selected)) {
             state.remove(UIControl.State.Normal)
         }
-        titleTexts.put(state, title)
+        titles.put(state, title)
         resetTitleLabel()
     }
-
-    private val titleColors = HashMap<EnumSet<UIControl.State>, UIColor>()
 
     fun currentTitleColor(): UIColor? {
         val state = state
@@ -132,14 +174,6 @@ class UIButton : UIControl {
         resetTitleLabel()
     }
 
-    var font = UIFont(17f)
-        set(value) {
-            field = value
-            resetTitleLabel()
-        }
-
-    val attributedTitles = HashMap<EnumSet<UIControl.State>, NSAttributedString>()
-
     fun currentAttributedTitle(): NSAttributedString? {
         val state = state
         if (attributedTitles[state] != null) {
@@ -165,31 +199,24 @@ class UIButton : UIControl {
 
     /* ImageView */
 
-    var imageView: UIImageView? = null
-        private set
-
     private fun initImageView() {
         imageView = UIImageView(context)
-        imageView?.let {
-            addSubview(it)
-        }
+        addSubview(imageView)
     }
 
     private fun resetImageView() {
-        imageView?.let {
-            val image = currentImage() ?: return
-            if (image.renderingMode != UIImage.RenderingMode.AlwaysOriginal) {
-                it.layer.bitmapColor = currentTitleColor()
-            } else {
-                it.layer.bitmapColor = null
-            }
-            it.image = image
-            it.invalidate()
-            layoutSubviews()
+        val image = currentImage() ?: return
+        if (image.renderingMode != UIImage.RenderingMode.AlwaysOriginal) {
+            imageView.layer.bitmapColor = currentTitleColor()
+        } else {
+            imageView.layer.bitmapColor = null
         }
+        imageView.image = image
+        imageView.invalidate()
+        layoutSubviews()
     }
 
-    private val images = HashMap<EnumSet<UIControl.State>, UIImage>()
+
 
     fun currentImage(): UIImage? {
         val state = state
@@ -217,11 +244,6 @@ class UIButton : UIControl {
     /* Layouts */
 
     override fun intrinsicContentSize(): CGSize {
-        if (titleLabel as? UILabel == null && imageView as? UIImageView == null) {
-            return CGSize(.0, .0)
-        }
-        val titleLabel = titleLabel as UILabel
-        val imageView = imageView as UIImageView
         titleLabel.maxWidth = 999999.0
         var contentWidth = titleLabel.intrinsicContentSize().width + imageView.intrinsicContentSize().width
         contentWidth += contentEdgeInsets.left + contentEdgeInsets.right + imageEdgeInsets.left + imageEdgeInsets.right + titleEdgeInsets.left + titleEdgeInsets.right
@@ -230,29 +252,8 @@ class UIButton : UIControl {
         return CGSize(Math.max(contentWidth, 44.0), Math.max(contentHeight, 44.0))
     }
 
-    var contentEdgeInsets = UIEdgeInsets(0.0, 0.0, 0.0, 0.0)
-        set(value) {
-            field = value
-            layoutSubviews()
-        }
-    var titleEdgeInsets = UIEdgeInsets(0.0, 0.0, 0.0, 0.0)
-        set(value) {
-            field = value
-            layoutSubviews()
-        }
-    var imageEdgeInsets = UIEdgeInsets(0.0, 0.0, 0.0, 0.0)
-        set(value) {
-            field = value
-            layoutSubviews()
-        }
-
     override fun layoutSubviews() {
         super.layoutSubviews()
-        if (titleLabel as? UILabel == null && imageView as? UIImageView == null) {
-            return
-        }
-        val titleLabel = titleLabel as UILabel
-        val imageView = imageView as UIImageView
         titleLabel.maxWidth = frame.size.width - imageView.intrinsicContentSize().width - (contentEdgeInsets.left + contentEdgeInsets.right + imageEdgeInsets.left + imageEdgeInsets.right + titleEdgeInsets.left + titleEdgeInsets.right)
         var contentWidth = titleLabel.intrinsicContentSize().width + imageView.intrinsicContentSize().width
         contentWidth += contentEdgeInsets.left + contentEdgeInsets.right + imageEdgeInsets.left + imageEdgeInsets.right + titleEdgeInsets.left + titleEdgeInsets.right

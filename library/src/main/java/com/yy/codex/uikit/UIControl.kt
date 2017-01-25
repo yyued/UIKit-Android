@@ -66,6 +66,30 @@ open class UIControl : UIView {
     private val invocations = HashMap<Event, List<NSInvocation>>()
     private val runnable = HashMap<Event, List<Runnable>>()
 
+    override fun prepareProps(attrs: AttributeSet) {
+        initializeAttributes = context.theme.obtainStyledAttributes(attrs, R.styleable.UIControl, 0, 0)
+    }
+
+    override fun resetProps() {
+        super.resetProps()
+        initializeAttributes?.let {
+            enable = it.getBoolean(R.styleable.UIControl_enabled, true)
+            select = it.getBoolean(R.styleable.UIControl_selected, false)
+            when (it.getInt(R.styleable.UIControl_contentVerticalAlignment, 0)) {
+                0 -> contentVerticalAlignment = ContentVerticalAlignment.Center
+                1 -> contentVerticalAlignment = ContentVerticalAlignment.Top
+                2 -> contentVerticalAlignment = ContentVerticalAlignment.Bottom
+                3 -> contentVerticalAlignment = ContentVerticalAlignment.Fill
+            }
+            when (it.getInt(R.styleable.UIControl_contentHorizontalAlignment, 0)) {
+                0 -> contentHorizontalAlignment = ContentHorizontalAlignment.Center
+                1 -> contentHorizontalAlignment = ContentHorizontalAlignment.Left
+                2 -> contentHorizontalAlignment = ContentHorizontalAlignment.Right
+                3 -> contentHorizontalAlignment = ContentHorizontalAlignment.Fill
+            }
+        }
+    }
+
     fun addTarget(target: Any, selector: String, event: Event) {
         if (!invocations.containsKey(event)) {
             invocations.put(event, listOf())

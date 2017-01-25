@@ -50,7 +50,7 @@ internal object CALayerPainter {
     private fun drawRoundRect(canvas: Canvas, layer: CALayer) {
         val frameRaw = layer.frame
         val scaledDensity = UIScreen.mainScreen.scale().toFloat()
-        val origin = CALayer.calcOriginInSuperCoordinate(layer)
+        val origin = CALayer.calculateOriginInSuperCoordinate(layer)
         val frame = CGRect(frameRaw.x * scaledDensity, frameRaw.y * scaledDensity, frameRaw.width * scaledDensity, frameRaw.height * scaledDensity)
         val borderWidth = layer.borderWidth.toFloat() * scaledDensity
         val cornerRadius = layer.cornerRadius.toFloat() * scaledDensity
@@ -75,7 +75,7 @@ internal object CALayerPainter {
         val bitmap = layer.bitmap
         val bitmapGravity = layer.bitmapGravity
         val scaledDensity = UIScreen.mainScreen.scale().toFloat()
-        val origin = CALayer.calcOriginInSuperCoordinate(layer)
+        val origin = CALayer.calculateOriginInSuperCoordinate(layer)
         val frame = CGRect(frameRaw.x * scaledDensity, frameRaw.y * scaledDensity, frameRaw.width * scaledDensity, frameRaw.height * scaledDensity)
         val cornerRadius = layer.cornerRadius.toFloat() * scaledDensity
         val bitmapColor = layer.bitmapColor
@@ -102,7 +102,7 @@ internal object CALayerPainter {
     private fun drawRoundRectBorder(canvas: Canvas, layer: CALayer) {
         val frameRaw = layer.frame
         val scaledDensity = UIScreen.mainScreen.scale().toFloat()
-        val origin = CALayer.calcOriginInSuperCoordinate(layer)
+        val origin = CALayer.calculateOriginInSuperCoordinate(layer)
         val frame = CGRect(frameRaw.x * scaledDensity, frameRaw.y * scaledDensity, frameRaw.width * scaledDensity, frameRaw.height * scaledDensity)
         val borderWidth = layer.borderWidth.toFloat() * scaledDensity
         val cornerRadius = layer.cornerRadius.toFloat() * scaledDensity
@@ -125,7 +125,7 @@ internal object CALayerPainter {
     private fun drawRect(canvas: Canvas, layer: CALayer) {
         val frameRaw = layer.frame
         val scaledDensity = UIScreen.mainScreen.scale().toFloat()
-        val origin = CALayer.calcOriginInSuperCoordinate(layer)
+        val origin = CALayer.calculateOriginInSuperCoordinate(layer)
         val frame = CGRect(frameRaw.x * scaledDensity, frameRaw.y * scaledDensity, frameRaw.width * scaledDensity, frameRaw.height * scaledDensity)
 
 
@@ -146,7 +146,7 @@ internal object CALayerPainter {
         val frameRaw = layer.frame
         val bitmap = layer.bitmap
         val scaledDensity = UIScreen.mainScreen.scale().toFloat()
-        val origin = CALayer.calcOriginInSuperCoordinate(layer)
+        val origin = CALayer.calculateOriginInSuperCoordinate(layer)
         val frame = CGRect(frameRaw.x * scaledDensity, frameRaw.y * scaledDensity, frameRaw.width * scaledDensity, frameRaw.height * scaledDensity)
         val bitmapColor = layer.bitmapColor
         paint.reset()
@@ -163,7 +163,7 @@ internal object CALayerPainter {
     private fun drawRectBorder(canvas: Canvas, layer: CALayer) {
         val frameRaw = layer.frame
         val scaledDensity = UIScreen.mainScreen.scale().toFloat()
-        val origin = CALayer.calcOriginInSuperCoordinate(layer)
+        val origin = CALayer.calculateOriginInSuperCoordinate(layer)
         val frame = CGRect(frameRaw.x * scaledDensity, frameRaw.y * scaledDensity, frameRaw.width * scaledDensity, frameRaw.height * scaledDensity)
         val borderWidth = layer.borderWidth.toFloat() * scaledDensity
         val halfBorderW = borderWidth / 2.0f
@@ -189,7 +189,7 @@ internal object CALayerPainter {
     }
 
     private fun createEmptyBitmap(layer: CALayer): Bitmap {
-        val origin = CALayer.calcOriginInSuperCoordinate(layer)
+        val origin = CALayer.calculateOriginInSuperCoordinate(layer)
         val scaledDensity = UIScreen.mainScreen.scale().toFloat()
         val bitmapW = (layer.frame.size.width * scaledDensity + origin.x).toInt()
         val bitmapH = (layer.frame.size.height * scaledDensity + origin.y).toInt()
@@ -204,7 +204,7 @@ internal object CALayerPainter {
     }
 
     private fun createBitmapWithMaskLayer(layer: CALayer): Bitmap {
-        val origin = CALayer.calcOriginInSuperCoordinate(layer)
+        val origin = CALayer.calculateOriginInSuperCoordinate(layer)
         val scaledDensity = UIScreen.mainScreen.scale().toFloat()
         val cornerRaidus = layer.cornerRadius.toFloat() * scaledDensity
         val bitmapW = (layer.frame.size.width * scaledDensity + origin.x).toInt()

@@ -2,9 +2,9 @@ package com.yy.codex.uikit
 
 import android.app.Activity
 import android.content.Context
-
-import java.lang.ref.WeakReference
-import java.util.ArrayList
+import java.util.*
+import java.util.logging.Handler
+import kotlin.concurrent.schedule
 
 /**
  * Created by cuiminghui on 2017/1/19.
@@ -15,9 +15,9 @@ open class UIViewController(val context: Context) : UIResponder {
     /* Public */
 
     fun postDelay(runnable: Runnable, millisecond: Long) {
-        view?.let {
-            it.postDelayed(runnable, millisecond)
-        }
+        Timer().schedule(millisecond, {
+            runOnUIThread(runnable)
+        })
     }
 
     fun runOnUIThread(runnable: Runnable) {
@@ -120,7 +120,9 @@ open class UIViewController(val context: Context) : UIResponder {
     }
 
     fun loadViewIfNeeded() {
-        loadView()
+        if (!isViewLoaded) {
+            loadView()
+        }
     }
 
     open fun viewDidLoad() {

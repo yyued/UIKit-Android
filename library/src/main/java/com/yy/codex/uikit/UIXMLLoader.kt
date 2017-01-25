@@ -12,7 +12,9 @@ class UIXMLLoader {
     companion object {
 
         fun loadViewFromXML(context: Context, resID: Int): UIView? {
-            return LayoutInflater.from(context).inflate(resID, null) as? UIView
+            val view = LayoutInflater.from(context).inflate(resID, null) as? UIView ?: return null
+            view.awakeFromXML()
+            return view
         }
 
     }

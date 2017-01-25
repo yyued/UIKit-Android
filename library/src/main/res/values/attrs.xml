@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="UIView">
+        <attr name="materialDesign" format="boolean" />
         <attr name="frame.x" format="float" />
         <attr name="frame.y" format="float" />
         <attr name="frame.width" format="float" />
@@ -26,5 +27,58 @@
         <attr name="constraint.left" format="string" />
         <attr name="constraint.right" format="string" />
         <attr name="constraint.bottom" format="string" />
+        <attr name="maxWidth" format="float" />
+        <attr name="automaticallyAdjustsSpace" format="boolean" />
+        <attr name="marginInset.top" format="float" />
+        <attr name="marginInset.left" format="float" />
+        <attr name="marginInset.right" format="float" />
+        <attr name="marginInset.bottom" format="float" />
+        <attr name="tintColor" format="color" />
+        <attr name="wantsLayer" format="boolean" />
+        <attr name="layer.backgroundColor" format="color" />
+        <attr name="layer.cornerRadius" format="float" />
+        <attr name="layer.borderWidth" format="float" />
+        <attr name="layer.borderColor" format="color" />
+        <attr name="layer.shadowX" format="float" />
+        <attr name="layer.shadowY" format="float" />
+        <attr name="layer.shadowRadius" format="float" />
+        <attr name="layer.shadowColor" format="color" />
+        <attr name="layer.clipToBounds" format="boolean" />
+        <attr name="userInteractionEnabled" format="boolean" />
     </declare-styleable>
+
+    <declare-styleable name="UIControl" parent="UIView">
+        <attr name="enabled" format="boolean" />
+        <attr name="selected" format="boolean" />
+        <attr name="contentVerticalAlignment" format="enum">
+            <enum name="Center" value="0" />
+            <enum name="Top" value="1" />
+            <enum name="Bottom" value="2" />
+            <enum name="Fill" value="3" />
+        </attr>
+        <attr name="contentHorizontalAlignment" format="enum">
+            <enum name="Center" value="0" />
+            <enum name="Left" value="1" />
+            <enum name="Right" value="2" />
+            <enum name="Fill" value="3" />
+        </attr>
+    </declare-styleable>
+
+    <declare-styleable name="UIButton" parent="UIControl">
+        <attr name="title" format="string" />
+        <attr name="image" format="reference" />
+        <attr name="contentInsets.top" format="float" />
+        <attr name="contentInsets.left" format="float" />
+        <attr name="contentInsets.right" format="float" />
+        <attr name="contentInsets.bottom" format="float" />
+        <attr name="titleEdgeInsets.top" format="float" />
+        <attr name="titleEdgeInsets.left" format="float" />
+        <attr name="titleEdgeInsets.right" format="float" />
+        <attr name="titleEdgeInsets.bottom" format="float" />
+        <attr name="imageEdgeInsets.top" format="float" />
+        <attr name="imageEdgeInsets.left" format="float" />
+        <attr name="imageEdgeInsets.right" format="float" />
+        <attr name="imageEdgeInsets.bottom" format="float" />
+    </declare-styleable>
+
 </resources>

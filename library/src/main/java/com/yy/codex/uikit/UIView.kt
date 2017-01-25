@@ -1,6 +1,7 @@
 package com.yy.codex.uikit
 
 import android.content.Context
+import android.content.res.TypedArray
 import android.graphics.Canvas
 import android.os.Build
 import android.support.annotation.RequiresApi
@@ -8,7 +9,7 @@ import android.util.AttributeSet
 import android.view.*
 import android.widget.FrameLayout
 import com.yy.codex.coreanimation.CALayer
-import java.util.ArrayList
+import java.util.*
 
 /**
  * Created by cuiminghui on 2016/12/30.
@@ -17,6 +18,8 @@ import java.util.ArrayList
 open class UIView : FrameLayout, UIResponder {
 
     /* FrameLayout initialize methods */
+
+    protected var initializeAttributes: TypedArray? = null
 
     constructor(context: Context, view: View) : super(context) {
         addView(view)
@@ -28,18 +31,18 @@ open class UIView : FrameLayout, UIResponder {
 
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
         init()
-        resetProps(attrs)
+        prepareProps(attrs)
     }
 
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
         init()
-        resetProps(attrs)
+        prepareProps(attrs)
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes) {
         init()
-        resetProps(attrs)
+        prepareProps(attrs)
     }
 
     open fun init() {
@@ -49,11 +52,35 @@ open class UIView : FrameLayout, UIResponder {
 
     /* XML */
 
-    fun resetProps(attrs: AttributeSet) {
-        val attributes = context.theme.obtainStyledAttributes(attrs, R.styleable.UIView, 0, 0)
-        frame = CGRect.create(attributes)
-        constraint = UIConstraint.create(attributes)
-        attributes.recycle()
+    open fun awakeFromXML() {
+        if (initializeAttributes != null) {
+            resetProps()
+            initializeAttributes = null
+        }
+        subviews.forEach(UIView::awakeFromXML)
+    }
+
+    protected open fun prepareProps(attrs: AttributeSet) {
+        initializeAttributes = context.theme.obtainStyledAttributes(attrs, R.styleable.UIView, 0, 0)
+    }
+
+    protected open fun resetProps() {
+        initializeAttributes?.let {
+            materialDesign = it.getBoolean(R.styleable.UIView_materialDesign, false)
+            frame = CGRect.create(it, this)
+            constraint = UIConstraint.create(it)
+            maxWidth = it.getFloat(R.styleable.UIView_maxWidth, 0.0f).toDouble()
+            automaticallyAdjustsSpace = it.getBoolean(R.styleable.UIView_automaticallyAdjustsSpace, false)
+            marginInsets = UIEdgeInsets.create(it, this, "margin")
+            if (it.getColor(R.styleable.UIView_tintColor, -1) != -1) {
+                tintColor = UIColor(it.getColor(R.styleable.UIView_tintColor, -1))
+            }
+            wantsLayer = it.getBoolean(R.styleable.UIView_wantsLayer, false)
+            if (wantsLayer) {
+                layer.resetProps(it)
+            }
+            userInteractionEnabled = it.getBoolean(R.styleable.UIView_userInteractionEnabled, true)
+        }
     }
 
     /* UIResponder */

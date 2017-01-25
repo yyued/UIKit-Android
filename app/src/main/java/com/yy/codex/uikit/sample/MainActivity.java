@@ -12,6 +12,7 @@ import android.view.View;
 
 import com.yy.codex.uikit.CGRect;
 import com.yy.codex.uikit.UIBarButtonItem;
+import com.yy.codex.uikit.UIButton;
 import com.yy.codex.uikit.UIColor;
 import com.yy.codex.uikit.UINavigationActivity;
 import com.yy.codex.uikit.UIView;

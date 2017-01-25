@@ -109,6 +109,10 @@ object UIViewAnimator {
         return animation
     }
 
+    fun spring(animations: Runnable): UIViewAnimation {
+        return spring(animations, null)
+    }
+
     fun spring(animations: Runnable, completion: Runnable? = null): UIViewAnimation {
         val animation = UIViewAnimation()
         animation.completion = completion
