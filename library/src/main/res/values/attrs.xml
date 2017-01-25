@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="UIView">
+        <attr name="frame.x" format="float" />
+        <attr name="frame.y" format="float" />
+        <attr name="frame.width" format="float" />
+        <attr name="frame.height" format="float" />
+        <attr name="constraint.enabled" format="boolean" />
+        <attr name="constraint.alignmentRelate" format="enum">
+            <enum name="RelateToGroup" value="0" />
+            <enum name="RelateToPrevious" value="1" />
+        </attr>
+        <attr name="constraint.centerHorizontally" format="boolean" />
+        <attr name="constraint.centerVertically" format="boolean" />
+        <attr name="constraint.sizeRelate" format="enum">
+            <enum name="RelateToGroup" value="0" />
+            <enum name="RelateToPrevious" value="1" />
+        </attr>
+        <attr name="constraint.width" format="string" />
+        <attr name="constraint.height" format="string" />
+        <attr name="constraint.pinRelate" format="enum">
+            <enum name="RelateToGroup" value="0" />
+            <enum name="RelateToPrevious" value="1" />
+        </attr>
+        <attr name="constraint.top" format="string" />
+        <attr name="constraint.left" format="string" />
+        <attr name="constraint.right" format="string" />
+        <attr name="constraint.bottom" format="string" />
+    </declare-styleable>
+</resources>

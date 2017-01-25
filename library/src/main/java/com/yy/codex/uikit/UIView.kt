@@ -28,20 +28,32 @@ open class UIView : FrameLayout, UIResponder {
 
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
         init()
+        resetProps(attrs)
     }
 
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
         init()
+        resetProps(attrs)
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes) {
         init()
+        resetProps(attrs)
     }
 
     open fun init() {
         UIScreen.mainScreen.context = context
         setWillNotDraw(false)
+    }
+
+    /* XML */
+
+    fun resetProps(attrs: AttributeSet) {
+        val attributes = context.theme.obtainStyledAttributes(attrs, R.styleable.UIView, 0, 0)
+        frame = CGRect.create(attributes)
+        constraint = UIConstraint.create(attributes)
+        attributes.recycle()
     }
 
     /* UIResponder */

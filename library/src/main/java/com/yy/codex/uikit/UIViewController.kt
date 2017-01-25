@@ -221,4 +221,10 @@ open class UIViewController(val context: Context) : UIResponder {
         return 0.0
     }
 
+    /* UIXMLLoader */
+
+    fun loadViewFromXML(resID: Int): UIView? {
+        return UIXMLLoader.loadViewFromXML(context, resID)
+    }
+
 }

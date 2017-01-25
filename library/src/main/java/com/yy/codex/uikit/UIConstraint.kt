@@ -1,5 +1,6 @@
 package com.yy.codex.uikit
 
+import android.content.res.TypedArray
 import net.objecthunter.exp4j.Expression
 import net.objecthunter.exp4j.ExpressionBuilder
 
@@ -249,6 +250,34 @@ class UIConstraint {
     }
 
     companion object {
+
+        fun create(attributes: TypedArray): UIConstraint? {
+            if (attributes.getBoolean(R.styleable.UIView_constraint_enabled, false)) {
+                val constraint = UIConstraint()
+                when (attributes.getInt(R.styleable.UIView_constraint_alignmentRelate, 0)) {
+                    0 -> constraint.alignmentRelate = LayoutRelate.RelateToGroup
+                    1 -> constraint.alignmentRelate = LayoutRelate.RelateToPrevious
+                }
+                constraint.centerHorizontally = attributes.getBoolean(R.styleable.UIView_constraint_centerHorizontally, false)
+                constraint.centerVertically = attributes.getBoolean(R.styleable.UIView_constraint_centerVertically, false)
+                when (attributes.getInt(R.styleable.UIView_constraint_sizeRelate, 0)) {
+                    0 -> constraint.sizeRelate = LayoutRelate.RelateToGroup
+                    1 -> constraint.sizeRelate = LayoutRelate.RelateToPrevious
+                }
+                constraint.width = attributes.getString(R.styleable.UIView_constraint_width)
+                constraint.height = attributes.getString(R.styleable.UIView_constraint_height)
+                when (attributes.getInt(R.styleable.UIView_constraint_pinRelate, 0)) {
+                    0 -> constraint.pinRelate = LayoutRelate.RelateToGroup
+                    1 -> constraint.pinRelate = LayoutRelate.RelateToPrevious
+                }
+                constraint.top = attributes.getString(R.styleable.UIView_constraint_top)
+                constraint.left = attributes.getString(R.styleable.UIView_constraint_left)
+                constraint.bottom = attributes.getString(R.styleable.UIView_constraint_bottom)
+                constraint.right = attributes.getString(R.styleable.UIView_constraint_right)
+                return constraint
+            }
+            return null
+        }
 
         fun center(): UIConstraint {
             val constraint = UIConstraint()

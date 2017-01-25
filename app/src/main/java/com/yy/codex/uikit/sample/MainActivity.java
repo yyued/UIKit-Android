@@ -7,18 +7,13 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.view.View;
 
 import com.yy.codex.uikit.CGRect;
-import com.yy.codex.uikit.CGSize;
 import com.yy.codex.uikit.UIBarButtonItem;
 import com.yy.codex.uikit.UIColor;
-import com.yy.codex.uikit.UIConstraint;
-import com.yy.codex.uikit.UILabel;
 import com.yy.codex.uikit.UINavigationActivity;
-import com.yy.codex.uikit.UINavigationController;
-import com.yy.codex.uikit.UINavigationController_ActivityBase;
-import com.yy.codex.uikit.UIScrollView;
 import com.yy.codex.uikit.UIView;
 import com.yy.codex.uikit.UIViewAnimator;
 import com.yy.codex.uikit.UIViewController;
@@ -55,7 +50,7 @@ class TestViewController extends UIViewController {
 
     @Override
     public void loadView() {
-        setView(new TestView(getContext()));
+        setView(loadViewFromXML(R.layout.test_view));
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.yy.codex.uikit
 
+import android.content.res.TypedArray
 import android.graphics.Rect
 import android.graphics.RectF
 
@@ -84,6 +85,19 @@ class CGRect(x: Double, y: Double, width: Double, height: Double) {
 
     override fun toString(): String {
         return "CGRect > origin = " + origin.toString() + ", size = " + size.toString()
+    }
+
+    companion object {
+
+        fun create(attributes: TypedArray): CGRect {
+            return CGRect(
+                attributes.getFloat(R.styleable.UIView_frame_x, 0.0f).toDouble(),
+                attributes.getFloat(R.styleable.UIView_frame_y, 0.0f).toDouble(),
+                attributes.getFloat(R.styleable.UIView_frame_width, 0.0f).toDouble(),
+                attributes.getFloat(R.styleable.UIView_frame_height, 0.0f).toDouble()
+            )
+        }
+
     }
 
 }
