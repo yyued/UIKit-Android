@@ -1,6 +1,7 @@
 package com.yy.codex.uikit
 
 import android.content.Context
+import android.content.res.TypedArray
 import android.os.Build
 import android.support.annotation.RequiresApi
 import android.util.AttributeSet
@@ -67,26 +68,38 @@ open class UIControl : UIView {
     private val runnable = HashMap<Event, List<Runnable>>()
 
     override fun prepareProps(attrs: AttributeSet) {
-        initializeAttributes = context.theme.obtainStyledAttributes(attrs, R.styleable.UIControl, 0, 0)
+        super.prepareProps(attrs)
+        val typedArray = context.theme.obtainStyledAttributes(attrs, R.styleable.UIControl, 0, 0)
+        initializeAttributes.put("enable", typedArray.getBoolean(R.styleable.UIControl_enabled, true))
+        initializeAttributes.put("select", typedArray.getBoolean(R.styleable.UIControl_selected, false))
+        when (typedArray.getInt(R.styleable.UIControl_contentVerticalAlignment, 0)) {
+            0 -> initializeAttributes.put("contentVerticalAlignment", ContentVerticalAlignment.Center)
+            1 -> initializeAttributes.put("contentVerticalAlignment", ContentVerticalAlignment.Top)
+            2 -> initializeAttributes.put("contentVerticalAlignment", ContentVerticalAlignment.Bottom)
+            3 -> initializeAttributes.put("contentVerticalAlignment", ContentVerticalAlignment.Fill)
+        }
+        when (typedArray.getInt(R.styleable.UIControl_contentHorizontalAlignment, 0)) {
+            0 -> initializeAttributes.put("contentHorizontalAlignment", ContentHorizontalAlignment.Center)
+            1 -> initializeAttributes.put("contentHorizontalAlignment", ContentHorizontalAlignment.Left)
+            2 -> initializeAttributes.put("contentHorizontalAlignment", ContentHorizontalAlignment.Right)
+            3 -> initializeAttributes.put("contentHorizontalAlignment", ContentHorizontalAlignment.Fill)
+        }
+        typedArray.recycle()
     }
 
     override fun resetProps() {
         super.resetProps()
-        initializeAttributes?.let {
-            enable = it.getBoolean(R.styleable.UIControl_enabled, true)
-            select = it.getBoolean(R.styleable.UIControl_selected, false)
-            when (it.getInt(R.styleable.UIControl_contentVerticalAlignment, 0)) {
-                0 -> contentVerticalAlignment = ContentVerticalAlignment.Center
-                1 -> contentVerticalAlignment = ContentVerticalAlignment.Top
-                2 -> contentVerticalAlignment = ContentVerticalAlignment.Bottom
-                3 -> contentVerticalAlignment = ContentVerticalAlignment.Fill
-            }
-            when (it.getInt(R.styleable.UIControl_contentHorizontalAlignment, 0)) {
-                0 -> contentHorizontalAlignment = ContentHorizontalAlignment.Center
-                1 -> contentHorizontalAlignment = ContentHorizontalAlignment.Left
-                2 -> contentHorizontalAlignment = ContentHorizontalAlignment.Right
-                3 -> contentHorizontalAlignment = ContentHorizontalAlignment.Fill
-            }
+        (initializeAttributes["enable"] as? Boolean)?.let {
+            enable = it
+        }
+        (initializeAttributes["select"] as? Boolean)?.let {
+            select = it
+        }
+        (initializeAttributes["contentVerticalAlignment"] as? ContentVerticalAlignment)?.let {
+            contentVerticalAlignment = it
+        }
+        (initializeAttributes["contentHorizontalAlignment"] as? ContentHorizontalAlignment)?.let {
+            contentHorizontalAlignment = it
         }
     }
 

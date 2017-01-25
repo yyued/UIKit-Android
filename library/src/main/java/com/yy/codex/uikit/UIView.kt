@@ -19,8 +19,6 @@ open class UIView : FrameLayout, UIResponder {
 
     /* FrameLayout initialize methods */
 
-    protected var initializeAttributes: TypedArray? = null
-
     constructor(context: Context, view: View) : super(context) {
         addView(view)
     }
@@ -52,34 +50,110 @@ open class UIView : FrameLayout, UIResponder {
 
     /* XML */
 
+    protected var initializeAttributes: HashMap<String, Any> = hashMapOf()
+
     open fun awakeFromXML() {
-        if (initializeAttributes != null) {
+        if (initializeAttributes.size > 0) {
             resetProps()
-            initializeAttributes = null
+            initializeAttributes.clear()
         }
         subviews.forEach(UIView::awakeFromXML)
     }
 
     protected open fun prepareProps(attrs: AttributeSet) {
-        initializeAttributes = context.theme.obtainStyledAttributes(attrs, R.styleable.UIView, 0, 0)
+        val typedArray = context.theme.obtainStyledAttributes(attrs, R.styleable.UIView, 0, 0)
+        initializeAttributes.put("materialDesign", typedArray.getBoolean(R.styleable.UIView_materialDesign, false))
+        initializeAttributes.put("frame", CGRect.create(typedArray, this))
+        UIConstraint.create(typedArray)?.let {
+            initializeAttributes.put("constraint", it)
+        }
+        initializeAttributes.put("maxWidth", typedArray.getFloat(R.styleable.UIView_maxWidth, 0.0f).toDouble())
+        initializeAttributes.put("automaticallyAdjustsSpace", typedArray.getBoolean(R.styleable.UIView_automaticallyAdjustsSpace, false))
+        initializeAttributes.put("marginInsets", UIEdgeInsets(
+                typedArray.getFloat(R.styleable.UIView_marginInset_top, 0.0f).toDouble(),
+                typedArray.getFloat(R.styleable.UIView_marginInset_left, 0.0f).toDouble(),
+                typedArray.getFloat(R.styleable.UIView_marginInset_bottom, 0.0f).toDouble(),
+                typedArray.getFloat(R.styleable.UIView_marginInset_right, 0.0f).toDouble()
+        ))
+        if (typedArray.getColor(R.styleable.UIView_tintColor, -1) != -1) {
+            initializeAttributes.put("tintColor", UIColor(typedArray.getColor(R.styleable.UIView_tintColor, -1)))
+        }
+        initializeAttributes.put("wantsLayer", typedArray.getBoolean(R.styleable.UIView_wantsLayer, false))
+        if (typedArray.getColor(R.styleable.UIView_layer_backgroundColor, -1) != -1) {
+            initializeAttributes.put("layer.backgroundColor", UIColor(typedArray.getColor(R.styleable.UIView_layer_backgroundColor, -1)))
+        }
+        initializeAttributes.put("layer.cornerRadius", typedArray.getFloat(R.styleable.UIView_layer_cornerRadius, 0.0f).toDouble())
+        initializeAttributes.put("layer.borderWidth", typedArray.getFloat(R.styleable.UIView_layer_borderWidth, 0.0f).toDouble())
+        if (typedArray.getColor(R.styleable.UIView_layer_borderColor, -1) != -1) {
+            initializeAttributes.put("layer.borderColor", UIColor(typedArray.getColor(R.styleable.UIView_layer_borderColor, -1)))
+        }
+        initializeAttributes.put("layer.shadowX", typedArray.getFloat(R.styleable.UIView_layer_shadowX, 0.0f).toDouble())
+        initializeAttributes.put("layer.shadowY", typedArray.getFloat(R.styleable.UIView_layer_shadowY, 0.0f).toDouble())
+        initializeAttributes.put("layer.shadowRadius", typedArray.getFloat(R.styleable.UIView_layer_shadowRadius, 0.0f).toDouble())
+        if (typedArray.getColor(R.styleable.UIView_layer_shadowColor, -1) != -1) {
+            initializeAttributes.put("layer.shadowColor", UIColor(typedArray.getColor(R.styleable.UIView_layer_shadowColor, -1)))
+        }
+        initializeAttributes.put("layer.clipToBounds", typedArray.getBoolean(R.styleable.UIView_layer_clipToBounds, false))
+        initializeAttributes.put("userInteractionEnabled", typedArray.getBoolean(R.styleable.UIView_userInteractionEnabled, true))
+        typedArray.recycle()
     }
 
     protected open fun resetProps() {
         initializeAttributes?.let {
-            materialDesign = it.getBoolean(R.styleable.UIView_materialDesign, false)
-            frame = CGRect.create(it, this)
-            constraint = UIConstraint.create(it)
-            maxWidth = it.getFloat(R.styleable.UIView_maxWidth, 0.0f).toDouble()
-            automaticallyAdjustsSpace = it.getBoolean(R.styleable.UIView_automaticallyAdjustsSpace, false)
-            marginInsets = UIEdgeInsets.create(it, this, "margin")
-            if (it.getColor(R.styleable.UIView_tintColor, -1) != -1) {
-                tintColor = UIColor(it.getColor(R.styleable.UIView_tintColor, -1))
+            (it["materialDesign"] as? Boolean)?.let {
+                materialDesign = it
             }
-            wantsLayer = it.getBoolean(R.styleable.UIView_wantsLayer, false)
-            if (wantsLayer) {
-                layer.resetProps(it)
+            (it["frame"] as? CGRect)?.let {
+                frame = it
             }
-            userInteractionEnabled = it.getBoolean(R.styleable.UIView_userInteractionEnabled, true)
+            (it["constraint"] as? UIConstraint)?.let {
+                constraint = it
+            }
+            (it["maxWidth"] as? Double)?.let {
+                maxWidth = it
+            }
+            (it["automaticallyAdjustsSpace"] as? Boolean)?.let {
+                automaticallyAdjustsSpace = it
+            }
+            (it["marginInsets"] as? UIEdgeInsets)?.let {
+                marginInsets = it
+            }
+            (it["tintColor"] as? UIColor)?.let {
+                tintColor = it
+            }
+            (it["wantsLayer"] as? Boolean)?.let {
+                wantsLayer = it
+            }
+            (it["layer.backgroundColor"] as? UIColor)?.let {
+                layer.backgroundColor = it
+            }
+            (it["layer.cornerRadius"] as? Double)?.let {
+                layer.cornerRadius = it
+            }
+            (it["layer.borderWidth"] as? Double)?.let {
+                layer.borderWidth = it
+            }
+            (it["layer.borderColor"] as? UIColor)?.let {
+                layer.borderColor = it
+            }
+            (it["layer.shadowX"] as? Double)?.let {
+                layer.shadowX = it
+            }
+            (it["layer.shadowY"] as? Double)?.let {
+                layer.shadowY = it
+            }
+            (it["layer.shadowRadius"] as? Double)?.let {
+                layer.shadowRadius = it
+            }
+            (it["layer.shadowColor"] as? UIColor)?.let {
+                layer.shadowColor = it
+            }
+            (it["layer.clipToBounds"] as? Boolean)?.let {
+                layer.clipToBounds = it
+            }
+            (it["userInteractionEnabled"] as? Boolean)?.let {
+                userInteractionEnabled = it
+            }
         }
     }
 

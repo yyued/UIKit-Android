@@ -46,7 +46,6 @@
         <attr name="layer.clipToBounds" format="boolean" />
         <attr name="userInteractionEnabled" format="boolean" />
     </declare-styleable>
-
     <declare-styleable name="UIControl" parent="UIView">
         <attr name="enabled" format="boolean" />
         <attr name="selected" format="boolean" />
@@ -63,7 +62,6 @@
             <enum name="Fill" value="3" />
         </attr>
     </declare-styleable>
-
     <declare-styleable name="UIButton" parent="UIControl">
         <attr name="title" format="string" />
         <attr name="image" format="reference" />
