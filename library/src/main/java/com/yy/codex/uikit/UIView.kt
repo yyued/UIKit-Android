@@ -219,7 +219,7 @@ open class UIView : FrameLayout, UIResponder {
             this.minimumWidth = mWidth.toInt()
             this.minimumHeight = mHeight.toInt()
             this.layer.frame = CGRect(0.0, 0.0, frame.size.width, frame.size.height)
-            layerShadowView?.let { resetShadowView() }
+            enlargerView?.let { resetEnlargerLayerView() }
             UIViewAnimator.addAnimationState(this, "frame.origin.x", oldValue.origin.x, frame.origin.x)
             UIViewAnimator.addAnimationState(this, "frame.origin.y", oldValue.origin.y, frame.origin.y)
             UIViewAnimator.addAnimationState(this, "frame.size.mWidth", oldValue.size.width, frame.size.width)
@@ -319,6 +319,9 @@ open class UIView : FrameLayout, UIResponder {
     }
 
     override fun setAlpha(alpha: Float) {
+        enlargerView?.let {
+            it.setAlpha(alpha)
+        }
         val oldValue = this.alpha
         super.setAlpha(alpha)
         UIViewAnimator.addAnimationState(this, "alpha", oldValue.toDouble(), alpha.toDouble())
@@ -365,7 +368,7 @@ open class UIView : FrameLayout, UIResponder {
         }
 
     fun removeFromSuperview() {
-        layerShadowView?.let(UIView::removeFromSuperview)
+        enlargerView?.let(UIView::removeFromSuperview)
         superview?.let { it.removeView(this) }
     }
 
@@ -461,45 +464,42 @@ open class UIView : FrameLayout, UIResponder {
         }
 
     val layer: CALayer = CALayer()
-    var layerShadowView: UIView? = null
-    var wantShadow: Boolean = false
-        get() = layer.shadowColor != null
+    var enlargerView: UIEnlargerView? = null
 
-    fun createShadowView() {
-        val shadowView = UIView(context)
-        shadowView.userInteractionEnabled = false
-        shadowView.tag = -1
-        shadowView.wantsLayer = true
-        shadowView.wantsLayer = true
+    fun createEnlargerView() {
+        val view = UIEnlargerView(context)
+        view.userInteractionEnabled = false
+        view.tag = -1
+        view.wantsLayer = true
         val contentLayer = CALayer()
-        shadowView.layer.addSubLayer(contentLayer)
+        view.layer.addSubLayer(contentLayer)
         superview?.let {
-            it.insertBelowSubview(shadowView, this)
+            it.insertBelowSubview(view, this)
         }
-        layerShadowView = shadowView
+        enlargerView = view
     }
 
-    fun resetShadowView() {
-        layerShadowView?.let {
-            val enlargeRadiusX = layer.shadowX + layer.shadowRadius
-            val enlargeRadiusY = layer.shadowY + layer.shadowRadius
-            it.frame = CGRect(frame.x - enlargeRadiusX, frame.y - enlargeRadiusY, frame.width + enlargeRadiusX * 2, frame.height + enlargeRadiusY * 2)
+    fun resetEnlargerLayerView() {
+        enlargerView?.let {
+            val insets = layer.enlargerInsets()
+            it.frame = CGRect(frame.x - insets.left, frame.y - insets.top, frame.width + insets.left + insets.right, frame.height + insets.top + insets.bottom)
             val contentLayer = it.layer.sublayers.first()
             this.layer.copyProps(contentLayer)
-            contentLayer.frame = CGRect(enlargeRadiusX, enlargeRadiusY, frame.width, frame.height)
+            contentLayer.frame = CGRect(insets.left, insets.top, frame.width, frame.height)
         }
     }
 
     fun drawRect(canvas: Canvas, rect: CGRect) {
         if (wantsLayer) {
-            if (wantShadow && tag != -1) {
-                if (layerShadowView == null) {
-                    createShadowView()
+            layer.resetBelongings(true)
+            if (this !is UIEnlargerView && layer.wantsEnlargerLayer()) {
+                if (enlargerView == null) {
+                    createEnlargerView()
                 }
-                resetShadowView()
+                resetEnlargerLayerView()
                 return
             }
-            layerShadowView?.let(UIView::removeFromSuperview)
+            enlargerView?.let(UIView::removeFromSuperview)
             layer.drawRect(canvas, rect)
         }
     }

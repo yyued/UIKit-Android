@@ -4,18 +4,22 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="#ffffff">
-    <com.yy.codex.uikit.UIButton
+    <com.yy.codex.uikit.UIView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/roundView"
         app:constraint.enabled="true"
         app:constraint.centerHorizontally="true"
         app:constraint.centerVertically="true"
-        app:constraint.width="200"
-        app:constraint.height="66"
-        app:title="Testing"
+        app:constraint.width="44"
+        app:constraint.height="44"
         app:wantsLayer="true"
-        app:layer.cornerRadius="33"
+        app:layer.cornerRadius="22"
+        app:layer.backgroundColor="#ff0000"
+        app:layer.shadowColor="#80000000"
+        app:layer.shadowX="2"
+        app:layer.shadowY="2"
+        app:layer.shadowRadius="8"
         >
-    </com.yy.codex.uikit.UIButton>
+    </com.yy.codex.uikit.UIView>
 </com.yy.codex.uikit.UIView>

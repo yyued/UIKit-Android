@@ -220,10 +220,13 @@ open class CALayer {
 
     /* category CALayer Hierarchy */
 
-    fun resetBelongings() {
+    fun resetBelongings(isRoot: Boolean) {
+        if (isRoot) {
+            superLayer = null
+        }
         for (sublayer in sublayers) {
             sublayer.superLayer = this
-            sublayer.resetBelongings()
+            sublayer.resetBelongings(false)
         }
     }
 
@@ -277,7 +280,6 @@ open class CALayer {
     /* category CALayer Appearance */
 
     fun drawRect(canvas: Canvas, rect: CGRect) {
-        resetBelongings()
         if (this.askIfNeedDisplay()) {
             this.resetNeedDisplayToFalse()
             drawAllLayers(canvas, rect)
@@ -326,6 +328,25 @@ open class CALayer {
             root = root.superLayer as CALayer
         }
         return root
+    }
+
+    /* Enlarger Layer */
+
+    open fun wantsEnlargerLayer(): Boolean {
+        if (superLayer == null) {
+            if (shadowColor != null) {
+                return true
+            }
+        }
+        return false
+    }
+
+    open fun enlargerInsets(): UIEdgeInsets {
+        val top = -(-shadowRadius + shadowY)
+        val left = -(-shadowRadius + shadowX)
+        val bottom = shadowRadius + shadowY
+        val right = shadowRadius + shadowX
+        return UIEdgeInsets(top, left, bottom, right)
     }
 
     /* Animation */

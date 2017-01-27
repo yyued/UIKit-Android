@@ -58,6 +58,17 @@ class TestViewController extends UIViewController {
         super.viewDidLoad();
         setTitle("Test");
         getNavigationItem().setRightBarButtonItem(new UIBarButtonItem("Next", this, "handleNextButtonTapped"));
+        postDelay(new Runnable() {
+            @Override
+            public void run() {
+                UIViewAnimator.INSTANCE.linear(new Runnable() {
+                    @Override
+                    public void run() {
+                        getView().findViewById(R.id.roundView).setAlpha(0.0f);
+                    }
+                });
+            }
+        },3000);
     }
 
     private void handleNextButtonTapped() {
