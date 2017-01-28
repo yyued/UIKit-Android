@@ -60,11 +60,11 @@ internal object CALayerPainter {
         paint.isAntiAlias = true
         paint.color = layer.backgroundColor.toInt()
         var rectFCopyed = frame.shrinkToRectF(halfBorderW, origin)
-        if (layer.shadowRadius > 0) {
+        layer.shadowColor?.let {
             val shadowRadius = layer.shadowRadius.toFloat() * scaledDensity
             val shadowX = layer.shadowX.toFloat() * scaledDensity
             val shadowY = layer.shadowY.toFloat() * scaledDensity
-            paint.setShadowLayer(shadowRadius, shadowX, shadowY, layer.shadowColor.toInt())
+            paint.setShadowLayer(shadowRadius, shadowX, shadowY, it.toInt())
             rectFCopyed = RectF(rectFCopyed.left, rectFCopyed.top, rectFCopyed.right - shadowX, rectFCopyed.bottom - shadowY)
         }
         canvas.drawRoundRect(rectFCopyed, cornerRadius, cornerRadius, paint)
@@ -132,11 +132,11 @@ internal object CALayerPainter {
         paint.reset()
         paint.color = layer.backgroundColor.toInt()
         var rectFCopyed = frame.toRectF(origin)
-        if (layer.shadowRadius > 0) {
+        layer.shadowColor?.let {
             val shadowRadius = layer.shadowRadius.toFloat() * scaledDensity
             val shadowX = layer.shadowX.toFloat() * scaledDensity
             val shadowY = layer.shadowY.toFloat() * scaledDensity
-            paint.setShadowLayer(shadowRadius, shadowX, shadowY, layer.shadowColor.toInt())
+            paint.setShadowLayer(shadowRadius, shadowX, shadowY, it.toInt())
             rectFCopyed = RectF(rectFCopyed.left, rectFCopyed.top, rectFCopyed.right - shadowX, rectFCopyed.bottom - shadowY)
         }
         canvas.drawRect(rectFCopyed, paint)

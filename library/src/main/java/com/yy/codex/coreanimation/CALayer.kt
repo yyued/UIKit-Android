@@ -106,7 +106,7 @@ open class CALayer {
             }
         }
 
-    var shadowColor = com.yy.codex.uikit.UIColor.Companion.blackColor
+    var shadowColor: UIColor? = null
         set(value) {
             if (field != value) {
                 field = value
