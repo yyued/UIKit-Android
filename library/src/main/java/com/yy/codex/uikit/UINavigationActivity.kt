@@ -13,9 +13,8 @@ open class UINavigationActivity: UIActivity() {
         set(value) {
             value?.let {
                 it.setRootViewController(nextViewController() ?: rootViewController())
-                main = it
                 field = it
-                setContentView(it.view)
+                viewController = it
             }
         }
 

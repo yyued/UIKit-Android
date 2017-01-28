@@ -11,20 +11,34 @@ import android.view.LayoutInflater;
 import android.view.View;
 
 import com.yy.codex.uikit.CGRect;
+import com.yy.codex.uikit.UIActivity;
 import com.yy.codex.uikit.UIBarButtonItem;
 import com.yy.codex.uikit.UIColor;
 import com.yy.codex.uikit.UINavigationActivity;
+import com.yy.codex.uikit.UINavigationController;
+import com.yy.codex.uikit.UITabBar;
+import com.yy.codex.uikit.UITabBarController;
 import com.yy.codex.uikit.UIView;
 import com.yy.codex.uikit.UIViewAnimator;
 import com.yy.codex.uikit.UIViewController;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+
 public class MainActivity extends UINavigationActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        UITabBarController tabBarController = new UITabBarController(this);
+        UINavigationController navigationControllerI = new UINavigationController(this);
+        navigationControllerI.setRootViewController(new TestViewController(this));
+        UIViewController[] viewControllers = new UIViewController[]{
+                navigationControllerI
+        };
+        tabBarController.setViewControllers(viewControllers);
+        setViewController(tabBarController);
 //        getNavigationController().getView().setMaterialDesign(true);
     }
 
@@ -34,11 +48,11 @@ public class MainActivity extends UINavigationActivity {
 //        return new UINavigationController_ActivityBase(this);
 //    }
 
-    @NotNull
-    @Override
-    public UIViewController rootViewController() {
-        return new TestViewController(this);
-    }
+//    @NotNull
+//    @Override
+//    public UIViewController rootViewController() {
+//        return new TestViewController(this);
+//    }
 
 }
 

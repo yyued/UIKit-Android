@@ -208,9 +208,24 @@ open class UIViewController(val context: Context) : UIResponder {
 
     val navigationItem: UINavigationItem = UINavigationItem(context)
 
+    /* TabBarController */
+
+    fun tabBarController(): UITabBarController? {
+        var nextResponder = nextResponder
+        while (nextResponder != null) {
+            if (nextResponder is UITabBarController) {
+                return nextResponder
+            }
+            nextResponder = nextResponder.nextResponder
+        }
+        return null
+    }
+
+    var tabBarItem: UITabBarItem = UITabBarItem()
+
     /* Layout */
 
-    fun topLayoutLength(): Double {
+    open fun topLayoutLength(): Double {
         var length = 0.0
         val navigationController = if (this is UINavigationController) this else navigationController()
         if (navigationController != null) {
@@ -219,8 +234,13 @@ open class UIViewController(val context: Context) : UIResponder {
         return length
     }
 
-    fun bottomLayoutLength(): Double {
-        return 0.0
+    open fun bottomLayoutLength(): Double {
+        var length = 0.0
+        val tabBarController = if (this is UITabBarController) this else tabBarController()
+        if (tabBarController != null) {
+            length += tabBarController.tabBar.length()
+        }
+        return length
     }
 
     /* UIXMLLoader */

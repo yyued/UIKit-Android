@@ -184,7 +184,7 @@ open class UINavigationController(context: Context) : UIViewController(context) 
     protected fun resetContentViewsFrame() {
         val subviews = wrapperView.subviews
         for (subview in subviews) {
-            subview.frame = CGRect(0.0, topLayoutLength(), wrapperView.frame.width, wrapperView.frame.height - topLayoutLength())
+            subview.frame = CGRect(0.0, topLayoutLength(), wrapperView.frame.width, wrapperView.frame.height - topLayoutLength() - bottomLayoutLength())
         }
     }
 

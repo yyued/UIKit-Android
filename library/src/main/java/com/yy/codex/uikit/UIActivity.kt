@@ -2,6 +2,7 @@ package com.yy.codex.uikit
 
 import android.app.Activity
 import android.content.res.Configuration
+import android.os.Bundle
 import android.view.KeyEvent
 
 /**
@@ -10,6 +11,19 @@ import android.view.KeyEvent
 open class UIActivity : Activity() {
 
     var main: UIResponder? = null
+
+    var viewController: UIViewController? = null
+        set(value) {
+            value?.let {
+                main = it
+                field = it
+                setContentView(it.view)
+            }
+        }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+    }
 
     override fun dispatchKeyEvent(event: KeyEvent?): Boolean {
         val event = event ?: return false
