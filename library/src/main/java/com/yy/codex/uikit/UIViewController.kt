@@ -223,6 +223,12 @@ open class UIViewController(val context: Context) : UIResponder {
 
     var tabBarItem: UITabBarItem = UITabBarItem()
 
+    var hidesBottomBarWhenPushed = false
+        set(value) {
+            field = value
+            navigationController()?.resetContentViewsFrame()
+        }
+
     /* Layout */
 
     open fun topLayoutLength(): Double {

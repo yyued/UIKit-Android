@@ -14,10 +14,12 @@ import com.yy.codex.uikit.CGRect;
 import com.yy.codex.uikit.UIActivity;
 import com.yy.codex.uikit.UIBarButtonItem;
 import com.yy.codex.uikit.UIColor;
+import com.yy.codex.uikit.UIImage;
 import com.yy.codex.uikit.UINavigationActivity;
 import com.yy.codex.uikit.UINavigationController;
 import com.yy.codex.uikit.UITabBar;
 import com.yy.codex.uikit.UITabBarController;
+import com.yy.codex.uikit.UITabBarItem;
 import com.yy.codex.uikit.UIView;
 import com.yy.codex.uikit.UIViewAnimator;
 import com.yy.codex.uikit.UIViewController;
@@ -34,9 +36,21 @@ public class MainActivity extends UINavigationActivity {
         UITabBarController tabBarController = new UITabBarController(this);
         UINavigationController navigationControllerI = new UINavigationController(this);
         navigationControllerI.setRootViewController(new TestViewController(this));
+        navigationControllerI.setTabBarItem(new UITabBarItem());
+        navigationControllerI.getTabBarItem().setTitle("Test");
+        navigationControllerI.getTabBarItem().setImage(new UIImage(this, R.drawable.ani_19));
+
+        UINavigationController navigationControllerII = new UINavigationController(this);
+        navigationControllerII.setRootViewController(new NextViewController(this));
+        navigationControllerII.setTabBarItem(new UITabBarItem());
+        navigationControllerII.getTabBarItem().setTitle("Second");
+        navigationControllerII.getTabBarItem().setImage(new UIImage(this, R.drawable.ani_19));
+
         UIViewController[] viewControllers = new UIViewController[]{
-                navigationControllerI
+                navigationControllerI,
+                navigationControllerII,
         };
+
         tabBarController.setViewControllers(viewControllers);
         setViewController(tabBarController);
 //        getNavigationController().getView().setMaterialDesign(true);
@@ -102,6 +116,7 @@ class NextViewController extends UIViewController {
         super.viewDidLoad();
         setTitle("I'm Next");
         getView().setBackgroundColor(UIColor.Companion.getGrayColor());
+//        setHidesBottomBarWhenPushed(true);
     }
 
 }

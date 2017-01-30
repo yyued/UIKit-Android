@@ -20,6 +20,7 @@ open class UINavigationController(context: Context) : UIViewController(context) 
 
     override fun viewDidLoad() {
         super.viewDidLoad()
+        view?.setBackgroundColor(UIColor.clearColor)
         view?.let {
             it.addSubview(wrapperView)
             it.addSubview(navigationBar)
@@ -181,10 +182,16 @@ open class UINavigationController(context: Context) : UIViewController(context) 
         resetContentViewsFrame()
     }
 
-    protected fun resetContentViewsFrame() {
+    internal fun resetContentViewsFrame() {
         val subviews = wrapperView.subviews
         for (subview in subviews) {
-            subview.frame = CGRect(0.0, topLayoutLength(), wrapperView.frame.width, wrapperView.frame.height - topLayoutLength() - bottomLayoutLength())
+            val viewController = subview.nextResponder as? UIViewController ?: continue
+            if (tabBarController() != null && viewController.hidesBottomBarWhenPushed) {
+                subview.frame = CGRect(0.0, topLayoutLength(), wrapperView.frame.width, wrapperView.frame.height - topLayoutLength())
+            }
+            else {
+                subview.frame = CGRect(0.0, topLayoutLength(), wrapperView.frame.width, wrapperView.frame.height - topLayoutLength() - bottomLayoutLength())
+            }
         }
     }
 

@@ -7,6 +7,7 @@ import android.os.Build
 import android.support.annotation.RequiresApi
 import android.util.AttributeSet
 import android.view.View
+import com.yy.codex.foundation.NSLog
 import java.util.*
 
 /**
@@ -84,8 +85,33 @@ class UITabBar : UIView {
         set(value) {
             field = value
             selectedItem = value.first()
+            resetItemsView()
         }
 
     var selectedItem: UITabBarItem? = null
+        set(value) {
+            field = value
+            resetSelected()
+        }
+
+    private fun resetItemsView() {
+        subviews.forEach(UIView::removeFromSuperview)
+        for ((idx, item) in items.withIndex()) {
+            item.itemIndex = idx
+            item.attachTabBar(this)
+            item.getContentView(context)?.let {
+                addSubview(it)
+                it.constraint = UIConstraint.horizonStack(idx, items.size)
+            }
+        }
+    }
+
+    private fun resetSelected() {
+        items.indexOf(selectedItem)?.let {
+            for ((idx, item) in items.withIndex()) {
+                item.setSelected(it == idx)
+            }
+        }
+    }
 
 }

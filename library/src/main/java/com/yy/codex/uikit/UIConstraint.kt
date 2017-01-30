@@ -294,6 +294,29 @@ class UIConstraint {
             constraint.height = "100%"
             return constraint
         }
+
+        fun horizonStack(idx: Int, total: Int): UIConstraint {
+            val step = (100 / total)
+            val current = step * idx
+            val constraint = UIConstraint()
+            constraint.left = "$current%"
+            constraint.width = "$step%"
+            constraint.top = "0"
+            constraint.height = "100%"
+            return constraint
+        }
+
+        fun verticalStack(idx: Int, total: Int): UIConstraint {
+            val step = (100 / total)
+            val current = step * idx
+            val constraint = UIConstraint()
+            constraint.top = "$current%"
+            constraint.height = "$step%"
+            constraint.left = "0"
+            constraint.width = "100%"
+            return constraint
+        }
+
     }
 
 }

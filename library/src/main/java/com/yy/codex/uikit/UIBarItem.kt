@@ -18,13 +18,13 @@ import java.util.HashMap
 open class UIBarItem {
 
     var enabled = true
-    var title: String? = null
-    var image: UIImage? = null
-    var imageInsets = UIEdgeInsets(0.0, 0.0, 0.0, 0.0)
-    var tag = 0
-    var titleTextAttributes = HashMap<EnumSet<UIControl.State>, HashMap<String, Any>>()
-        private set
-    fun titleTextAttributes(state: EnumSet<UIControl.State>): HashMap<String, Any>? {
+    open var title: String? = null
+    open var image: UIImage? = null
+    open var imageInsets = UIEdgeInsets(0.0, 0.0, 0.0, 0.0)
+    open var tag = 0
+    open var titleTextAttributes = HashMap<EnumSet<UIControl.State>, HashMap<String, Any>>()
+        protected set
+    open fun titleTextAttributes(state: EnumSet<UIControl.State>): HashMap<String, Any>? {
         return titleTextAttributes[state]
     }
     protected var view: UIView? = null
