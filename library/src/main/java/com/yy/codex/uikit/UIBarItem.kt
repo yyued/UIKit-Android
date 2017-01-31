@@ -19,8 +19,9 @@ open class UIBarItem {
 
     var enabled = true
     open var title: String? = null
+    open var titleInsets = UIEdgeInsets.zero
     open var image: UIImage? = null
-    open var imageInsets = UIEdgeInsets(0.0, 0.0, 0.0, 0.0)
+    open var imageInsets = UIEdgeInsets.zero
     open var tag = 0
     open var titleTextAttributes = HashMap<EnumSet<UIControl.State>, HashMap<String, Any>>()
         protected set

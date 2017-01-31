@@ -26,16 +26,32 @@ open class UITabBarItem: UIBarItem() {
                 titleLabel?.attributedText = NSAttributedString(title, attrs)
             }
         }
+        resetImageView(selected)
     }
 
     protected var tabBar: UITabBar? = null
         set(value) {
             field = value
+            resetImageView(false)
             resetLabel()
         }
 
     private var frontView: UIButton? = null
+    private var iconImageView: UIImageView? = null
     private var titleLabel: UILabel? = null
+
+    private fun resetImageView(selected: Boolean) {
+        lets(tabBar, iconImageView) { tabBar, iconImageView ->
+            if (iconImageView.image?.renderingMode != UIImage.RenderingMode.AlwaysOriginal) {
+                if (selected) {
+                    iconImageView.layer.bitmapColor = tabBar.tintColor
+                }
+                else {
+                    iconImageView.layer.bitmapColor = UIColor.blackColor.colorWithAlpha(0.55)
+                }
+            }
+        }
+    }
 
     private fun resetLabel() {
         tabBar?.let {
@@ -55,10 +71,21 @@ open class UITabBarItem: UIBarItem() {
     override fun getContentView(context: Context): UIView? {
         if (view == null) {
             frontView = UIButton(context)
+            /* ImageView */
+            var imageView = UIImageView(context)
+            image?.let {
+                imageView.image = it
+                imageView.constraint = UIConstraint()
+                imageView.constraint?.centerHorizontally = true
+                imageView.constraint?.centerVertically = true
+                imageView.constraint?.top = "" + (-7 - imageInsets.bottom + imageInsets.top)
+            }
+            frontView?.addSubview(imageView)
+            iconImageView = imageView
             /* Label */
             val label = UILabel(context)
             label.constraint = UIConstraint()
-            label.constraint?.bottom = "3"
+            label.constraint?.bottom = "" + (6 + titleInsets.bottom - titleInsets.top)
             label.constraint?.centerHorizontally = true
             lets(title, titleTextAttributes(EnumSet.of(UIControl.State.Normal))) { title, attrs ->
                 label.attributedText = NSAttributedString(title, attrs)

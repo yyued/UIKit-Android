@@ -32,7 +32,7 @@ class UITabBar : UIView {
         constraint.centerHorizontally = true
         constraint.bottom = "0"
         constraint.width = "100%"
-        constraint.height = "50"
+        constraint.height = "48"
         this.constraint = constraint
     }
 
@@ -43,8 +43,8 @@ class UITabBar : UIView {
 
     /* Layout Length */
 
-    fun length(): Double {
-        return 50.0
+    open fun length(): Double {
+        return 48.0
     }
 
     /* BarTintColor */

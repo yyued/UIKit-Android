@@ -14,6 +14,7 @@ import com.yy.codex.uikit.CGRect;
 import com.yy.codex.uikit.UIActivity;
 import com.yy.codex.uikit.UIBarButtonItem;
 import com.yy.codex.uikit.UIColor;
+import com.yy.codex.uikit.UIEdgeInsets;
 import com.yy.codex.uikit.UIImage;
 import com.yy.codex.uikit.UINavigationActivity;
 import com.yy.codex.uikit.UINavigationController;
@@ -33,18 +34,22 @@ public class MainActivity extends UINavigationActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        UIImage iconImage = new UIImage(this, R.drawable.ani_19);
+        iconImage.setScale(3.0);
+
         UITabBarController tabBarController = new UITabBarController(this);
         UINavigationController navigationControllerI = new UINavigationController(this);
         navigationControllerI.setRootViewController(new TestViewController(this));
         navigationControllerI.setTabBarItem(new UITabBarItem());
         navigationControllerI.getTabBarItem().setTitle("Test");
-        navigationControllerI.getTabBarItem().setImage(new UIImage(this, R.drawable.ani_19));
+        navigationControllerI.getTabBarItem().setImage(iconImage);
 
         UINavigationController navigationControllerII = new UINavigationController(this);
         navigationControllerII.setRootViewController(new NextViewController(this));
         navigationControllerII.setTabBarItem(new UITabBarItem());
         navigationControllerII.getTabBarItem().setTitle("Second");
-        navigationControllerII.getTabBarItem().setImage(new UIImage(this, R.drawable.ani_19));
+        navigationControllerII.getTabBarItem().setImage(iconImage);
 
         UIViewController[] viewControllers = new UIViewController[]{
                 navigationControllerI,
