@@ -15,7 +15,7 @@ open class UITabBarItem: UIBarItem() {
         this.tabBar = tabBar
     }
 
-    fun setSelected(selected: Boolean) {
+    open fun setSelected(selected: Boolean) {
         if (selected) {
             lets(title, titleTextAttributes(EnumSet.of(UIControl.State.Selected))) { title, attrs ->
                 titleLabel?.attributedText = NSAttributedString(title, attrs)

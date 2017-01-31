@@ -89,6 +89,7 @@ class TestView1 extends UIView {
 
         CALayer a2 = new CALayer(new CGRect(120, 10, 100, 100));
         a2.setBackgroundColor(UIColor.Companion.getYellowColor());
+
         a2.setBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.img180x180));
         a2.setBitmapGravity(CALayer.BitmapGravity.ScaleAspectFill);
         mainLayer.addSubLayer(a2);
