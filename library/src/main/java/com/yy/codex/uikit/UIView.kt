@@ -318,13 +318,26 @@ open class UIView : FrameLayout, UIResponder {
         }
     }
 
+    var hidden: Boolean = false
+        set(value) {
+            field = value
+            alpha = backAlpha
+        }
+
+    private var backAlpha: Float = 1.0f
+
     override fun setAlpha(alpha: Float) {
+        backAlpha = alpha
+        var value = alpha
+        if (hidden) {
+            value = 0.0f
+        }
         enlargerView?.let {
-            it.setAlpha(alpha)
+            it.setAlpha(value)
         }
         val oldValue = this.alpha
-        super.setAlpha(alpha)
-        UIViewAnimator.addAnimationState(this, "alpha", oldValue.toDouble(), alpha.toDouble())
+        super.setAlpha(value)
+        UIViewAnimator.addAnimationState(this, "alpha", oldValue.toDouble(), value.toDouble())
     }
 
     var tintColor: UIColor? = null

@@ -40,12 +40,7 @@ open class UITabBarController(context: Context): UIViewController(context) {
             field = value
             tabBar.selectedItem = selectedViewController?.tabBarItem
             childViewControllers.forEach {
-                if (selectedViewController === it) {
-                    it.view?.alpha = 1.0f
-                }
-                else {
-                    it.view?.alpha = 0.0f
-                }
+                it.view?.hidden = selectedViewController !== it
             }
         }
 
