@@ -40,6 +40,75 @@ class UILabel : UIView {
         resetTextView()
     }
 
+    /* XML */
+
+    override fun prepareProps(attrs: AttributeSet) {
+        super.prepareProps(attrs)
+        val typedArray = context.theme.obtainStyledAttributes(attrs, R.styleable.UILabel, 0, 0)
+        typedArray.getFloat(R.styleable.UILabel_fontSize, -1.0f)?.let {
+            if (it != -1.0f) {
+                initializeAttributes["UILabel.fontSize"] = it
+            }
+        }
+        typedArray.getColor(R.styleable.UILabel_textColor, -1)?.let {
+            if (it != -1) {
+                initializeAttributes["UILabel.textColor"] = UIColor(it)
+            }
+        }
+        typedArray.getInt(R.styleable.UILabel_numberOfLines, -1)?.let {
+            if (it != -1) {
+                initializeAttributes["UILabel.numberOfLines"] = it
+            }
+        }
+        typedArray.getInt(R.styleable.UILabel_linebreakMode, -1)?.let {
+            if (it != -1) {
+                initializeAttributes["UILabel.linebreakMode"] = it
+            }
+        }
+        typedArray.getInt(R.styleable.UILabel_alignment, -1)?.let {
+            if (it != -1) {
+                initializeAttributes["UILabel.alignment"] = it
+            }
+        }
+        typedArray.getString(R.styleable.UILabel_text)?.let {
+            initializeAttributes["UILabel.text"] = it
+        }
+        typedArray.recycle()
+    }
+
+    override fun resetProps() {
+        super.resetProps()
+        (initializeAttributes["UILabel.fontSize"] as? Float)?.let {
+            font = UIFont(it)
+        }
+        (initializeAttributes["UILabel.textColor"] as? UIColor)?.let {
+            textColor = it
+        }
+        (initializeAttributes["UILabel.numberOfLines"] as? Int)?.let {
+            numberOfLines = it
+        }
+        (initializeAttributes["UILabel.linebreakMode"] as? Int)?.let {
+            when (it) {
+                0 -> linebreakMode = NSLineBreakMode.ByWordWrapping
+                1 -> linebreakMode = NSLineBreakMode.ByTruncatingHead
+                2 -> linebreakMode = NSLineBreakMode.ByTruncatingMiddle
+                3 -> linebreakMode = NSLineBreakMode.ByTruncatingTail
+            }
+        }
+        (initializeAttributes["UILabel.alignment"] as? Int)?.let {
+            when (it) {
+                0 -> alignment = Layout.Alignment.ALIGN_NORMAL
+                1 -> alignment = Layout.Alignment.ALIGN_CENTER
+                2 -> alignment = Layout.Alignment.ALIGN_OPPOSITE
+            }
+        }
+        (initializeAttributes["UILabel.text"] as? String)?.let {
+            text = it
+        }
+    }
+
+    /* Layout */
+
     override fun layoutSubviews() {
         super.layoutSubviews()
         resetTextView()
@@ -52,7 +121,7 @@ class UILabel : UIView {
     var font = UIFont(17f)
         set(font) {
             field = font
-            updateTextAppearance()
+            resetAttributedText()
         }
 
     /* TextColor */
@@ -60,7 +129,7 @@ class UILabel : UIView {
     var textColor = UIColor.blackColor
         set(textColor) {
             field = textColor
-            updateTextAppearance()
+            resetAttributedText()
         }
 
     /* Number of lines */
@@ -86,40 +155,34 @@ class UILabel : UIView {
                 NSLineBreakMode.ByTruncatingTail -> textView?.ellipsize = TextUtils.TruncateAt.END
                 else -> textView?.ellipsize = null
             }
-            updateTextAppearance()
+            resetAttributedText()
         }
 
     var alignment: Layout.Alignment = Layout.Alignment.ALIGN_NORMAL
         set(alignment) {
             field = alignment
-            updateTextAppearance()
+            resetAttributedText()
         }
 
     /* Text */
 
-    private var needsUpdate = false
-
     var text: String? = null
-        get() = attributedText?.toString()
         set(value) {
             field = value
-            val text = value ?: ""
-            val paragraphStyle = NSParagraphStyle()
-            paragraphStyle.lineBreakMode = linebreakMode
-            paragraphStyle.alignment = alignment
-            val attributedString = NSAttributedString(text, hashMapOf(
-                    Pair(NSAttributedString.NSFontAttributeName, font),
-                    Pair(NSAttributedString.NSForegroundColorAttributeName, textColor),
-                    Pair(NSAttributedString.NSParagraphStyleAttributeName, paragraphStyle)
-            ))
-            attributedText = attributedString
-            needsUpdate = true
+            resetAttributedText()
         }
 
-    private fun updateTextAppearance() {
-        if (needsUpdate && text != null) {
-            this.text = text
-        }
+    private fun resetAttributedText() {
+        val text = text ?: ""
+        val paragraphStyle = NSParagraphStyle()
+        paragraphStyle.lineBreakMode = linebreakMode
+        paragraphStyle.alignment = alignment
+        val attributedString = NSAttributedString(text, hashMapOf(
+                Pair(NSAttributedString.NSFontAttributeName, font),
+                Pair(NSAttributedString.NSForegroundColorAttributeName, textColor),
+                Pair(NSAttributedString.NSParagraphStyleAttributeName, paragraphStyle)
+        ))
+        attributedText = attributedString
     }
 
     var attributedText: NSAttributedString? = null

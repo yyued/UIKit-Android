@@ -80,6 +80,38 @@
     </declare-styleable>
     <declare-styleable name="UIImageView" parent="UIView">
         <attr name="image" format="reference" />
+        <attr name="contentMode" format="enum">
+            <enum name="ScaleToFill" value="0" />
+            <enum name="ScaleAspectFit" value="1" />
+            <enum name="ScaleAspectFill" value="2" />
+            <enum name="Redraw" value="3" />
+            <enum name="Center" value="4" />
+            <enum name="Top" value="5" />
+            <enum name="Bottom" value="6" />
+            <enum name="Left" value="7" />
+            <enum name="Right" value="8" />
+            <enum name="TopLeft" value="9" />
+            <enum name="TopRight" value="10" />
+            <enum name="BottomLeft" value="11" />
+            <enum name="BottomRight" value="12" />
+        </attr>
+    </declare-styleable>
+    <declare-styleable name="UILabel" parnet="UIView">
+        <attr name="text" format="string" />
+        <attr name="fontSize" format="float" />
+        <attr name="textColor" format="color" />
+        <attr name="numberOfLines" format="integer" />
+        <attr name="linebreakMode" format="enum">
+            <enum name="ByWordWrapping" value="0" />
+            <enum name="ByTruncatingHead" value="1" />
+            <enum name="ByTruncatingMiddle" value="2" />
+            <enum name="ByTruncatingTail" value="3" />
+        </attr>
+        <attr name="alignment" format="enum">
+            <enum name="Normal" value="0" />
+            <enum name="Center" value="1" />
+            <enum name="Opposite" value="2" />
+        </attr>
     </declare-styleable>
 
 </resources>

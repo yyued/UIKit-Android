@@ -78,14 +78,14 @@ open class UITabBarItem: UIBarItem() {
                 imageView.constraint = UIConstraint()
                 imageView.constraint?.centerHorizontally = true
                 imageView.constraint?.centerVertically = true
-                imageView.constraint?.top = "" + (-7 - imageInsets.bottom + imageInsets.top)
+                imageView.constraint?.top = "" + (-6 - imageInsets.bottom + imageInsets.top)
             }
             frontView?.addSubview(imageView)
             iconImageView = imageView
             /* Label */
             val label = UILabel(context)
             label.constraint = UIConstraint()
-            label.constraint?.bottom = "" + (6 + titleInsets.bottom - titleInsets.top)
+            label.constraint?.bottom = "" + (3 + titleInsets.bottom - titleInsets.top)
             label.constraint?.centerHorizontally = true
             lets(title, titleTextAttributes(EnumSet.of(UIControl.State.Normal))) { title, attrs ->
                 label.attributedText = NSAttributedString(title, attrs)

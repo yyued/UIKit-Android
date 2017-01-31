@@ -4,14 +4,19 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="#ffffff">
-    <com.yy.codex.uikit.UIImageView
+    <com.yy.codex.uikit.UILabel
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/roundView"
         app:constraint.enabled="true"
         app:constraint.centerHorizontally="true"
         app:constraint.centerVertically="true"
-        app:image="@drawable/ani_19"
+        app:text="Hello, World!~~~~~~~~~~~~~~~"
+        app:maxWidth="100"
+        app:numberOfLines="0"
+        app:fontSize="17"
+        app:textColor="#ff0000"
+        app:alignment="Center"
         >
-    </com.yy.codex.uikit.UIImageView>
+    </com.yy.codex.uikit.UILabel>
 </com.yy.codex.uikit.UIView>

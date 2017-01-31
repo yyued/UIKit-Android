@@ -49,13 +49,36 @@ class UIImageView : UIView {
                 initializeAttributes.put("UIImageView.image", UIImage(context, it))
             }
         }
+        typedArray.getInt(R.styleable.UIImageView_contentMode, -1)?.let {
+            if (it != -1) {
+                initializeAttributes.put("UIImageView.contentMode", it)
+            }
+        }
         initializeAttributes.put("UIView.wantsLayer", true)
+        typedArray.recycle()
     }
 
     override fun resetProps() {
         super.resetProps()
         (initializeAttributes["UIImageView.image"] as? UIImage)?.let {
             image = it
+        }
+        (initializeAttributes["UIImageView.contentMode"] as? Int)?.let {
+            when (it) {
+                0 -> contentMode = UIViewContentMode.ScaleToFill
+                1 -> contentMode = UIViewContentMode.ScaleAspectFit
+                2 -> contentMode = UIViewContentMode.ScaleAspectFill
+                3 -> contentMode = UIViewContentMode.Redraw
+                4 -> contentMode = UIViewContentMode.Center
+                5 -> contentMode = UIViewContentMode.Top
+                6 -> contentMode = UIViewContentMode.Bottom
+                7 -> contentMode = UIViewContentMode.Left
+                8 -> contentMode = UIViewContentMode.Right
+                9 -> contentMode = UIViewContentMode.TopLeft
+                10 -> contentMode = UIViewContentMode.TopRight
+                11 -> contentMode = UIViewContentMode.BottomLeft
+                12 -> contentMode = UIViewContentMode.BottomRight
+            }
         }
     }
 

@@ -62,36 +62,76 @@ open class UIView : FrameLayout, UIResponder {
 
     protected open fun prepareProps(attrs: AttributeSet) {
         val typedArray = context.theme.obtainStyledAttributes(attrs, R.styleable.UIView, 0, 0)
-        initializeAttributes.put("UIView.materialDesign", typedArray.getBoolean(R.styleable.UIView_materialDesign, false))
-        initializeAttributes.put("UIView.frame", CGRect.create(typedArray, this))
+        typedArray.getBoolean(R.styleable.UIView_materialDesign, false)?.let {
+            initializeAttributes.put("UIView.materialDesign", it)
+        }
+        CGRect.create(typedArray, this)?.let {
+            initializeAttributes.put("UIView.frame", it)
+        }
         UIConstraint.create(typedArray)?.let {
             initializeAttributes.put("UIView.constraint", it)
         }
-        initializeAttributes.put("UIView.maxWidth", typedArray.getFloat(R.styleable.UIView_maxWidth, 0.0f).toDouble())
-        initializeAttributes.put("UIView.automaticallyAdjustsSpace", typedArray.getBoolean(R.styleable.UIView_automaticallyAdjustsSpace, false))
+        typedArray.getFloat(R.styleable.UIView_maxWidth, -1.0f)?.let {
+            if (it != -1.0f) {
+                initializeAttributes.put("UIView.maxWidth", it)
+            }
+        }
+        typedArray.getBoolean(R.styleable.UIView_automaticallyAdjustsSpace, false)?.let {
+            initializeAttributes.put("UIView.automaticallyAdjustsSpace", it)
+        }
         initializeAttributes.put("UIView.marginInsets", UIEdgeInsets(
                 typedArray.getFloat(R.styleable.UIView_marginInset_top, 0.0f).toDouble(),
                 typedArray.getFloat(R.styleable.UIView_marginInset_left, 0.0f).toDouble(),
                 typedArray.getFloat(R.styleable.UIView_marginInset_bottom, 0.0f).toDouble(),
                 typedArray.getFloat(R.styleable.UIView_marginInset_right, 0.0f).toDouble()
         ))
-        if (typedArray.getColor(R.styleable.UIView_tintColor, -1) != -1) {
-            initializeAttributes.put("UIView.tintColor", UIColor(typedArray.getColor(R.styleable.UIView_tintColor, -1)))
+        typedArray.getColor(R.styleable.UIView_tintColor, -1)?.let {
+            if (it != -1) {
+                initializeAttributes.put("UIView.tintColor", UIColor(it))
+            }
         }
-        initializeAttributes.put("UIView.wantsLayer", typedArray.getBoolean(R.styleable.UIView_wantsLayer, false))
-        if (typedArray.getColor(R.styleable.UIView_layer_backgroundColor, -1) != -1) {
-            initializeAttributes.put("UIView.layer.backgroundColor", UIColor(typedArray.getColor(R.styleable.UIView_layer_backgroundColor, -1)))
+        typedArray.getBoolean(R.styleable.UIView_wantsLayer, false)?.let {
+            initializeAttributes.put("UIView.wantsLayer", it)
         }
-        initializeAttributes.put("UIView.layer.cornerRadius", typedArray.getFloat(R.styleable.UIView_layer_cornerRadius, 0.0f).toDouble())
-        initializeAttributes.put("UIView.layer.borderWidth", typedArray.getFloat(R.styleable.UIView_layer_borderWidth, 0.0f).toDouble())
-        if (typedArray.getColor(R.styleable.UIView_layer_borderColor, -1) != -1) {
-            initializeAttributes.put("UIView.layer.borderColor", UIColor(typedArray.getColor(R.styleable.UIView_layer_borderColor, -1)))
+        typedArray.getColor(R.styleable.UIView_layer_backgroundColor, -1)?.let {
+            if (it != -1) {
+                initializeAttributes.put("UIView.layer.backgroundColor", UIColor(it))
+            }
         }
-        initializeAttributes.put("UIView.layer.shadowX", typedArray.getFloat(R.styleable.UIView_layer_shadowX, 0.0f).toDouble())
-        initializeAttributes.put("UIView.layer.shadowY", typedArray.getFloat(R.styleable.UIView_layer_shadowY, 0.0f).toDouble())
-        initializeAttributes.put("UIView.layer.shadowRadius", typedArray.getFloat(R.styleable.UIView_layer_shadowRadius, 0.0f).toDouble())
-        if (typedArray.getColor(R.styleable.UIView_layer_shadowColor, -1) != -1) {
-            initializeAttributes.put("UIView.layer.shadowColor", UIColor(typedArray.getColor(R.styleable.UIView_layer_shadowColor, -1)))
+        typedArray.getFloat(R.styleable.UIView_layer_cornerRadius, -1.0f)?.let {
+            if (it != -1.0f) {
+                initializeAttributes.put("UIView.layer.cornerRadius", it)
+            }
+        }
+        typedArray.getFloat(R.styleable.UIView_layer_borderWidth, -1.0f)?.let {
+            if (it != -1.0f) {
+                initializeAttributes.put("UIView.layer.borderWidth", it)
+            }
+        }
+        typedArray.getColor(R.styleable.UIView_layer_borderColor, -1)?.let {
+            if (it != -1) {
+                initializeAttributes.put("UIView.layer.borderColor", UIColor(it))
+            }
+        }
+        typedArray.getFloat(R.styleable.UIView_layer_shadowX, -1.0f)?.let {
+            if (it != -1.0f) {
+                initializeAttributes.put("UIView.layer.shadowX", it)
+            }
+        }
+        typedArray.getFloat(R.styleable.UIView_layer_shadowY, -1.0f)?.let {
+            if (it != -1.0f) {
+                initializeAttributes.put("UIView.layer.shadowY", it)
+            }
+        }
+        typedArray.getFloat(R.styleable.UIView_layer_shadowRadius, -1.0f)?.let {
+            if (it != -1.0f) {
+                initializeAttributes.put("UIView.layer.shadowRadius", it)
+            }
+        }
+        typedArray.getColor(R.styleable.UIView_layer_shadowColor, -1)?.let {
+            if (it != -1) {
+                initializeAttributes.put("UIView.layer.shadowColor", UIColor(it))
+            }
         }
         initializeAttributes.put("UIView.layer.clipToBounds", typedArray.getBoolean(R.styleable.UIView_layer_clipToBounds, false))
         initializeAttributes.put("UIView.userInteractionEnabled", typedArray.getBoolean(R.styleable.UIView_userInteractionEnabled, true))
@@ -109,8 +149,8 @@ open class UIView : FrameLayout, UIResponder {
             (it["UIView.constraint"] as? UIConstraint)?.let {
                 constraint = it
             }
-            (it["UIView.maxWidth"] as? Double)?.let {
-                maxWidth = it
+            (it["UIView.maxWidth"] as? Float)?.let {
+                maxWidth = it.toDouble()
             }
             (it["UIView.automaticallyAdjustsSpace"] as? Boolean)?.let {
                 automaticallyAdjustsSpace = it
@@ -127,23 +167,23 @@ open class UIView : FrameLayout, UIResponder {
             (it["UIView.layer.backgroundColor"] as? UIColor)?.let {
                 layer.backgroundColor = it
             }
-            (it["UIView.layer.cornerRadius"] as? Double)?.let {
-                layer.cornerRadius = it
+            (it["UIView.layer.cornerRadius"] as? Float)?.let {
+                layer.cornerRadius = it.toDouble()
             }
-            (it["UIView.layer.borderWidth"] as? Double)?.let {
-                layer.borderWidth = it
+            (it["UIView.layer.borderWidth"] as? Float)?.let {
+                layer.borderWidth = it.toDouble()
             }
             (it["UIView.layer.borderColor"] as? UIColor)?.let {
                 layer.borderColor = it
             }
-            (it["UIView.layer.shadowX"] as? Double)?.let {
-                layer.shadowX = it
+            (it["UIView.layer.shadowX"] as? Float)?.let {
+                layer.shadowX = it.toDouble()
             }
-            (it["UIView.layer.shadowY"] as? Double)?.let {
-                layer.shadowY = it
+            (it["UIView.layer.shadowY"] as? Float)?.let {
+                layer.shadowY = it.toDouble()
             }
-            (it["UIView.layer.shadowRadius"] as? Double)?.let {
-                layer.shadowRadius = it
+            (it["UIView.layer.shadowRadius"] as? Float)?.let {
+                layer.shadowRadius = it.toDouble()
             }
             (it["UIView.layer.shadowColor"] as? UIColor)?.let {
                 layer.shadowColor = it
