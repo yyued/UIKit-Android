@@ -63,8 +63,8 @@
         </attr>
     </declare-styleable>
     <declare-styleable name="UIButton" parent="UIControl">
-        <attr name="title" format="string" />
-        <attr name="image" format="reference" />
+        <attr name="buttonTitle" format="string" />
+        <attr name="buttonImage" format="reference" />
         <attr name="contentInsets.top" format="float" />
         <attr name="contentInsets.left" format="float" />
         <attr name="contentInsets.right" format="float" />
@@ -77,6 +77,9 @@
         <attr name="imageEdgeInsets.left" format="float" />
         <attr name="imageEdgeInsets.right" format="float" />
         <attr name="imageEdgeInsets.bottom" format="float" />
+    </declare-styleable>
+    <declare-styleable name="UIImageView" parent="UIView">
+        <attr name="image" format="reference" />
     </declare-styleable>
 
 </resources>

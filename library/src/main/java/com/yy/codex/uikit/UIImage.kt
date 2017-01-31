@@ -18,35 +18,57 @@ class UIImage {
         AlwaysTemplate
     }
 
-    constructor() {
+    constructor(scale: Double) {
         bitmap = Bitmap.createBitmap(0, 0, Bitmap.Config.ARGB_8888)
+        this.scale = scale
     }
 
     constructor(context: Context, resID: Int) {
         if (sResCache.get(resID) is Bitmap) {
             bitmap = sResCache.get(resID)
+            when (bitmap.density) {
+                160 -> this.scale = 1.0
+                240 -> this.scale = 1.5
+                320 -> this.scale = 2.0
+                480 -> this.scale = 3.0
+                640 -> this.scale = 4.0
+                else -> this.scale = bitmap.density / 160.0
+            }
         } else {
-            bitmap = BitmapFactory.decodeResource(context.resources, resID)
+            val options = BitmapFactory.Options()
+            options.inScaled = false
+            bitmap = BitmapFactory.decodeResource(context.resources, resID, options)
+            when (bitmap.density) {
+                160 -> this.scale = 1.0
+                240 -> this.scale = 1.5
+                320 -> this.scale = 2.0
+                480 -> this.scale = 3.0
+                640 -> this.scale = 4.0
+                else -> this.scale = bitmap.density / 160.0
+            }
             sResCache.put(resID, bitmap)
         }
     }
 
-    constructor(data: ByteArray) {
+    constructor(data: ByteArray, scale: Double = 1.0) {
         bitmap = BitmapFactory.decodeByteArray(data, 0, data.size)
+        this.scale = scale
     }
 
-    constructor(base64String: String) {
+    constructor(base64String: String, scale: Double = 1.0) {
         val data = Base64.decode(base64String, Base64.DEFAULT)
         bitmap = BitmapFactory.decodeByteArray(data, 0, data.size)
+        this.scale = scale
     }
 
-    constructor(bitmap: Bitmap) {
+    constructor(bitmap: Bitmap, scale: Double = 1.0) {
         this.bitmap = bitmap
+        this.scale = scale
     }
 
     /* Scale */
 
-    var scale = UIScreen.mainScreen.scale()
+    val scale: Double
 
     /* RenderingMode */
 

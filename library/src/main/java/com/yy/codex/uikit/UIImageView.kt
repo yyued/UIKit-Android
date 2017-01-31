@@ -18,30 +18,45 @@ class UIImageView : UIView {
     /* Constructor */
 
     constructor(context: Context, view: View) : super(context, view) {
-        init()
     }
 
     constructor(context: Context) : super(context) {
-        init()
     }
 
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
-        init()
     }
 
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
-        init()
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes) {
-        init()
     }
 
     override fun init() {
         super.init()
         wantsLayer = true
         contentMode = UIViewContentMode.ScaleToFill
+    }
+
+    /* XML */
+
+    override fun prepareProps(attrs: AttributeSet) {
+        super.prepareProps(attrs)
+        val typedArray = context.theme.obtainStyledAttributes(attrs, R.styleable.UIImageView, 0, 0)
+        typedArray.getResourceId(R.styleable.UIImageView_image, -1)?.let {
+            if (it != -1) {
+                initializeAttributes.put("UIImageView.image", UIImage(context, it))
+            }
+        }
+        initializeAttributes.put("UIView.wantsLayer", true)
+    }
+
+    override fun resetProps() {
+        super.resetProps()
+        (initializeAttributes["UIImageView.image"] as? UIImage)?.let {
+            image = it
+        }
     }
 
     /* UIView */
@@ -62,6 +77,9 @@ class UIImageView : UIView {
             }
             field = image
             this.layer.bitmap = field?.bitmap ?: null
+            if (constraint != null) {
+                superview?.let(UIView::layoutSubviews)
+            }
             invalidate()
         }
 

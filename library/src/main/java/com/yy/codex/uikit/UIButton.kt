@@ -67,10 +67,10 @@ class UIButton : UIControl {
     override fun prepareProps(attrs: AttributeSet) {
         super.prepareProps(attrs)
         val typedArray = context.theme.obtainStyledAttributes(attrs, R.styleable.UIButton, 0, 0)
-        typedArray.getString(R.styleable.UIButton_title)?.let {
+        typedArray.getString(R.styleable.UIButton_buttonTitle)?.let {
             initializeAttributes.put("UIButton.title", it)
         }
-        typedArray.getResourceId(R.styleable.UIButton_image, -1)?.let {
+        typedArray.getResourceId(R.styleable.UIButton_buttonImage, -1)?.let {
             if (it != -1) {
                 initializeAttributes.put("UIButton.image", it)
             }

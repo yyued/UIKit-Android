@@ -36,7 +36,6 @@ public class MainActivity extends UINavigationActivity {
         super.onCreate(savedInstanceState);
 
         UIImage iconImage = new UIImage(this, R.drawable.ani_19);
-        iconImage.setScale(3.0);
 
         UITabBarController tabBarController = new UITabBarController(this);
         UINavigationController navigationControllerI = new UINavigationController(this);
@@ -91,17 +90,6 @@ class TestViewController extends UIViewController {
         super.viewDidLoad();
         setTitle("Test");
         getNavigationItem().setRightBarButtonItem(new UIBarButtonItem("Next", this, "handleNextButtonTapped"));
-        postDelay(new Runnable() {
-            @Override
-            public void run() {
-                UIViewAnimator.INSTANCE.linear(new Runnable() {
-                    @Override
-                    public void run() {
-                        getView().findViewById(R.id.roundView).setAlpha(0.0f);
-                    }
-                });
-            }
-        },3000);
     }
 
     private void handleNextButtonTapped() {
@@ -165,18 +153,18 @@ class TestView extends UIView {
         testView.getLayer().setShadowY(2);
         testView.setBackgroundColor(UIColor.Companion.getOrangeColor());
         addSubview(testView);
-        postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                UIViewAnimator.INSTANCE.spring(new Runnable() {
-                    @Override
-                    public void run() {
-                        testView.setFrame(new CGRect(200, 200, 88, 88));
-                        testView.getLayer().setCornerRadius(44.0);
-                    }
-                }, null);
-            }
-        }, 3000);
+//        postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                UIViewAnimator.INSTANCE.spring(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        testView.setFrame(new CGRect(200, 200, 88, 88));
+//                        testView.getLayer().setCornerRadius(44.0);
+//                    }
+//                }, null);
+//            }
+//        }, 3000);
     }
 
 }
