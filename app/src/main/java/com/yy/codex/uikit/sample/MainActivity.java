@@ -100,7 +100,9 @@ class TestViewController extends UIViewController {
     }
 
     private void handleNextButtonTapped() {
-        navigationController().pushViewController(new NextViewController(getContext()), true);
+        NextViewController nextViewController = new NextViewController(getContext());
+        nextViewController.setHidesBottomBarWhenPushed(true);
+        navigationController().pushViewController(nextViewController, true);
     }
 
 }

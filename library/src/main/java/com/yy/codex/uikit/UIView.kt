@@ -535,7 +535,7 @@ open class UIView : FrameLayout, UIResponder {
         return true
     }
 
-    fun hitTest(point: CGPoint, event: MotionEvent): UIView? {
+    open fun hitTest(point: CGPoint, event: MotionEvent): UIView? {
         return UIViewHelpers.hitTest(this, point, event)
     }
 
@@ -557,7 +557,7 @@ open class UIView : FrameLayout, UIResponder {
         return true
     }
 
-    override fun resignFirstResponder() {
+    override open fun resignFirstResponder() {
         if (isFirstResponder()) {
             UIResponder.firstResponder = null
         }
