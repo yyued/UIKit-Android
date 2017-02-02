@@ -11,12 +11,11 @@
         app:constraint.enabled="true"
         app:constraint.centerHorizontally="true"
         app:constraint.centerVertically="true"
-        app:text="Hello, World!~~~~~~~~~~~~~~~"
-        app:maxWidth="100"
-        app:numberOfLines="0"
-        app:fontSize="17"
-        app:textColor="#ff0000"
-        app:alignment="Center"
+        app:label.text="Hello, World!~~~~~~~~~~~~~~~"
+        app:label.numberOfLines="0"
+        app:label.fontSize="17"
+        app:label.textColor="#ff0000"
+        app:label.alignment="Center"
         >
     </com.yy.codex.uikit.UILabel>
 </com.yy.codex.uikit.UIView>

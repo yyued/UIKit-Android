@@ -45,32 +45,32 @@ class UILabel : UIView {
     override fun prepareProps(attrs: AttributeSet) {
         super.prepareProps(attrs)
         val typedArray = context.theme.obtainStyledAttributes(attrs, R.styleable.UILabel, 0, 0)
-        typedArray.getFloat(R.styleable.UILabel_fontSize, -1.0f)?.let {
+        typedArray.getFloat(R.styleable.UILabel_label_fontSize, -1.0f)?.let {
             if (it != -1.0f) {
                 initializeAttributes["UILabel.fontSize"] = it
             }
         }
-        typedArray.getColor(R.styleable.UILabel_textColor, -1)?.let {
+        typedArray.getColor(R.styleable.UILabel_label_textColor, -1)?.let {
             if (it != -1) {
                 initializeAttributes["UILabel.textColor"] = UIColor(it)
             }
         }
-        typedArray.getInt(R.styleable.UILabel_numberOfLines, -1)?.let {
+        typedArray.getInt(R.styleable.UILabel_label_numberOfLines, -1)?.let {
             if (it != -1) {
                 initializeAttributes["UILabel.numberOfLines"] = it
             }
         }
-        typedArray.getInt(R.styleable.UILabel_linebreakMode, -1)?.let {
+        typedArray.getInt(R.styleable.UILabel_label_linebreakMode, -1)?.let {
             if (it != -1) {
                 initializeAttributes["UILabel.linebreakMode"] = it
             }
         }
-        typedArray.getInt(R.styleable.UILabel_alignment, -1)?.let {
+        typedArray.getInt(R.styleable.UILabel_label_alignment, -1)?.let {
             if (it != -1) {
                 initializeAttributes["UILabel.alignment"] = it
             }
         }
-        typedArray.getString(R.styleable.UILabel_text)?.let {
+        typedArray.getString(R.styleable.UILabel_label_text)?.let {
             initializeAttributes["UILabel.text"] = it
         }
         typedArray.recycle()

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="UIView">
-        <attr name="materialDesign" format="boolean" />
+        <attr name="view.materialDesign" format="boolean" />
         <attr name="frame.x" format="float" />
         <attr name="frame.y" format="float" />
         <attr name="frame.width" format="float" />
@@ -27,14 +27,14 @@
         <attr name="constraint.left" format="string" />
         <attr name="constraint.right" format="string" />
         <attr name="constraint.bottom" format="string" />
-        <attr name="maxWidth" format="float" />
-        <attr name="automaticallyAdjustsSpace" format="boolean" />
+        <attr name="view.maxWidth" format="float" />
+        <attr name="view.automaticallyAdjustsSpace" format="boolean" />
         <attr name="marginInset.top" format="float" />
         <attr name="marginInset.left" format="float" />
         <attr name="marginInset.right" format="float" />
         <attr name="marginInset.bottom" format="float" />
-        <attr name="tintColor" format="color" />
-        <attr name="wantsLayer" format="boolean" />
+        <attr name="view.tintColor" format="color" />
+        <attr name="view.wantsLayer" format="boolean" />
         <attr name="layer.backgroundColor" format="color" />
         <attr name="layer.cornerRadius" format="float" />
         <attr name="layer.borderWidth" format="float" />
@@ -44,18 +44,18 @@
         <attr name="layer.shadowRadius" format="float" />
         <attr name="layer.shadowColor" format="color" />
         <attr name="layer.clipToBounds" format="boolean" />
-        <attr name="userInteractionEnabled" format="boolean" />
+        <attr name="view.userInteractionEnabled" format="boolean" />
     </declare-styleable>
     <declare-styleable name="UIControl" parent="UIView">
-        <attr name="enabled" format="boolean" />
-        <attr name="selected" format="boolean" />
-        <attr name="contentVerticalAlignment" format="enum">
+        <attr name="control.enabled" format="boolean" />
+        <attr name="control.selected" format="boolean" />
+        <attr name="control.contentVerticalAlignment" format="enum">
             <enum name="Center" value="0" />
             <enum name="Top" value="1" />
             <enum name="Bottom" value="2" />
             <enum name="Fill" value="3" />
         </attr>
-        <attr name="contentHorizontalAlignment" format="enum">
+        <attr name="control.contentHorizontalAlignment" format="enum">
             <enum name="Center" value="0" />
             <enum name="Left" value="1" />
             <enum name="Right" value="2" />
@@ -63,24 +63,24 @@
         </attr>
     </declare-styleable>
     <declare-styleable name="UIButton" parent="UIControl">
-        <attr name="buttonTitle" format="string" />
-        <attr name="buttonImage" format="reference" />
-        <attr name="contentInsets.top" format="float" />
-        <attr name="contentInsets.left" format="float" />
-        <attr name="contentInsets.right" format="float" />
-        <attr name="contentInsets.bottom" format="float" />
-        <attr name="titleEdgeInsets.top" format="float" />
-        <attr name="titleEdgeInsets.left" format="float" />
-        <attr name="titleEdgeInsets.right" format="float" />
-        <attr name="titleEdgeInsets.bottom" format="float" />
-        <attr name="imageEdgeInsets.top" format="float" />
-        <attr name="imageEdgeInsets.left" format="float" />
-        <attr name="imageEdgeInsets.right" format="float" />
-        <attr name="imageEdgeInsets.bottom" format="float" />
+        <attr name="button.title" format="string" />
+        <attr name="button.image" format="reference" />
+        <attr name="button.contentInsets.top" format="float" />
+        <attr name="button.contentInsets.left" format="float" />
+        <attr name="button.contentInsets.right" format="float" />
+        <attr name="button.contentInsets.bottom" format="float" />
+        <attr name="button.titleEdgeInsets.top" format="float" />
+        <attr name="button.titleEdgeInsets.left" format="float" />
+        <attr name="button.titleEdgeInsets.right" format="float" />
+        <attr name="button.titleEdgeInsets.bottom" format="float" />
+        <attr name="button.imageEdgeInsets.top" format="float" />
+        <attr name="button.imageEdgeInsets.left" format="float" />
+        <attr name="button.imageEdgeInsets.right" format="float" />
+        <attr name="button.imageEdgeInsets.bottom" format="float" />
     </declare-styleable>
     <declare-styleable name="UIImageView" parent="UIView">
-        <attr name="image" format="reference" />
-        <attr name="contentMode" format="enum">
+        <attr name="imageView.image" format="reference" />
+        <attr name="imageView.contentMode" format="enum">
             <enum name="ScaleToFill" value="0" />
             <enum name="ScaleAspectFit" value="1" />
             <enum name="ScaleAspectFill" value="2" />
@@ -97,17 +97,17 @@
         </attr>
     </declare-styleable>
     <declare-styleable name="UILabel" parnet="UIView">
-        <attr name="text" format="string" />
-        <attr name="fontSize" format="float" />
-        <attr name="textColor" format="color" />
-        <attr name="numberOfLines" format="integer" />
-        <attr name="linebreakMode" format="enum">
+        <attr name="label.text" format="string" />
+        <attr name="label.fontSize" format="float" />
+        <attr name="label.textColor" format="color" />
+        <attr name="label.numberOfLines" format="integer" />
+        <attr name="label.linebreakMode" format="enum">
             <enum name="ByWordWrapping" value="0" />
             <enum name="ByTruncatingHead" value="1" />
             <enum name="ByTruncatingMiddle" value="2" />
             <enum name="ByTruncatingTail" value="3" />
         </attr>
-        <attr name="alignment" format="enum">
+        <attr name="label.alignment" format="enum">
             <enum name="Normal" value="0" />
             <enum name="Center" value="1" />
             <enum name="Opposite" value="2" />

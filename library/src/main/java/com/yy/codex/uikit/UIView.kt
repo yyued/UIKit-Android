@@ -62,7 +62,7 @@ open class UIView : FrameLayout, UIResponder {
 
     protected open fun prepareProps(attrs: AttributeSet) {
         val typedArray = context.theme.obtainStyledAttributes(attrs, R.styleable.UIView, 0, 0)
-        typedArray.getBoolean(R.styleable.UIView_materialDesign, false)?.let {
+        typedArray.getBoolean(R.styleable.UIView_view_materialDesign, false)?.let {
             initializeAttributes.put("UIView.materialDesign", it)
         }
         CGRect.create(typedArray, this)?.let {
@@ -71,12 +71,12 @@ open class UIView : FrameLayout, UIResponder {
         UIConstraint.create(typedArray)?.let {
             initializeAttributes.put("UIView.constraint", it)
         }
-        typedArray.getFloat(R.styleable.UIView_maxWidth, -1.0f)?.let {
+        typedArray.getFloat(R.styleable.UIView_view_maxWidth, -1.0f)?.let {
             if (it != -1.0f) {
                 initializeAttributes.put("UIView.maxWidth", it)
             }
         }
-        typedArray.getBoolean(R.styleable.UIView_automaticallyAdjustsSpace, false)?.let {
+        typedArray.getBoolean(R.styleable.UIView_view_automaticallyAdjustsSpace, false)?.let {
             initializeAttributes.put("UIView.automaticallyAdjustsSpace", it)
         }
         initializeAttributes.put("UIView.marginInsets", UIEdgeInsets(
@@ -85,12 +85,12 @@ open class UIView : FrameLayout, UIResponder {
                 typedArray.getFloat(R.styleable.UIView_marginInset_bottom, 0.0f).toDouble(),
                 typedArray.getFloat(R.styleable.UIView_marginInset_right, 0.0f).toDouble()
         ))
-        typedArray.getColor(R.styleable.UIView_tintColor, -1)?.let {
+        typedArray.getColor(R.styleable.UIView_view_tintColor, -1)?.let {
             if (it != -1) {
                 initializeAttributes.put("UIView.tintColor", UIColor(it))
             }
         }
-        typedArray.getBoolean(R.styleable.UIView_wantsLayer, false)?.let {
+        typedArray.getBoolean(R.styleable.UIView_view_wantsLayer, false)?.let {
             initializeAttributes.put("UIView.wantsLayer", it)
         }
         typedArray.getColor(R.styleable.UIView_layer_backgroundColor, -1)?.let {
@@ -134,7 +134,7 @@ open class UIView : FrameLayout, UIResponder {
             }
         }
         initializeAttributes.put("UIView.layer.clipToBounds", typedArray.getBoolean(R.styleable.UIView_layer_clipToBounds, false))
-        initializeAttributes.put("UIView.userInteractionEnabled", typedArray.getBoolean(R.styleable.UIView_userInteractionEnabled, true))
+        initializeAttributes.put("UIView.userInteractionEnabled", typedArray.getBoolean(R.styleable.UIView_view_userInteractionEnabled, true))
         typedArray.recycle()
     }
 

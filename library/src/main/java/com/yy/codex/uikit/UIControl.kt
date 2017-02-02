@@ -70,15 +70,15 @@ open class UIControl : UIView {
     override fun prepareProps(attrs: AttributeSet) {
         super.prepareProps(attrs)
         val typedArray = context.theme.obtainStyledAttributes(attrs, R.styleable.UIControl, 0, 0)
-        initializeAttributes.put("UIControl.enable", typedArray.getBoolean(R.styleable.UIControl_enabled, true))
-        initializeAttributes.put("UIControl.select", typedArray.getBoolean(R.styleable.UIControl_selected, false))
-        when (typedArray.getInt(R.styleable.UIControl_contentVerticalAlignment, 0)) {
+        initializeAttributes.put("UIControl.enable", typedArray.getBoolean(R.styleable.UIControl_control_enabled, true))
+        initializeAttributes.put("UIControl.select", typedArray.getBoolean(R.styleable.UIControl_control_selected, false))
+        when (typedArray.getInt(R.styleable.UIControl_control_contentVerticalAlignment, 0)) {
             0 -> initializeAttributes.put("UIControl.contentVerticalAlignment", ContentVerticalAlignment.Center)
             1 -> initializeAttributes.put("UIControl.contentVerticalAlignment", ContentVerticalAlignment.Top)
             2 -> initializeAttributes.put("UIControl.contentVerticalAlignment", ContentVerticalAlignment.Bottom)
             3 -> initializeAttributes.put("UIControl.contentVerticalAlignment", ContentVerticalAlignment.Fill)
         }
-        when (typedArray.getInt(R.styleable.UIControl_contentHorizontalAlignment, 0)) {
+        when (typedArray.getInt(R.styleable.UIControl_control_contentHorizontalAlignment, 0)) {
             0 -> initializeAttributes.put("UIControl.contentHorizontalAlignment", ContentHorizontalAlignment.Center)
             1 -> initializeAttributes.put("UIControl.contentHorizontalAlignment", ContentHorizontalAlignment.Left)
             2 -> initializeAttributes.put("UIControl.contentHorizontalAlignment", ContentHorizontalAlignment.Right)

@@ -44,12 +44,12 @@ class UIImageView : UIView {
     override fun prepareProps(attrs: AttributeSet) {
         super.prepareProps(attrs)
         val typedArray = context.theme.obtainStyledAttributes(attrs, R.styleable.UIImageView, 0, 0)
-        typedArray.getResourceId(R.styleable.UIImageView_image, -1)?.let {
+        typedArray.getResourceId(R.styleable.UIImageView_imageView_image, -1)?.let {
             if (it != -1) {
                 initializeAttributes.put("UIImageView.image", UIImage(context, it))
             }
         }
-        typedArray.getInt(R.styleable.UIImageView_contentMode, -1)?.let {
+        typedArray.getInt(R.styleable.UIImageView_imageView_contentMode, -1)?.let {
             if (it != -1) {
                 initializeAttributes.put("UIImageView.contentMode", it)
             }
