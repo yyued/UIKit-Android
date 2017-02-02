@@ -199,7 +199,7 @@ open class UIView : FrameLayout, UIResponder {
 
     /* UIResponder */
 
-    var viewController: UIViewController? = null
+    internal var viewController: UIViewController? = null
 
     override val nextResponder: UIResponder?
         get() {
@@ -361,13 +361,13 @@ open class UIView : FrameLayout, UIResponder {
     var hidden: Boolean = false
         set(value) {
             field = value
-            alpha = backAlpha
+            alpha = _alpha
         }
 
-    private var backAlpha: Float = 1.0f
+    private var _alpha: Float = 1.0f
 
     override fun setAlpha(alpha: Float) {
-        backAlpha = alpha
+        _alpha = alpha
         var value = alpha
         if (hidden) {
             value = 0.0f
@@ -463,9 +463,9 @@ open class UIView : FrameLayout, UIResponder {
         }
     }
 
-    fun didAddSubview(subview: UIView) {}
+    open fun didAddSubview(subview: UIView) {}
 
-    fun willRemoveSubview(subview: UIView) {}
+    open fun willRemoveSubview(subview: UIView) {}
 
     open fun willMoveToSuperview(newSuperview: UIView?) {
         materialDesignDidChanged()
@@ -474,9 +474,9 @@ open class UIView : FrameLayout, UIResponder {
 
     open fun didMoveToSuperview() {}
 
-    fun willMoveToWindow() {}
+    open fun willMoveToWindow() {}
 
-    fun didMoveToWindow() {}
+    open fun didMoveToWindow() {}
 
     override fun onViewAdded(child: View) {
         if (child is UIView) {
@@ -517,9 +517,10 @@ open class UIView : FrameLayout, UIResponder {
         }
 
     val layer: CALayer = CALayer()
-    var enlargerView: UIEnlargerView? = null
 
-    fun createEnlargerView() {
+    private var enlargerView: UIEnlargerView? = null
+
+    private fun createEnlargerView() {
         val view = UIEnlargerView(context)
         view.userInteractionEnabled = false
         view.tag = -1
@@ -532,7 +533,7 @@ open class UIView : FrameLayout, UIResponder {
         enlargerView = view
     }
 
-    fun resetEnlargerLayerView() {
+    private fun resetEnlargerLayerView() {
         enlargerView?.let {
             val insets = layer.enlargerInsets()
             it.frame = CGRect(frame.x - insets.left, frame.y - insets.top, frame.width + insets.left + insets.right, frame.height + insets.top + insets.bottom)
