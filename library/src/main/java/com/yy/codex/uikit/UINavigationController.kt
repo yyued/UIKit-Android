@@ -39,6 +39,7 @@ open class UINavigationController(context: Context) : UIViewController(context) 
     private var currentAnimation: UIViewAnimation? = null
 
     fun setViewControllers(viewControllers: Array<UIViewController>) {
+        UIResponder.firstResponder?.let(UIResponder::resignFirstResponder)
         currentAnimation?.cancel()
         for (childViewController in childViewControllers) {
             childViewController.removeFromParentViewController()
@@ -53,6 +54,7 @@ open class UINavigationController(context: Context) : UIViewController(context) 
     private var beingPush = false
 
     open fun pushViewController(viewController: UIViewController, animated: Boolean) {
+        UIResponder.firstResponder?.let(UIResponder::resignFirstResponder)
         if (childViewControllers.count() > 0) {
             childViewControllers.last().viewWillDisappear(animated)
         }
@@ -96,6 +98,7 @@ open class UINavigationController(context: Context) : UIViewController(context) 
     private val beingPop = false
 
     open fun popViewController(animated: Boolean) {
+        UIResponder.firstResponder?.let(UIResponder::resignFirstResponder)
         currentAnimation?.cancel()
         navigationBar.popNavigationItem(animated)
         if (animated) {

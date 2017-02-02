@@ -151,7 +151,6 @@ open class UIViewController(val context: Context) : UIResponder {
     }
 
     fun viewWillDisappear(animated: Boolean) {
-        resignFirstResponder()
         for (childViewController in childViewControllers) {
             childViewController.viewWillDisappear(animated)
         }
