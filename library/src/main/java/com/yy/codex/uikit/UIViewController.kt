@@ -37,8 +37,15 @@ open class UIViewController(val context: Context) : UIResponder {
         }
 
     override fun canBecomeFirstResponder(): Boolean {
-        val navigationController = navigationController() ?: return false
-        return navigationController.childViewControllers.last() == this
+        val tabBarController = tabBarController()
+        if (tabBarController != null) {
+            val navigationController = navigationController() ?: return false
+            return tabBarController.selectedViewController == navigationController && navigationController.childViewControllers.last() == this
+        }
+        else {
+            val navigationController = navigationController() ?: return false
+            return navigationController.childViewControllers.last() == this
+        }
     }
 
     override fun becomeFirstResponder() {

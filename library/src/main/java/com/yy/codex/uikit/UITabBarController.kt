@@ -38,10 +38,13 @@ open class UITabBarController(context: Context): UIViewController(context) {
     var selectedIndex = 0
         set(value) {
             field = value
-            tabBar.selectedItem = selectedViewController?.tabBarItem
+            (UIResponder.firstResponder as? UIViewController)?.let {
+                UIResponder.firstResponder = null
+            }
             childViewControllers.forEach {
                 it.view?.hidden = selectedViewController !== it
             }
+            tabBar.selectedItem = selectedViewController?.tabBarItem
         }
 
     var selectedViewController: UIViewController? = null

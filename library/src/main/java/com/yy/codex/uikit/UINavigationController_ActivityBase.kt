@@ -20,7 +20,7 @@ class UINavigationController_ActivityBase(context: Context) : UINavigationContro
     }
 
     override fun pushViewController(viewController: UIViewController, animated: Boolean) {
-        if (context is UINavigationActivity) {
+        if (context is UINavigationActivity || context is UITabBarActivity) {
             val fromViewController = childViewControllers.last()
             val toViewController = viewController
             fromViewController.viewWillDisappear(animated)

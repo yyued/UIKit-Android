@@ -2,69 +2,53 @@ package com.yy.codex.uikit.sample;
 
 import android.content.Context;
 import android.os.Build;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
-import android.view.LayoutInflater;
 import android.view.View;
 
 import com.yy.codex.uikit.CGRect;
-import com.yy.codex.uikit.UIActivity;
 import com.yy.codex.uikit.UIBarButtonItem;
 import com.yy.codex.uikit.UIColor;
-import com.yy.codex.uikit.UIEdgeInsets;
 import com.yy.codex.uikit.UIImage;
-import com.yy.codex.uikit.UINavigationActivity;
 import com.yy.codex.uikit.UINavigationController;
-import com.yy.codex.uikit.UITabBar;
+import com.yy.codex.uikit.UINavigationController_ActivityBase;
+import com.yy.codex.uikit.UITabBarActivity;
 import com.yy.codex.uikit.UITabBarController;
 import com.yy.codex.uikit.UITabBarItem;
 import com.yy.codex.uikit.UIView;
-import com.yy.codex.uikit.UIViewAnimator;
 import com.yy.codex.uikit.UIViewController;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
+public class MainActivity extends UITabBarActivity {
 
-public class MainActivity extends UINavigationActivity {
-
+    @NotNull
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
+    public UIViewController[] createViewControllers() {
         UIImage iconImage = new UIImage(this, R.drawable.ani_19);
-
-        UITabBarController tabBarController = new UITabBarController(this);
-        UINavigationController navigationControllerI = new UINavigationController(this);
+        UINavigationController navigationControllerI = new UINavigationController_ActivityBase(this);
         navigationControllerI.setRootViewController(new TestViewController(this));
         navigationControllerI.setTabBarItem(new UITabBarItem());
         navigationControllerI.getTabBarItem().setTitle("Test");
         navigationControllerI.getTabBarItem().setImage(iconImage);
-
         UINavigationController navigationControllerII = new UINavigationController(this);
         navigationControllerII.setRootViewController(new NextViewController(this));
         navigationControllerII.setTabBarItem(new UITabBarItem());
         navigationControllerII.getTabBarItem().setTitle("Second");
         navigationControllerII.getTabBarItem().setImage(iconImage);
-
         UIViewController[] viewControllers = new UIViewController[]{
                 navigationControllerI,
                 navigationControllerII,
         };
-
-        tabBarController.setViewControllers(viewControllers);
-        setViewController(tabBarController);
-//        getNavigationController().getView().setMaterialDesign(true);
+        return viewControllers;
     }
 
-//    @NotNull
-//    @Override
-//    public UINavigationController createNavigationController() {
-//        return new UINavigationController_ActivityBase(this);
-//    }
+    @NotNull
+    @Override
+    public UINavigationController createNavigationController() {
+        return new UINavigationController_ActivityBase(this);
+    }
 
 //    @NotNull
 //    @Override
@@ -111,7 +95,13 @@ class NextViewController extends UIViewController {
         super.viewDidLoad();
         setTitle("I'm Next");
         getView().setBackgroundColor(UIColor.Companion.getGrayColor());
-//        setHidesBottomBarWhenPushed(true);
+        getNavigationItem().setRightBarButtonItem(new UIBarButtonItem("Next", this, "handleNextButtonTapped"));
+    }
+
+    private void handleNextButtonTapped() {
+        NextViewController nextViewController = new NextViewController(getContext());
+        nextViewController.setHidesBottomBarWhenPushed(true);
+        navigationController().pushViewController(nextViewController, true);
     }
 
 }
