@@ -21,11 +21,14 @@ import com.yy.codex.uikit.UIViewController;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MainActivity extends UITabBarActivity {
 
     @NotNull
     @Override
-    public UIViewController[] createViewControllers() {
+    public List<UIViewController> createViewControllers() {
         UIImage iconImage = new UIImage(this, R.drawable.ani_19);
         UINavigationController navigationControllerI = new UINavigationController_ActivityBase(this);
         navigationControllerI.setRootViewController(new TestViewController(this));
@@ -37,11 +40,10 @@ public class MainActivity extends UITabBarActivity {
         navigationControllerII.setTabBarItem(new UITabBarItem());
         navigationControllerII.getTabBarItem().setTitle("Second");
         navigationControllerII.getTabBarItem().setImage(iconImage);
-        UIViewController[] viewControllers = new UIViewController[]{
-                navigationControllerI,
-                navigationControllerII,
-        };
-        return viewControllers;
+        ArrayList<UIViewController> list = new ArrayList<>();
+        list.add(navigationControllerI);
+        list.add(navigationControllerII);
+        return list;
     }
 
     @NotNull

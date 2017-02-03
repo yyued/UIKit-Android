@@ -15,7 +15,7 @@ open class UINavigationController(context: Context) : UIViewController(context) 
     val wrapperView: UIView = UIView(context)
 
     fun setRootViewController(rootViewController: UIViewController) {
-        setViewControllers(arrayOf(rootViewController))
+        setViewControllers(listOf(rootViewController))
     }
 
     override fun viewDidLoad() {
@@ -38,7 +38,7 @@ open class UINavigationController(context: Context) : UIViewController(context) 
 
     private var currentAnimation: UIViewAnimation? = null
 
-    fun setViewControllers(viewControllers: Array<UIViewController>) {
+    fun setViewControllers(viewControllers: List<UIViewController>) {
         UIResponder.firstResponder?.let(UIResponder::resignFirstResponder)
         currentAnimation?.cancel()
         for (childViewController in childViewControllers) {

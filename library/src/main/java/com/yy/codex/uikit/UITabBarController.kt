@@ -23,7 +23,7 @@ open class UITabBarController(context: Context): UIViewController(context) {
         }
     }
 
-    open fun setViewControllers(viewControllers: Array<UIViewController>) {
+    open fun setViewControllers(viewControllers: List<UIViewController>) {
         for (childViewController in childViewControllers) {
             childViewController.removeFromParentViewController()
         }

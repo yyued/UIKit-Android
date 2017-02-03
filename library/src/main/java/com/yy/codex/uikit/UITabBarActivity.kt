@@ -33,8 +33,8 @@ open class UITabBarActivity : UIActivity() {
         return UITabBarController(this)
     }
 
-    open fun createViewControllers(): Array<UIViewController> {
-        return arrayOf()
+    open fun createViewControllers(): List<UIViewController> {
+        return listOf()
     }
 
     /* For Activity_Base Needs */
