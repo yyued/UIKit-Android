@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 
 import com.yy.codex.uikit.CGRect;
 import com.yy.codex.uikit.UIBarButtonItem;
@@ -16,6 +17,7 @@ import com.yy.codex.uikit.UINavigationController_ActivityBase;
 import com.yy.codex.uikit.UITabBarActivity;
 import com.yy.codex.uikit.UITabBarController;
 import com.yy.codex.uikit.UITabBarItem;
+import com.yy.codex.uikit.UITextField;
 import com.yy.codex.uikit.UIView;
 import com.yy.codex.uikit.UIViewController;
 
