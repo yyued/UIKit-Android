@@ -6,6 +6,7 @@ import android.support.annotation.RequiresApi
 import android.util.AttributeSet
 import android.view.KeyEvent
 import android.view.View
+import com.yy.codex.foundation.NSLog
 
 /**
  * Created by PonyCui_Home on 2017/2/3.
@@ -104,9 +105,24 @@ class UITextField : UIControl, UITextInput.Delegate {
     }
 
     override fun textDidChanged() {
+        val onBounds = label.frame.x == 0.0 || -label.frame.x == label.frame.width - wrapper.frame.width - 2.0
+        val onCenter = input.cursorPosition < input.editor?.length() ?: 0 && input.cursorPosition > 0
+        var lastX = label.frame.x
         label.text = input.editor?.text.toString()
         resetCharPositions()
         resetLayouts()
+        if (!onBounds || onCenter) {
+            if (cursorView.frame.x > -lastX + wrapper.frame.width) {
+                lastX = -(cursorView.frame.x - wrapper.frame.width + 22.0)
+            }
+            else if (label.frame.width < wrapper.frame.width) {
+                lastX = 0.0
+            }
+            else if (-lastX > label.frame.width - wrapper.frame.width) {
+                lastX = - (label.frame.width - wrapper.frame.width)
+            }
+            label.frame = label.frame.setX(lastX)
+        }
     }
 
     override fun textShouldChange(range: NSRange, replacementString: String): Boolean {
