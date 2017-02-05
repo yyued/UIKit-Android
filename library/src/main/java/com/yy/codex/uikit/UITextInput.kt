@@ -78,7 +78,9 @@ class UITextInput {
                     editable.delete(it.selectionStart, it.selectionEnd)
                 }
                 else {
-                    editable.delete(it.selectionEnd - 1, it.selectionEnd)
+                    if (it.selectionEnd > 0) {
+                        editable.delete(it.selectionEnd - 1, it.selectionEnd)
+                    }
                 }
             }
         }

@@ -3,15 +3,9 @@ package com.yy.codex.uikit
 import android.content.Context
 import android.os.Build
 import android.support.annotation.RequiresApi
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.KeyEvent
 import android.view.View
-import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
-import com.yy.codex.foundation.NSLog
 
 /**
  * Created by PonyCui_Home on 2017/2/3.
@@ -74,11 +68,19 @@ class UITextField : UIControl, UITextInput.Delegate {
 
     override fun onLongPressed(sender: UILongPressGestureRecognizer) {
         super.onLongPressed(sender)
+        movingPrevious = false
+        movingNext = false
         if (isFirstResponder()) {
-            when (sender.state) {
-                UIGestureRecognizerState.Began -> moveCursor(sender.location(label).x)
-                UIGestureRecognizerState.Changed -> moveCursor(sender.location(label).x)
-                UIGestureRecognizerState.Ended -> moveCursor(sender.location(label).x)
+            if (sender.location(wrapper).x < 12.0) {
+                movingPrevious = true
+                moveCursorToPrevious()
+            }
+            else if (sender.location(wrapper).x > wrapper.frame.width - 12.0) {
+                movingNext = true
+                moveCursorToNext()
+            }
+            else {
+                moveCursor(sender.location(label).x)
             }
         }
     }
@@ -103,8 +105,8 @@ class UITextField : UIControl, UITextInput.Delegate {
 
     override fun textDidChanged() {
         label.text = input.editor?.text.toString()
-        resetLayouts()
         resetCharPositions()
+        resetLayouts()
     }
 
     override fun textShouldChange(range: NSRange, replacementString: String): Boolean {
@@ -165,7 +167,18 @@ class UITextField : UIControl, UITextInput.Delegate {
         wrapper.frame = CGRect(contentInsets.left, contentInsets.top, frame.width - contentInsets.left - contentInsets.right, frame.height - contentInsets.top - contentInsets.bottom)
         var textSize = label.intrinsicContentSize()
         textSize = textSize.setWidth(textSize.width + 4.0)
-        label.frame = CGRect(Math.min(0.0, wrapper.frame.width - textSize.width), (wrapper.frame.height - textSize.height) / 2.0, textSize.width, textSize.height)
+        var labelX = 0.0
+        if (input.cursorPosition < charPositions.count() && wrapper.frame.width < textSize.width) {
+            labelX = (-charPositions[input.cursorPosition] + wrapper.frame.width) - 2.0
+            if (labelX > 0.0) {
+                labelX = 0.0
+            }
+        }
+        label.frame = CGRect(labelX, (wrapper.frame.height - textSize.height) / 2.0, textSize.width, textSize.height)
+        resetCursorLayout()
+    }
+
+    private fun resetCursorLayout() {
         cursorView.frame = CGRect(0.0, 0.0, 2.0, label.frame.height)
         label.attributedText?.let {
             val substring = it.substring(NSRange(0, input.cursorPosition))
@@ -173,7 +186,6 @@ class UITextField : UIControl, UITextInput.Delegate {
             cursorView.frame = CGRect(Math.max(0.0, cursorPosition.width - 1.0), 0.0, 2.0, label.frame.height)
         }
     }
-
 
     private fun resetCharPositions() {
         label.attributedText?.let {
@@ -226,7 +238,7 @@ class UITextField : UIControl, UITextInput.Delegate {
                 }
             }
             input.editor?.setSelection(target)
-            resetLayouts()
+            resetCursorLayout()
         }
         else if (charPositions.count() == 1) {
             if (x > charPositions[0]) {
@@ -235,12 +247,50 @@ class UITextField : UIControl, UITextInput.Delegate {
             else {
                 input.editor?.setSelection(0)
             }
-            resetLayouts()
+            resetCursorLayout()
         }
         else if (charPositions.count() == 0) {
             input.editor?.setSelection(0)
+            resetCursorLayout()
+        }
+    }
+
+    private var moveNextTiming: Long = 0
+
+    private var movingPrevious = false
+    private fun moveCursorToPrevious() {
+        if (System.currentTimeMillis() < moveNextTiming) {
+            return
+        }
+        moveNextTiming = System.currentTimeMillis() + 128
+        val current = input.editor?.selectionEnd ?: 0
+        if (current > 0) {
+            input.editor?.setSelection(current - 1)
             resetLayouts()
         }
+        postDelayed({
+            if (tracking && movingPrevious){
+                moveCursorToPrevious()
+            }
+        }, 128)
+    }
+
+    private var movingNext = false
+    private fun moveCursorToNext() {
+        if (System.currentTimeMillis() < moveNextTiming) {
+            return
+        }
+        moveNextTiming = System.currentTimeMillis() + 128
+        val current = input.editor?.selectionEnd ?: 0
+        if (current < input.editor?.length() ?: 0) {
+            input.editor?.setSelection(current + 1)
+            resetLayouts()
+        }
+        postDelayed({
+            if (tracking && movingNext){
+                moveCursorToNext()
+            }
+        }, 128)
     }
 
 }
