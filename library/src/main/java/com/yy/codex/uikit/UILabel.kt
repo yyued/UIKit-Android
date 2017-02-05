@@ -11,6 +11,7 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.TextView
+import com.yy.codex.foundation.NSLog
 
 import java.util.HashMap
 
@@ -213,7 +214,12 @@ class UILabel : UIView {
         get() = super.maxWidth
         set(maxWidth) {
             super.maxWidth = maxWidth
-            textView?.maxWidth = (maxWidth * UIScreen.mainScreen.scale()).toInt()
+            if (maxWidth > 0.0) {
+                textView?.maxWidth = (maxWidth * UIScreen.mainScreen.scale()).toInt()
+            }
+            else {
+                textView?.maxWidth = 999999
+            }
         }
 
     override fun intrinsicContentSize(): CGSize {
@@ -221,6 +227,12 @@ class UILabel : UIView {
         textView.measure(0, 0)
         val width = textView.measuredWidth
         val height = textView.measuredHeight
+        if (maxWidth > 0.0) {
+            textView.maxWidth = (maxWidth * UIScreen.mainScreen.scale()).toInt()
+        }
+        else {
+            textView.maxWidth = 999999
+        }
         return CGSize(Math.ceil(width / UIScreen.mainScreen.scale()), Math.ceil(height / UIScreen.mainScreen.scale()))
     }
 

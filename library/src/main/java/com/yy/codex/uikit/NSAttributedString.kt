@@ -1,5 +1,6 @@
 package com.yy.codex.uikit
 
+import android.content.Context
 import android.graphics.Color
 import android.os.Build
 import android.text.*
@@ -24,6 +25,15 @@ open class NSAttributedString : SpannableStringBuilder {
 
     constructor(spannableString: SpannedString) : super(spannableString) {}
 
+    fun measure(context: Context, maxWidth: Double): CGSize {
+        if (measureLabel == null) {
+            measureLabel = UILabel(context)
+        }
+        measureLabel?.attributedText = this
+        measureLabel?.maxWidth = maxWidth
+        return measureLabel?.intrinsicContentSize() ?: CGSize(0.0, 0.0)
+    }
+
     fun mutableCopy(): NSMutableAttributedString {
         return NSMutableAttributedString(this)
     }
@@ -47,6 +57,13 @@ open class NSAttributedString : SpannableStringBuilder {
         } else {
             return null
         }
+    }
+
+    fun substring(range: NSRange): NSAttributedString {
+        val mutableString = this.mutableCopy()
+        mutableString.delete(range.location + range.length, this.length)
+        mutableString.delete(0, range.location)
+        return mutableString.copy()
     }
 
     protected fun reset(attrs: HashMap<String, Any>, range: NSRange) {
@@ -110,6 +127,7 @@ open class NSAttributedString : SpannableStringBuilder {
     }
 
     companion object {
+        private var measureLabel: UILabel? = null
         var NSFontAttributeName = "NSFontAttributeName" // NSFont, default System 17
         var NSParagraphStyleAttributeName = "NSParagraphStyleAttributeName" // NSParagraphStyle, default nil
         var NSForegroundColorAttributeName = "NSForegroundColorAttributeName" // int, default Color.BLACK

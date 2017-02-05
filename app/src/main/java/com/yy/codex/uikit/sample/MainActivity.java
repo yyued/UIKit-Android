@@ -11,6 +11,7 @@ import android.view.inputmethod.InputMethodManager;
 import com.yy.codex.uikit.CGRect;
 import com.yy.codex.uikit.UIBarButtonItem;
 import com.yy.codex.uikit.UIColor;
+import com.yy.codex.uikit.UIEdgeInsets;
 import com.yy.codex.uikit.UIImage;
 import com.yy.codex.uikit.UINavigationController;
 import com.yy.codex.uikit.UINavigationController_ActivityBase;
@@ -78,6 +79,8 @@ class TestViewController extends UIViewController {
         super.viewDidLoad();
         setTitle("Test");
         getNavigationItem().setRightBarButtonItem(new UIBarButtonItem("Next", this, "handleNextButtonTapped"));
+        UITextField textField = (UITextField) getView().findViewById(R.id.roundView);
+        textField.setContentInsets(new UIEdgeInsets(0, 6, 0, 6));
     }
 
     private void handleNextButtonTapped() {

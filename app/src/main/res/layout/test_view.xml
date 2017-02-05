@@ -13,6 +13,9 @@
         app:constraint.centerVertically="true"
         app:constraint.width="200"
         app:constraint.height="44"
+        app:view.wantsLayer="true"
+        app:layer.borderWidth="1"
+        app:layer.borderColor="#ff0000"
         >
     </com.yy.codex.uikit.UITextField>
 </com.yy.codex.uikit.UIView>
