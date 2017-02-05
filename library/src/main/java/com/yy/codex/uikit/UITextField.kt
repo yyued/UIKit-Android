@@ -66,7 +66,27 @@ class UITextField : UIControl, UITextInput.Delegate {
     override fun onEvent(event: Event) {
         super.onEvent(event)
         if (event == UIControl.Event.TouchUpInside) {
-            becomeFirstResponder()
+            if (!isFirstResponder()) {
+                becomeFirstResponder()
+            }
+        }
+    }
+
+    override fun onLongPressed(sender: UILongPressGestureRecognizer) {
+        super.onLongPressed(sender)
+        if (isFirstResponder()) {
+            when (sender.state) {
+                UIGestureRecognizerState.Began -> moveCursor(sender.location(label).x)
+                UIGestureRecognizerState.Changed -> moveCursor(sender.location(label).x)
+                UIGestureRecognizerState.Ended -> moveCursor(sender.location(label).x)
+            }
+        }
+    }
+
+    override fun onTapped(sender: UITapGestureRecognizer) {
+        super.onTapped(sender)
+        if (isFirstResponder()) {
+            moveCursor(sender.location(label).x)
         }
     }
 
@@ -84,6 +104,7 @@ class UITextField : UIControl, UITextInput.Delegate {
     override fun textDidChanged() {
         label.text = input.editor?.text.toString()
         resetLayouts()
+        resetCharPositions()
     }
 
     override fun textShouldChange(range: NSRange, replacementString: String): Boolean {
@@ -95,6 +116,7 @@ class UITextField : UIControl, UITextInput.Delegate {
     lateinit internal var label: UILabel
     lateinit private var cursorView: UIView
     private var cursorViewAnimation: UIViewAnimation? = null
+    internal var charPositions: List<Int> = listOf()
 
     private fun showCursorView() {
         cursorView.hidden = false
@@ -148,7 +170,76 @@ class UITextField : UIControl, UITextInput.Delegate {
         label.attributedText?.let {
             val substring = it.substring(NSRange(0, input.cursorPosition))
             val cursorPosition = substring.measure(context, 999999.0)
-            cursorView.frame = CGRect(cursorPosition.width, 0.0, 2.0, label.frame.height)
+            cursorView.frame = CGRect(Math.max(0.0, cursorPosition.width - 1.0), 0.0, 2.0, label.frame.height)
+        }
+    }
+
+
+    private fun resetCharPositions() {
+        label.attributedText?.let {
+            val mutableList: MutableList<Int> = mutableListOf()
+            for (i in 0..it.length) {
+                val substring = it.substring(NSRange(0, i))
+                val cursorPosition = substring.measure(context, 999999.0)
+                mutableList.add(cursorPosition.width.toInt())
+            }
+            charPositions = mutableList.toList()
+        }
+    }
+
+    private fun moveCursor(x: Double) {
+        if (charPositions.count() >= 2) {
+            var left = 0
+            var right = charPositions.count() - 1
+            var target = 0
+            while (true) {
+                if (x > charPositions[left] && x < charPositions[right]) {
+                    if (right - left <= 1) {
+                        val midValue = (charPositions[left] + charPositions[right]) / 2.0
+                        if (x > midValue) {
+                            target = right
+                        }
+                        else {
+                            target = left
+                        }
+                        break
+                    }
+                    val mid = (left + right) / 2
+                    if (x > charPositions[mid]) {
+                        left = mid
+                    }
+                    else if (x < charPositions[mid]) {
+                        right = mid
+                    }
+                    else {
+                        target = mid
+                        break
+                    }
+                }
+                else if (x < charPositions[left]) {
+                    target = left
+                    break
+                }
+                else if (x > charPositions[right]) {
+                    target = right
+                    break
+                }
+            }
+            input.editor?.setSelection(target)
+            resetLayouts()
+        }
+        else if (charPositions.count() == 1) {
+            if (x > charPositions[0]) {
+                input.editor?.setSelection(1)
+            }
+            else {
+                input.editor?.setSelection(0)
+            }
+            resetLayouts()
+        }
+        else if (charPositions.count() == 0) {
+            input.editor?.setSelection(0)
+            resetLayouts()
         }
     }
 

@@ -74,7 +74,12 @@ class UITextInput {
         editor?.let {
             val editable = it.text
             if (editable.length > 0) {
-                editable.delete(editable.length - 1, editable.length)
+                if (it.selectionStart < it.selectionEnd) {
+                    editable.delete(it.selectionStart, it.selectionEnd)
+                }
+                else {
+                    editable.delete(it.selectionEnd - 1, it.selectionEnd)
+                }
             }
         }
     }

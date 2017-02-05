@@ -206,7 +206,7 @@ open class UIControl : UIView {
         }
     }
 
-    protected fun onTapped(sender: UITapGestureRecognizer) {
+    protected open fun onTapped(sender: UITapGestureRecognizer) {
         onEvent(Event.TouchUpInside)
     }
 
