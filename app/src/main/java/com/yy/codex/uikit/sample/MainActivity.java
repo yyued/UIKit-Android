@@ -12,6 +12,7 @@ import com.yy.codex.foundation.NSLog;
 import com.yy.codex.foundation.NSNotification;
 import com.yy.codex.foundation.NSNotificationCenter;
 import com.yy.codex.uikit.CGRect;
+import com.yy.codex.uikit.NSAttributedString;
 import com.yy.codex.uikit.UIBarButtonItem;
 import com.yy.codex.uikit.UIColor;
 import com.yy.codex.uikit.UIEdgeInsets;
@@ -32,6 +33,7 @@ import com.yy.codex.uikit.UIViewController;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class MainActivity extends UITabBarActivity {
@@ -87,10 +89,9 @@ class TestViewController extends UIViewController {
         setTitle("Test");
         getNavigationItem().setRightBarButtonItem(new UIBarButtonItem("Next", this, "handleNextButtonTapped"));
         UITextField textField = (UITextField) getView().findViewById(R.id.roundView);
-        textField.setClearsOnBeginEditing(true);
         textField.setKeyboardType(UIKeyboardType.Password);
         textField.setReturnKeyType(UIReturnKeyType.Next);
-//        textField.setSecureTextEntry(true);
+        textField.setPlaceholder("请输入密码");
         textField.setContentInsets(new UIEdgeInsets(0, 6, 0, 6));
     }
 

@@ -8,6 +8,7 @@ import android.util.AttributeSet
 import android.view.KeyEvent
 import android.view.View
 import com.yy.codex.foundation.NSLog
+import java.util.*
 
 /**
  * Created by PonyCui_Home on 2017/2/3.
@@ -64,11 +65,15 @@ class UITextField : UIControl, UITextInput.Delegate, UITextInputTraits {
 
     var borderStyle: Int = 0 // todo: 未实现
 
-    var defaultTextAttributes: Map<String, Any>? = null // todo: 未实现
+    var defaultTextAttributes: Map<String, Any>? = null
 
-    var placeholder: String? = null // todo: 未实现
+    var placeholder: String? = null
+        set(value) {
+            field = value
+            setupPlaceholder()
+        }
 
-    var attributedPlaceholder: NSAttributedString? = null // todo: 未实现
+    var attributedPlaceholder: NSAttributedString? = null
 
     var clearsOnBeginEditing = false
 
@@ -108,12 +113,17 @@ class UITextField : UIControl, UITextInput.Delegate, UITextInputTraits {
 
     override fun becomeFirstResponder() {
         super.becomeFirstResponder()
+        removePlaceholder()
+        if (clearsOnBeginEditing) {
+            text = ""
+        }
         input.beginEditing()
         showCursorView()
     }
 
     override fun resignFirstResponder() {
         if (isFirstResponder()) {
+            setupPlaceholder()
             input.endEditing()
             hideCursorView()
         }
@@ -124,9 +134,6 @@ class UITextField : UIControl, UITextInput.Delegate, UITextInputTraits {
         super.onEvent(event)
         if (event == UIControl.Event.TouchUpInside) {
             if (!isFirstResponder()) {
-                if (clearsOnBeginEditing) {
-                    text = ""
-                }
                 becomeFirstResponder()
             }
         }
@@ -182,9 +189,15 @@ class UITextField : UIControl, UITextInput.Delegate, UITextInputTraits {
                 pureText = pureText.replaceRange(0, pureText.length - 1, ((0 until pureText.length-1).map { "●" }).joinToString(""))
             }
             label.text = pureText
+            defaultTextAttributes?.let {
+                label.attributedText = NSAttributedString(pureText, HashMap(it))
+            }
         }
         else {
             label.text = input.editor?.text.toString()
+            defaultTextAttributes?.let {
+                label.attributedText = NSAttributedString(input.editor?.text.toString(), HashMap(it))
+            }
         }
         resetCharPositions()
         resetLayouts()
@@ -396,6 +409,29 @@ class UITextField : UIControl, UITextInput.Delegate, UITextInputTraits {
                 moveCursorToNext()
             }
         }, 128)
+    }
+
+    private fun setupPlaceholder() {
+        if (input?.editor?.text?.toString()?.length == 0 && (placeholder != null || attributedPlaceholder != null)) {
+            if (attributedPlaceholder != null) {
+                label.attributedText = attributedPlaceholder
+            }
+            else {
+                placeholder?.let {
+                    label.attributedText = NSAttributedString(it, hashMapOf(
+                        Pair(NSAttributedString.NSFontAttributeName, label.font),
+                        Pair(NSAttributedString.NSForegroundColorAttributeName, UIColor.blackColor.colorWithAlpha(0.3))
+                    ))
+                }
+            }
+            resetLayouts()
+        }
+    }
+
+    private fun removePlaceholder() {
+        if ((placeholder != null || attributedPlaceholder != null) && label.text == placeholder) {
+            label.text = ""
+        }
     }
 
 }
