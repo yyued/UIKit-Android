@@ -2,20 +2,26 @@ package com.yy.codex.uikit
 
 import android.app.Activity
 import android.content.res.Configuration
+import android.graphics.Rect
 import android.os.Bundle
 import android.view.KeyEvent
+import android.view.View
+import android.view.ViewTreeObserver
+import android.view.WindowManager
+import com.yy.codex.foundation.NSLog
 
 /**
  * Created by PonyCui_Home on 2017/1/23.
  */
 open class UIActivity : Activity() {
 
-    var main: UIResponder? = null
+    var mainResponder: UIResponder? = null
+    lateinit internal var keyboardManager: UIKeyboardManager
 
     var viewController: UIViewController? = null
         set(value) {
             value?.let {
-                main = it
+                mainResponder = it
                 field = it
                 setContentView(it.view)
             }
@@ -23,11 +29,18 @@ open class UIActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        keyboardManager = UIKeyboardManager(this)
+        keyboardManager.registerListener()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        keyboardManager.unregisterListener()
     }
 
     override fun dispatchKeyEvent(event: KeyEvent?): Boolean {
         val event = event ?: return false
-        main?.let {
+        mainResponder?.let {
             if (UIResponder.firstResponder == null) {
                 UIResponder.firstResponder = UIResponder.findFirstResponder(it)
             }

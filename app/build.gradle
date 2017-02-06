@@ -19,6 +19,7 @@ android {
         }
     }
     sourceSets {
+        main.java.srcDirs += 'src/mainResponder/kotlin'
         main.java.srcDirs += 'src/main/kotlin'
     }
 }

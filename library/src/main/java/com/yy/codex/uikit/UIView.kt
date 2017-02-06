@@ -277,6 +277,10 @@ open class UIView : FrameLayout, UIResponder {
 
     open var maxWidth = 0.0
 
+    open fun layoutIfNeeded() {
+        superview?.let(UIView::layoutSubviews)
+    }
+
     open fun layoutSubviews() {
         val nextResponder = nextResponder
         if (nextResponder != null && nextResponder is UIViewController) {
@@ -421,8 +425,10 @@ open class UIView : FrameLayout, UIResponder {
         }
 
     fun removeFromSuperview() {
+        willMoveToSuperview(null)
         enlargerView?.let(UIView::removeFromSuperview)
         superview?.let { it.removeView(this) }
+        didMoveToSuperview()
     }
 
     fun insertSubview(subview: UIView, atIndex: Int) {

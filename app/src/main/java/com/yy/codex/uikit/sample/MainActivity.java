@@ -8,11 +8,15 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
+import com.yy.codex.foundation.NSLog;
+import com.yy.codex.foundation.NSNotification;
+import com.yy.codex.foundation.NSNotificationCenter;
 import com.yy.codex.uikit.CGRect;
 import com.yy.codex.uikit.UIBarButtonItem;
 import com.yy.codex.uikit.UIColor;
 import com.yy.codex.uikit.UIEdgeInsets;
 import com.yy.codex.uikit.UIImage;
+import com.yy.codex.uikit.UIKeyboardManager;
 import com.yy.codex.uikit.UINavigationController;
 import com.yy.codex.uikit.UINavigationController_ActivityBase;
 import com.yy.codex.uikit.UITabBarActivity;

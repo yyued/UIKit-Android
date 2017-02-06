@@ -34,7 +34,6 @@ class UITextField : UIControl, UITextInput.Delegate {
     override fun init() {
         super.init()
         input = UITextInput()
-        input.view = this
         wrapper = UIView(context)
         addSubview(wrapper)
         label = UILabel(context)
@@ -42,6 +41,11 @@ class UITextField : UIControl, UITextInput.Delegate {
         cursorView = UIView(context)
         cursorView.hidden = true
         label.addSubview(cursorView)
+    }
+
+    override fun didMoveToSuperview() {
+        super.didMoveToSuperview()
+        input.view = this
     }
 
     override fun becomeFirstResponder() {
@@ -144,9 +148,8 @@ class UITextField : UIControl, UITextInput.Delegate {
     }
 
     private fun setupCursorAnimation() {
-        postDelayed({
-            runCursorAnimation(false)
-        }, 500)
+        removeCursorAnimation()
+        runCursorAnimation(true)
     }
 
     private fun runCursorAnimation(show: Boolean) {
@@ -205,13 +208,10 @@ class UITextField : UIControl, UITextInput.Delegate {
 
     private fun resetCharPositions() {
         label.attributedText?.let {
-            val mutableList: MutableList<Int> = mutableListOf()
-            for (i in 0..it.length) {
-                val substring = it.substring(NSRange(0, i))
-                val cursorPosition = substring.measure(context, 999999.0)
-                mutableList.add(cursorPosition.width.toInt())
-            }
-            charPositions = mutableList.toList()
+            charPositions = (0..it.length)
+                            .map { i -> it.substring(NSRange(0, i)) }
+                            .map { it.measure(context, 999999.0) }
+                            .map { it.width.toInt() }
         }
     }
 

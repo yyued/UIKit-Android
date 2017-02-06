@@ -1,10 +1,17 @@
 package com.yy.codex.uikit
 
+import android.app.Activity
 import android.content.Context
+import android.hardware.input.InputManager
+import android.inputmethodservice.InputMethodService
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.ViewGroup
+import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.FrameLayout
+import com.yy.codex.foundation.NSLog
 import com.yy.codex.foundation.lets
 
 /**
@@ -45,12 +52,22 @@ class UITextInput {
                 })
                 editor?.alpha = 0.0f
                 editor?.clearFocus()
-                it.addView(editor)
+                var rootView = it.superview
+                while (rootView?.superview != null) {
+                    rootView = rootView?.superview
+                }
+                if (rootView != null) {
+                    rootView.addView(editor, 0, 0)
+                }
+                else {
+                    (editor?.parent as? ViewGroup)?.removeView(editor)
+                }
             }
         }
 
     fun beginEditing() {
         editor?.let {
+            (it.context as? Activity)?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
             it.requestFocus()
             (it.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0)
         }
@@ -59,7 +76,7 @@ class UITextInput {
     fun endEditing() {
         editor?.let {
             it.clearFocus()
-            (it.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0)
+            (it.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).hideSoftInputFromWindow((view as UIView).windowToken, 0)
         }
     }
 
