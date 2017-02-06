@@ -83,12 +83,14 @@ open class UIScrollView : UIView {
         mAlwaysBounceVertical = alwaysBounceVertical
     }
 
-    private var mTracking: Boolean = false
+    public var mTracking: Boolean = false
     private var mScrollEnabled: Boolean = false
     private var mAlwaysBounceVertical: Boolean = false
     private var mAlwaysBounceHorizontal: Boolean = false
     var bounces: Boolean = false
     private var mPagingEnabled: Boolean = false
+    public var decelerating: Boolean = false
+    public var dragging: Boolean = false
 
     private var mCurrentAnimationY: UIViewAnimation? = null
     private var mCurrentAnimationX: UIViewAnimation? = null
@@ -116,14 +118,17 @@ open class UIScrollView : UIView {
             mCurrentAnimationX!!.cancel()
             mCurrentAnimationX = null
         }
+
+        mTracking = true
+        decelerating = false
     }
 
     fun handlePan(panGestureRecognizer: UIPanGestureRecognizer) {
         val originY = -panGestureRecognizer.translation().y
         val originX = -panGestureRecognizer.translation().x
-        if (!mTracking) {
+        if (!dragging) {
             /* Began */
-            mTracking = true
+            dragging = true
             mTrackingPoint = CGPoint(originX, originY)
             panGestureRecognizer.setTranslation(mContentOffset)
             if (delegate != null) {
@@ -131,7 +136,7 @@ open class UIScrollView : UIView {
             }
             return
         }
-        if (mTracking && panGestureRecognizer.state === UIGestureRecognizerState.Changed) {
+        if (dragging && panGestureRecognizer.state === UIGestureRecognizerState.Changed) {
             /* Move */
             val offset = calculateMovePoint(CGPoint(originX, originY), mPagingEnabled)
 
@@ -141,10 +146,13 @@ open class UIScrollView : UIView {
             setContentOffset(offset)
         } else if (panGestureRecognizer.state === UIGestureRecognizerState.Ended) {
             /* Ended */
+            dragging = false
             mTracking = false
-            if (delegate != null) {
-                delegate!!.scrollViewDidEndDragging(this, false)
+            decelerating = true
+            delegate?.let {
+                it.scrollViewDidEndDragging(this, false)
             }
+
             val velocity = panGestureRecognizer.velocity()
 
             if (mPagingEnabled) {
