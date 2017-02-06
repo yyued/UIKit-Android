@@ -8,13 +8,21 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
+import com.yy.codex.foundation.NSLog;
+import com.yy.codex.foundation.NSNotification;
+import com.yy.codex.foundation.NSNotificationCenter;
 import com.yy.codex.uikit.CGRect;
+import com.yy.codex.uikit.NSAttributedString;
 import com.yy.codex.uikit.UIBarButtonItem;
 import com.yy.codex.uikit.UIColor;
 import com.yy.codex.uikit.UIEdgeInsets;
+import com.yy.codex.uikit.UIFont;
 import com.yy.codex.uikit.UIImage;
+import com.yy.codex.uikit.UIKeyboardManager;
+import com.yy.codex.uikit.UIKeyboardType;
 import com.yy.codex.uikit.UINavigationController;
 import com.yy.codex.uikit.UINavigationController_ActivityBase;
+import com.yy.codex.uikit.UIReturnKeyType;
 import com.yy.codex.uikit.UITabBarActivity;
 import com.yy.codex.uikit.UITabBarController;
 import com.yy.codex.uikit.UITabBarItem;
@@ -25,6 +33,7 @@ import com.yy.codex.uikit.UIViewController;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class MainActivity extends UITabBarActivity {
@@ -80,6 +89,9 @@ class TestViewController extends UIViewController {
         setTitle("Test");
         getNavigationItem().setRightBarButtonItem(new UIBarButtonItem("Next", this, "handleNextButtonTapped"));
         UITextField textField = (UITextField) getView().findViewById(R.id.roundView);
+        textField.setKeyboardType(UIKeyboardType.Password);
+        textField.setReturnKeyType(UIReturnKeyType.Next);
+        textField.setPlaceholder("请输入密码");
         textField.setContentInsets(new UIEdgeInsets(0, 6, 0, 6));
     }
 
