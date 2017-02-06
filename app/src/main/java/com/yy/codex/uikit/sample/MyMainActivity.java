@@ -71,7 +71,7 @@ class MyTestView extends UIView implements UITableView.UITableViewDataSource {
 //        constraint.setHeight("100%");
 //        scrollView.setConstraint(constraint);
 //        scrollView.setBounces(true);
-//        scrollView.setPagingEnabled(true);
+////        scrollView.setPagingEnabled(true);
 //        scrollView.setBackgroundColor(UIColor.Companion.getBlackColor().colorWithAlpha(0.1));
 //        for (int i = 0; i < 100; i++) {
 //            UIView redView = new UIView(getContext());
@@ -86,23 +86,34 @@ class MyTestView extends UIView implements UITableView.UITableViewDataSource {
 
         UITableView tableView = new UITableView(getContext());
         tableView.setDataSource(this);
+        tableView.setBounces(true);
+        UIConstraint constraint = new UIConstraint();
+        constraint.setCenterHorizontally(true);
+        constraint.setCenterVertically(true);
+        constraint.setWidth("100%");
+        constraint.setHeight("100%");
+        tableView.setConstraint(constraint);
 
         addSubview(tableView);
     }
 
     @Override
     public int tableViewNumberOfRowsInSection(@NotNull UITableView tableView, int section) {
-        return 1;
+        return 100;
     }
 
     @NotNull
     @Override
     public UITableViewCell tableViewCellForRowAtIndexPath(@NotNull UITableView tableView, @NotNull NSIndexPath indexPath) {
 
-        UITableViewCell cell = new UITableViewCell(getContext(), UITableViewCellStyle.UITableViewCellStyleDefault, "test");
-        UILabel label = new UILabel(getContext());
-        label.setText("TTTTT");
-        cell.addSubview(label);
+        UITableViewCell cell = tableView.dequeueReusableCellWithIdentifier("test");
+        if (cell == null) {
+            cell = new UITableViewCell(getContext(), UITableViewCellStyle.UITableViewCellStyleDefault, "test");
+            UILabel label = new UILabel(getContext());
+            label.setText("" + indexPath.getRow());
+            label.setFrame(new CGRect(0, 0, 100, 100));
+            cell.addSubview(label);
+        }
         return cell;
     }
 
