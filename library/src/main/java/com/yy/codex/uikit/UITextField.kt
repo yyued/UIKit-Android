@@ -3,6 +3,7 @@ package com.yy.codex.uikit
 import android.content.Context
 import android.os.Build
 import android.support.annotation.RequiresApi
+import android.text.Editable
 import android.util.AttributeSet
 import android.view.KeyEvent
 import android.view.View
@@ -12,7 +13,14 @@ import com.yy.codex.foundation.NSLog
  * Created by PonyCui_Home on 2017/2/3.
  */
 
-class UITextField : UIControl, UITextInput.Delegate {
+class UITextField : UIControl, UITextInput.Delegate, UITextInputTraits {
+
+    enum class ViewMode {
+        Never,
+        WhileEditing,
+        UnlessEditing,
+        Always
+    }
 
     constructor(context: Context, view: View) : super(context, view) {}
 
@@ -30,6 +38,56 @@ class UITextField : UIControl, UITextInput.Delegate {
             field = value
             resetLayouts()
         }
+
+    var text: String?
+        get() = input?.editor?.text.toString()
+        set(value) {
+            label.text = value
+            input.editor?.text?.clear()
+            input.editor?.text?.append(text)
+            input.editor?.setSelection(value?.length ?: 0)
+        }
+
+    var attributedText: NSAttributedString?
+        get() = label.attributedText
+        set(value) { label.attributedText = value }
+
+    var textColor: UIColor?
+        get() = label.textColor
+        set(value) { value?.let { label.textColor = it } }
+
+    var font: UIFont?
+        get() = label.font
+        set(value) { value?.let { label.font = it } }
+
+    var alignment: Int = 0 // todo: 未实现
+
+    var borderStyle: Int = 0 // todo: 未实现
+
+    var defaultTextAttributes: Map<String, Any>? = null // todo: 未实现
+
+    var placeholder: String? = null // todo: 未实现
+
+    var attributedPlaceholder: NSAttributedString? = null // todo: 未实现
+
+    var clearsOnBeginEditing = false
+
+    var editing: Boolean = false
+        get() = isFirstResponder()
+
+    var clearButtonMode = ViewMode.Never // todo: 未实现
+
+    var leftView: UIView? = null // todo: 未实现
+    val leftViewMode = ViewMode.Never // todo: 未实现
+
+    var rightView: UIView? = null // todo: 未实现
+    val rightViewMode = ViewMode.Never // todo: 未实现
+
+    override var keyboardType: UIKeyboardType = UIKeyboardType.Default
+
+    override var returnKeyType: UIReturnKeyType = UIReturnKeyType.Default
+
+    override var secureTextEntry: Boolean = false
 
     override fun init() {
         super.init()
@@ -66,6 +124,9 @@ class UITextField : UIControl, UITextInput.Delegate {
         super.onEvent(event)
         if (event == UIControl.Event.TouchUpInside) {
             if (!isFirstResponder()) {
+                if (clearsOnBeginEditing) {
+                    text = ""
+                }
                 becomeFirstResponder()
             }
         }
@@ -108,11 +169,23 @@ class UITextField : UIControl, UITextInput.Delegate {
         super.keyboardPressUp(event)
     }
 
-    override fun textDidChanged() {
+    override fun textDidChanged(onDelete: Boolean) {
         val onBounds = label.frame.x == 0.0 || -label.frame.x == label.frame.width - wrapper.frame.width - 2.0
         val onCenter = input.cursorPosition < input.editor?.length() ?: 0 && input.cursorPosition > 0
         var lastX = label.frame.x
-        label.text = input.editor?.text.toString()
+        if (secureTextEntry) {
+            var pureText = input.editor?.text.toString()
+            if (onDelete) {
+                pureText = pureText.replaceRange(0, pureText.length, ((0 until pureText.length).map { "●" }).joinToString(""))
+            }
+            else if (pureText.length > 1) {
+                pureText = pureText.replaceRange(0, pureText.length - 1, ((0 until pureText.length-1).map { "●" }).joinToString(""))
+            }
+            label.text = pureText
+        }
+        else {
+            label.text = input.editor?.text.toString()
+        }
         resetCharPositions()
         resetLayouts()
         if (!onBounds || onCenter) {
@@ -130,13 +203,21 @@ class UITextField : UIControl, UITextInput.Delegate {
     }
 
     override fun textShouldChange(range: NSRange, replacementString: String): Boolean {
+        if (replacementString == "\n") {
+            return false
+        }
         return true
+    }
+
+    override fun textShouldReturn(): Boolean {
+        return false
     }
 
     lateinit internal var input: UITextInput
     lateinit internal var wrapper: UIView
     lateinit internal var label: UILabel
     lateinit private var cursorView: UIView
+    private var cursorOptID: Long = 0
     private var cursorViewAnimation: UIViewAnimation? = null
     internal var charPositions: List<Int> = listOf()
 
@@ -148,16 +229,21 @@ class UITextField : UIControl, UITextInput.Delegate {
     }
 
     private fun setupCursorAnimation() {
+        cursorOptID = System.currentTimeMillis()
         removeCursorAnimation()
         runCursorAnimation(true)
     }
 
     private fun runCursorAnimation(show: Boolean) {
+        val currentID = cursorOptID
         if (show) {
             cursorViewAnimation = UIViewAnimator.linear(0.15, Runnable {
                 cursorView.alpha = 1.0f
             }, Runnable {
                 postDelayed({
+                    if (currentID != cursorOptID) {
+                        return@postDelayed
+                    }
                     runCursorAnimation(false)
                 }, 500)
             })
@@ -167,6 +253,9 @@ class UITextField : UIControl, UITextInput.Delegate {
                 cursorView.alpha = 0.0f
             }, Runnable {
                 postDelayed({
+                    if (currentID != cursorOptID) {
+                        return@postDelayed
+                    }
                     runCursorAnimation(true)
                 }, 500)
             })

@@ -1,14 +1,8 @@
 package com.yy.codex.uikit
 
 import android.app.Activity
-import android.content.res.Configuration
-import android.graphics.Rect
 import android.os.Bundle
 import android.view.KeyEvent
-import android.view.View
-import android.view.ViewTreeObserver
-import android.view.WindowManager
-import com.yy.codex.foundation.NSLog
 
 /**
  * Created by PonyCui_Home on 2017/1/23.

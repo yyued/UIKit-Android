@@ -15,10 +15,13 @@ import com.yy.codex.uikit.CGRect;
 import com.yy.codex.uikit.UIBarButtonItem;
 import com.yy.codex.uikit.UIColor;
 import com.yy.codex.uikit.UIEdgeInsets;
+import com.yy.codex.uikit.UIFont;
 import com.yy.codex.uikit.UIImage;
 import com.yy.codex.uikit.UIKeyboardManager;
+import com.yy.codex.uikit.UIKeyboardType;
 import com.yy.codex.uikit.UINavigationController;
 import com.yy.codex.uikit.UINavigationController_ActivityBase;
+import com.yy.codex.uikit.UIReturnKeyType;
 import com.yy.codex.uikit.UITabBarActivity;
 import com.yy.codex.uikit.UITabBarController;
 import com.yy.codex.uikit.UITabBarItem;
@@ -84,6 +87,10 @@ class TestViewController extends UIViewController {
         setTitle("Test");
         getNavigationItem().setRightBarButtonItem(new UIBarButtonItem("Next", this, "handleNextButtonTapped"));
         UITextField textField = (UITextField) getView().findViewById(R.id.roundView);
+        textField.setClearsOnBeginEditing(true);
+        textField.setKeyboardType(UIKeyboardType.Password);
+        textField.setReturnKeyType(UIReturnKeyType.Next);
+//        textField.setSecureTextEntry(true);
         textField.setContentInsets(new UIEdgeInsets(0, 6, 0, 6));
     }
 

@@ -6,11 +6,14 @@ import android.hardware.input.InputManager
 import android.inputmethodservice.InputMethodService
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.KeyEvent
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.FrameLayout
+import android.widget.TextView
 import com.yy.codex.foundation.NSLog
 import com.yy.codex.foundation.lets
 
@@ -21,14 +24,16 @@ import com.yy.codex.foundation.lets
 class UITextInput {
 
     interface Delegate {
-        fun textDidChanged()
+        fun textDidChanged(onDelete: Boolean)
         fun textShouldChange(range: NSRange, replacementString: String): Boolean
+        fun textShouldReturn(): Boolean
     }
 
     internal var editor: EditText? = null
     internal var cursorPosition: Int = 0
         get() = editor?.selectionEnd ?: 0
-    internal var currentOperationRange: NSRange? = null
+    private var currentOperationDeleting = false
+    private var currentOperationRange: NSRange? = null
 
     var view: Delegate? = null
         set(value) {
@@ -43,13 +48,16 @@ class UITextInput {
                                 p0.delete(currentOperationRange.location, currentOperationRange.location + currentOperationRange.length)
                             }
                         }
-                        delegate.textDidChanged()
+                        delegate.textDidChanged(currentOperationDeleting)
                     }
                     override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
                     override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                         currentOperationRange = NSRange(p1, p3)
                     }
                 })
+                editor?.setOnEditorActionListener { p0, p1, p2 ->
+                    return@setOnEditorActionListener delegate.textShouldReturn()
+                }
                 editor?.alpha = 0.0f
                 editor?.clearFocus()
                 var rootView = it.superview
@@ -66,17 +74,49 @@ class UITextInput {
         }
 
     fun beginEditing() {
+        resetKeyboardType()
+        resetReturnType()
         editor?.let {
+            it.setSingleLine((view as? UITextInputTraits)?.returnKeyType != UIReturnKeyType.Default)
             (it.context as? Activity)?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
             it.requestFocus()
-            (it.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0)
+            (it.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).showSoftInput(it, InputMethodManager.SHOW_IMPLICIT)
         }
     }
 
     fun endEditing() {
         editor?.let {
             it.clearFocus()
-            (it.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).hideSoftInputFromWindow((view as UIView).windowToken, 0)
+            (it.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).hideSoftInputFromWindow(it.windowToken, 0)
+        }
+    }
+
+    fun resetKeyboardType() {
+        val view = (this.view as? UITextInputTraits) ?: return
+        editor?.let {
+            when (view.keyboardType) {
+                UIKeyboardType.Default -> it.inputType = EditorInfo.TYPE_CLASS_TEXT
+                UIKeyboardType.Password -> it.inputType = EditorInfo.TYPE_CLASS_TEXT.xor(EditorInfo.TYPE_TEXT_VARIATION_PASSWORD)
+                UIKeyboardType.EmailAddress -> it.inputType = EditorInfo.TYPE_CLASS_TEXT.xor(EditorInfo.TYPE_TEXT_VARIATION_EMAIL_ADDRESS)
+                UIKeyboardType.URL -> it.inputType = EditorInfo.TYPE_CLASS_TEXT.xor(EditorInfo.TYPE_TEXT_VARIATION_URI)
+                UIKeyboardType.DecimalPad -> it.inputType = EditorInfo.TYPE_CLASS_NUMBER.xor(EditorInfo.TYPE_NUMBER_FLAG_DECIMAL)
+                UIKeyboardType.NumberPad -> it.inputType = EditorInfo.TYPE_CLASS_NUMBER
+                UIKeyboardType.PhonePad -> it.inputType = EditorInfo.TYPE_CLASS_PHONE
+            }
+        }
+    }
+
+    fun resetReturnType() {
+        val view = (this.view as? UITextInputTraits) ?: return
+        editor?.let {
+            when (view.returnKeyType) {
+                UIReturnKeyType.Default -> it.imeOptions = EditorInfo.IME_ACTION_UNSPECIFIED
+                UIReturnKeyType.Go -> it.imeOptions = EditorInfo.IME_ACTION_GO
+                UIReturnKeyType.Next -> it.imeOptions = EditorInfo.IME_ACTION_NEXT
+                UIReturnKeyType.Search -> it.imeOptions = EditorInfo.IME_ACTION_SEARCH
+                UIReturnKeyType.Send -> it.imeOptions = EditorInfo.IME_ACTION_SEND
+                UIReturnKeyType.Done -> it.imeOptions = EditorInfo.IME_ACTION_DONE
+            }
         }
     }
 
@@ -88,6 +128,7 @@ class UITextInput {
     }
 
     fun delete() {
+        currentOperationDeleting = true
         editor?.let {
             val editable = it.text
             if (editable.length > 0) {
@@ -101,6 +142,7 @@ class UITextInput {
                 }
             }
         }
+        currentOperationDeleting = false
     }
 
 }
