@@ -1,11 +1,9 @@
 package com.yy.codex.coreanimation
 
 import android.content.res.TypedArray
-import android.graphics.Bitmap
 import android.graphics.Canvas
 import com.yy.codex.foundation.doubleEquals
 import com.yy.codex.uikit.*
-import java.util.*
 
 
 /**
@@ -234,6 +232,10 @@ open class CALayer {
         superLayer?.let {
             it.sublayers.remove(this)
         }
+    }
+
+    fun removeSubLayers() {
+        sublayers = mutableListOf()
     }
 
     fun addSubLayer(layer: CALayer) {
