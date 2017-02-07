@@ -573,11 +573,13 @@ open class UIView : FrameLayout, UIResponder {
 
     var userInteractionEnabled = true
 
-    var gestureRecognizers = ArrayList<UIGestureRecognizer>()
+    var gestureRecognizers: List<UIGestureRecognizer> = listOf()
         protected set
 
     fun addGestureRecognizer(gestureRecognizer: UIGestureRecognizer) {
-        gestureRecognizers.add(gestureRecognizer)
+        val mutableList = gestureRecognizers.toMutableList()
+        mutableList.add(gestureRecognizer)
+        gestureRecognizers = mutableList.toList()
         gestureRecognizer.didAddToView(this)
     }
 

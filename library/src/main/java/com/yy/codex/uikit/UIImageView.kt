@@ -35,6 +35,7 @@ class UIImageView : UIView {
 
     override fun init() {
         super.init()
+        userInteractionEnabled = false
         wantsLayer = true
         contentMode = UIViewContentMode.ScaleToFill
     }
