@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
+import android.text.Layout;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -91,7 +92,9 @@ class TestViewController extends UIViewController {
         UITextField textField = (UITextField) getView().findViewById(R.id.roundView);
         textField.setReturnKeyType(UIReturnKeyType.Next);
         textField.setPlaceholder("请输入密码");
+        textField.setBorderStyle(UITextField.BorderStyle.Line);
         textField.setClearButtonMode(UITextField.ViewMode.WhileEditing);
+        textField.setAlignment(Layout.Alignment.ALIGN_CENTER);
     }
 
     private void handleNextButtonTapped() {
