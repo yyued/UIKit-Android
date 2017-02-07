@@ -2,12 +2,10 @@ package com.yy.codex.uikit
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.Outline
 import android.os.Build
 import android.support.annotation.RequiresApi
 import android.util.AttributeSet
 import android.view.View
-import android.view.ViewOutlineProvider
 
 /**
  * Created by cuiminghui on 2017/1/17.
@@ -30,7 +28,7 @@ class UISwitch : UIControl {
     }
 
     private fun defaultValue() {
-        mHandleRadius = 30f
+        mHandleRadius = 28.0f
         mOnThumbColor = UIColor.whiteColor
         mOnTrackColor = UIColor(0x00 / 255.0, 0xe3 / 255.0, 0x64 / 255.0, 1.0)
         mOnBitmap = null
@@ -79,6 +77,7 @@ class UISwitch : UIControl {
             it.layer.borderWidth = 0.5
             it.layer.borderColor = UIColor(0x00 / 255.0, 0x00 / 255.0, 0x00 / 255.0, 0.15)
             it.layer.backgroundColor = mOffThumbColor
+            it.layer.wantsEnlargerLayer()
             addSubview(it)
         }
     }
@@ -88,7 +87,7 @@ class UISwitch : UIControl {
     private var mOffBackgroundView: UIView? = null
     private var mOnBackgroundView: UIView? = null
     private var mHandleView: UIView? = null
-    private var mHandleRadius = 30f // realRdius_28 + shadowXY_2
+    private var mHandleRadius = 28.0f
     private var mOn: Boolean = false
     private var mActive: Boolean = false
     private var mCurrentAnimation: UIViewAnimation? = null

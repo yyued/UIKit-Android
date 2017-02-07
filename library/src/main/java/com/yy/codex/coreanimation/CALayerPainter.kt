@@ -65,7 +65,6 @@ internal object CALayerPainter {
             val shadowX = layer.shadowX.toFloat() * scaledDensity
             val shadowY = layer.shadowY.toFloat() * scaledDensity
             paint.setShadowLayer(shadowRadius, shadowX, shadowY, it.toInt())
-            rectFCopyed = RectF(rectFCopyed.left, rectFCopyed.top, rectFCopyed.right - shadowX, rectFCopyed.bottom - shadowY)
         }
         canvas.drawRoundRect(rectFCopyed, cornerRadius, cornerRadius, paint)
     }
@@ -114,11 +113,6 @@ internal object CALayerPainter {
         paint.strokeWidth = borderWidth
         paint.color = layer.borderColor.toInt()
         var rectFCopyed = frame.shrinkToRectF(halfBorderW, origin)
-        if (layer.shadowRadius > 0) {
-            val shadowX = layer.shadowX.toFloat() * scaledDensity
-            val shadowY = layer.shadowY.toFloat() * scaledDensity
-            rectFCopyed = RectF(rectFCopyed.left, rectFCopyed.top, rectFCopyed.right - shadowX, rectFCopyed.bottom - shadowY)
-        }
         canvas.drawRoundRect(rectFCopyed, cornerRadius, cornerRadius, paint)
     }
 
@@ -137,7 +131,6 @@ internal object CALayerPainter {
             val shadowX = layer.shadowX.toFloat() * scaledDensity
             val shadowY = layer.shadowY.toFloat() * scaledDensity
             paint.setShadowLayer(shadowRadius, shadowX, shadowY, it.toInt())
-            rectFCopyed = RectF(rectFCopyed.left, rectFCopyed.top, rectFCopyed.right - shadowX, rectFCopyed.bottom - shadowY)
         }
         canvas.drawRect(rectFCopyed, paint)
     }
@@ -173,11 +166,6 @@ internal object CALayerPainter {
         paint.strokeWidth = borderWidth
         paint.color = layer.borderColor.toInt()
         var rectFCopyed = frame.shrinkToRectF(halfBorderW, origin)
-        if (layer.shadowRadius > 0) {
-            val shadowX = layer.shadowX.toFloat() * scaledDensity
-            val shadowY = layer.shadowY.toFloat() * scaledDensity
-            rectFCopyed = RectF(rectFCopyed.left, rectFCopyed.top, rectFCopyed.right - shadowX, rectFCopyed.bottom - shadowY)
-        }
         canvas.drawRect(rectFCopyed, paint)
     }
 
