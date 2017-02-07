@@ -1,16 +1,10 @@
 package com.yy.codex.uikit
 
 import android.content.Context
-import android.graphics.Outline
-import android.graphics.RectF
 import android.os.Build
 import android.support.annotation.RequiresApi
 import android.util.AttributeSet
-import android.view.MotionEvent
 import android.view.View
-import android.view.ViewOutlineProvider
-
-import com.yy.codex.foundation.NSLog
 
 /**
  * Created by adi on 17/1/19.
@@ -33,7 +27,7 @@ class UISlider : UIControl {
     }
 
     private fun defaultValue() {
-        progress = 1.5
+        progressValue = 1.5
         thumbRadius = 30.0
     }
 
@@ -49,8 +43,8 @@ class UISlider : UIControl {
             addSubview(it)
         }
 
-        trackProgressView = UIView(context)
-        trackProgressView?.let {
+        progressView = UIView(context)
+        progressView?.let {
             it.wantsLayer = true
             it.layer.backgroundColor = UIColor(0x10 / 255.0, 0x6a / 255.0, 1.0, 1.0)
             it.layer.cornerRadius = 1.0
@@ -78,13 +72,13 @@ class UISlider : UIControl {
 
     private var trackView: UIView? = null
 
-    private var trackProgressView: UIView? = null
+    private var progressView: UIView? = null
 
     private var slideListener : (Double) -> Unit = {}
 
     private var thumbRadius = 30.0
 
-    private var progress: Double = 0.toDouble()
+    private var progressValue: Double = 0.toDouble()
         set(value) {
             if (value < 0.0){
                 field = 0.0
@@ -103,11 +97,11 @@ class UISlider : UIControl {
         trackView?.let {
             it.frame = CGRect(0.0, 15.0, frameW - 4, 2.0)
         }
-        trackProgressView?.let {
-            it.frame = CGRect(0.0, 15.0, (frameW - thumbRadius) * this.progress, 2.0)
+        progressView?.let {
+            it.frame = CGRect(0.0, 15.0, (frameW - thumbRadius) * progressValue, 2.0)
         }
         thumbView?.let {
-            it.frame = CGRect((frameW - thumbRadius) * progress, 1.0, thumbRadius, thumbRadius)
+            it.frame = CGRect((frameW - thumbRadius) * progressValue, 1.0, thumbRadius, thumbRadius)
         }
     }
 
@@ -117,7 +111,7 @@ class UISlider : UIControl {
             if (pointInThumbView(sender.location())){
                 val percentValue = (sender.location().x - frame.x) / frame.width
                 setValue(percentValue)
-                this.slideListener(this.progress)
+                this.slideListener(progressValue)
             }
         }
     }
@@ -129,17 +123,17 @@ class UISlider : UIControl {
     }
 
     fun setValue(value: Double) {
-        this.progress = value
-        trackProgressView?.let {
-            it.frame = CGRect(0.0, 15.0, (frame.width - thumbRadius) * this.progress, 2.0)
+        this.progressValue = value
+        progressView?.let {
+            it.frame = CGRect(0.0, 15.0, (frame.width - thumbRadius) * this.progressValue, 2.0)
         }
         thumbView?.let {
-            it.frame = CGRect((frame.width - thumbRadius) * this.progress, 1.0, thumbRadius, thumbRadius)
+            it.frame = CGRect((frame.width - thumbRadius) * this.progressValue, 1.0, thumbRadius, thumbRadius)
         }
     }
 
     fun getValue(): Double {
-        return this.progress
+        return this.progressValue
     }
 
     /* UISlider supports methods */
