@@ -36,6 +36,7 @@ class UILabel : UIView {
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes) {}
 
     init {
+        userInteractionEnabled = false
         textView = TextView(context)
         textView?.let { it.maxLines = 1 }
         resetTextView()

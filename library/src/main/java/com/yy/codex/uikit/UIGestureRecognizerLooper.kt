@@ -1,9 +1,7 @@
 package com.yy.codex.uikit
 
 import java.lang.ref.WeakReference
-import java.util.ArrayList
-import java.util.Collections
-import java.util.Comparator
+import java.util.*
 
 /**
  * Created by cuiminghui on 2017/1/13.
@@ -11,7 +9,7 @@ import java.util.Comparator
 
 internal class UIGestureRecognizerLooper internal constructor(internal var hitTestedView: UIView) {
 
-    internal var gestureRecognizers: ArrayList<UIGestureRecognizer>
+    internal var gestureRecognizers: List<UIGestureRecognizer>
     internal var isFinished = false
 
     init {
@@ -19,7 +17,7 @@ internal class UIGestureRecognizerLooper internal constructor(internal var hitTe
         for (i in gestureRecognizers.indices) {
             gestureRecognizers[i].looper = this
         }
-        Collections.sort(gestureRecognizers) { gestureRecognizer, t1 -> if (gestureRecognizer.gesturePriority() > t1.gesturePriority()) 1 else -1 }
+        gestureRecognizers = gestureRecognizers.sortedWith(Comparator { a, b -> if (a.gesturePriority() > b.gesturePriority()) 1 else -1 })
         resetState()
     }
 
@@ -57,8 +55,10 @@ internal class UIGestureRecognizerLooper internal constructor(internal var hitTe
     }
 
     internal fun checkState(gestureRecognizer: UIGestureRecognizer): Boolean {
+        val mutableList = gestureRecognizers.toMutableList()
         if (gestureRecognizer.state == UIGestureRecognizerState.Failed || gestureRecognizer.state == UIGestureRecognizerState.Cancelled) {
-            gestureRecognizers.remove(gestureRecognizer)
+            mutableList.remove(gestureRecognizer)
+            gestureRecognizers = mutableList.toList()
             return false
         } else if (gestureRecognizer.state == UIGestureRecognizerState.Ended) {
             isFinished = true
@@ -81,17 +81,32 @@ internal class UIGestureRecognizerLooper internal constructor(internal var hitTe
         }
     }
 
-    private fun getGestureRecognizers(view: UIView): ArrayList<UIGestureRecognizer> {
+    private fun getGestureRecognizers(view: UIView): List<UIGestureRecognizer> {
         if (!view.userInteractionEnabled) {
-            return ArrayList()
+            return listOf()
         } else {
-            val gestureRecognizers = ArrayList(view.gestureRecognizers)
+            var gestureRecognizers: MutableList<UIGestureRecognizer> = view.gestureRecognizers.toMutableList()
             val superview = view.superview
             if (superview != null) {
                 val superGestureRecognizers = getGestureRecognizers(superview)
                 gestureRecognizers.addAll(superGestureRecognizers)
             }
-            return gestureRecognizers
+            gestureRecognizers = removeConflictRecognizers(gestureRecognizers.toList()).toMutableList()
+            return gestureRecognizers.toList()
+        }
+    }
+
+    private fun removeConflictRecognizers(gestureRecognizers: List<UIGestureRecognizer>): List<UIGestureRecognizer> {
+        val longPressHash: HashMap<Int, Boolean> = hashMapOf()
+        return gestureRecognizers.filter { it is UILongPressGestureRecognizer }.filter {
+            val aKey = ((it as UILongPressGestureRecognizer).minimumPressDuration * 1000).toInt()
+            if (longPressHash.containsKey(aKey)) {
+                return@filter false
+            }
+            else {
+                longPressHash.put(aKey, true)
+                return@filter true
+            }
         }
     }
 

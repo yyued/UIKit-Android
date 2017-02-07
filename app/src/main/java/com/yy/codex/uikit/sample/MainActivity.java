@@ -91,16 +91,7 @@ class TestViewController extends UIViewController {
         UITextField textField = (UITextField) getView().findViewById(R.id.roundView);
         textField.setReturnKeyType(UIReturnKeyType.Next);
         textField.setPlaceholder("请输入密码");
-        UIView leftView = new UIView(getContext());
-        leftView.setFrame(new CGRect(0, 0, 20, 10));
-        leftView.setBackgroundColor(UIColor.Companion.getBlackColor());
-        textField.setLeftView(leftView);
-        textField.setLeftViewMode(UITextField.ViewMode.UnlessEditing);
-        UIView rightView = new UIView(getContext());
-        rightView.setFrame(new CGRect(0, 0, 20, 10));
-        rightView.setBackgroundColor(UIColor.Companion.getBlackColor());
-        textField.setRightView(rightView);
-        textField.setRightViewMode(UITextField.ViewMode.WhileEditing);
+        textField.setClearButtonMode(UITextField.ViewMode.WhileEditing);
     }
 
     private void handleNextButtonTapped() {
