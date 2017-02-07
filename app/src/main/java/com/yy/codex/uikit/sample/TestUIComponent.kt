@@ -2,7 +2,6 @@ package com.yy.codex.uikit.sample
 
 import android.content.Context
 import android.graphics.Canvas
-import android.graphics.Outline
 import android.graphics.Paint
 import android.graphics.RectF
 import android.os.Build
@@ -11,8 +10,6 @@ import android.support.annotation.RequiresApi
 import android.support.v7.app.AppCompatActivity
 import android.util.AttributeSet
 import android.view.View
-import android.view.ViewOutlineProvider
-
 import com.yy.codex.foundation.NSLog
 import com.yy.codex.uikit.*
 
@@ -50,9 +47,10 @@ internal class TestComponent : UIView {
         addSubview(uiSwitch)
 
         val uiSlider = UISlider(context)
-        uiSlider.frame = CGRect(10.0, 100.0, 200.0, 32.0)
-//        uiSlider.setValue(0.3)
+        uiSlider.frame = CGRect(10.0, 100.0, 200.0, 42.0)
+        uiSlider.setValue(1.0)
         uiSlider.onSlide({ value -> NSLog.warn(value) })
+
         addSubview(uiSlider)
 
         val uiStepper = UIStepper(context)

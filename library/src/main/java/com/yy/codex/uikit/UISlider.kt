@@ -27,13 +27,17 @@ class UISlider : UIControl {
     }
 
     private fun defaultValue() {
-        progressValue = 1.5
+        progressValue = 0.5
         thumbRadius = 30.0
     }
 
     override fun init() {
         super.init()
         defaultValue()
+
+//        this.wantsLayer = true
+//        this.layer.shadowRadius = 5.0
+//        this.layer.wantsEnlargerLayer()
 
         trackView = UIView(context)
         trackView?.let {
@@ -62,6 +66,7 @@ class UISlider : UIControl {
             it.layer.borderWidth = 0.5
             it.layer.borderColor = UIColor(0x00 / 255.0, 0x00 / 255.0, 0x00 / 255.0, 0.15)
             it.layer.backgroundColor = UIColor.whiteColor
+            it.layer.wantsEnlargerLayer()
             addSubview(it)
         }
     }
@@ -95,13 +100,13 @@ class UISlider : UIControl {
         super.layoutSubviews()
         val frameW = frame.size.width
         trackView?.let {
-            it.frame = CGRect(0.0, 15.0, frameW - 4, 2.0)
+            it.frame = CGRect(0.0, 15.0, frameW - 6, 2.0)
         }
         progressView?.let {
-            it.frame = CGRect(0.0, 15.0, (frameW - thumbRadius) * progressValue, 2.0)
+            it.frame = CGRect(0.0, 15.0, (frameW - thumbRadius - 4) * progressValue, 2.0)
         }
         thumbView?.let {
-            it.frame = CGRect((frameW - thumbRadius) * progressValue, 1.0, thumbRadius, thumbRadius)
+            it.frame = CGRect((frameW - thumbRadius - 4) * progressValue, 1.0, thumbRadius, thumbRadius)
         }
     }
 
@@ -125,10 +130,10 @@ class UISlider : UIControl {
     fun setValue(value: Double) {
         this.progressValue = value
         progressView?.let {
-            it.frame = CGRect(0.0, 15.0, (frame.width - thumbRadius) * this.progressValue, 2.0)
+            it.frame = CGRect(0.0, 15.0, (frame.width - thumbRadius - 4) * this.progressValue, 2.0)
         }
         thumbView?.let {
-            it.frame = CGRect((frame.width - thumbRadius) * this.progressValue, 1.0, thumbRadius, thumbRadius)
+            it.frame = CGRect((frame.width - thumbRadius - 4) * this.progressValue, 1.0, thumbRadius, thumbRadius)
         }
     }
 

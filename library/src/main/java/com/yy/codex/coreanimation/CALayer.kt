@@ -344,10 +344,10 @@ open class CALayer {
     }
 
     open fun enlargerInsets(): UIEdgeInsets {
-        val top = -(-shadowRadius + shadowY)
-        val left = -(-shadowRadius + shadowX)
-        val bottom = shadowRadius + shadowY
-        val right = shadowRadius + shadowX
+        val top = if (shadowY < 0.0) -(-shadowRadius + shadowY) else 0.0
+        val left = if (shadowX < 0.0) -(-shadowRadius + shadowX) else 0.0
+        val bottom = if (shadowY > 0.0) shadowRadius + shadowY else 0.0
+        var right = if (shadowX > 0.0) shadowRadius + shadowX else 0.0
         return UIEdgeInsets(top, left, bottom, right)
     }
 
