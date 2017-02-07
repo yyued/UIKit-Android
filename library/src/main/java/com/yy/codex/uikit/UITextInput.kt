@@ -26,6 +26,7 @@ class UITextInput {
     interface Delegate {
         fun textDidChanged(onDelete: Boolean)
         fun textShouldChange(range: NSRange, replacementString: String): Boolean
+        fun textShouldClear(): Boolean
         fun textShouldReturn(): Boolean
     }
 
@@ -121,9 +122,13 @@ class UITextInput {
     }
 
     fun clear() {
-        editor?.let {
-            val editable = it.text
-            editable.clear()
+        view?.let {
+            if (it.textShouldClear()) {
+                editor?.let {
+                    val editable = it.text
+                    editable.clear()
+                }
+            }
         }
     }
 

@@ -30,6 +30,16 @@ class UITextField : UIControl, UITextInput.Delegate, UITextInputTraits {
         RoundedRect
     }
 
+    interface Delegate {
+        fun textFieldShouldBeginEditing(textField: UITextField): Boolean
+        fun textFieldDidBeginEditing(textField: UITextField)
+        fun textFieldShouldEndEditing(textField: UITextField): Boolean
+        fun textFieldDidEndEditing(textField: UITextField)
+        fun textFieldshouldChangeCharactersInRange(textField: UITextField, inRange: NSRange, replacementString: String): Boolean
+        fun textFieldShouldClear(textField: UITextField): Boolean
+        fun textFieldShouldReturn(textField: UITextField): Boolean
+    }
+
     constructor(context: Context, view: View) : super(context, view) {}
 
     constructor(context: Context) : super(context) {}
@@ -40,6 +50,8 @@ class UITextField : UIControl, UITextInput.Delegate, UITextInputTraits {
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes) {}
+
+    var delegate: Delegate? = null
 
     var contentInsets: UIEdgeInsets = UIEdgeInsets(0.0, 6.0, 0.0, 6.0)
         set(value) {
@@ -168,6 +180,11 @@ class UITextField : UIControl, UITextInput.Delegate, UITextInputTraits {
     }
 
     override fun becomeFirstResponder() {
+        delegate?.let {
+            if (!it.textFieldShouldBeginEditing(this)) {
+                return
+            }
+        }
         super.becomeFirstResponder()
         removePlaceholder()
         if (clearsOnBeginEditing) {
@@ -176,9 +193,17 @@ class UITextField : UIControl, UITextInput.Delegate, UITextInputTraits {
         input.beginEditing()
         showCursorView()
         resetLayouts()
+        delegate?.let {
+            it.textFieldDidBeginEditing(this)
+        }
     }
 
     override fun resignFirstResponder() {
+        delegate?.let {
+            if (!it.textFieldShouldEndEditing(this)) {
+                return
+            }
+        }
         if (isFirstResponder()) {
             setupPlaceholder()
             input.endEditing()
@@ -186,6 +211,9 @@ class UITextField : UIControl, UITextInput.Delegate, UITextInputTraits {
         }
         super.resignFirstResponder()
         resetLayouts()
+        delegate?.let {
+            it.textFieldDidEndEditing(this)
+        }
     }
 
     override fun onEvent(event: Event) {
@@ -226,10 +254,23 @@ class UITextField : UIControl, UITextInput.Delegate, UITextInputTraits {
         if (replacementString == "\n") {
             return false
         }
+        delegate?.let {
+            return it.textFieldshouldChangeCharactersInRange(this, range, replacementString)
+        }
+        return true
+    }
+
+    override fun textShouldClear(): Boolean {
+        delegate?.let {
+            return it.textFieldShouldClear(this)
+        }
         return true
     }
 
     override fun textShouldReturn(): Boolean {
+        delegate?.let {
+            return it.textFieldShouldReturn(this)
+        }
         return false
     }
 
