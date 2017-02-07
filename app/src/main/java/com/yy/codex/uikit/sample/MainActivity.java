@@ -89,10 +89,18 @@ class TestViewController extends UIViewController {
         setTitle("Test");
         getNavigationItem().setRightBarButtonItem(new UIBarButtonItem("Next", this, "handleNextButtonTapped"));
         UITextField textField = (UITextField) getView().findViewById(R.id.roundView);
-        textField.setKeyboardType(UIKeyboardType.Password);
         textField.setReturnKeyType(UIReturnKeyType.Next);
         textField.setPlaceholder("请输入密码");
-        textField.setContentInsets(new UIEdgeInsets(0, 6, 0, 6));
+        UIView leftView = new UIView(getContext());
+        leftView.setFrame(new CGRect(0, 0, 20, 10));
+        leftView.setBackgroundColor(UIColor.Companion.getBlackColor());
+        textField.setLeftView(leftView);
+        textField.setLeftViewMode(UITextField.ViewMode.UnlessEditing);
+        UIView rightView = new UIView(getContext());
+        rightView.setFrame(new CGRect(0, 0, 20, 10));
+        rightView.setBackgroundColor(UIColor.Companion.getBlackColor());
+        textField.setRightView(rightView);
+        textField.setRightViewMode(UITextField.ViewMode.WhileEditing);
     }
 
     private void handleNextButtonTapped() {

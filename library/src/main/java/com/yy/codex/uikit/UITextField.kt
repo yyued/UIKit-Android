@@ -34,7 +34,7 @@ class UITextField : UIControl, UITextInput.Delegate, UITextInputTraits {
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes) {}
 
-    var contentInsets: UIEdgeInsets = UIEdgeInsets.zero
+    var contentInsets: UIEdgeInsets = UIEdgeInsets(0.0, 6.0, 0.0, 6.0)
         set(value) {
             field = value
             resetLayouts()
@@ -82,11 +82,33 @@ class UITextField : UIControl, UITextInput.Delegate, UITextInputTraits {
 
     var clearButtonMode = ViewMode.Never // todo: 未实现
 
-    var leftView: UIView? = null // todo: 未实现
-    val leftViewMode = ViewMode.Never // todo: 未实现
+    var leftView: UIView? = null
+        set(value) {
+            if (value == null) {
+                field?.let(UIView::removeFromSuperview)
+            }
+            field = value
+            resetLeftView()
+        }
+    var leftViewMode = ViewMode.Never
+        set(value) {
+            field = value
+            resetLayouts()
+        }
 
-    var rightView: UIView? = null // todo: 未实现
-    val rightViewMode = ViewMode.Never // todo: 未实现
+    var rightView: UIView? = null
+        set(value) {
+            if (value == null) {
+                field?.let(UIView::removeFromSuperview)
+            }
+            field = value
+            resetRightView()
+        }
+    var rightViewMode = ViewMode.Never
+        set(value) {
+            field = value
+            resetLayouts()
+        }
 
     override var keyboardType: UIKeyboardType = UIKeyboardType.Default
 
@@ -285,7 +307,52 @@ class UITextField : UIControl, UITextInput.Delegate, UITextInputTraits {
     }
 
     private fun resetLayouts() {
-        wrapper.frame = CGRect(contentInsets.left, contentInsets.top, frame.width - contentInsets.left - contentInsets.right, frame.height - contentInsets.top - contentInsets.bottom)
+
+        var leftViewWidth = leftView?.frame?.width ?: 0.0
+        leftView?.hidden = false
+        if (leftViewMode == ViewMode.Never) {
+            leftViewWidth = 0.0
+            leftView?.hidden = true
+        }
+        else if (leftViewMode == ViewMode.WhileEditing) {
+            if (!editing) {
+                leftViewWidth = 0.0
+                leftView?.hidden = true
+            }
+        }
+        else if (leftViewMode == ViewMode.UnlessEditing) {
+            if (editing) {
+                leftViewWidth = 0.0
+                leftView?.hidden = true
+            }
+        }
+        leftView?.let {
+            it.frame = it.frame.setY((frame.height - it.frame.height) / 2.0)
+        }
+
+        var rightViewWidth = rightView?.frame?.width ?: 0.0
+        rightView?.hidden = false
+        if (rightViewMode == ViewMode.Never) {
+            rightViewWidth = 0.0
+            rightView?.hidden = true
+        }
+        else if (rightViewMode == ViewMode.WhileEditing) {
+            if (!editing) {
+                rightViewWidth = 0.0
+                rightView?.hidden = true
+            }
+        }
+        else if (rightViewMode == ViewMode.UnlessEditing) {
+            if (editing) {
+                rightViewWidth = 0.0
+                rightView?.hidden = true
+            }
+        }
+        rightView?.let {
+            it.frame = it.frame.setY((frame.height - it.frame.height) / 2.0).setX(frame.width - it.frame.width)
+        }
+
+        wrapper.frame = CGRect(leftViewWidth + contentInsets.left, contentInsets.top, frame.width - leftViewWidth - contentInsets.left - contentInsets.right - rightViewWidth, frame.height - contentInsets.top - contentInsets.bottom)
         var textSize = label.intrinsicContentSize()
         textSize = textSize.setWidth(textSize.width + 4.0)
         var labelX = 0.0
@@ -431,6 +498,20 @@ class UITextField : UIControl, UITextInput.Delegate, UITextInputTraits {
     private fun removePlaceholder() {
         if ((placeholder != null || attributedPlaceholder != null) && label.text == placeholder) {
             label.text = ""
+        }
+    }
+
+    private fun resetLeftView() {
+        leftView?.let {
+            addSubview(it)
+            resetLayouts()
+        }
+    }
+
+    private fun resetRightView() {
+        rightView?.let {
+            addSubview(it)
+            resetLayouts()
         }
     }
 
