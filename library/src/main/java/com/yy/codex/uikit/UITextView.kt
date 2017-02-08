@@ -9,18 +9,11 @@ import android.view.View
 /**
  * Created by cuiminghui on 2017/2/8.
  */
-class UITextView: UIScrollView, UITextInput.Delegate {
-
-    constructor(context: Context, view: View) : super(context, view) {}
-    constructor(context: Context) : super(context) {}
-    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {}
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {}
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes) {}
+class UITextView(context: Context) : UIScrollView(context), UITextInput.Delegate {
 
     override fun init() {
         super.init()
-        setAlwaysBounceVertical(true)
+        alwaysBounceVertical = true
         input = UITextInput()
         label = UILabel(context)
         label.numberOfLines = 0

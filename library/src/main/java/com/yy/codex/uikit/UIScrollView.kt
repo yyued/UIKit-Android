@@ -36,8 +36,8 @@ open class UIScrollView(context: Context) : UIView(context) {
 
     public var tracking: Boolean = false
     private var scrollEnabled: Boolean = false
-    private var alwaysBounceVertical: Boolean = false
-    private var alwaysBounceHorizontal: Boolean = false
+    public var alwaysBounceVertical: Boolean = false
+    public var alwaysBounceHorizontal: Boolean = false
     var bounces: Boolean = false
     private var pagingEnabled: Boolean = false
     public var decelerating: Boolean = false
