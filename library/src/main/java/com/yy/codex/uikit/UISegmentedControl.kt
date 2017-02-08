@@ -32,20 +32,29 @@ class UISegmentedControl : UIControl {
         super.init()
         color = UIColor(0x12 / 255.0, 0x6a / 255.0, 1.0, 1.0)
         wantsLayer = true
-        layer.borderWidth = 0.5 * UIScreen.mainScreen.scale()
+        layer.borderWidth = 1.0
         layer.borderColor = color
-        layer.cornerRadius = 1.5 * UIScreen.mainScreen.scale()
+        layer.cornerRadius = 3.0
     }
 
     override fun layoutSubviews() {
         super.layoutSubviews()
-        val scale = UIScreen.mainScreen.scale()
-        val buttonW = (frame.width - (buttons.size + 1) * scale) / buttons.size
+        val buttonW = (frame.width - (buttons.size + 1) * layer.borderWidth) / buttons.size
         for (idx in 0..buttons.size-1){
-            buttons.get(idx).frame = CGRect((0.5 * scale +  buttonW) * idx , 0.0, buttonW, 15.0 * scale)
+            if (idx == 0){
+                buttons.get(0).frame = CGRect(1.0, 1.0, buttonW, 28.0)
+            }
+            else if (idx == buttons.size-1){
+                val ret = if (numberOfSegments % 2 == 0) 1.0 else 0.5
+                val w = frame.width - (layer.borderWidth +  buttonW) * idx - ret
+                buttons.get(idx).frame = CGRect((layer.borderWidth +  buttonW) * idx , 1.0, w, 28.0)
+            }
+            else {
+                buttons.get(idx).frame = CGRect((layer.borderWidth +  buttonW) * idx , 1.0, buttonW, 28.0)
+            }
         }
         for (idx in 0..divs.size-1){
-            divs.get(idx).frame = CGRect(buttonW * (idx + 1), 0.0, 0.5 * scale, 15.0 * scale)
+            divs.get(idx).frame = CGRect(buttonW * (idx + 1) + layer.borderWidth * idx, 0.0, layer.borderWidth, 30.0)
         }
     }
 
@@ -53,7 +62,7 @@ class UISegmentedControl : UIControl {
 
     private var items: List<UISegmentedItem> = listOf()
 
-    private var buttons: List<UIButton> = listOf()
+    private var buttons: List<UISegmentedButton> = listOf()
 
     private var divs: List<UIView> = listOf()
 
@@ -61,9 +70,21 @@ class UISegmentedControl : UIControl {
 
     private var activeIndex: Int = 0
 
-    private var color: UIColor = UIColor(0x12 / 255.0, 0x6a / 255.0, 1.0, 1.0)
+    var color: UIColor = UIColor(0x12 / 255.0, 0x6a / 255.0, 1.0, 1.0)
+
+    var bgColor: UIColor = UIColor.whiteColor
+
+    /* for SegmentedButton */
+
+    fun onSelectWithButton(btn: UISegmentedButton){
+        val selectIdx = buttons.indexOf(btn)
+        buttons.forEachIndexed { idx, button ->
+            button.select = idx == selectIdx
+        }
+    }
 
     /* exports */
+
     fun setItems(items: List<UISegmentedItem>){
         this.items = items
         numberOfSegments = items.size
@@ -75,18 +96,15 @@ class UISegmentedControl : UIControl {
             div.removeFromSuperview()
         }
 
-        val mutableButtons: MutableList<UIButton> = arrayListOf()
+        val mutableButtons: MutableList<UISegmentedButton> = arrayListOf()
         val mutableDivs: MutableList<UIView> = arrayListOf()
         for ((idx, item) in items.withIndex()){
-            val button = UIButton(context)
+            val button = UISegmentedButton(context)
             button.setTitle(item.title, UIControl.State.Normal)
-            button.setTitleColor(UIColor.redColor, UIControl.State.Selected)
-            if (idx == 0){
-                button.isSelected = true
-//                button.state = UIControl.State.Selected
-            }
+            button.setTitleColor(UIColor.clearColor, UIControl.State.Selected)
             mutableButtons.add(button)
             addSubview(button)
+            button.select = (idx == 0)
             if (idx > 0){
                 val div = UIView(context)
                 div.setBackgroundColor(color)
@@ -117,5 +135,12 @@ class UISegmentedControl : UIControl {
 
     fun getTitleAtIndex(atIndex: Int):String{
         return ""
+    }
+
+    override fun setBackgroundColor(color: UIColor?) {
+        super.setBackgroundColor(color)
+        color?.let {
+            bgColor = it
+        }
     }
 }

@@ -62,11 +62,13 @@ internal class TestComponent : UIView {
 //        addSubview(view1)
 
         val uiSegmentedControl = UISegmentedControl(context)
-        uiSegmentedControl.setBackgroundColor(UIColor.orangeColor)
+//        uiSegmentedControl.setBackgroundColor(UIColor.orangeColor)
+//        uiSegmentedControl.color = UIColor.greenColor
         uiSegmentedControl.frame = CGRect(10.0, 250.0, 200.0, 30.0)
-        uiSegmentedControl.setItems(listOf(UISegmentedItem("aaa"), UISegmentedItem("abc"), UISegmentedItem("cca")))
+        uiSegmentedControl.setItems(listOf(UISegmentedItem("aaa"), UISegmentedItem("abc"), UISegmentedItem("ccc")))
 //        uiSegmentedControl.setItems(listOf())
         addSubview(uiSegmentedControl)
+
     }
 }
 
