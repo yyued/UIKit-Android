@@ -1,13 +1,17 @@
 package com.yy.codex.uikit
 
 import android.content.Context
+import android.os.Build
+import android.support.annotation.RequiresApi
+import android.util.AttributeSet
+import android.view.View
 import com.yy.codex.foundation.NSLog
 import com.yy.codex.foundation.lets
 
 /**
  * Created by it on 17/1/23.
  */
-open class UITableView(context: Context) : UIScrollView(context) {
+open class UITableView : UIScrollView {
 
     interface UITableViewDataSource {
 
@@ -24,6 +28,13 @@ open class UITableView(context: Context) : UIScrollView(context) {
         fun tableViewDidSelectRowAtIndexPath(tableView: UITableView, indexPath: NSIndexPath)
         fun tableViewHeightForHeaderInSection(tableView: UITableView, section: Int): Double
     }
+
+    constructor(context: Context, view: View) : super(context, view) {}
+    constructor(context: Context) : super(context) {}
+    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {}
+    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {}
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes) {}
 
     var rowHeight = 0
     var sectionHeaderHeight = 0

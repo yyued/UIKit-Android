@@ -15,7 +15,7 @@ import java.util.TimerTask
  * Created by it on 17/1/6.
  */
 
-open class UIScrollView(context: Context) : UIView(context) {
+open class UIScrollView : UIView {
 
     open interface UIScrollViewDelegate {
         fun scrollViewDidScroll(scrollView: UIScrollView)
@@ -24,6 +24,13 @@ open class UIScrollView(context: Context) : UIView(context) {
         fun scrollViewWillBeginDecelerating(scrollView: UIScrollView)
         fun scrollViewDidEndDecelerating(scrollView: UIScrollView)
     }
+
+    constructor(context: Context, view: View) : super(context, view) {}
+    constructor(context: Context) : super(context) {}
+    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {}
+    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {}
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes) {}
 
     /* Scrolls */
 
