@@ -50,7 +50,6 @@ internal class TestComponent : UIView {
         uiSlider.frame = CGRect(10.0, 100.0, 200.0, 42.0)
         uiSlider.setValue(1.0)
         uiSlider.onSlide({ value -> NSLog.warn(value) })
-
         addSubview(uiSlider)
 
         val uiStepper = UIStepper(context)
@@ -61,6 +60,13 @@ internal class TestComponent : UIView {
 //        view1.frame = CGRect(10.0, 200.0, 100.0, 100.0)
 //        view1.setBackgroundColor(UIColor.orangeColor);
 //        addSubview(view1)
+
+        val uiSegmentedControl = UISegmentedControl(context)
+        uiSegmentedControl.setBackgroundColor(UIColor.orangeColor)
+        uiSegmentedControl.frame = CGRect(10.0, 250.0, 200.0, 30.0)
+        uiSegmentedControl.setItems(listOf(UISegmentedItem("aaa"), UISegmentedItem("abc"), UISegmentedItem("cca")))
+//        uiSegmentedControl.setItems(listOf())
+        addSubview(uiSegmentedControl)
     }
 }
 
