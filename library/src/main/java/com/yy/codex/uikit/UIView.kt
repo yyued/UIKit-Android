@@ -1,12 +1,13 @@
 package com.yy.codex.uikit
 
 import android.content.Context
-import android.content.res.TypedArray
 import android.graphics.Canvas
 import android.os.Build
 import android.support.annotation.RequiresApi
 import android.util.AttributeSet
-import android.view.*
+import android.view.MotionEvent
+import android.view.View
+import android.view.ViewGroup
 import android.widget.FrameLayout
 import com.yy.codex.coreanimation.CALayer
 import java.util.*
@@ -351,7 +352,7 @@ open class UIView : FrameLayout, UIResponder {
 
     /* category UIView Rendering */
 
-    fun setBackgroundColor(color: UIColor?) {
+    open fun setBackgroundColor(color: UIColor?) {
         color?.let {
             if (wantsLayer) {
                 layer.backgroundColor = color

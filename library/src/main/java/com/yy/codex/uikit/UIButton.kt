@@ -5,16 +5,13 @@ import android.os.Build
 import android.support.annotation.RequiresApi
 import android.util.AttributeSet
 import android.view.View
-import com.yy.codex.foundation.lets
-
-import java.util.EnumSet
-import java.util.HashMap
+import java.util.*
 
 /**
  * Created by cuiminghui on 2017/1/16.
  */
 
-class UIButton : UIControl {
+open class UIButton : UIControl {
 
     /* Props */
 
