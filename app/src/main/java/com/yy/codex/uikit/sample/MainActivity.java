@@ -109,14 +109,18 @@ class TestViewController extends UIViewController {
     private void onTestButtonTapped() {
         UIMenuController menuController = UIMenuController.Companion.getSharedMenuController();
         menuController.setMenuItems(new ArrayList<UIMenuItem>(){{
-            add(new UIMenuItem("复制", this, "onCopy"));
-            add(new UIMenuItem("粘贴", this, "onCopy"));
-            add(new UIMenuItem("添加到表情", this, "onCopy"));
+            add(new UIMenuItem("复制", TestViewController.this, "onCopy"));
+            add(new UIMenuItem("复制", TestViewController.this, "onCopy"));
+            add(new UIMenuItem("复制", TestViewController.this, "onCopy"));
         }});
         UIButton button = (UIButton) getView().findViewById(R.id.testButton);
         menuController.setTargetWithRect(new CGRect(0, 0, button.getFrame().getWidth(), button.getFrame().getHeight()), button);
         menuController.setArrowDirection(UIMenuController.ArrowDirection.Default);
         menuController.setMenuVisible(true, true);
+    }
+
+    private void onCopy() {
+        NSLog.INSTANCE.log("123");
     }
 
     private void handleNextButtonTapped() {

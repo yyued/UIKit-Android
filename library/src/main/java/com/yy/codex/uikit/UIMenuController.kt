@@ -16,28 +16,56 @@ class UIMenuController {
         Default, // up or down based on screen location
         Up,
         Down,
-        Left,
-        Right,
     }
 
-    private constructor()
+    companion object {
+        var sharedMenuController = UIMenuController()
+    }
 
     var menuVisible = false
 
     fun setMenuVisible(visible: Boolean, animated: Boolean) {
         menuVisible = visible
+        if (menuVisible) {
+            createMenuView()
+        }
         lets(targetView, menuView, maskView) { targetView, menuView, maskView ->
             if (menuVisible) {
                 val rootView = UIViewHelpers.findRootView(targetView) ?: return@lets
                 resetLayouts(rootView)
                 rootView.addSubview(maskView)
                 rootView.addSubview(menuView)
-                maskView.alpha = 1.0f
-                menuView.alpha = 1.0f
+                if (animated) {
+                    maskView.alpha = 0.0f
+                    menuView.alpha = 0.0f
+                    UIViewAnimator.linear(Runnable {
+                        maskView.alpha = 1.0f
+                        menuView.alpha = 1.0f
+                    })
+                }
+                else {
+                    maskView.alpha = 1.0f
+                    menuView.alpha = 1.0f
+                }
             }
             else {
-                maskView.alpha = 0.0f
-                menuView.alpha = 0.0f
+                if (animated) {
+                    maskView.alpha = 1.0f
+                    menuView.alpha = 1.0f
+                    UIViewAnimator.linear(0.25, Runnable {
+                        maskView.alpha = 0.0f
+                        menuView.alpha = 0.0f
+                    }, Runnable {
+                        maskView.removeFromSuperview()
+                        menuView.removeFromSuperview()
+                    })
+                }
+                else {
+                    maskView.alpha = 0.0f
+                    menuView.alpha = 0.0f
+                    maskView.removeFromSuperview()
+                    menuView.removeFromSuperview()
+                }
             }
         }
     }
@@ -45,26 +73,23 @@ class UIMenuController {
     fun setTargetWithRect(targetRect: CGRect, targetView: UIView) {
         this.targetRect = targetRect
         this.targetView = targetView
-        createMenuView()
     }
 
     var arrowDirection: ArrowDirection = ArrowDirection.Default
-        set(value) {
-            field = value
-            createMenuView()
-        }
 
     var menuItems: List<UIMenuItem> = listOf()
-        set(value) {
-            field = value
-            createMenuView()
-        }
+
+    fun update() {
+        createMenuView()
+    }
 
     private var targetRect: CGRect? = null
     private var targetView: UIView? = null
     private var menuView: UIView? = null
     private var triangleView: UIView? = null
     private var maskView: UIView? = null
+
+    private constructor()
 
     private fun createMenuView() {
         targetView?.let {
@@ -88,6 +113,7 @@ class UIMenuController {
                 menuItems.map {
                     val button = UIButton(targetView.context)
                     button.addTarget(it.target, it.selector, UIControl.Event.TouchUpInside)
+                    button.addTarget(this, "onItemButtonTouchUpInside:", UIControl.Event.TouchUpInside)
                     button.tintColor = UIColor.whiteColor
                     button.font = UIFont(14.0f)
                     button.setTitle(it.title, UIControl.State.Normal)
@@ -119,7 +145,6 @@ class UIMenuController {
                 ArrowDirection.Default -> {
                     triangleView?.removeFromSuperview()
                     val targetPoint = targetView.convertPoint(CGPoint((targetRect.x + targetRect.width) / 2.0, (targetRect.y + targetRect.height) / 2.0), absoluteView)
-                    val x = Math.min(absoluteView.frame.width - menuView.frame.width, Math.max(0.0, targetPoint.x - menuView.frame.width / 2.0))
                     val y = Math.min(absoluteView.frame.height - menuView.frame.height, Math.max(0.0, targetPoint.y - menuView.frame.height))
                     if (y - 9.0 < 0.0) {
                         resetLayouts(absoluteView, ArrowDirection.Up)
@@ -136,7 +161,7 @@ class UIMenuController {
                     menuView.frame = menuView.frame.setX(x).setY(y - 9.0)
                     triangleView = UIMenuViewTriangleView(targetView.context, ArrowDirection.Down)
                     triangleView?.let {
-                        it.frame = CGRect(menuView.frame.x + menuView.frame.width / 2.0 - 8.0, menuView.frame.y + menuView.frame.height, 16.0, 9.0)
+                        it.frame = CGRect(targetPoint.x - 8.0, menuView.frame.y + menuView.frame.height, 16.0, 9.0)
                         maskView.addSubview(it)
                     }
                 }
@@ -148,28 +173,20 @@ class UIMenuController {
                     menuView.frame = menuView.frame.setX(x).setY(y + 9.0)
                     triangleView = UIMenuViewTriangleView(targetView.context, ArrowDirection.Up)
                     triangleView?.let {
-                        it.frame = CGRect(menuView.frame.x + menuView.frame.width / 2.0 - 8.0, menuView.frame.y - 8.0, 16.0, 9.0)
+                        it.frame = CGRect(targetPoint.x - 8.0, menuView.frame.y - 8.0, 16.0, 9.0)
                         maskView.addSubview(it)
                     }
-                }
-                ArrowDirection.Left -> {
-
-                }
-                ArrowDirection.Right -> {
-
                 }
             }
         }
     }
 
-    private fun onMaskViewTouched(sender: UITapGestureRecognizer) {
+    private fun onItemButtonTouchUpInside(sender: UIButton) {
         setMenuVisible(false, true)
     }
 
-    companion object {
-
-        var sharedMenuController = UIMenuController()
-
+    private fun onMaskViewTouched(sender: UITapGestureRecognizer) {
+        setMenuVisible(false, true)
     }
 
     inner private class UIMenuViewTriangleView(context: Context, val arrowDirection: ArrowDirection): UIView(context) {
