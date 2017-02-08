@@ -4,22 +4,28 @@ import android.content.Context;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
+import android.text.Layout;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
+import com.yy.codex.foundation.NSInvocation;
 import com.yy.codex.foundation.NSLog;
 import com.yy.codex.foundation.NSNotification;
 import com.yy.codex.foundation.NSNotificationCenter;
 import com.yy.codex.uikit.CGRect;
 import com.yy.codex.uikit.NSAttributedString;
 import com.yy.codex.uikit.UIBarButtonItem;
+import com.yy.codex.uikit.UIButton;
 import com.yy.codex.uikit.UIColor;
+import com.yy.codex.uikit.UIControl;
 import com.yy.codex.uikit.UIEdgeInsets;
 import com.yy.codex.uikit.UIFont;
 import com.yy.codex.uikit.UIImage;
 import com.yy.codex.uikit.UIKeyboardManager;
 import com.yy.codex.uikit.UIKeyboardType;
+import com.yy.codex.uikit.UIMenuController;
+import com.yy.codex.uikit.UIMenuItem;
 import com.yy.codex.uikit.UINavigationController;
 import com.yy.codex.uikit.UINavigationController_ActivityBase;
 import com.yy.codex.uikit.UIReturnKeyType;
@@ -88,10 +94,29 @@ class TestViewController extends UIViewController {
         super.viewDidLoad();
         setTitle("Test");
         getNavigationItem().setRightBarButtonItem(new UIBarButtonItem("Next", this, "handleNextButtonTapped"));
+
         UITextField textField = (UITextField) getView().findViewById(R.id.roundView);
         textField.setReturnKeyType(UIReturnKeyType.Next);
         textField.setPlaceholder("请输入密码");
+        textField.setBorderStyle(UITextField.BorderStyle.Line);
         textField.setClearButtonMode(UITextField.ViewMode.WhileEditing);
+        textField.setAlignment(Layout.Alignment.ALIGN_CENTER);
+
+        UIButton button = (UIButton) getView().findViewById(R.id.testButton);
+        button.addTarget(this, "onTestButtonTapped", UIControl.Event.TouchUpInside);
+    }
+
+    private void onTestButtonTapped() {
+        UIMenuController menuController = UIMenuController.Companion.getSharedMenuController();
+        menuController.setMenuItems(new ArrayList<UIMenuItem>(){{
+            add(new UIMenuItem("复制", this, "onCopy"));
+            add(new UIMenuItem("粘贴", this, "onCopy"));
+            add(new UIMenuItem("添加到表情", this, "onCopy"));
+        }});
+        UIButton button = (UIButton) getView().findViewById(R.id.testButton);
+        menuController.setTargetWithRect(new CGRect(0, 0, button.getFrame().getWidth(), button.getFrame().getHeight()), button);
+        menuController.setArrowDirection(UIMenuController.ArrowDirection.Default);
+        menuController.setMenuVisible(true, true);
     }
 
     private void handleNextButtonTapped() {

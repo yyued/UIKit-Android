@@ -2,19 +2,13 @@ package com.yy.codex.uikit
 
 import android.app.Activity
 import android.content.Context
-import android.hardware.input.InputManager
-import android.inputmethodservice.InputMethodService
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.KeyEvent
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
-import android.widget.FrameLayout
-import android.widget.TextView
-import com.yy.codex.foundation.NSLog
 import com.yy.codex.foundation.lets
 
 /**
@@ -26,6 +20,7 @@ class UITextInput {
     interface Delegate {
         fun textDidChanged(onDelete: Boolean)
         fun textShouldChange(range: NSRange, replacementString: String): Boolean
+        fun textShouldClear(): Boolean
         fun textShouldReturn(): Boolean
     }
 
@@ -121,9 +116,13 @@ class UITextInput {
     }
 
     fun clear() {
-        editor?.let {
-            val editable = it.text
-            editable.clear()
+        view?.let {
+            if (it.textShouldClear()) {
+                editor?.let {
+                    val editable = it.text
+                    editable.clear()
+                }
+            }
         }
     }
 
