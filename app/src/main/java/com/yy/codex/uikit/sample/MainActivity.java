@@ -8,6 +8,7 @@ import android.text.Layout;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.TextView;
 
 import com.yy.codex.foundation.NSInvocation;
 import com.yy.codex.foundation.NSLog;
@@ -33,6 +34,7 @@ import com.yy.codex.uikit.UITabBarActivity;
 import com.yy.codex.uikit.UITabBarController;
 import com.yy.codex.uikit.UITabBarItem;
 import com.yy.codex.uikit.UITextField;
+import com.yy.codex.uikit.UITextView;
 import com.yy.codex.uikit.UIView;
 import com.yy.codex.uikit.UIViewController;
 

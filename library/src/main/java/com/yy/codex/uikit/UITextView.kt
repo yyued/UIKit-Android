@@ -20,12 +20,14 @@ class UITextView: UIScrollView, UITextInput.Delegate {
 
     override fun init() {
         super.init()
-        setAlwaysBounceVertical(true)
         input = UITextInput()
         label = UILabel(context)
         label.numberOfLines = 0
         addSubview(label)
         addGestureRecognizer(UITapGestureRecognizer(this, "becomeFirstResponder"))
+        cursorView = UIView(context)
+        cursorView.hidden = true
+        label.addSubview(cursorView)
     }
 
     override fun didMoveToSuperview() {
@@ -34,12 +36,15 @@ class UITextView: UIScrollView, UITextInput.Delegate {
     }
 
     override fun becomeFirstResponder() {
+        super.becomeFirstResponder()
         input.beginEditing()
+        showCursorView()
     }
 
     override fun resignFirstResponder() {
         if (isFirstResponder()) {
             input.endEditing()
+            hideCursorView()
         }
         super.resignFirstResponder()
         resetLayouts()
@@ -93,7 +98,7 @@ class UITextView: UIScrollView, UITextInput.Delegate {
     /* Content Props */
     lateinit internal var input: UITextInput
     lateinit internal var label: UILabel
-    internal var charPositions: List<Int> = listOf()
+    internal var charPositions: List<CGRect> = listOf()
 
     /* Cursor Private Props */
     lateinit internal var cursorView: UIView
