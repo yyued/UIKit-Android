@@ -95,32 +95,12 @@ class TestViewController extends UIViewController {
         setTitle("Test");
         getNavigationItem().setRightBarButtonItem(new UIBarButtonItem("Next", this, "handleNextButtonTapped"));
 
-        UITextField textField = (UITextField) getView().findViewById(R.id.roundView);
-        textField.setReturnKeyType(UIReturnKeyType.Next);
-        textField.setPlaceholder("请输入密码");
-        textField.setBorderStyle(UITextField.BorderStyle.Line);
-        textField.setClearButtonMode(UITextField.ViewMode.WhileEditing);
-        textField.setAlignment(Layout.Alignment.ALIGN_CENTER);
-
-        UIButton button = (UIButton) getView().findViewById(R.id.testButton);
-        button.addTarget(this, "onTestButtonTapped", UIControl.Event.TouchUpInside);
-    }
-
-    private void onTestButtonTapped() {
-        UIMenuController menuController = UIMenuController.Companion.getSharedMenuController();
-        menuController.setMenuItems(new ArrayList<UIMenuItem>(){{
-            add(new UIMenuItem("复制", TestViewController.this, "onCopy"));
-            add(new UIMenuItem("复制", TestViewController.this, "onCopy"));
-            add(new UIMenuItem("复制", TestViewController.this, "onCopy"));
-        }});
-        UIButton button = (UIButton) getView().findViewById(R.id.testButton);
-        menuController.setTargetWithRect(new CGRect(0, 0, button.getFrame().getWidth(), button.getFrame().getHeight()), button);
-        menuController.setArrowDirection(UIMenuController.ArrowDirection.Default);
-        menuController.setMenuVisible(true, true);
-    }
-
-    private void onCopy() {
-        NSLog.INSTANCE.log("123");
+//        UITextField textField = (UITextField) getView().findViewById(R.id.roundView);
+//        textField.setReturnKeyType(UIReturnKeyType.Next);
+//        textField.setPlaceholder("请输入密码");
+//        textField.setBorderStyle(UITextField.BorderStyle.Line);
+//        textField.setClearButtonMode(UITextField.ViewMode.WhileEditing);
+//        textField.setAlignment(Layout.Alignment.ALIGN_CENTER);
     }
 
     private void handleNextButtonTapped() {
