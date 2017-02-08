@@ -70,4 +70,12 @@ internal object UIViewHelpers {
         return CGPoint(viewX - toViewX + point.x, viewY - toViewY + point.y)
     }
 
+    fun findRootView(view: UIView): UIView? {
+        var rootView = view.superview
+        while (rootView?.superview != null) {
+            rootView = rootView?.superview
+        }
+        return rootView
+    }
+
 }

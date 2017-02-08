@@ -35,7 +35,7 @@ class UITextField : UIControl, UITextInput.Delegate, UITextInputTraits {
         fun textFieldDidBeginEditing(textField: UITextField)
         fun textFieldShouldEndEditing(textField: UITextField): Boolean
         fun textFieldDidEndEditing(textField: UITextField)
-        fun textFieldshouldChangeCharactersInRange(textField: UITextField, inRange: NSRange, replacementString: String): Boolean
+        fun textFieldShouldChangeCharactersInRange(textField: UITextField, inRange: NSRange, replacementString: String): Boolean
         fun textFieldShouldClear(textField: UITextField): Boolean
         fun textFieldShouldReturn(textField: UITextField): Boolean
     }
@@ -255,7 +255,7 @@ class UITextField : UIControl, UITextInput.Delegate, UITextInputTraits {
             return false
         }
         delegate?.let {
-            return it.textFieldshouldChangeCharactersInRange(this, range, replacementString)
+            return it.textFieldShouldChangeCharactersInRange(this, range, replacementString)
         }
         return true
     }

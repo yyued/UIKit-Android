@@ -98,15 +98,18 @@ internal class UIGestureRecognizerLooper internal constructor(internal var hitTe
 
     private fun removeConflictRecognizers(gestureRecognizers: List<UIGestureRecognizer>): List<UIGestureRecognizer> {
         val longPressHash: HashMap<Int, Boolean> = hashMapOf()
-        return gestureRecognizers.filter { it is UILongPressGestureRecognizer }.filter {
-            val aKey = ((it as UILongPressGestureRecognizer).minimumPressDuration * 1000).toInt()
-            if (longPressHash.containsKey(aKey)) {
-                return@filter false
+        return gestureRecognizers.filter {
+            (it as? UILongPressGestureRecognizer)?.let {
+                val aKey = (it.minimumPressDuration * 1000).toInt()
+                if (longPressHash.containsKey(aKey)) {
+                    return@filter false
+                }
+                else {
+                    longPressHash.put(aKey, true)
+                    return@filter true
+                }
             }
-            else {
-                longPressHash.put(aKey, true)
-                return@filter true
-            }
+            return@filter true
         }
     }
 
