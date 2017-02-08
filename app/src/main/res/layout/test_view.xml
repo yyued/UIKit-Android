@@ -4,25 +4,14 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="#ffffff">
-    <com.yy.codex.uikit.UITextField
+    <com.yy.codex.uikit.UITextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/roundView"
         app:constraint.enabled="true"
         app:constraint.centerHorizontally="true"
         app:constraint.centerVertically="true"
-        app:constraint.top="100"
         app:constraint.width="200"
-        app:constraint.height="44"
-        >
-    </com.yy.codex.uikit.UITextField>
-    <com.yy.codex.uikit.UIButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/testButton"
-        app:button.title="Testing"
-        app:constraint.enabled="true"
-        app:constraint.centerVertically="true"
-        app:constraint.centerHorizontally="true">
-    </com.yy.codex.uikit.UIButton>
+        app:constraint.height="200">
+    </com.yy.codex.uikit.UITextView>
 </com.yy.codex.uikit.UIView>

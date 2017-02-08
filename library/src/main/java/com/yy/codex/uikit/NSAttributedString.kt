@@ -31,6 +31,7 @@ open class NSAttributedString : SpannableStringBuilder {
         }
         measureLabel?.attributedText = this
         measureLabel?.maxWidth = maxWidth
+        measureLabel?.numberOfLines = 0
         return measureLabel?.intrinsicContentSize() ?: CGSize(0.0, 0.0)
     }
 

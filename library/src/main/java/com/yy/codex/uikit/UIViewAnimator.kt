@@ -328,7 +328,7 @@ object UIViewAnimator {
         if (!options.allowBounds && (options.fromValue <= options.topBounds || options.fromValue >= options.bottomBounds)) {
             return UIViewAnimation()
         }
-        if (options.bottomBounds - options.topBounds < options.viewBounds) {
+        if ((options.bottomBounds + options.viewBounds) - options.topBounds < options.viewBounds) {
             if (options.allowBounds && options.alwaysBounds) {
                 options.bottomBounds = options.topBounds
             } else {

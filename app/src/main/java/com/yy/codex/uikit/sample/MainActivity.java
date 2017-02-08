@@ -8,6 +8,7 @@ import android.text.Layout;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.TextView;
 
 import com.yy.codex.foundation.NSInvocation;
 import com.yy.codex.foundation.NSLog;
@@ -33,6 +34,7 @@ import com.yy.codex.uikit.UITabBarActivity;
 import com.yy.codex.uikit.UITabBarController;
 import com.yy.codex.uikit.UITabBarItem;
 import com.yy.codex.uikit.UITextField;
+import com.yy.codex.uikit.UITextView;
 import com.yy.codex.uikit.UIView;
 import com.yy.codex.uikit.UIViewController;
 
@@ -95,28 +97,12 @@ class TestViewController extends UIViewController {
         setTitle("Test");
         getNavigationItem().setRightBarButtonItem(new UIBarButtonItem("Next", this, "handleNextButtonTapped"));
 
-        UITextField textField = (UITextField) getView().findViewById(R.id.roundView);
-        textField.setReturnKeyType(UIReturnKeyType.Next);
-        textField.setPlaceholder("请输入密码");
-        textField.setBorderStyle(UITextField.BorderStyle.Line);
-        textField.setClearButtonMode(UITextField.ViewMode.WhileEditing);
-        textField.setAlignment(Layout.Alignment.ALIGN_CENTER);
-
-        UIButton button = (UIButton) getView().findViewById(R.id.testButton);
-        button.addTarget(this, "onTestButtonTapped", UIControl.Event.TouchUpInside);
-    }
-
-    private void onTestButtonTapped() {
-        UIMenuController menuController = UIMenuController.Companion.getSharedMenuController();
-        menuController.setMenuItems(new ArrayList<UIMenuItem>(){{
-            add(new UIMenuItem("复制", this, "onCopy"));
-            add(new UIMenuItem("粘贴", this, "onCopy"));
-            add(new UIMenuItem("添加到表情", this, "onCopy"));
-        }});
-        UIButton button = (UIButton) getView().findViewById(R.id.testButton);
-        menuController.setTargetWithRect(new CGRect(0, 0, button.getFrame().getWidth(), button.getFrame().getHeight()), button);
-        menuController.setArrowDirection(UIMenuController.ArrowDirection.Default);
-        menuController.setMenuVisible(true, true);
+//        UITextField textField = (UITextField) getView().findViewById(R.id.roundView);
+//        textField.setReturnKeyType(UIReturnKeyType.Next);
+//        textField.setPlaceholder("请输入密码");
+//        textField.setBorderStyle(UITextField.BorderStyle.Line);
+//        textField.setClearButtonMode(UITextField.ViewMode.WhileEditing);
+//        textField.setAlignment(Layout.Alignment.ALIGN_CENTER);
     }
 
     private void handleNextButtonTapped() {
