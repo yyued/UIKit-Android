@@ -42,21 +42,18 @@ open class NSAttributedString : SpannableStringBuilder {
                     layout = BoringLayout(mutableAttributedText.copy(), textPaint, (maxWidth * UIScreen.mainScreen.scale()).toInt(), Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, metrics, false)
                     when (lineBreakMode) {
                         NSLineBreakMode.ByTruncatingHead -> {
-                            val mutableAttributedText = substring(NSRange(0, truncateTo)).mutableCopy()
                             if (3 < mutableAttributedText.length) {
                                 mutableAttributedText.replaceCharacters(NSRange(0, 3), NSAttributedString("...", getAttributes(0) ?: hashMapOf()))
                                 layout = BoringLayout(mutableAttributedText.copy(), textPaint, (maxWidth * UIScreen.mainScreen.scale()).toInt(), Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, metrics, false)
                             }
                         }
                         NSLineBreakMode.ByTruncatingMiddle -> {
-                            val mutableAttributedText = substring(NSRange(0, truncateTo)).mutableCopy()
                             if (mutableAttributedText.length / 2 - 3 >= 0) {
                                 mutableAttributedText.replaceCharacters(NSRange(mutableAttributedText.length / 2 - 3, 3), NSAttributedString("...", getAttributes(0) ?: hashMapOf()))
                                 layout = BoringLayout(mutableAttributedText.copy(), textPaint, (maxWidth * UIScreen.mainScreen.scale()).toInt(), Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, metrics, false)
                             }
                         }
                         NSLineBreakMode.ByTruncatingTail -> {
-                            val mutableAttributedText = substring(NSRange(0, truncateTo)).mutableCopy()
                             if (mutableAttributedText.length - 3 >= 0) {
                                 mutableAttributedText.replaceCharacters(NSRange(mutableAttributedText.length - 3, 3), NSAttributedString("...", getAttributes(0) ?: hashMapOf()))
                                 layout = BoringLayout(mutableAttributedText.copy(), textPaint, (maxWidth * UIScreen.mainScreen.scale()).toInt(), Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, metrics, false)

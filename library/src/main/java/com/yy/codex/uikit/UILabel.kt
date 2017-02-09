@@ -176,7 +176,7 @@ class UILabel : UIView {
     override fun drawRect(canvas: Canvas, rect: CGRect) {
         super.drawRect(canvas, rect)
         attributedText?.let {
-            val contentWidth = if (maxWidth >= 0) maxWidth else canvas.width.toDouble() / UIScreen.mainScreen.scale()
+            val contentWidth = if (maxWidth > 0) maxWidth else (canvas.width.toDouble() / UIScreen.mainScreen.scale())
             it.requestLayout(contentWidth, numberOfLines, linebreakMode).draw(canvas)
         }
     }
