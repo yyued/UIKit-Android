@@ -4,14 +4,24 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="#ffffff">
-    <com.yy.codex.uikit.UITextView
+    <!--<com.yy.codex.uikit.UITextView-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:id="@+id/roundView"-->
+        <!--app:constraint.enabled="true"-->
+        <!--app:constraint.centerHorizontally="true"-->
+        <!--app:constraint.centerVertically="true"-->
+        <!--app:constraint.width="200"-->
+        <!--app:constraint.height="200">-->
+    <!--</com.yy.codex.uikit.UITextView>-->
+    <com.yy.codex.uikit.UILabel
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/roundView"
+        app:label.text="Hello, World!"
         app:constraint.enabled="true"
         app:constraint.centerHorizontally="true"
         app:constraint.centerVertically="true"
-        app:constraint.width="200"
-        app:constraint.height="200">
-    </com.yy.codex.uikit.UITextView>
+        app:view.maxWidth="100"
+        app:label.numberOfLines="1" app:label.linebreakMode="ByTruncatingTail">
+    </com.yy.codex.uikit.UILabel>
 </com.yy.codex.uikit.UIView>

@@ -82,7 +82,7 @@ internal fun UITextField.resetCharPositions() {
     label.attributedText?.let {
         charPositions = (0..it.length)
                 .map { i -> it.substring(NSRange(0, i)) }
-                .map { it.measure(context, 999999.0) }
+                .map { it.measure(999999.0) }
                 .map { it.width.toInt() }
     }
 }

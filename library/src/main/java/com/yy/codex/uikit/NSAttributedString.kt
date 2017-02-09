@@ -1,10 +1,12 @@
 package com.yy.codex.uikit
 
 import android.content.Context
+import android.graphics.Canvas
 import android.graphics.Color
 import android.os.Build
 import android.text.*
 import android.text.style.*
+import com.yy.codex.foundation.NSLog
 import java.util.*
 
 /**
@@ -13,26 +15,77 @@ import java.util.*
 
 open class NSAttributedString : SpannableStringBuilder {
 
+    protected var boringLayoutCache: HashMap<Int, Layout> = hashMapOf()
+    protected var layoutCache: HashMap<Int, Layout> = hashMapOf()
+
     constructor(text: String) : super(text) {
         this.reset(HashMap<String, Any>(), NSRange(0, text.length))
     }
-
     constructor(text: String, attributes: HashMap<String, Any>) : super(text) {
         this.reset(attributes, NSRange(0, text.length))
     }
+    constructor(attributedString: NSAttributedString) : super(attributedString)
+    constructor(spannableString: SpannedString) : super(spannableString)
 
-    constructor(attributedString: NSAttributedString) : super(attributedString) {}
-
-    constructor(spannableString: SpannedString) : super(spannableString) {}
-
-    fun measure(context: Context, maxWidth: Double): CGSize {
-        if (measureLabel == null) {
-            measureLabel = UILabel(context)
+    open fun requestLayout(maxWidth: Double, numberOfLines: Int = 0, lineBreakMode: NSLineBreakMode = NSLineBreakMode.ByTruncatingTail): Layout {
+        textPaint.isAntiAlias = true
+        if (numberOfLines == 1) {
+            boringLayoutCache[maxWidth.toInt()]?.let {
+                return it
+            }
+            val metrics = BoringLayout.isBoring(this, textPaint)
+            var layout = BoringLayout(this, textPaint, (maxWidth * UIScreen.mainScreen.scale()).toInt(), Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, metrics, false)
+            if (metrics.width > (maxWidth * UIScreen.mainScreen.scale()).toInt()) {
+                val truncateTo = layout.getOffsetForHorizontal(0, (maxWidth * UIScreen.mainScreen.scale()).toFloat())
+                if (truncateTo < this.length) {
+                    val mutableAttributedText = substring(NSRange(0, truncateTo)).mutableCopy()
+                    layout = BoringLayout(mutableAttributedText.copy(), textPaint, (maxWidth * UIScreen.mainScreen.scale()).toInt(), Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, metrics, false)
+                    when (lineBreakMode) {
+                        NSLineBreakMode.ByTruncatingHead -> {
+                            val mutableAttributedText = substring(NSRange(0, truncateTo)).mutableCopy()
+                            if (3 < mutableAttributedText.length) {
+                                mutableAttributedText.replaceCharacters(NSRange(0, 3), NSAttributedString("...", getAttributes(0) ?: hashMapOf()))
+                                layout = BoringLayout(mutableAttributedText.copy(), textPaint, (maxWidth * UIScreen.mainScreen.scale()).toInt(), Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, metrics, false)
+                            }
+                        }
+                        NSLineBreakMode.ByTruncatingMiddle -> {
+                            val mutableAttributedText = substring(NSRange(0, truncateTo)).mutableCopy()
+                            if (mutableAttributedText.length / 2 - 3 >= 0) {
+                                mutableAttributedText.replaceCharacters(NSRange(mutableAttributedText.length / 2 - 3, 3), NSAttributedString("...", getAttributes(0) ?: hashMapOf()))
+                                layout = BoringLayout(mutableAttributedText.copy(), textPaint, (maxWidth * UIScreen.mainScreen.scale()).toInt(), Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, metrics, false)
+                            }
+                        }
+                        NSLineBreakMode.ByTruncatingTail -> {
+                            val mutableAttributedText = substring(NSRange(0, truncateTo)).mutableCopy()
+                            if (mutableAttributedText.length - 3 >= 0) {
+                                mutableAttributedText.replaceCharacters(NSRange(mutableAttributedText.length - 3, 3), NSAttributedString("...", getAttributes(0) ?: hashMapOf()))
+                                layout = BoringLayout(mutableAttributedText.copy(), textPaint, (maxWidth * UIScreen.mainScreen.scale()).toInt(), Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, metrics, false)
+                            }
+                        }
+                    }
+                }
+            }
+            boringLayoutCache.put(maxWidth.toInt(), layout)
+            return layout
         }
-        measureLabel?.attributedText = this
-        measureLabel?.maxWidth = maxWidth
-        measureLabel?.numberOfLines = 0
-        return measureLabel?.intrinsicContentSize() ?: CGSize(0.0, 0.0)
+        else {
+            layoutCache[maxWidth.toInt()]?.let {
+                return it
+            }
+            val layout = StaticLayout(this, textPaint, (maxWidth * UIScreen.mainScreen.scale()).toInt(), Layout.Alignment.ALIGN_CENTER, 1.0f, 0.0f, false)
+            layoutCache.put(maxWidth.toInt(), layout)
+            return layout
+        }
+    }
+
+    fun prepare(maxWidth: Double, numberOfLines: Int = 0, lineBreakMode: NSLineBreakMode = NSLineBreakMode.ByTruncatingTail) {
+        requestLayout(maxWidth, numberOfLines, lineBreakMode).draw(Canvas())
+    }
+
+    fun measure(maxWidth: Double, numberOfLines: Int = 0, lineBreakMode: NSLineBreakMode = NSLineBreakMode.ByTruncatingTail): CGSize {
+        val layout = requestLayout(if (maxWidth <= 0.0) 999999.0 else maxWidth, numberOfLines, lineBreakMode)
+        val maxRectWidth = (0 until layout.lineCount).map { layout.getLineWidth(it).toDouble() }.max() ?: 0.0
+        return CGSize(maxRectWidth / UIScreen.mainScreen.scale(), layout.height.toDouble() / UIScreen.mainScreen.scale())
     }
 
     fun mutableCopy(): NSMutableAttributedString {
@@ -75,10 +128,11 @@ open class NSAttributedString : SpannableStringBuilder {
         if (attrs[NSFontAttributeName] != null && attrs[NSFontAttributeName] is UIFont) {
             val font = attrs[NSFontAttributeName] as UIFont
             setSpan(TypefaceSpan(font.fontFamily), range.location, range.location + range.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            setSpan(AbsoluteSizeSpan(font.fontSize.toInt(), true), range.location, range.location + range.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            setSpan(AbsoluteSizeSpan((font.fontSize * UIScreen.mainScreen.scale()).toInt(), true), range.location, range.location + range.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             font.fontFamily?.let {
                 if (it.equals("SystemBold", ignoreCase = true)) {
                     setSpan(NSBoldSpan(), range.location, range.location + range.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    textPaint.isFakeBoldText = true
                 }
             }
         }
@@ -128,7 +182,7 @@ open class NSAttributedString : SpannableStringBuilder {
     }
 
     companion object {
-        private var measureLabel: UILabel? = null
+        internal val textPaint: TextPaint = TextPaint()
         var NSFontAttributeName = "NSFontAttributeName" // NSFont, default System 17
         var NSParagraphStyleAttributeName = "NSParagraphStyleAttributeName" // NSParagraphStyle, default nil
         var NSForegroundColorAttributeName = "NSForegroundColorAttributeName" // int, default Color.BLACK

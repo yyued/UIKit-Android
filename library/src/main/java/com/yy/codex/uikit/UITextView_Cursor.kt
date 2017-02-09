@@ -67,15 +67,15 @@ internal fun UITextView.resetCharPositions() {
                 continue
             }
             val lineStr = it.substring(NSRange(0, index))
-            val lineSize = lineStr.measure(context, maxWidth)
+            val lineSize = lineStr.measure(maxWidth)
             var letterStr = it.substring(NSRange(currentLineStartIndex, index - currentLineStartIndex))
-            var letterSize = letterStr.measure(context, maxWidth)
+            var letterSize = letterStr.measure(maxWidth)
             if (lineSize.height > lastHeight) {
                 currentLineStartIndex = index - 1
                 currentLineHeight = lineSize.height - lastHeight
                 lastHeight = lineSize.height
                 letterStr = it.substring(NSRange(currentLineStartIndex, index - currentLineStartIndex))
-                letterSize = letterStr.measure(context, maxWidth)
+                letterSize = letterStr.measure(maxWidth)
             }
             mutablePositions.add(CGRect(letterSize.width, lastHeight - currentLineHeight, 0.0, currentLineHeight))
         }
