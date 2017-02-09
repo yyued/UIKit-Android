@@ -274,7 +274,7 @@ class UITextField : UIControl, UITextInput.Delegate, UITextInputTraits {
     lateinit internal var input: UITextInput
     lateinit internal var wrapper: UIView
     lateinit internal var label: UILabel
-    internal var charPositions: List<Int> = listOf()
+//    internal var charPositions: List<Int> = listOf()
 
     /* Cursor Private Props */
     lateinit internal var cursorView: UIView

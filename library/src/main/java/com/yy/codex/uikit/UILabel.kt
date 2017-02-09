@@ -3,6 +3,7 @@ package com.yy.codex.uikit
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.Rect
 import android.os.Build
 import android.support.annotation.RequiresApi
 import android.text.Layout
@@ -188,6 +189,53 @@ class UILabel : UIView {
             return it.measure(maxWidth, numberOfLines, linebreakMode)
         }
         return CGSize(0.0, 0.0)
+    }
+
+    /* Text Position */
+
+    fun textPosition(inPoint: CGPoint): Int? {
+        val lastLayout = attributedText?.requestLayout(maxWidth, numberOfLines, linebreakMode)
+        lastLayout?.let {
+            val line = it.getLineForVertical((inPoint.y * UIScreen.mainScreen.scale()).toInt())
+            if (line < it.lineCount) {
+                return it.getOffsetForHorizontal(line, (inPoint.x * UIScreen.mainScreen.scale()).toFloat())
+            }
+        }
+        return null
+    }
+
+    fun textRect(letterIndex: Int): CGRect? {
+        val lastLayout = attributedText?.requestLayout(maxWidth, numberOfLines, linebreakMode)
+        lastLayout?.let {
+            if (letterIndex <= 0) {
+                return CGRect(0.0, 0.0, 0.0, 0.0)
+            }
+            else if (letterIndex >= it.text.length) {
+                return null
+            }
+            val lineIndex = it.getLineForOffset(letterIndex)
+            val top = it.getLineTop(lineIndex) / UIScreen.mainScreen.scale()
+            val left = it.getPrimaryHorizontal(letterIndex) / UIScreen.mainScreen.scale()
+            val bottom = it.getLineBottom(lineIndex) / UIScreen.mainScreen.scale()
+            var right = if (letterIndex + 1 < it.text.length) it.getSecondaryHorizontal(letterIndex + 1) / UIScreen.mainScreen.scale() else it.getLineWidth(lineIndex) / UIScreen.mainScreen.scale()
+            if (right < left) {
+                right = it.getLineWidth(lineIndex) / UIScreen.mainScreen.scale()
+            }
+            return CGRect(left, top, (right - left), (bottom - top))
+        }
+        return null
+    }
+
+    fun lineBounds(line: Int): CGRect? {
+        val lastLayout = attributedText?.requestLayout(maxWidth, numberOfLines, linebreakMode)
+        lastLayout?.let {
+            val top = it.getLineTop(line) / UIScreen.mainScreen.scale()
+            val left = it.getLineLeft(line) / UIScreen.mainScreen.scale()
+            val bottom = it.getLineBottom(line) / UIScreen.mainScreen.scale()
+            val right = left + it.getLineWidth(line) / UIScreen.mainScreen.scale()
+            return CGRect(left, top, (right - left), (bottom - top))
+        }
+        return CGRect(0.0, 0.0, 0.0, 0.0)
     }
 
 }

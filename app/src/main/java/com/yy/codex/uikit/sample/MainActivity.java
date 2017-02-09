@@ -124,10 +124,12 @@ class TestTextView extends UIView {
         textPaint.setColor(Color.BLACK);
         textPaint.setAntiAlias(true);
         textPaint.setTextSize(30.0f);
-        BoringLayout.Metrics metrics = BoringLayout.isBoring("123123123123123123123123123", textPaint);
-//        metrics.width = 200;
-        BoringLayout staticLayout = new BoringLayout("123123123123123123123123123", textPaint, 200, Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, metrics, false, TextUtils.TruncateAt.END, 0);
+        StaticLayout staticLayout = new StaticLayout("123123123123123123123123123", textPaint, 200, Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
         staticLayout.draw(canvas);
+        int lineNumber = staticLayout.getLineForOffset(1);
+        float ss = staticLayout.getPrimaryHorizontal(1);
+        float sss =staticLayout.getSecondaryHorizontal(1);
+        NSLog.INSTANCE.log(ss);
     }
 
 }
@@ -149,10 +151,10 @@ class TestViewController extends UIViewController {
         setTitle("Test");
         getNavigationItem().setRightBarButtonItem(new UIBarButtonItem("Next", this, "handleNextButtonTapped"));
 
-//        TestTextView testTextView = new TestTextView(getContext());
-//        testTextView.setFrame(new CGRect(0, 30, 300, 100));
-//        testTextView.setBackgroundColor(new UIColor(0xe2/255.0, 0xe2/255.0, 0xe2/255.0, 1.0));
-//        getView().addSubview(testTextView);
+        TestTextView testTextView = new TestTextView(getContext());
+        testTextView.setFrame(new CGRect(0, 30, 300, 100));
+        testTextView.setBackgroundColor(new UIColor(0xe2/255.0, 0xe2/255.0, 0xe2/255.0, 1.0));
+        getView().addSubview(testTextView);
 
 //        TextView textView = new TextView(getContext());
 //        textView.setMaxWidth((int)(200 * UIScreen.Companion.getMainScreen().scale()));

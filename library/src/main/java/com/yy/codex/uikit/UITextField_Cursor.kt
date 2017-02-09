@@ -79,66 +79,17 @@ internal fun UITextField.removeCursorAnimation() {
 }
 
 internal fun UITextField.resetCharPositions() {
-    label.attributedText?.let {
-        charPositions = (0..it.length)
-                .map { i -> it.substring(NSRange(0, i)) }
-                .map { it.measure(999999.0) }
-                .map { it.width.toInt() }
-    }
+//    label.attributedText?.let {
+//        charPositions = (0..it.length)
+//                .map { i -> it.substring(NSRange(0, i)) }
+//                .map { it.measure(999999.0) }
+//                .map { it.width.toInt() }
+//    }
 }
 
 private fun UITextField.moveCursor(x: Double) {
-    if (charPositions.count() >= 2) {
-        var left = 0
-        var right = charPositions.count() - 1
-        var target = 0
-        while (true) {
-            if (x > charPositions[left] && x < charPositions[right]) {
-                if (right - left <= 1) {
-                    val midValue = (charPositions[left] + charPositions[right]) / 2.0
-                    if (x > midValue) {
-                        target = right
-                    }
-                    else {
-                        target = left
-                    }
-                    break
-                }
-                val mid = (left + right) / 2
-                if (x > charPositions[mid]) {
-                    left = mid
-                }
-                else if (x < charPositions[mid]) {
-                    right = mid
-                }
-                else {
-                    target = mid
-                    break
-                }
-            }
-            else if (x < charPositions[left]) {
-                target = left
-                break
-            }
-            else if (x > charPositions[right]) {
-                target = right
-                break
-            }
-        }
-        input.editor?.setSelection(target)
-        resetCursorLayout()
-    }
-    else if (charPositions.count() == 1) {
-        if (x > charPositions[0]) {
-            input.editor?.setSelection(1)
-        }
-        else {
-            input.editor?.setSelection(0)
-        }
-        resetCursorLayout()
-    }
-    else if (charPositions.count() == 0) {
-        input.editor?.setSelection(0)
+    label.textPosition(CGPoint(x, 0.0))?.let {
+        input.editor?.setSelection(it)
         resetCursorLayout()
     }
 }
