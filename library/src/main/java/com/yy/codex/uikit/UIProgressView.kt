@@ -1,11 +1,11 @@
 package com.yy.codex.uikit
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.os.Build
 import android.support.annotation.RequiresApi
 import android.util.AttributeSet
 import android.view.View
+import com.yy.codex.foundation.lets
 
 /**
  * Created by adi on 17/2/6.
@@ -13,7 +13,7 @@ import android.view.View
 
 class UIProgressView : UIControl {
 
-    /* UIProgressView initialize */
+    /* initialize */
 
     constructor(context: Context, view: View) : super(context, view) {}
 
@@ -31,7 +31,6 @@ class UIProgressView : UIControl {
         super.init()
 
         trackColor = UIColor(0xb7 / 255.0, 0xb7 / 255.0, 0xb7 / 255.0, 1.0)
-        progressColor = UIColor(0x10 / 255.0, 0x6a / 255.0, 1.0, 1.0)
 
         trackView = UIView(context)
         trackView?.let {
@@ -44,13 +43,13 @@ class UIProgressView : UIControl {
         progressView = UIView(context)
         progressView?.let {
             it.wantsLayer = true
-            it.layer.backgroundColor = progressColor
+            it.layer.backgroundColor = if (tintColor != null) tintColor!! else UIColor(0x10 / 255.0, 0x6a / 255.0, 1.0, 1.0)
             it.layer.cornerRadius = 1.0
             addSubview(it)
         }
     }
 
-    /* UIProgressView UI Details & Rendering */
+    /* UI Details & Rendering */
 
     private var progressView: UIView? = null
 
@@ -58,7 +57,10 @@ class UIProgressView : UIControl {
 
     var value: Double = 0.5
         set(value) {
-            if (value < 0.0){
+            if (field == value){
+                return
+            }
+            else if (value < 0.0){
                 field = 0.0
             }
             else if (value > 1.0){
@@ -67,18 +69,9 @@ class UIProgressView : UIControl {
             else {
                 field = value
             }
+            onEvent(Event.ValueChanged)
             setValueAnimated(value)
         }
-
-    var progressColor: UIColor = UIColor(0x10 / 255.0, 0x6a / 255.0, 1.0, 1.0)
-        set(value) {
-            field = value
-            progressView?.let {
-                it.layer.backgroundColor = value
-            }
-        }
-
-    var progressImage: Bitmap? = null // @Td
 
     var trackColor: UIColor = UIColor(0xb7 / 255.0, 0xb7 / 255.0, 0xb7 / 255.0, 1.0)
         set(value) {
@@ -87,8 +80,6 @@ class UIProgressView : UIControl {
                 it.layer.backgroundColor = value
             }
         }
-
-    var trackImage: Bitmap? = null // @Td
 
     private var currentAnimation: UIViewAnimation? = null
 
@@ -101,11 +92,18 @@ class UIProgressView : UIControl {
         }
         progressView?.let {
             it.frame = CGRect(0.0, 15.0, frameW * value, 2.0)
-            it.layer.backgroundColor = progressColor
+            it.layer.backgroundColor = if (tintColor != null) tintColor!! else UIColor(0x10 / 255.0, 0x6a / 255.0, 1.0, 1.0)
         }
     }
 
-    /* UIProgressView Support */
+    override fun tintColorDidChanged() {
+        super.tintColorDidChanged()
+        lets(progressView, tintColor, { progressView, tintColor ->
+            progressView.layer.backgroundColor = tintColor
+        })
+    }
+
+    /* Support */
 
     private fun setValueAnimated(value: Double){
         cancelAnimation()

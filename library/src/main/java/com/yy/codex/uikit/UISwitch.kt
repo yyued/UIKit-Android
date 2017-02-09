@@ -125,8 +125,11 @@ class UISwitch : UIControl {
     /* UISwitch exports methods */
 
     fun setOnAnimated(isOn: Boolean) {
-        this.mOn = isOn
         cancelAnimation()
+        if (this.mOn != isOn){
+            this.mOn = isOn
+            onEvent(Event.ValueChanged)
+        }
         mCurrentAnimation = UIViewAnimator.spring(Runnable {
             if (mOn) {
                 mOffBackgroundView?.let {
@@ -161,6 +164,7 @@ class UISwitch : UIControl {
             return
         }
         this.mOn = isOn
+        onEvent(Event.ValueChanged)
         if (isOn) {
             mOffBackgroundView?.let {
                 it.alpha = 0.0f
@@ -188,20 +192,40 @@ class UISwitch : UIControl {
         }
     }
 
-    fun setOffTraceColor(mOffTraceColor: UIColor) {
-        this.mOffTrackColor = mOffTraceColor
+    fun isOn(): Boolean{
+        return this.mOn
+    }
+
+    fun setOffTrackColor(mOffTrackColor: UIColor) {
+        this.mOffTrackColor = mOffTrackColor
+        mOffBackgroundView?.let {
+            it.layer.backgroundColor = mOffTrackColor
+        }
     }
 
     fun setOffThumbColor(mOffThumbColor: UIColor) {
         this.mOffThumbColor = mOffThumbColor
+        mHandleView?.let {
+            if (!mOn){
+                it.layer.backgroundColor = mOffThumbColor
+            }
+        }
     }
 
     fun setOnThumbColor(mOnThumbColor: UIColor) {
         this.mOnThumbColor = mOnThumbColor
+        mHandleView?.let {
+            if (mOn){
+                it.layer.backgroundColor = mOnThumbColor
+            }
+        }
     }
 
-    fun setOnTraceColor(mOnTraceColor: UIColor) {
-        this.mOnTrackColor = mOnTraceColor
+    fun setOnTrackColor(mOnTrackColor: UIColor) {
+        this.mOnTrackColor = mOnTrackColor
+        mOnBackgroundView?.let {
+            it.layer.backgroundColor = mOnTrackColor
+        }
     }
 
     /* UISwitch supports methods */
