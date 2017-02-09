@@ -109,38 +109,38 @@ class UILabel : UIView {
     /* Font */
 
     var font = UIFont(17f)
-        set(font) {
-            field = font
+        set(value) {
+            field = value
             resetAttributedText()
         }
 
     /* TextColor */
 
     var textColor = UIColor.blackColor
-        set(textColor) {
-            field = textColor
+        set(value) {
+            field = value
             resetAttributedText()
         }
 
     /* Number of lines */
 
-    var numberOfLines = 1
+    var numberOfLines: Int = 1
         set(value) {
-            field = numberOfLines
+            field = value
             resetAttributedText()
         }
 
     /* Line-Break Mode */
 
     var linebreakMode = NSLineBreakMode.ByWordWrapping
-        set(linebreakMode) {
-            field = linebreakMode
+        set(value) {
+            field = value
             resetAttributedText()
         }
 
     var alignment: Layout.Alignment = Layout.Alignment.ALIGN_NORMAL
-        set(alignment) {
-            field = alignment
+        set(value) {
+            field = value
             resetAttributedText()
         }
 
@@ -166,8 +166,8 @@ class UILabel : UIView {
     }
 
     var attributedText: NSAttributedString? = null
-        set(attributedText) {
-            field = attributedText
+        set(value) {
+            field = value
             invalidate()
             constraint?.setNeedsLayout()
             superview?.layoutIfNeeded()
@@ -176,7 +176,8 @@ class UILabel : UIView {
     override fun drawRect(canvas: Canvas, rect: CGRect) {
         super.drawRect(canvas, rect)
         attributedText?.let {
-            it.requestLayout(canvas.width.toDouble() / UIScreen.mainScreen.scale(), numberOfLines, linebreakMode).draw(canvas)
+            val contentWidth = if (maxWidth >= 0) maxWidth else canvas.width.toDouble() / UIScreen.mainScreen.scale()
+            it.requestLayout(contentWidth, numberOfLines, linebreakMode).draw(canvas)
         }
     }
 
@@ -184,7 +185,7 @@ class UILabel : UIView {
 
     override fun intrinsicContentSize(): CGSize {
         attributedText?.let {
-            return it.measure(maxWidth, numberOfLines)
+            return it.measure(maxWidth, numberOfLines, linebreakMode)
         }
         return CGSize(0.0, 0.0)
     }

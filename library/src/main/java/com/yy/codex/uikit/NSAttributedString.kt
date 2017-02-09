@@ -72,7 +72,34 @@ open class NSAttributedString : SpannableStringBuilder {
             layoutCache[maxWidth.toInt()]?.let {
                 return it
             }
-            val layout = StaticLayout(this, textPaint, (maxWidth * UIScreen.mainScreen.scale()).toInt(), Layout.Alignment.ALIGN_CENTER, 1.0f, 0.0f, false)
+            var layout = StaticLayout(this, textPaint, (maxWidth * UIScreen.mainScreen.scale()).toInt(), Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, true)
+            if (layout.lineCount > numberOfLines && numberOfLines > 0) {
+                val truncateTo = layout.getOffsetForHorizontal(numberOfLines, 0.0f)
+                if (truncateTo < this.length) {
+                    val mutableAttributedText = substring(NSRange(0, truncateTo)).mutableCopy()
+                    layout = StaticLayout(mutableAttributedText.copy(), textPaint, (maxWidth * UIScreen.mainScreen.scale()).toInt(), Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false)
+                    when (lineBreakMode) {
+                        NSLineBreakMode.ByTruncatingHead -> {
+                            if (3 < mutableAttributedText.length) {
+                                mutableAttributedText.replaceCharacters(NSRange(0, 3), NSAttributedString("...", getAttributes(0) ?: hashMapOf()))
+                                layout = StaticLayout(mutableAttributedText.copy(), textPaint, (maxWidth * UIScreen.mainScreen.scale()).toInt(), Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false)
+                            }
+                        }
+                        NSLineBreakMode.ByTruncatingMiddle -> {
+                            if (mutableAttributedText.length / 2 - 3 >= 0) {
+                                mutableAttributedText.replaceCharacters(NSRange(mutableAttributedText.length / 2 - 3, 3), NSAttributedString("...", getAttributes(0) ?: hashMapOf()))
+                                layout = StaticLayout(mutableAttributedText.copy(), textPaint, (maxWidth * UIScreen.mainScreen.scale()).toInt(), Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false)
+                            }
+                        }
+                        NSLineBreakMode.ByTruncatingTail -> {
+                            if (mutableAttributedText.length - 3 >= 0) {
+                                mutableAttributedText.replaceCharacters(NSRange(mutableAttributedText.length - 3, 3), NSAttributedString("...", getAttributes(0) ?: hashMapOf()))
+                                layout = StaticLayout(mutableAttributedText.copy(), textPaint, (maxWidth * UIScreen.mainScreen.scale()).toInt(), Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false)
+                            }
+                        }
+                    }
+                }
+            }
             layoutCache.put(maxWidth.toInt(), layout)
             return layout
         }
