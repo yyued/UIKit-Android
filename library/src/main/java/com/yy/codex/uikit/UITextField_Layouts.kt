@@ -145,7 +145,7 @@ internal fun UITextField.resetCursorLayout() {
     cursorView.frame = CGRect(0.0, 0.0, 2.0, label.frame.height)
     label.attributedText?.let {
         val substring = it.substring(NSRange(0, input.cursorPosition))
-        val cursorPosition = substring.measure(context, 999999.0)
+        val cursorPosition = substring.measure(999999.0)
         cursorView.frame = CGRect(Math.max(0.0, cursorPosition.width - 1.0), 0.0, 2.0, label.frame.height)
     }
 }

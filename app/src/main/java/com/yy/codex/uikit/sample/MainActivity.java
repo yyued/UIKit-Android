@@ -1,10 +1,24 @@
 package com.yy.codex.uikit.sample;
 
 import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Path;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
+import android.text.BoringLayout;
+import android.text.DynamicLayout;
 import android.text.Layout;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.StaticLayout;
+import android.text.TextPaint;
+import android.text.TextUtils;
+import android.text.style.AbsoluteSizeSpan;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.TypefaceSpan;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -30,6 +44,7 @@ import com.yy.codex.uikit.UIMenuItem;
 import com.yy.codex.uikit.UINavigationController;
 import com.yy.codex.uikit.UINavigationController_ActivityBase;
 import com.yy.codex.uikit.UIReturnKeyType;
+import com.yy.codex.uikit.UIScreen;
 import com.yy.codex.uikit.UITabBarActivity;
 import com.yy.codex.uikit.UITabBarController;
 import com.yy.codex.uikit.UITabBarItem;
@@ -80,6 +95,43 @@ public class MainActivity extends UITabBarActivity {
 
 }
 
+class TestTextView extends UIView {
+
+    public TestTextView(@NotNull Context context, @NotNull View view) {
+        super(context, view);
+    }
+
+    public TestTextView(@NotNull Context context) {
+        super(context);
+    }
+
+    public TestTextView(@NotNull Context context, @NotNull AttributeSet attrs) {
+        super(context, attrs);
+    }
+
+    public TestTextView(@NotNull Context context, @NotNull AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+    }
+
+    public TestTextView(@NotNull Context context, @NotNull AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        super(context, attrs, defStyleAttr, defStyleRes);
+    }
+
+    @Override
+    protected void onDraw(@NotNull Canvas canvas) {
+        super.onDraw(canvas);
+        TextPaint textPaint = new TextPaint();
+        textPaint.setColor(Color.BLACK);
+        textPaint.setAntiAlias(true);
+        textPaint.setTextSize(30.0f);
+        BoringLayout.Metrics metrics = BoringLayout.isBoring("123123123123123123123123123", textPaint);
+//        metrics.width = 200;
+        BoringLayout staticLayout = new BoringLayout("123123123123123123123123123", textPaint, 200, Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, metrics, false, TextUtils.TruncateAt.END, 0);
+        staticLayout.draw(canvas);
+    }
+
+}
+
 class TestViewController extends UIViewController {
 
     public TestViewController(Context context) {
@@ -96,6 +148,26 @@ class TestViewController extends UIViewController {
         super.viewDidLoad();
         setTitle("Test");
         getNavigationItem().setRightBarButtonItem(new UIBarButtonItem("Next", this, "handleNextButtonTapped"));
+
+//        TestTextView testTextView = new TestTextView(getContext());
+//        testTextView.setFrame(new CGRect(0, 30, 300, 100));
+//        testTextView.setBackgroundColor(new UIColor(0xe2/255.0, 0xe2/255.0, 0xe2/255.0, 1.0));
+//        getView().addSubview(testTextView);
+
+//        TextView textView = new TextView(getContext());
+//        textView.setMaxWidth((int)(200 * UIScreen.Companion.getMainScreen().scale()));
+//        textView.setMaxLines(999999);
+//        textView.setText("hao123是汇集全网优质网址及资源的中文上网导航。及时收录影视、音乐、小说、游戏等分类的网址和内容,让您的网络生活更简单精彩。上网,从hao123开始。");
+//
+//        Layout layout = textView.getLayout();
+//        layout.getPaint().setColor(0xffff0000);
+//
+//
+//
+//        UIView wrapper = new UIView(getContext(), textView);
+//        wrapper.setBackgroundColor(new UIColor(0xe2/255.0, 0xe2/255.0, 0xe2/255.0, 1.0));
+//        wrapper.setFrame(new CGRect(0, 0, 200, 200));
+//        getView().addView(wrapper);
 
 //        UITextField textField = (UITextField) getView().findViewById(R.id.roundView);
 //        textField.setReturnKeyType(UIReturnKeyType.Next);

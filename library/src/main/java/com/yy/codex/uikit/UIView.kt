@@ -550,7 +550,7 @@ open class UIView : FrameLayout, UIResponder {
         }
     }
 
-    fun drawRect(canvas: Canvas, rect: CGRect) {
+    open fun drawRect(canvas: Canvas, rect: CGRect) {
         if (wantsLayer) {
             layer.resetBelongings(true)
             if (this !is UIEnlargerView && layer.wantsEnlargerLayer()) {

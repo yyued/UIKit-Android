@@ -1,6 +1,7 @@
 package com.yy.codex.uikit
 
 import android.content.Context
+import android.graphics.Canvas
 import android.graphics.Color
 import android.os.Build
 import android.support.annotation.RequiresApi
@@ -21,9 +22,6 @@ import java.util.HashMap
 
 class UILabel : UIView {
 
-    var textView: TextView? = null
-        private set
-
     constructor(context: Context, view: View) : super(context, view) {}
 
     constructor(context: Context) : super(context) {}
@@ -37,9 +35,6 @@ class UILabel : UIView {
 
     init {
         userInteractionEnabled = false
-        textView = TextView(context)
-        textView?.let { it.maxLines = 1 }
-        resetTextView()
     }
 
     /* XML */
@@ -109,60 +104,43 @@ class UILabel : UIView {
         }
     }
 
-    /* Layout */
-
-    override fun layoutSubviews() {
-        super.layoutSubviews()
-        resetTextView()
-    }
-
     /* category: TextView Props */
 
     /* Font */
 
     var font = UIFont(17f)
-        set(font) {
-            field = font
+        set(value) {
+            field = value
             resetAttributedText()
         }
 
     /* TextColor */
 
     var textColor = UIColor.blackColor
-        set(textColor) {
-            field = textColor
+        set(value) {
+            field = value
             resetAttributedText()
         }
 
     /* Number of lines */
 
-    var numberOfLines = 1
-        set(numberOfLines) {
-            var numberOfLines = numberOfLines
-            field = numberOfLines
-            if (numberOfLines <= 0) {
-                numberOfLines = 99999
-            }
-            textView?.let { it.maxLines = numberOfLines }
+    var numberOfLines: Int = 1
+        set(value) {
+            field = value
+            resetAttributedText()
         }
 
     /* Line-Break Mode */
 
     var linebreakMode = NSLineBreakMode.ByWordWrapping
-        set(linebreakMode) {
-            field = linebreakMode
-            when (linebreakMode) {
-                NSLineBreakMode.ByTruncatingHead -> textView?.ellipsize = TextUtils.TruncateAt.START
-                NSLineBreakMode.ByTruncatingMiddle -> textView?.ellipsize = TextUtils.TruncateAt.MIDDLE
-                NSLineBreakMode.ByTruncatingTail -> textView?.ellipsize = TextUtils.TruncateAt.END
-                else -> textView?.ellipsize = null
-            }
+        set(value) {
+            field = value
             resetAttributedText()
         }
 
     var alignment: Layout.Alignment = Layout.Alignment.ALIGN_NORMAL
-        set(alignment) {
-            field = alignment
+        set(value) {
+            field = value
             resetAttributedText()
         }
 
@@ -188,60 +166,28 @@ class UILabel : UIView {
     }
 
     var attributedText: NSAttributedString? = null
-        get() {
-            val text = textView?.text as? SpannedString
-            if (text != null) {
-                return NSAttributedString(text)
-            }
-            return null
-        }
-        set(attributedText) {
-            field = attributedText
-            textView?.let {
-                it.text = attributedText
-                resetTextViewStyles()
-                constraint?.let(UIConstraint::setNeedsLayout)
-                superview?.let(UIView::layoutSubviews)
-            }
+        set(value) {
+            field = value
+            invalidate()
+            constraint?.setNeedsLayout()
+            superview?.layoutIfNeeded()
         }
 
-    private fun resetTextViewStyles() {
-        // TODO: 2017/1/10 not implemented.
+    override fun drawRect(canvas: Canvas, rect: CGRect) {
+        super.drawRect(canvas, rect)
+        attributedText?.let {
+            val contentWidth = if (maxWidth > 0) maxWidth else (canvas.width.toDouble() / UIScreen.mainScreen.scale())
+            it.requestLayout(contentWidth, numberOfLines, linebreakMode).draw(canvas)
+        }
     }
 
     /* category: Layouts */
 
-    override var maxWidth: Double
-        get() = super.maxWidth
-        set(maxWidth) {
-            super.maxWidth = maxWidth
-            if (maxWidth > 0.0) {
-                textView?.maxWidth = (maxWidth * UIScreen.mainScreen.scale()).toInt()
-            }
-            else {
-                textView?.maxWidth = 999999
-            }
-        }
-
     override fun intrinsicContentSize(): CGSize {
-        val textView = textView ?: return CGSize(.0, .0)
-        textView.measure(0, 0)
-        val width = textView.measuredWidth
-        val height = textView.measuredHeight
-        if (maxWidth > 0.0) {
-            textView.maxWidth = (maxWidth * UIScreen.mainScreen.scale()).toInt()
+        attributedText?.let {
+            return it.measure(maxWidth, numberOfLines, linebreakMode)
         }
-        else {
-            textView.maxWidth = 999999
-        }
-        return CGSize(Math.ceil(width / UIScreen.mainScreen.scale()), Math.ceil(height / UIScreen.mainScreen.scale()))
-    }
-
-    private fun resetTextView() {
-        textView?.let {
-            removeView(textView)
-            addView(textView, FrameLayout.LayoutParams((this.frame.size.width * UIScreen.mainScreen.scale()).toInt(), (this.frame.size.height * UIScreen.mainScreen.scale()).toInt()))
-        }
+        return CGSize(0.0, 0.0)
     }
 
 }
