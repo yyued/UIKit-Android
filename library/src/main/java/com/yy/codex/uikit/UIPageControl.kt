@@ -23,7 +23,6 @@ class UIPageControl : UIControl {
         hidesForSinglePage = true
         pageIndicatorColor = UIColor(0.5, 0.3, 1.0, 0.5)
         currentPageIndicatorColor = UIColor.whiteColor
-//        defersCurrentPageDispaly = false
 
         dotView = UIView(context)
         dotView?.let{
@@ -36,24 +35,46 @@ class UIPageControl : UIControl {
     private var dotView: UIView? = null
 
     var currentPage: Int = 0
+        set(value) {
+            if (field != value){
+                field = value
+                onEvent(Event.ValueChanged)
+                updatePagesColor()
+            }
+        }
 
     var numberOfPages: Int = 1
+        set(value) {
+            if (field != value){
+                field = value
+                updatePagesLayout()
+                updatePagesColor()
+            }
+        }
 
     var hidesForSinglePage: Boolean = true
 
     var pageIndicatorColor: UIColor = UIColor(1.0, 1.0, 1.0, 0.5)
+        set(value) {
+            if (field != value){
+                field = value
+                updatePagesColor()
+            }
+        }
 
     var currentPageIndicatorColor: UIColor = UIColor.whiteColor
-
-    var defersCurrentPageDispaly: Boolean = false
+        set(value) {
+            if (field != value){
+                field = value
+                updatePagesColor()
+            }
+        }
 
     private val dotSpacing: Double = 10.0
 
     private val dotRadius: Double = 5.0
 
-    private var forceUpdate: Boolean = true
-
-    fun updateCurrentPageDisplay() {
+    private fun updatePagesLayout(){
         if (hidesForSinglePage && numberOfPages == 1){
             dotView?.let{
                 it.hidden = true
@@ -69,12 +90,15 @@ class UIPageControl : UIControl {
                 val x = dotSpacing / 2.0 + i * (dotSpacing + dotRadius * 2)
                 val layer = CALayer(CGRect(x, 0.0, dotRadius * 2, dotRadius * 2))
                 layer.cornerRadius = dotRadius
-                layer.backgroundColor = pageIndicatorColor
                 it.layer.addSubLayer(layer)
             }
+        }
+    }
 
-            if (currentPage < it.layer.sublayers.size){
-                it.layer.sublayers[currentPage].backgroundColor = currentPageIndicatorColor
+    private fun updatePagesColor(){
+        dotView?.let {
+            it.layer.sublayers.forEachIndexed { idx, dotLayer ->
+                dotLayer.backgroundColor = if (currentPage == idx) currentPageIndicatorColor else pageIndicatorColor
             }
         }
     }

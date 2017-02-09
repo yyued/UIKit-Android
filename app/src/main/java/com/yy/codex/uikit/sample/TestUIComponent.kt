@@ -20,7 +20,9 @@ import com.yy.codex.uikit.*
 class TestUIComponent : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(TestComponent(this))
+        val TView = TestComponent(this)
+        TView.tintColor = UIColor.orangeColor
+        setContentView(TView)
     }
 }
 
@@ -43,23 +45,54 @@ internal class TestComponent : UIView {
 
         val uiSwitch = UISwitch(context)
         uiSwitch.frame = CGRect(10.0, 10.0, 52.0, 44.0)
-        //        uiSwitch.setOn(true);
+        uiSwitch.setOn(true)
+        uiSwitch.addBlock( Runnable{
+            NSLog.log(uiSwitch.isOn())
+        }, UIControl.Event.ValueChanged)
         addSubview(uiSwitch)
 
         val uiSlider = UISlider(context)
-        uiSlider.frame = CGRect(10.0, 100.0, 200.0, 42.0)
-        uiSlider.setValue(1.0)
-        uiSlider.onSlide({ value -> NSLog.warn(value) })
+        uiSlider.frame = CGRect(10.0, 60.0, 200.0, 42.0)
+        uiSlider.tintColor = UIColor.orangeColor
+        uiSlider.value = 1.0
         addSubview(uiSlider)
+        uiSlider.addBlock(Runnable {
+            NSLog.log(uiSlider.value)
+        }, UIControl.Event.ValueChanged)
 
+        val uiProgressView = UIProgressView(context)
+        uiProgressView.frame = CGRect(10.0, 100.0, 200.0, 32.0)
+        uiProgressView.tintColor = UIColor.greenColor
+        addSubview(uiProgressView)
+        uiProgressView.addBlock(Runnable {
+            NSLog.log(uiProgressView.value)
+        }, UIControl.Event.ValueChanged)
+        postDelayed({
+            uiProgressView.value = 0.8
+        }, 1000)
+
+        val uiPageControl = UIPageControl(context)
+        uiPageControl.frame = CGRect(10.0, 150.0, 100.0, 32.0)
+        uiPageControl.numberOfPages = 5
+        uiPageControl.pageIndicatorColor = UIColor.orangeColor.colorWithAlpha(0.6)
+        uiPageControl.currentPageIndicatorColor = UIColor.orangeColor
+        addSubview(uiPageControl)
+        uiPageControl.addBlock(Runnable{
+            NSLog.log(uiPageControl.currentPage)
+        }, UIControl.Event.ValueChanged)
+        postDelayed({
+            uiPageControl.currentPage = 3
+        }, 1000)
+
+        val uiLoading = UIActivityIndicator(context)
+        uiLoading.frame = CGRect(140.0, 140.0, 30.0, 30.0)
+        uiLoading.color = UIColor.orangeColor
+        // addSubview(uiLoading)
+
+        // @Td
         val uiStepper = UIStepper(context)
         uiStepper.frame = CGRect(10.0, 200.0, 100.0, 30.0)
         addSubview(uiStepper)
-
-//        val view1 = TestXView(context)
-//        view1.frame = CGRect(10.0, 200.0, 100.0, 100.0)
-//        view1.setBackgroundColor(UIColor.orangeColor);
-//        addSubview(view1)
 
         val uiSegmentedControl = UISegmentedControl(context)
 //        uiSegmentedControl.setBackgroundColor(UIColor.orangeColor)
@@ -69,7 +102,12 @@ internal class TestComponent : UIView {
 //        uiSegmentedControl.setItems(listOf())
         addSubview(uiSegmentedControl)
 
+//        val view1 = TestXView(context)
+//        view1.frame = CGRect(10.0, 200.0, 100.0, 100.0)
+//        view1.setBackgroundColor(UIColor.orangeColor);
+//        addSubview(view1)
     }
+
 }
 
 internal class TestXView : UIView {
