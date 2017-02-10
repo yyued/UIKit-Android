@@ -238,10 +238,6 @@ class UITextField : UIControl, UITextInput.Delegate, UITextInputTraits {
         }
     }
 
-    override fun keyboardPressUp(event: UIKeyEvent) {
-        super.keyboardPressUp(event)
-    }
-
     override fun textDidChanged(onDelete: Boolean) {
         resetText(onDelete)
     }

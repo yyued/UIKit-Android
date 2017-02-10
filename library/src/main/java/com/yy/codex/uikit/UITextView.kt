@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Build
 import android.support.annotation.RequiresApi
 import android.util.AttributeSet
+import android.view.KeyEvent
 import android.view.View
 
 /**
@@ -18,14 +19,20 @@ class UITextView : UIScrollView, UITextInput.Delegate {
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes) {}
 
+    private lateinit var tapGestureRecognizer: UITapGestureRecognizer
+    private lateinit var longPressGestureRecognizer: UILongPressGestureRecognizer
+
     override fun init() {
         super.init()
-        alwaysBounceVertical = true
         input = UITextInput()
         label = UILabel(context)
         label.numberOfLines = 0
         addSubview(label)
-        addGestureRecognizer(UITapGestureRecognizer(this, "becomeFirstResponder"))
+        tapGestureRecognizer = UITapGestureRecognizer(this, "onTapped:")
+        longPressGestureRecognizer = UILongPressGestureRecognizer(this, "onLongPressed:")
+        longPressGestureRecognizer.minimumPressDuration = 0.20
+        addGestureRecognizer(tapGestureRecognizer)
+        addGestureRecognizer(longPressGestureRecognizer)
         cursorView = UIView(context)
         cursorView.hidden = true
         label.addSubview(cursorView)
@@ -49,6 +56,35 @@ class UITextView : UIScrollView, UITextInput.Delegate {
         }
         super.resignFirstResponder()
         resetLayouts()
+    }
+
+    fun onLongPressed(sender: UILongPressGestureRecognizer) {
+        if (isFirstResponder()) {
+            operateCursor(sender)
+        }
+        else if (sender.state == UIGestureRecognizerState.Ended) {
+            if (UIViewHelpers.pointInside(this, sender.location(this))) {
+                becomeFirstResponder()
+                operateCursor(sender)
+            }
+        }
+    }
+
+    fun onTapped(sender: UITapGestureRecognizer) {
+        if (!isFirstResponder()) {
+            becomeFirstResponder()
+            operateCursor(sender)
+        }
+        else {
+            operateCursor(sender)
+        }
+    }
+
+    override fun keyboardPressDown(event: UIKeyEvent) {
+        super.keyboardPressDown(event)
+        if (event.keyCode == KeyEvent.KEYCODE_DEL) {
+            input.delete()
+        }
     }
 
     var contentInsets: UIEdgeInsets = UIEdgeInsets(0.0, 6.0, 0.0, 6.0)

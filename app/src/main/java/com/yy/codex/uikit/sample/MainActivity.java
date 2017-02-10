@@ -151,10 +151,10 @@ class TestViewController extends UIViewController {
         setTitle("Test");
         getNavigationItem().setRightBarButtonItem(new UIBarButtonItem("Next", this, "handleNextButtonTapped"));
 
-        TestTextView testTextView = new TestTextView(getContext());
-        testTextView.setFrame(new CGRect(0, 30, 300, 100));
-        testTextView.setBackgroundColor(new UIColor(0xe2/255.0, 0xe2/255.0, 0xe2/255.0, 1.0));
-        getView().addSubview(testTextView);
+//        TestTextView testTextView = new TestTextView(getContext());
+//        testTextView.setFrame(new CGRect(0, 30, 300, 100));
+//        testTextView.setBackgroundColor(new UIColor(0xe2/255.0, 0xe2/255.0, 0xe2/255.0, 1.0));
+//        getView().addSubview(testTextView);
 
 //        TextView textView = new TextView(getContext());
 //        textView.setMaxWidth((int)(200 * UIScreen.Companion.getMainScreen().scale()));

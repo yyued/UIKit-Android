@@ -53,3 +53,24 @@ internal fun UITextView.hideCursorView() {
 internal fun UITextView.removeCursorAnimation() {
     cursorViewAnimation?.let(UIViewAnimation::cancel)
 }
+
+internal fun UITextView.operateCursor(sender: UILongPressGestureRecognizer) {
+    if (isFirstResponder()) {
+        val location = sender.location(label)
+        moveCursor(location.setY(location.y + contentOffset.y))
+    }
+}
+
+internal fun UITextView.operateCursor(sender: UITapGestureRecognizer) {
+    if (isFirstResponder()) {
+        val location = sender.location(label)
+        moveCursor(location.setY(location.y + contentOffset.y))
+    }
+}
+
+private fun UITextView.moveCursor(pt: CGPoint) {
+    label.textPosition(CGPoint(pt.x, pt.y))?.let {
+        input.editor?.setSelection(it)
+        resetCursorLayout()
+    }
+}
