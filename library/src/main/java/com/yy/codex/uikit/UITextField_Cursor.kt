@@ -78,15 +78,6 @@ internal fun UITextField.removeCursorAnimation() {
     cursorViewAnimation?.let(UIViewAnimation::cancel)
 }
 
-internal fun UITextField.resetCharPositions() {
-//    label.attributedText?.let {
-//        charPositions = (0..it.length)
-//                .map { i -> it.substring(NSRange(0, i)) }
-//                .map { it.measure(999999.0) }
-//                .map { it.width.toInt() }
-//    }
-}
-
 private fun UITextField.moveCursor(x: Double) {
     label.textPosition(CGPoint(x, 0.0))?.let {
         input.editor?.setSelection(it)

@@ -99,7 +99,6 @@ class UITextView : UIScrollView, UITextInput.Delegate {
     /* Content Props */
     lateinit internal var input: UITextInput
     lateinit internal var label: UILabel
-    internal var charPositions: List<CGRect> = listOf()
 
     /* Cursor Private Props */
     lateinit internal var cursorView: UIView

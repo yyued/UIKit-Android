@@ -17,13 +17,7 @@ internal fun UITextView.resetLayouts() {
 
 internal fun UITextView.resetCursorLayout() {
     cursorView.frame = CGRect(0.0, 0.0, 2.0, 20.0)
-    label.attributedText?.let {
-        if (input.cursorPosition < charPositions.count()) {
-            val cursorPosition = charPositions[input.cursorPosition]
-            cursorView.frame = CGRect(cursorPosition.x, cursorPosition.y, 2.0, cursorPosition.height - 2.0)
-        }
-        else {
-            cursorView.frame = CGRect(0.0, 0.0, 2.0, 20.0)
-        }
+    label.textRect(input.cursorPosition - 1)?.let {
+        cursorView.frame = CGRect(it.x + it.width, it.y, 2.0, it.height)
     }
 }
