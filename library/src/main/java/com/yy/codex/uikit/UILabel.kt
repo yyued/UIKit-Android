@@ -185,6 +185,9 @@ class UILabel : UIView {
     /* category: Layouts */
 
     override fun intrinsicContentSize(): CGSize {
+        if (attributedText == null || attributedText?.length == 0) {
+            return CGSize(0.0, font.lineHeight)
+        }
         attributedText?.let {
             return it.measure(maxWidth, numberOfLines, linebreakMode)
         }
@@ -207,8 +210,8 @@ class UILabel : UIView {
     fun textRect(letterIndex: Int): CGRect? {
         val lastLayout = attributedText?.requestLayout(maxWidth, numberOfLines, linebreakMode)
         lastLayout?.let {
-            if (letterIndex <= 0) {
-                return CGRect(0.0, 0.0, 0.0, 0.0)
+            if (letterIndex < 0) {
+                return CGRect(0.0, 0.0, 0.0, font.lineHeight)
             }
             else if (letterIndex >= it.text.length) {
                 return null
