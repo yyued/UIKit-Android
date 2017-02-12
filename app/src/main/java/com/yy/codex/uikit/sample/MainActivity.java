@@ -124,10 +124,12 @@ class TestTextView extends UIView {
         textPaint.setColor(Color.BLACK);
         textPaint.setAntiAlias(true);
         textPaint.setTextSize(30.0f);
-        BoringLayout.Metrics metrics = BoringLayout.isBoring("123123123123123123123123123", textPaint);
-//        metrics.width = 200;
-        BoringLayout staticLayout = new BoringLayout("123123123123123123123123123", textPaint, 200, Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, metrics, false, TextUtils.TruncateAt.END, 0);
+        StaticLayout staticLayout = new StaticLayout("123123123123123123123123123", textPaint, 200, Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
         staticLayout.draw(canvas);
+        int lineNumber = staticLayout.getLineForOffset(1);
+        float ss = staticLayout.getPrimaryHorizontal(1);
+        float sss =staticLayout.getSecondaryHorizontal(1);
+        NSLog.INSTANCE.log(ss);
     }
 
 }

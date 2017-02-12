@@ -4,25 +4,34 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="#ffffff">
-    <!--<com.yy.codex.uikit.UITextView-->
+    <com.yy.codex.uikit.UITextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/roundView"
+        app:constraint.enabled="true"
+        app:constraint.centerHorizontally="true"
+        app:constraint.centerVertically="true"
+        app:constraint.width="200"
+        app:constraint.height="200">
+    </com.yy.codex.uikit.UITextView>
+    <!--<com.yy.codex.uikit.UILabel-->
         <!--android:layout_width="wrap_content"-->
         <!--android:layout_height="wrap_content"-->
-        <!--android:id="@+id/roundView"-->
+        <!--app:label.text="Hello, World!"-->
+        <!--app:constraint.enabled="true"-->
+        <!--app:constraint.centerHorizontally="true"-->
+        <!--app:constraint.centerVertically="true"-->
+        <!--app:view.maxWidth="100"-->
+        <!--app:label.numberOfLines="1"-->
+        <!--app:label.linebreakMode="ByTruncatingTail">-->
+    <!--</com.yy.codex.uikit.UILabel>-->
+    <!--<com.yy.codex.uikit.UITextField-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
         <!--app:constraint.enabled="true"-->
         <!--app:constraint.centerHorizontally="true"-->
         <!--app:constraint.centerVertically="true"-->
         <!--app:constraint.width="200"-->
-        <!--app:constraint.height="200">-->
-    <!--</com.yy.codex.uikit.UITextView>-->
-    <com.yy.codex.uikit.UILabel
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:label.text="hao123是汇集全网优质网址及资源的中文上网导航。及时收录影视、音乐、小说、游戏等分类的网址和内容,让您的网络生活更简单精彩。上网,从hao123开始。"
-        app:constraint.enabled="true"
-        app:constraint.centerHorizontally="true"
-        app:constraint.centerVertically="true"
-        app:view.maxWidth="200"
-        app:label.numberOfLines="2"
-        app:label.linebreakMode="ByTruncatingTail">
-    </com.yy.codex.uikit.UILabel>
+        <!--app:constraint.height="30">-->
+    <!--</com.yy.codex.uikit.UITextField>-->
 </com.yy.codex.uikit.UIView>

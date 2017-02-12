@@ -35,7 +35,8 @@ open class UIScrollView : UIView {
     /* Scrolls */
 
     private var panGestureRecognizer: UIPanGestureRecognizer? = null
-    private var contentOffset = CGPoint(0.0, 0.0)
+    var contentOffset = CGPoint(0.0, 0.0)
+        private set
     var contentSize = CGSize(0.0, 0.0)
     private var contentInset = UIEdgeInsets.zero
 
@@ -250,7 +251,7 @@ open class UIScrollView : UIView {
         }
     }
 
-    @JvmOverloads open fun setContentOffset(contentOffset: CGPoint, animated: Boolean = false) {
+    open fun setContentOffset(contentOffset: CGPoint, animated: Boolean = false) {
         val oldValue = this.contentOffset
         val self = this
         this.contentOffset = contentOffset

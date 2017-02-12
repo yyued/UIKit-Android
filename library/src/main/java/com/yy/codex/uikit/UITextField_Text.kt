@@ -12,7 +12,6 @@ internal fun UITextField.resetText(onDelete: Boolean) {
     defaultTextAttributes?.let {
         label.attributedText = NSAttributedString(text, HashMap(it))
     }
-    resetCharPositions()
     resetLayouts()
 }
 

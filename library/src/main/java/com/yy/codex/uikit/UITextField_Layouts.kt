@@ -23,7 +23,7 @@ private fun UITextField.resetNormalLayout() {
     textSize = textSize.setWidth(textSize.width + 4.0)
     val minX = -label.frame.x
     val maxX = -label.frame.x + wrapper.frame.width - 2.0
-    val mostX = (if (charPositions.size > 0) charPositions.last() else 0) + 2.0
+    val mostX = label.lineBounds(0)?.width ?: 0.0 + 2.0
     label.frame = CGRect(-computeMinimumX(minX, maxX, mostX), (wrapper.frame.height - textSize.height) / 2.0, textSize.width, textSize.height)
     resetCursorLayout()
 }
@@ -40,7 +40,7 @@ private fun UITextField.resetOppositeLayout() {
     else {
         val minX = -label.frame.x
         val maxX = -label.frame.x + wrapper.frame.width - 2.0
-        val mostX = (if (charPositions.size > 0) charPositions.last() else 0) + 2.0
+        val mostX = label.lineBounds(0)?.width ?: 0.0 + 2.0
         label.frame = CGRect(-computeMinimumX(minX, maxX, mostX), (wrapper.frame.height - textSize.height) / 2.0, textSize.width, textSize.height)
     }
     resetCursorLayout()
@@ -58,14 +58,15 @@ private fun UITextField.resetCenterLayout() {
     else {
         val minX = -label.frame.x
         val maxX = -label.frame.x + wrapper.frame.width - 2.0
-        val mostX = (if (charPositions.size > 0) charPositions.last() else 0) + 2.0
+        val mostX = label.lineBounds(0)?.width ?: 0.0 + 2.0
         label.frame = CGRect(-computeMinimumX(minX, maxX, mostX), (wrapper.frame.height - textSize.height) / 2.0, textSize.width, textSize.height)
     }
     resetCursorLayout()
 }
 
 private fun UITextField.computeMinimumX(min: Double, max: Double, most: Double): Double {
-    val target: Double = (if (input.cursorPosition < charPositions.count()) charPositions[input.cursorPosition] else 0).toDouble()
+    val textRect = label.textRect(input.cursorPosition - 1) ?: CGRect(0.0, 0.0, 0.0, 0.0)
+    val target: Double = textRect.x + textRect.width
     if (target < min) {
         return Math.max(0.0, min - 22.0)
     }

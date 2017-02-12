@@ -54,31 +54,23 @@ internal fun UITextView.removeCursorAnimation() {
     cursorViewAnimation?.let(UIViewAnimation::cancel)
 }
 
-internal fun UITextView.resetCharPositions() {
-    val maxWidth = frame.width - contentInsets.left - contentInsets.right
-    label.attributedText?.let {
-        val mutablePositions: MutableList<CGRect> = mutableListOf()
-        var lastHeight = 0.0
-        var currentLineStartIndex = 0
-        var currentLineHeight = 0.0
-        for (index in 0..it.length) {
-            if (index == 0) {
-                mutablePositions.add(CGRect(0.0, 0.0, 0.0, 0.0))
-                continue
-            }
-            val lineStr = it.substring(NSRange(0, index))
-            val lineSize = lineStr.measure(maxWidth)
-            var letterStr = it.substring(NSRange(currentLineStartIndex, index - currentLineStartIndex))
-            var letterSize = letterStr.measure(maxWidth)
-            if (lineSize.height > lastHeight) {
-                currentLineStartIndex = index - 1
-                currentLineHeight = lineSize.height - lastHeight
-                lastHeight = lineSize.height
-                letterStr = it.substring(NSRange(currentLineStartIndex, index - currentLineStartIndex))
-                letterSize = letterStr.measure(maxWidth)
-            }
-            mutablePositions.add(CGRect(letterSize.width, lastHeight - currentLineHeight, 0.0, currentLineHeight))
-        }
-        charPositions = mutablePositions.toList()
+internal fun UITextView.operateCursor(sender: UILongPressGestureRecognizer) {
+    if (isFirstResponder()) {
+        val location = sender.location(label)
+        moveCursor(location.setY(location.y + contentOffset.y))
+    }
+}
+
+internal fun UITextView.operateCursor(sender: UITapGestureRecognizer) {
+    if (isFirstResponder()) {
+        val location = sender.location(label)
+        moveCursor(location.setY(location.y + contentOffset.y))
+    }
+}
+
+private fun UITextView.moveCursor(pt: CGPoint) {
+    label.textPosition(CGPoint(pt.x, pt.y))?.let {
+        input.editor?.setSelection(it)
+        resetCursorLayout()
     }
 }
