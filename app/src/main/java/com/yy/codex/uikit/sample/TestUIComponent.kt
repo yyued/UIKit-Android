@@ -21,7 +21,6 @@ class TestUIComponent : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val TView = TestComponent(this)
-        TView.tintColor = UIColor.orangeColor
         setContentView(TView)
     }
 }
@@ -95,12 +94,14 @@ internal class TestComponent : UIView {
         addSubview(uiStepper)
 
         val uiSegmentedControl = UISegmentedControl(context)
-//        uiSegmentedControl.setBackgroundColor(UIColor.orangeColor)
-//        uiSegmentedControl.color = UIColor.greenColor
         uiSegmentedControl.frame = CGRect(10.0, 250.0, 200.0, 30.0)
-        uiSegmentedControl.setItems(listOf(UISegmentedItem("aaa"), UISegmentedItem("abc"), UISegmentedItem("ccc")))
-//        uiSegmentedControl.setItems(listOf())
+        uiSegmentedControl.tintColor = UIColor.orangeColor
+        uiSegmentedControl.setBackgroundColor(UIColor.yellowColor)
+        uiSegmentedControl.setItems(listOf(UISegmentedItem("aaa"), UISegmentedItem("abc"), UISegmentedItem("ccc", false), UISegmentedItem("ddd", true), UISegmentedItem("eee", true)))
         addSubview(uiSegmentedControl)
+        uiSegmentedControl.addBlock(Runnable {
+            NSLog.log(uiSegmentedControl.activeIndex)
+        }, UIControl.Event.ValueChanged)
 
 //        val view1 = TestXView(context)
 //        view1.frame = CGRect(10.0, 200.0, 100.0, 100.0)

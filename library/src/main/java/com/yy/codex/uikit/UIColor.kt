@@ -10,6 +10,10 @@ class UIColor(val r: Double, val g: Double, val b: Double, val a: Double) {
 
     constructor(int: Int): this(Color.red(int) / 255.0, Color.green(int) / 255.0, Color.blue(int) / 255.0, Color.alpha(int) / 255.0)
 
+    fun colorWithDarken(darken: Double): UIColor {
+        return UIColor(r + darken * (255.0 - r), g + darken * (255.0 - g), b + darken * (255.0 - b), a )
+    }
+
     fun colorWithAlpha(alpha: Double): UIColor {
         return UIColor(r, g, b, a * alpha)
     }

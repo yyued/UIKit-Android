@@ -18,7 +18,7 @@ open class UIButton : UIControl {
     lateinit var titleLabel: UILabel
         private set
     private var titles = HashMap<EnumSet<UIControl.State>, String>()
-    private var titleColors = HashMap<EnumSet<UIControl.State>, UIColor>()
+    protected var titleColors = HashMap<EnumSet<UIControl.State>, UIColor>()
     private var attributedTitles = HashMap<EnumSet<UIControl.State>, NSAttributedString>()
     var font = UIFont(17f)
         set(value) {
@@ -147,7 +147,7 @@ open class UIButton : UIControl {
         resetTitleLabel()
     }
 
-    fun currentTitleColor(): UIColor? {
+    open fun currentTitleColor(): UIColor? {
         val state = state
         if (titleColors[state] != null) {
             return titleColors[state]
