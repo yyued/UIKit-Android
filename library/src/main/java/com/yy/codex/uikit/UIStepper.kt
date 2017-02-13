@@ -5,14 +5,13 @@ import android.os.Build
 import android.support.annotation.RequiresApi
 import android.util.AttributeSet
 import android.view.View
-import com.yy.codex.coreanimation.CALayer
 
 /**
  * Created by adi on 17/1/23.
  */
 class UIStepper : UIControl {
 
-    /* UIStepper initialize methods */
+    // initialize
 
     constructor(context: Context, view: View) : super(context, view) {}
 
@@ -26,99 +25,112 @@ class UIStepper : UIControl {
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes) {
     }
 
-    private fun defaultValues(){
-        skinColor = UIColor(0x12 / 255.0, 0x6a / 255.0, 1.0, 1.0)
-    }
-
     override fun init() {
         super.init()
-        defaultValues()
+
+        defaultTint = UIColor(0x12 / 255.0, 0x6a / 255.0, 1.0, 1.0)
 
         contentView = UIView(context)
-        contentView?.let {
-            it.frame = CGRect(0.0, 0.0, 95.0, 30.0)
-            it.wantsLayer = true
-            it.layer.cornerRadius = 3.0
-            it.layer.borderWidth = 1.0
-            it.layer.borderColor = skinColor
-            it.layer.backgroundColor = UIColor.whiteColor
-            addSubview(it)
-        }
+        contentView.frame = CGRect(0.0, 0.0, 95.0, 30.0)
+        addSubview(contentView)
+
+        decreaseBtn = UIStepperButton(context)
+        decreaseBtn.frame = CGRect(0.0, 0.0, 46.0, 30.0)
+        decreaseBtn.setImage(UIImage("iVBORw0KGgoAAAANSUhEUgAAAC4AAAAEAQMAAADLQJ8kAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAABlBMVEUAev8AAADIAEdQAAAAAWJLR0QB/wIt3gAAAAlwSFlzAAALEgAACxIB0t1+/AAAAAtJREFUCNdjYMANAAAcAAHMmrA6AAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDE3LTAyLTEzVDExOjE2OjA4KzA4OjAwvyjpMwAAACV0RVh0ZGF0ZTptb2RpZnkAMjAxNy0wMi0xM1QxMToxNjowOCswODowMM51UY8AAAAASUVORK5CYII=", 3.0), UIControl.State.Normal)
+        contentView.addSubview(decreaseBtn)
+
+        increaseBtn = UIStepperButton(context)
+        increaseBtn.frame = CGRect(47.0, 0.0, 46.0, 30.0)
+        increaseBtn.setImage(UIImage("iVBORw0KGgoAAAANSUhEUgAAAC4AAAAuAgMAAAAq18OkAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAACVBMVEUAAAAAev8AAADuBBdfAAAAAXRSTlMAQObYZgAAAAFiS0dEAIgFHUgAAAAJcEhZcwAACxIAAAsSAdLdfvwAAAAdSURBVCjPY2AAAVEHBgQY4ZxQBAggljPwrh5cHADQ1R3PZlHuywAAACV0RVh0ZGF0ZTpjcmVhdGUAMjAxNy0wMi0xM1QxMToxNjowNSswODowMN7/iPMAAAAldEVYdGRhdGU6bW9kaWZ5ADIwMTctMDItMTNUMTE6MTY6MDUrMDg6MDCvojBPAAAAAElFTkSuQmCC", 3.0), UIControl.State.Normal)
+        contentView.addSubview(increaseBtn)
+
+        borderView = UIView(context)
+        borderView.frame = CGRect(0.0, 0.0, 95.0, 30.0)
+        borderView.userInteractionEnabled = false
+        borderView.wantsLayer = true
+        borderView.layer.borderWidth = 1.0
+        borderView.layer.borderColor = tintColor ?: defaultTint
+        borderView.layer.cornerRadius = 3.0
+        addSubview(borderView)
 
         dividerView = UIView(context)
-        dividerView?.let {
-            it.frame = CGRect(46.0, 0.0, 1.0, 30.0)
-            it.setBackgroundColor(skinColor)
-            addSubview(it)
-        }
-
-        decreaseView = UIView(context)
-        decreaseView?.let {
-            it.frame = CGRect(0.0, 0.0, 46.0, 30.0)
-            it.wantsLayer = true
-            val layer1 = CALayer()
-            layer1.frame = CGRect(15.0, 15.0, 16.0, 1.5)
-            layer1.backgroundColor = skinColor
-            it.layer.addSubLayer(layer1)
-            addSubview(it)
-        }
-
-        increaseView = UIView(context)
-        increaseView?.let {
-            it.frame = CGRect(47.0, 0.0, 46.0, 30.0)
-            it.wantsLayer = true
-            val layer1 = CALayer()
-            layer1.frame = CGRect(15.0, 14.0, 16.0, 1.5)
-            layer1.backgroundColor = skinColor
-            val layer2 = CALayer()
-            layer2.frame = CGRect(22.0, 7.5, 1.5, 15.0)
-            layer2.backgroundColor = skinColor
-            it.layer.addSubLayer(layer1)
-            it.layer.addSubLayer(layer2)
-            addSubview(it)
-        }
-
+        dividerView.frame = CGRect(46.0, 0.0, 1.0, 30.0)
+        dividerView.setBackgroundColor(tintColor ?: defaultTint)
+        addSubview(dividerView)
     }
 
-    /* UISlider UI Details */
+    // appearance
 
-    // subViews
+    private lateinit var decreaseBtn : UIStepperButton
 
-    private var contentView : UIView? = null
+    private lateinit var increaseBtn : UIStepperButton
 
-    private var dividerView : UIView? = null
+    private lateinit var contentView : UIView
 
-    private var decreaseView : UIView? = null
+    private lateinit var borderView: UIView
 
-    private var increaseView : UIView? = null
+    private lateinit var dividerView : UIView
+
+    var bgColor: UIColor = UIColor.whiteColor // @Td should be clearColor
+
+    var defaultTint: UIColor = UIColor(0x12 / 255.0, 0x6a / 255.0, 1.0, 1.0)
+        private set
+
+    override fun tintColorDidChanged() {
+        super.tintColorDidChanged()
+        borderView.layer.borderColor = tintColor ?: defaultTint
+        dividerView.setBackgroundColor(tintColor ?: defaultTint)
+    }
+
+    override fun layoutSubviews() {
+        super.layoutSubviews()
+        increaseBtn.enable = if (wraps) true else (value < maxValue)
+        decreaseBtn.enable = if (wraps) true else (value > minValue)
+    }
 
     // data
 
     var value : Double = 0.0
+        set(value) {
+            if (field == value) {
+                return
+            }
+            if (value <= minValue){
+                field = if (wraps) maxValue else minValue
+                decreaseBtn.enable = wraps
+            }
+            else if (value >= maxValue){
+                field = if (wraps) minValue else maxValue
+                increaseBtn.enable = wraps
+            }
+            else {
+                field = value
+                increaseBtn.enable = true
+                decreaseBtn.enable = true
+            }
+            onEvent(Event.ValueChanged)
+        }
 
     var minValue : Double = 0.0
+        set(value) {
+            layoutSubviews()
+        }
 
-    var maxValue : Double = 1.0
+    var maxValue : Double = 100.0
+        set(value) {
+            layoutSubviews()
+        }
 
-    var stepValue : Double = 0.1
+    var stepValue : Double = 1.0
 
     var wraps : Boolean = false
+        set(value) {
+            layoutSubviews()
+        }
 
-    var autoRepeat : Boolean = true
+    // supp
 
-    var continuous : Boolean = true
-
-    // appearance
-
-    var skinColor: UIColor = UIColor(0x12 / 255.0, 0x6a / 255.0, 1.0, 1.0)
-
-
-    /* UIStepper exports methods */
-
-
-    /* UIStepper supports methods */
-
-    private fun deactiveView() {
-
+    fun onSelectWithButton(btn: UIStepperButton){
+        value += if (btn == increaseBtn) stepValue else -stepValue
     }
 }
