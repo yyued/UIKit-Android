@@ -6,9 +6,9 @@ import android.view.View
 import java.util.*
 
 /**
- * Created by adi on 17/2/8.
+ * Created by adi on 17/2/13.
  */
-class UISegmentedButton : UIButton {
+class UIStepperButton : UIButton {
     constructor(context: Context, view: View) : super(context, view)
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
@@ -21,7 +21,7 @@ class UISegmentedButton : UIButton {
         super.onEvent(event)
         when (event) {
             UIControl.Event.TouchUpInside -> {
-                searchSegmentedControl()?.let {
+                serachStepper()?.let {
                     it.onSelectWithButton(this)
                 }
             }
@@ -38,6 +38,23 @@ class UISegmentedButton : UIButton {
         resetBackgroundColor()
     }
 
+    override fun currentTitleColor(): UIColor? {
+        val state = state
+        if (titleColors[state] != null && titleColors[state] != UIColor.clearColor) {
+            return titleColors[state]
+        } else if (titleColors[EnumSet.of(UIControl.State.Normal)] != null) {
+            return titleColors[EnumSet.of(UIControl.State.Normal)]
+        } else {
+            if (state.contains(UIControl.State.Disabled)) {
+                return tintColor?.colorWithDarken(0.3) ?: UIColor(0xdd/255.0, 0xdd/255.0, 0xdd/255.0, 1.0)
+            }
+            if (state.contains(UIControl.State.Highlighted) && state.contains(UIControl.State.Normal)) {
+                return tintColor?.colorWithAlpha(0.3) ?: tintColor
+            }
+            return tintColor
+        }
+    }
+
     // supp
 
     private fun resetBackgroundColor() {
@@ -52,47 +69,25 @@ class UISegmentedButton : UIButton {
             return bgColors[EnumSet.of(UIControl.State.Normal)]
         } else {
             if (state.contains(UIControl.State.Highlighted) && state.contains(UIControl.State.Normal)) {
-                searchSegmentedControl()?.let {
+                serachStepper()?.let {
                     return it.bgColor.colorWithDarken(0.3)
                 }
             }
             if (state.contains(UIControl.State.Selected)){
-                searchSegmentedControl()?.let {
+                serachStepper()?.let {
                     return it.tintColor ?: it.defaultTint
                 }
             }
-            return searchSegmentedControl()?.let {
+            return serachStepper()?.let {
                 return it.bgColor
             }
         }
     }
 
-    override fun currentTitleColor(): UIColor? {
-        val state = state
-        if (titleColors[state] != null && titleColors[state] != UIColor.clearColor) {
-            return titleColors[state]
-        } else if (titleColors[EnumSet.of(UIControl.State.Normal)] != null) {
-            return titleColors[EnumSet.of(UIControl.State.Normal)]
-        } else {
-            if (state.contains(UIControl.State.Disabled)) {
-                return UIColor(0xdd/255.0, 0xdd/255.0, 0xdd/255.0, 1.0)
-            }
-            if (state.contains(UIControl.State.Highlighted) && state.contains(UIControl.State.Normal)) {
-                return tintColor?.colorWithAlpha(0.3) ?: tintColor
-            }
-            if (state.contains(UIControl.State.Selected)){
-                searchSegmentedControl()?.let {
-                    return it.bgColor
-                }
-            }
-            return tintColor
-        }
-    }
-
-    fun searchSegmentedControl(): UISegmentedControl? {
+    fun serachStepper(): UIStepper? {
         var nextResponder = nextResponder
         while (nextResponder != null){
-            if (nextResponder is UISegmentedControl){
+            if (nextResponder is UIStepper){
                 return nextResponder
             }
             nextResponder = nextResponder.nextResponder
@@ -100,3 +95,4 @@ class UISegmentedButton : UIButton {
         return null
     }
 }
+

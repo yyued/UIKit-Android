@@ -37,7 +37,7 @@ class UISegmentedControl : UIControl {
     override fun init() {
         super.init()
 
-        defaultTinit = UIColor(0x12 / 255.0, 0x6a / 255.0, 1.0, 1.0)
+        defaultTint = UIColor(0x12 / 255.0, 0x6a / 255.0, 1.0, 1.0)
 
         contentView = UIView(context)
         addSubview(contentView)
@@ -46,7 +46,7 @@ class UISegmentedControl : UIControl {
         borderView.userInteractionEnabled = false
         borderView.wantsLayer = true
         borderView.layer.borderWidth = 1.0
-        borderView.layer.borderColor = tintColor ?: defaultTinit
+        borderView.layer.borderColor = tintColor ?: defaultTint
         borderView.layer.cornerRadius = 3.0
         addSubview(borderView)
     }
@@ -77,9 +77,9 @@ class UISegmentedControl : UIControl {
 
     override fun tintColorDidChanged() {
         super.tintColorDidChanged()
-        borderView.layer.borderColor = tintColor ?: defaultTinit
+        borderView.layer.borderColor = tintColor ?: defaultTint
         divs.map {
-            it.setBackgroundColor(tintColor ?: defaultTinit)
+            it.setBackgroundColor(tintColor ?: defaultTint)
         }
     }
 
@@ -100,7 +100,7 @@ class UISegmentedControl : UIControl {
     var activeIndex: Int = 0
         private set
 
-    var defaultTinit: UIColor = UIColor(0x12 / 255.0, 0x6a / 255.0, 1.0, 1.0)
+    var defaultTint: UIColor = UIColor(0x12 / 255.0, 0x6a / 255.0, 1.0, 1.0)
         private set
 
     var bgColor: UIColor = UIColor.whiteColor // @Td should be clearColor

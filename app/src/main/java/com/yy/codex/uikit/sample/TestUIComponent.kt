@@ -1,14 +1,13 @@
 package com.yy.codex.uikit.sample
 
 import android.content.Context
-import android.graphics.Canvas
-import android.graphics.Paint
-import android.graphics.RectF
+import android.graphics.*
 import android.os.Build
 import android.os.Bundle
 import android.support.annotation.RequiresApi
 import android.support.v7.app.AppCompatActivity
 import android.util.AttributeSet
+import android.util.Base64
 import android.view.View
 import com.yy.codex.foundation.NSLog
 import com.yy.codex.uikit.*
@@ -88,10 +87,14 @@ internal class TestComponent : UIView {
         uiLoading.color = UIColor.orangeColor
         // addSubview(uiLoading)
 
-        // @Td
+
         val uiStepper = UIStepper(context)
         uiStepper.frame = CGRect(10.0, 200.0, 100.0, 30.0)
+//        uiStepper.tintColor = UIColor.orangeColor
         addSubview(uiStepper)
+        uiStepper.addBlock(Runnable {
+            NSLog.log(uiStepper.value)
+        }, UIControl.Event.ValueChanged)
 
         val uiSegmentedControl = UISegmentedControl(context)
         uiSegmentedControl.frame = CGRect(10.0, 250.0, 200.0, 30.0)
@@ -107,6 +110,21 @@ internal class TestComponent : UIView {
 //        view1.frame = CGRect(10.0, 200.0, 100.0, 100.0)
 //        view1.setBackgroundColor(UIColor.orangeColor);
 //        addSubview(view1)
+    }
+
+
+    // helper
+
+//    public String encodeToBase64(Bitmap image, Bitmap.CompressFormat compressFormat, int quality)
+//    {
+//        ByteArrayOutputStream byteArrayOS = new ByteArrayOutputStream();
+//        image.compress(compressFormat, quality, byteArrayOS);
+//        return Base64.encodeToString(byteArrayOS.toByteArray(), Base64.DEFAULT);
+//    }
+//
+    fun decodeBase64(input: String): Bitmap {
+        var decodedBytes: ByteArray  = Base64.decode(input, 0)
+        return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
     }
 
 }
