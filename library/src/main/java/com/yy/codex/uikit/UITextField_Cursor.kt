@@ -1,5 +1,8 @@
 package com.yy.codex.uikit
 
+import android.content.ClipboardManager
+import android.content.Context
+
 /**
  * Created by cuiminghui on 2017/2/7.
  */
@@ -118,3 +121,16 @@ private fun UITextField.moveCursorToNext() {
         }
     }, 64)
 }
+
+internal fun UITextField.showPositionMenu() {
+    val manager = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+    var menuItems: MutableList<UIMenuItem> = mutableListOf()
+    menuItems.add(UIMenuItem("选择", this, "onCopy"))
+    if (manager.hasPrimaryClip() && manager.primaryClip.itemCount > 0) {
+        menuItems.add(UIMenuItem("粘贴", this, "onPaste"))
+    }
+    UIMenuController.sharedMenuController.menuItems = menuItems
+    UIMenuController.sharedMenuController.setTargetWithRect(CGRect(0.0, 0.0, 0.0, 0.0), cursorView)
+    UIMenuController.sharedMenuController.setMenuVisible(true, true)
+}
+
