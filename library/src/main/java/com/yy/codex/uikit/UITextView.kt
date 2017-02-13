@@ -12,15 +12,21 @@ import android.view.View
  */
 class UITextView : UIScrollView, UITextInput.Delegate {
 
+    interface Delegate: UIScrollViewDelegate {
+        fun textViewShouldBeginEditing(textView: UITextView): Boolean
+        fun textViewShouldEndEditing(textView: UITextView): Boolean
+        fun textViewDidBeginEditing(textView: UITextView)
+        fun textViewDidEndEditing(textView: UITextView)
+        fun textViewShouldChangeTextInRange(textView: UITextView, inRange: NSRange, replacementString: String): Boolean
+        fun textViewDidChange(textView: UITextView)
+    }
+
     constructor(context: Context, view: View) : super(context, view) {}
     constructor(context: Context) : super(context) {}
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {}
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {}
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes) {}
-
-    private lateinit var tapGestureRecognizer: UITapGestureRecognizer
-    private lateinit var longPressGestureRecognizer: UILongPressGestureRecognizer
 
     override fun init() {
         super.init()
@@ -44,18 +50,37 @@ class UITextView : UIScrollView, UITextInput.Delegate {
     }
 
     override fun becomeFirstResponder() {
+        if (!editable) {
+            return
+        }
+        (delegate as? Delegate)?.let {
+            if (!it.textViewShouldBeginEditing(this)) {
+                return
+            }
+        }
         super.becomeFirstResponder()
         input.beginEditing()
         showCursorView()
+        (delegate as? Delegate)?.let {
+            it.textViewDidBeginEditing(this)
+        }
     }
 
     override fun resignFirstResponder() {
+        (delegate as? Delegate)?.let {
+            if (!it.textViewShouldEndEditing(this)) {
+                return
+            }
+        }
         if (isFirstResponder()) {
             input.endEditing()
             hideCursorView()
         }
         super.resignFirstResponder()
         resetLayouts()
+        (delegate as? Delegate)?.let {
+            it.textViewDidEndEditing(this)
+        }
     }
 
     fun onLongPressed(sender: UILongPressGestureRecognizer) {
@@ -116,11 +141,21 @@ class UITextView : UIScrollView, UITextInput.Delegate {
 
     var defaultTextAttributes: Map<String, Any>? = null
 
+    var editable = true
+
+    var selectable = true
+
     override fun textDidChanged(onDelete: Boolean) {
         resetText(onDelete)
+        (delegate as? Delegate)?.let {
+            it.textViewDidChange(this)
+        }
     }
 
     override fun textShouldChange(range: NSRange, replacementString: String): Boolean {
+        (delegate as? Delegate)?.let {
+            return it.textViewShouldChangeTextInRange(this, range, replacementString)
+        }
         return true
     }
 
@@ -135,6 +170,8 @@ class UITextView : UIScrollView, UITextInput.Delegate {
     /* Content Props */
     lateinit internal var input: UITextInput
     lateinit internal var label: UILabel
+    lateinit private var tapGestureRecognizer: UITapGestureRecognizer
+    lateinit private var longPressGestureRecognizer: UILongPressGestureRecognizer
 
     /* Cursor Private Props */
     lateinit internal var cursorView: UIView
