@@ -4,34 +4,35 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="#ffffff">
-    <com.yy.codex.uikit.UITextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/roundView"
-        app:constraint.enabled="true"
-        app:constraint.centerHorizontally="true"
-        app:constraint.centerVertically="true"
-        app:constraint.width="200"
-        app:constraint.height="200">
-    </com.yy.codex.uikit.UITextView>
-    <!--<com.yy.codex.uikit.UILabel-->
+    <!--<com.yy.codex.uikit.UITextView-->
         <!--android:layout_width="wrap_content"-->
         <!--android:layout_height="wrap_content"-->
-        <!--app:label.text="Hello, World!"-->
-        <!--app:constraint.enabled="true"-->
-        <!--app:constraint.centerHorizontally="true"-->
-        <!--app:constraint.centerVertically="true"-->
-        <!--app:view.maxWidth="100"-->
-        <!--app:label.numberOfLines="1"-->
-        <!--app:label.linebreakMode="ByTruncatingTail">-->
-    <!--</com.yy.codex.uikit.UILabel>-->
-    <!--<com.yy.codex.uikit.UITextField-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
+        <!--android:id="@+id/roundView"-->
         <!--app:constraint.enabled="true"-->
         <!--app:constraint.centerHorizontally="true"-->
         <!--app:constraint.centerVertically="true"-->
         <!--app:constraint.width="200"-->
-        <!--app:constraint.height="30">-->
-    <!--</com.yy.codex.uikit.UITextField>-->
+        <!--app:constraint.height="200">-->
+    <!--</com.yy.codex.uikit.UITextView>-->
+    <!--<com.yy.codex.uikit.UILabel-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:id="@+id/testLabel"-->
+        <!--app:label.text="Hello, World! What the Fuck~~~~看什么看"-->
+        <!--app:constraint.enabled="true"-->
+        <!--app:constraint.centerHorizontally="true"-->
+        <!--app:constraint.centerVertically="true"-->
+        <!--app:label.numberOfLines="0"-->
+        <!--app:view.maxWidth="120"-->
+        <!--app:label.linebreakMode="ByTruncatingTail">-->
+    <!--</com.yy.codex.uikit.UILabel>-->
+    <com.yy.codex.uikit.UITextField
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint.enabled="true"
+        app:constraint.centerHorizontally="true"
+        app:constraint.centerVertically="true"
+        app:constraint.width="200"
+        app:constraint.height="30">
+    </com.yy.codex.uikit.UITextField>
 </com.yy.codex.uikit.UIView>

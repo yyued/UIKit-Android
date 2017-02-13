@@ -394,7 +394,7 @@ open class UIView : FrameLayout, UIResponder {
                 superview = superview.superview
             }
             if (tintColor == null) {
-                tintColor = UIColor(0x00 / 255.0, 0x7a / 255.0, 0xff / 255.0, 1.0)
+                tintColor = UIColor(0x14 / 255.0, 0x6d / 255.0, 0xde / 255.0, 1.0)
             }
             return tintColor
         }
