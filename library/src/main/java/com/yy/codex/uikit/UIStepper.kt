@@ -113,18 +113,37 @@ class UIStepper : UIControl {
 
     var minValue : Double = 0.0
         set(value) {
+            if (field == value){
+                return
+            }
+            field = value
             layoutSubviews()
         }
 
     var maxValue : Double = 100.0
         set(value) {
+            if (field == value){
+                return
+            }
+            field = value
             layoutSubviews()
         }
 
     var stepValue : Double = 1.0
+        set(value) {
+            if (field == value){
+                return
+            }
+            field = value
+            layoutSubviews()
+        }
 
     var wraps : Boolean = false
         set(value) {
+            if (field == value){
+                return
+            }
+            field = value
             layoutSubviews()
         }
 
