@@ -3,6 +3,7 @@ package com.yy.codex.uikit
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.Path
 import android.graphics.Rect
 import android.os.Build
 import android.support.annotation.RequiresApi
@@ -13,7 +14,9 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.TextView
+import com.yy.codex.coreanimation.CAShapeLayer
 import com.yy.codex.foundation.NSLog
+import com.yy.codex.foundation.lets
 
 import java.util.HashMap
 
@@ -239,6 +242,114 @@ class UILabel : UIView {
             return CGRect(left, top, (right - left), (bottom - top))
         }
         return CGRect(0.0, 0.0, 0.0, 0.0)
+    }
+
+    /* Text Selector */
+
+    private var selectorBackgroundViews: List<UIView> = listOf()
+    private var selectorLeftHandleView: UIButton? = null
+    private var selectorRightHandleView: UIButton? = null
+
+    private fun createLeftSelectorHandles(textHeight: Double) {
+        if (selectorLeftHandleView == null) {
+            selectorLeftHandleView = UIButton(context)
+            selectorLeftHandleView?.wantsLayer = true
+            val roundShape = CAShapeLayer()
+            val roundPath = Path()
+            roundPath.addCircle(5.0f, 5.0f, 5.0f, Path.Direction.CW)
+            roundShape.path = roundPath
+            roundShape.fillColor = tintColor
+            selectorLeftHandleView?.layer?.addSubLayer(roundShape)
+            val rectShape = CAShapeLayer()
+            val rectPath = Path()
+            rectPath.addRect(4.0f, 9.0f, 6.0f, textHeight.toFloat(), Path.Direction.CW)
+            rectShape.path = rectPath
+            rectShape.fillColor = tintColor
+            selectorLeftHandleView?.layer?.addSubLayer(rectShape)
+            selectorLeftHandleView?.frame = CGRect(0.0, 0.0, 10.0, textHeight)
+        }
+    }
+
+    private fun createRightSelectorHandles(textHeight: Double) {
+        if (selectorRightHandleView == null) {
+            selectorRightHandleView = UIButton(context)
+            selectorRightHandleView?.wantsLayer = true
+            val roundShape = CAShapeLayer()
+            val roundPath = Path()
+            roundPath.addCircle(5.0f, (textHeight - 5.0f).toFloat(), 5.0f, Path.Direction.CW)
+            roundShape.path = roundPath
+            roundShape.fillColor = tintColor
+            selectorRightHandleView?.layer?.addSubLayer(roundShape)
+            val rectShape = CAShapeLayer()
+            val rectPath = Path()
+            rectPath.addRect(4.0f, 0.0f, 6.0f, (textHeight - 4.0f).toFloat(), Path.Direction.CW)
+            rectShape.path = rectPath
+            rectShape.fillColor = tintColor
+            selectorRightHandleView?.layer?.addSubLayer(rectShape)
+            selectorRightHandleView?.frame = CGRect(0.0, 0.0, 10.0, textHeight)
+        }
+    }
+
+    fun selectText(range: NSRange?) {
+        selectorBackgroundViews.forEach(UIView::removeFromSuperview)
+        selectorLeftHandleView?.let(UIView::removeFromSuperview)
+        selectorRightHandleView?.let(UIView::removeFromSuperview)
+        selectorLeftHandleView = null
+        selectorRightHandleView = null
+        if (range == null || range?.length == 0) {
+            return
+        }
+        val lastLayout = attributedText?.requestLayout(maxWidth, numberOfLines, linebreakMode)
+        lets(range, lastLayout) { range, lastLayout ->
+            var startLine = lastLayout.getLineForOffset(range.location)
+            var endLine = lastLayout.getLineForOffset(range.location + range.length - 1)
+            selectorBackgroundViews = (startLine..endLine).map {
+                var x = 0.0
+                var width = 0.0
+                var y = lastLayout.getLineTop(it) / UIScreen.mainScreen.scale()
+                var height = (lastLayout.getLineBottom(it) - lastLayout.getLineTop(it)).toDouble() / UIScreen.mainScreen.scale()
+                var lineStartLetterIndex = lastLayout.getOffsetForHorizontal(it, 0.0f)
+                var lineEndLetterIndex = lastLayout.getOffsetForHorizontal(it, lastLayout.getLineWidth(it))
+                if (lineStartLetterIndex < range.location) {
+                    x = textRect(range.location)?.x ?: 0.0
+                }
+                if (range.location + range.length - 1 < lineEndLetterIndex) {
+                    textRect(range.location + range.length - 1)?.let {
+                        width = it.x + it.width - x
+                    }
+                }
+                else {
+                    width = lastLayout.getLineWidth(it) / UIScreen.mainScreen.scale() - x
+                }
+                val view = UIView(context)
+                view.frame = CGRect(x, y, width, height)
+                view.setBackgroundColor(tintColor?.colorWithAlpha(0.30) ?: UIColor(0x14 / 255.0, 0x6D / 255.0, 0xDE / 255.0, 0.22))
+                return@map view
+            }
+            selectorBackgroundViews.forEach {
+                insertSubview(it, 0)
+            }
+        }
+        textRect(range.location)?.let {
+            val x = Math.max(0.0, it.x - 5.0)
+            val y = it.y - 10.0
+            val height = it.height + 10.0
+            createLeftSelectorHandles(height)
+            selectorLeftHandleView?.let {
+                it.frame = CGRect(x, y, 10.0, height)
+                addSubview(it)
+            }
+        }
+        textRect(range.location + range.length - 1)?.let {
+            val x = Math.max(0.0, it.x + it.width - 5.0)
+            val y = it.y
+            val height = it.height + 10.0
+            createRightSelectorHandles(height)
+            selectorRightHandleView?.let {
+                it.frame = CGRect(x, y, 10.0, height)
+                addSubview(it)
+            }
+        }
     }
 
 }

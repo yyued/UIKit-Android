@@ -1,5 +1,6 @@
 package com.yy.codex.uikit
 
+import android.content.ClipboardManager
 import android.content.Context
 import android.os.Build
 import android.support.annotation.RequiresApi
@@ -214,9 +215,20 @@ class UITextField : UIControl, UITextInput.Delegate, UITextInputTraits {
 
     override fun onEvent(event: Event) {
         super.onEvent(event)
-        if (event == UIControl.Event.TouchUpInside) {
+        if (event == UIControl.Event.TouchDown) {
+            touchStartTimestamp = System.currentTimeMillis()
+            touchStartInputPosition = input.cursorPosition
+        }
+        else if (event == UIControl.Event.TouchUpInside) {
             if (!isFirstResponder()) {
                 becomeFirstResponder()
+            }
+            else {
+                if (touchStartTimestamp + 300 > System.currentTimeMillis()) {
+                    if (touchStartInputPosition == input.cursorPosition) {
+                        showPositionMenu()
+                    }
+                }
             }
         }
     }
@@ -270,7 +282,6 @@ class UITextField : UIControl, UITextInput.Delegate, UITextInputTraits {
     lateinit internal var input: UITextInput
     lateinit internal var wrapper: UIView
     lateinit internal var label: UILabel
-//    internal var charPositions: List<Int> = listOf()
 
     /* Cursor Private Props */
     lateinit internal var cursorView: UIView
@@ -279,5 +290,17 @@ class UITextField : UIControl, UITextInput.Delegate, UITextInputTraits {
     internal var cursorMoveNextTiming: Long = 0
     internal var cursorMovingPrevious = false
     internal var cursorMovingNext = false
+
+    internal var touchStartTimestamp: Long = 0
+    internal var touchStartInputPosition: Int = 0
+
+    private fun onPaste() {
+        val manager = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        if (manager.hasPrimaryClip() && manager.primaryClip.itemCount > 0) {
+            manager.primaryClip.getItemAt(0).text?.let {
+                input.editor?.text?.insert(input.cursorPosition, it)
+            }
+        }
+    }
 
 }

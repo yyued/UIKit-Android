@@ -1,6 +1,8 @@
 package com.yy.codex.coreanimation
 
 import android.graphics.*
+import com.yy.codex.uikit.UIColor
+import com.yy.codex.uikit.UIScreen
 
 /**
  * Created by adi on 17/1/10.
@@ -16,7 +18,9 @@ class CAShapeLayer : CALayer() {
             }
         }
 
-    var strokeColor = Color.BLACK
+    var fillColor: UIColor? = UIColor.blackColor
+
+    var strokeColor: UIColor? = null
         set(value) {
             if (field != value) {
                 field = value
@@ -36,12 +40,27 @@ class CAShapeLayer : CALayer() {
 
     override fun drawInCanvas(canvas: Canvas) {
         super.drawInCanvas(canvas)
+        val paint = Paint()
         path?.let {
-            val paint = Paint(Paint.ANTI_ALIAS_FLAG)
-            paint.style = Paint.Style.STROKE
-            paint.strokeWidth = lineWidth.toFloat()
-            paint.color = strokeColor
-            canvas.drawPath(it, paint)
+            val path = Path(it)
+            val matrix = Matrix()
+            matrix.setScale(UIScreen.mainScreen.scale().toFloat(), UIScreen.mainScreen.scale().toFloat())
+            path.transform(matrix)
+            fillColor?.let {
+                paint.reset()
+                paint.isAntiAlias = true
+                paint.style = Paint.Style.FILL
+                paint.color = it.toInt()
+                canvas.drawPath(path, paint)
+            }
+            strokeColor?.let {
+                paint.reset()
+                paint.isAntiAlias = true
+                paint.style = Paint.Style.STROKE
+                paint.strokeWidth = (lineWidth * UIScreen.mainScreen.scale()).toFloat()
+                paint.color = it.toInt()
+                canvas.drawPath(path, paint)
+            }
         }
     }
 

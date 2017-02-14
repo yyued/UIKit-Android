@@ -247,8 +247,8 @@ open class UIView : FrameLayout, UIResponder {
             val oldValue = field
             field = frame
             layoutSubviews()
-            this.x = (frame.origin.x * UIScreen.mainScreen.scale()).toFloat()
-            this.y = (frame.origin.y * UIScreen.mainScreen.scale()).toFloat()
+            this.x = Math.ceil((frame.origin.x * UIScreen.mainScreen.scale())).toFloat()
+            this.y = Math.ceil((frame.origin.y * UIScreen.mainScreen.scale())).toFloat()
             var mWidth = frame.size.width * UIScreen.mainScreen.scale()
             var mHeight = frame.size.height * UIScreen.mainScreen.scale()
             if (Math.ceil(mWidth) - mWidth < 0.1) {
@@ -378,7 +378,7 @@ open class UIView : FrameLayout, UIResponder {
             value = 0.0f
         }
         enlargerView?.let {
-            it.setAlpha(value)
+            it.alpha = value
         }
         val oldValue = this.alpha
         super.setAlpha(value)
@@ -394,7 +394,7 @@ open class UIView : FrameLayout, UIResponder {
                 superview = superview.superview
             }
             if (tintColor == null) {
-                tintColor = UIColor(0x00 / 255.0, 0x7a / 255.0, 0xff / 255.0, 1.0)
+                tintColor = UIColor(0x14 / 255.0, 0x6d / 255.0, 0xde / 255.0, 1.0)
             }
             return tintColor
         }
