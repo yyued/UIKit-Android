@@ -17,22 +17,16 @@ class UIPageControl : UIControl {
 
     override fun init() {
         super.init()
-
-        currentPage = 0
-        numberOfPages = 1
-        hidesForSinglePage = true
-        pageIndicatorColor = UIColor(0.5, 0.3, 1.0, 0.5)
-        currentPageIndicatorColor = UIColor.whiteColor
-
         dotView = UIView(context)
-        dotView?.let{
-            it.wantsLayer = true
-            addSubview(it)
-        }
-
+        dotView.wantsLayer = true
+        addSubview(dotView)
     }
 
-    private var dotView: UIView? = null
+    private val dotSpacing: Double = 10.0
+
+    private val dotRadius: Double = 5.0
+
+    private lateinit var dotView: UIView
 
     var currentPage: Int = 0
         set(value) {
@@ -43,7 +37,7 @@ class UIPageControl : UIControl {
             }
         }
 
-    var numberOfPages: Int = 1
+    var numberOfPages: Int = 3
         set(value) {
             if (field != value){
                 field = value
@@ -52,9 +46,15 @@ class UIPageControl : UIControl {
             }
         }
 
-    var hidesForSinglePage: Boolean = true
+    var hidesForSinglePage: Boolean = false
+        set(value) {
+            if (field != value){
+                field = value
+                updatePagesLayout()
+            }
+        }
 
-    var pageIndicatorColor: UIColor = UIColor(1.0, 1.0, 1.0, 0.5)
+    var pageIndicatorColor: UIColor = UIColor.whiteColor
         set(value) {
             if (field != value){
                 field = value
@@ -62,7 +62,7 @@ class UIPageControl : UIControl {
             }
         }
 
-    var currentPageIndicatorColor: UIColor = UIColor.whiteColor
+    var currentPageIndicatorColor: UIColor = tintColor ?: UIColor(0x12 / 255.0, 0x6a / 255.0, 1.0, 1.0)
         set(value) {
             if (field != value){
                 field = value
@@ -70,36 +70,32 @@ class UIPageControl : UIControl {
             }
         }
 
-    private val dotSpacing: Double = 10.0
-
-    private val dotRadius: Double = 5.0
+    override fun layoutSubviews() {
+        super.layoutSubviews()
+        updatePagesLayout()
+        updatePagesColor()
+    }
 
     private fun updatePagesLayout(){
         if (hidesForSinglePage && numberOfPages == 1){
-            dotView?.let{
-                it.hidden = true
-            }
+            dotView.hidden = true
             return
         }
-        dotView?.let {
-            val contentWidth = calcWidthWithPageCount(numberOfPages)
-            it.frame = CGRect((frame.width - contentWidth) / 2.0, 0.0, contentWidth, dotRadius * 2)
-            it.layer.removeSubLayers()
-            it.hidden = false
-            for (i in 0..numberOfPages - 1) {
-                val x = dotSpacing / 2.0 + i * (dotSpacing + dotRadius * 2)
-                val layer = CALayer(CGRect(x, 0.0, dotRadius * 2, dotRadius * 2))
-                layer.cornerRadius = dotRadius
-                it.layer.addSubLayer(layer)
-            }
+        val contentWidth = calcWidthWithPageCount(numberOfPages)
+        dotView.frame = CGRect((frame.width - contentWidth) / 2.0, 0.0, contentWidth, dotRadius * 2)
+        dotView.layer.removeSubLayers()
+        dotView.hidden = false
+        for (i in 0..numberOfPages - 1) {
+            val x = dotSpacing / 2.0 + i * (dotSpacing + dotRadius * 2)
+            val layer = CALayer(CGRect(x, 0.0, dotRadius * 2, dotRadius * 2))
+            layer.cornerRadius = dotRadius
+            dotView.layer.addSubLayer(layer)
         }
     }
 
     private fun updatePagesColor(){
-        dotView?.let {
-            it.layer.sublayers.forEachIndexed { idx, dotLayer ->
-                dotLayer.backgroundColor = if (currentPage == idx) currentPageIndicatorColor else pageIndicatorColor
-            }
+        dotView.layer.sublayers.forEachIndexed { idx, dotLayer ->
+            dotLayer.backgroundColor = if (currentPage == idx) currentPageIndicatorColor else pageIndicatorColor
         }
     }
 
