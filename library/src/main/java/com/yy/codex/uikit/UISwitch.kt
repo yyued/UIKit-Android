@@ -141,6 +141,7 @@ class UISwitch : UIControl {
     fun setOn(value: Boolean, animated: Boolean) {
         on = value
         resetContentView(animated)
+        onEvent(Event.ValueChanged)
     }
 
     private fun resetContentView(animated: Boolean) {
