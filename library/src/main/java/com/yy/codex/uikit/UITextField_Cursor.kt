@@ -134,10 +134,15 @@ private fun UITextField.moveCursorToNext() {
 internal fun UITextField.showPositionMenu() {
     val manager = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
     var menuItems: MutableList<UIMenuItem> = mutableListOf()
-    menuItems.add(UIMenuItem("选择", this, "onChoose"))
-    menuItems.add(UIMenuItem("全选", this, "onChooseAll"))
+    if (input.editor?.length() ?: 0 > 0) {
+        menuItems.add(UIMenuItem("选择", this, "onChoose"))
+        menuItems.add(UIMenuItem("全选", this, "onChooseAll"))
+    }
     if (manager.hasPrimaryClip() && manager.primaryClip.itemCount > 0) {
         menuItems.add(UIMenuItem("粘贴", this, "onPaste"))
+    }
+    if (menuItems.count() == 0) {
+        return
     }
     UIMenuController.sharedMenuController.menuItems = menuItems
     UIMenuController.sharedMenuController.setTargetWithRect(CGRect(0.0, 0.0, 0.0, 0.0), cursorView, this)
@@ -172,7 +177,7 @@ internal fun UITextField.showSelectionMenu() {
             menuItems.add(UIMenuItem("粘贴", this, "onPaste"))
         }
         UIMenuController.sharedMenuController.menuItems = menuItems
-        UIMenuController.sharedMenuController.setTargetWithRect(CGRect(0.0, selectorLeftHandleView.frame.y + 18.0, selectorRightHandleView.frame.x + 10.0 - selectorLeftHandleView.frame.x, 0.0), selectorLeftHandleView, this)
+        UIMenuController.sharedMenuController.setTargetWithRect(CGRect(0.0, 10.0, selectorRightHandleView.frame.x + 10.0 - selectorLeftHandleView.frame.x, 0.0), selectorLeftHandleView, this)
         postDelayed({
             UIMenuController.sharedMenuController.setMenuVisible(true, true)
         }, 300)

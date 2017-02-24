@@ -262,6 +262,7 @@ class UITextField : UIControl, UITextInput.Delegate, UITextInputTraits {
         selection?.let {
             selection = null
         }
+        UIMenuController.sharedMenuController.setMenuVisible(false, true)
     }
 
     override fun textShouldChange(range: NSRange, replacementString: String): Boolean {

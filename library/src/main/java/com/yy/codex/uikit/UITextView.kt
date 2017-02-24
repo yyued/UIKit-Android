@@ -1,5 +1,7 @@
 package com.yy.codex.uikit
 
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.os.Build
 import android.support.annotation.RequiresApi
@@ -73,6 +75,7 @@ class UITextView : UIScrollView, UITextInput.Delegate {
             }
         }
         if (isFirstResponder()) {
+            selection = null
             input.endEditing()
             hideCursorView()
         }
@@ -84,13 +87,27 @@ class UITextView : UIScrollView, UITextInput.Delegate {
     }
 
     fun onLongPressed(sender: UILongPressGestureRecognizer) {
+        if (sender.state == UIGestureRecognizerState.Began) {
+            touchStartTimestamp = System.currentTimeMillis()
+            touchStartInputPosition = input.cursorPosition
+        }
         if (isFirstResponder()) {
             operateCursor(sender)
         }
         else if (sender.state == UIGestureRecognizerState.Ended) {
             if (UIViewHelpers.pointInside(this, sender.location(this))) {
-                becomeFirstResponder()
-                operateCursor(sender)
+                if (!isFirstResponder()) {
+                    becomeFirstResponder()
+                    operateCursor(sender)
+                }
+                else {
+                    operateCursor(sender)
+                    if (selection == null && touchStartTimestamp + 300 > System.currentTimeMillis()) {
+                        if (touchStartInputPosition == input.cursorPosition) {
+                            showPositionMenu()
+                        }
+                    }
+                }
             }
         }
     }
@@ -101,14 +118,20 @@ class UITextView : UIScrollView, UITextInput.Delegate {
             operateCursor(sender)
         }
         else {
+            touchStartInputPosition = input.cursorPosition
             operateCursor(sender)
+            if (selection == null) {
+                if (touchStartInputPosition == input.cursorPosition) {
+                    showPositionMenu()
+                }
+            }
         }
     }
 
     override fun keyboardPressDown(event: UIKeyEvent) {
         super.keyboardPressDown(event)
         if (event.keyCode == KeyEvent.KEYCODE_DEL) {
-            input.delete()
+            input.delete(selection)
         }
     }
 
@@ -145,8 +168,17 @@ class UITextView : UIScrollView, UITextInput.Delegate {
 
     var selectable = true
 
+    var selection: NSRange? = null
+        set(value) {
+            field = value
+            resetSelection()
+        }
+
     override fun textDidChanged(onDelete: Boolean) {
         resetText(onDelete)
+        selection?.let {
+            selection = null
+        }
         (delegate as? Delegate)?.let {
             it.textViewDidChange(this)
         }
@@ -180,5 +212,51 @@ class UITextView : UIScrollView, UITextInput.Delegate {
     internal var cursorMoveNextTiming: Long = 0
     internal var cursorMovingPrevious = false
     internal var cursorMovingNext = false
+    internal var touchStartTimestamp: Long = 0
+    internal var touchStartInputPosition: Int = 0
+    internal var selectionOperatingLeft = false
+    internal var selectionOperatingRight = false
+
+    private fun onChoose() {
+        val textLength = label.text?.length ?: return
+        if (input.cursorPosition >= 2) {
+            selection = NSRange(input.cursorPosition - 2, 2)
+        }
+        else if (textLength > 0) {
+            onChooseAll()
+        }
+    }
+
+    private fun onChooseAll() {
+        selection = NSRange(0, label.text?.length ?: 0)
+    }
+
+    private fun onCrop() {
+        selection?.let {
+            text?.substring(it.location, it.location + it.length)?.let {
+                val manager = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                manager.primaryClip = ClipData.newPlainText(it, it)
+            }
+            input.delete(it)
+        }
+    }
+
+    private fun onCopy() {
+        selection?.let {
+            text?.substring(it.location, it.location + it.length)?.let {
+                val manager = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                manager.primaryClip = ClipData.newPlainText(it, it)
+            }
+        }
+    }
+
+    private fun onPaste() {
+        val manager = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        if (manager.hasPrimaryClip() && manager.primaryClip.itemCount > 0) {
+            manager.primaryClip.getItemAt(0).text?.let {
+                input.editor?.text?.insert(input.cursorPosition, it)
+            }
+        }
+    }
 
 }
