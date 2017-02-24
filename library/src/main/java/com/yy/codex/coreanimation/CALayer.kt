@@ -39,7 +39,7 @@ open class CALayer {
 
     /* styleProps */
 
-    var backgroundColor = com.yy.codex.uikit.UIColor.Companion.clearColor
+    var backgroundColor: UIColor? = null
         set(value) {
             if (field != value) {
                 field = value

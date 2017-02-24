@@ -49,6 +49,7 @@ import com.yy.codex.uikit.UINavigationController_ActivityBase;
 import com.yy.codex.uikit.UIReturnKeyType;
 import com.yy.codex.uikit.UIScreen;
 import com.yy.codex.uikit.UISlider;
+import com.yy.codex.uikit.UISwitch;
 import com.yy.codex.uikit.UITabBarActivity;
 import com.yy.codex.uikit.UITabBarController;
 import com.yy.codex.uikit.UITabBarItem;
@@ -116,9 +117,8 @@ class TestViewController extends UIViewController {
         setTitle("Test");
         getNavigationItem().setRightBarButtonItem(new UIBarButtonItem("Next", this, "handleNextButtonTapped"));
 
-        UISlider slider = new UISlider(getContext());
+        UISwitch slider = new UISwitch(getContext());
         slider.setConstraint(UIConstraint.Companion.center());
-        slider.getConstraint().setWidth("200");
         getView().addSubview(slider);
 
     }

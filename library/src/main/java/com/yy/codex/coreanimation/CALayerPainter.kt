@@ -55,10 +55,12 @@ internal object CALayerPainter {
         val borderWidth = layer.borderWidth.toFloat() * scaledDensity
         val cornerRadius = layer.cornerRadius.toFloat() * scaledDensity
         val halfBorderW = borderWidth / 2.0f
-
         paint.reset()
         paint.isAntiAlias = true
-        paint.color = layer.backgroundColor.toInt()
+        paint.color = Color.TRANSPARENT
+        layer.backgroundColor?.let {
+            paint.color = it.toInt()
+        }
         var rectFCopyed = frame.shrinkToRectF(halfBorderW, origin)
         layer.shadowColor?.let {
             val shadowRadius = layer.shadowRadius.toFloat() * scaledDensity
@@ -124,7 +126,10 @@ internal object CALayerPainter {
 
 
         paint.reset()
-        paint.color = layer.backgroundColor.toInt()
+        paint.color = Color.TRANSPARENT
+        layer.backgroundColor?.let {
+            paint.color = it.toInt()
+        }
         var rectFCopyed = frame.toRectF(origin)
         layer.shadowColor?.let {
             val shadowRadius = layer.shadowRadius.toFloat() * scaledDensity

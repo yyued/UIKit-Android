@@ -27,22 +27,22 @@ class TestUISwitch : UIView {
         // configure appearance
         val s2 = UISwitch(context)
         s2.frame = CGRect(210.0, 10.0, 52.0, 44.0)
-        s2.setOnTrackColor(UIColor.orangeColor)
-        s2.setOnThumbColor(UIColor.orangeColor.colorWithDarken(0.3))
-        s2.setOffTrackColor(UIColor.grayColor)
-        s2.setOffThumbColor(UIColor.blackColor)
+//        s2.setOnTrackColor(UIColor.orangeColor)
+//        s2.setOnThumbColor(UIColor.orangeColor.colorWithDarken(0.3))
+//        s2.setOffTrackColor(UIColor.grayColor)
+//        s2.setOffThumbColor(UIColor.blackColor)
         addSubview(s2)
 
         // configure status
         val s3 = UISwitch(context)
         s3.frame = CGRect(110.0, 10.0, 52.0, 44.0)
-        s3.setOn(true)
+//        s3.setOn(true)
         addSubview(s3)
 
         // onValueChanged
-        s1.addBlock( Runnable{
-            NSLog.log(s1.isOn())
-        }, UIControl.Event.ValueChanged)
+//        s1.addBlock( Runnable{
+//            NSLog.log(s1.isOn())
+//        }, UIControl.Event.ValueChanged)
 
     }
 

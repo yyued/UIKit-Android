@@ -69,7 +69,6 @@ class UISlider : UIControl {
         thumbView.layer.borderWidth = 0.5
         thumbView.layer.borderColor = UIColor(0x00 / 255.0, 0x00 / 255.0, 0x00 / 255.0, 0.15)
         thumbView.layer.backgroundColor = UIColor.whiteColor
-        thumbView.layer.wantsEnlargerLayer()
     }
 
     private lateinit var progressView: UIView

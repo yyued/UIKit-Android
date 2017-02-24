@@ -19,6 +19,9 @@ class UIColor(val r: Double, val g: Double, val b: Double, val a: Double) {
     }
 
     fun toInt(): Int {
+        if (a == 0.0) {
+            return Color.TRANSPARENT
+        }
         return Color.argb((a * 255).toInt(), (r * 255).toInt(), (g * 255).toInt(), (b * 255).toInt())
     }
 
