@@ -50,9 +50,9 @@ open class UIScrollView : UIView {
             }
         }
 
-    private var contentInset = UIEdgeInsets.zero
+    var contentInset = UIEdgeInsets.zero
 
-    protected open var delegate: UIScrollViewDelegate? = null
+    open var delegate: UIScrollViewDelegate? = null
 
     var tracking: Boolean = false
         private set
@@ -85,7 +85,6 @@ open class UIScrollView : UIView {
 
     override fun init() {
         super.init()
-
         tracking = false
         scrollEnabled = true
         alwaysBounceVertical = false
@@ -93,10 +92,9 @@ open class UIScrollView : UIView {
         pagingEnabled = false
         bounces = true
         windowSizePoint = CGPoint(0.0, 0.0)
-        this.contentInset = UIEdgeInsets(0.0, 0.0, 0.0, 0.0)
+        contentInset = UIEdgeInsets(0.0, 0.0, 0.0, 0.0)
         fingerVerticalMoveDistance = frame.size.height / 5
         fingerHorizontalMoveDistance = frame.size.width / 5
-
         panGestureRecognizer = UIPanGestureRecognizer(this, "handlePan:")
         if (scrollEnabled) {
             panGestureRecognizer?.let {
@@ -172,7 +170,7 @@ open class UIScrollView : UIView {
                 yOptions.fromValue = contentOffset.y
                 yOptions.velocity = -velocity.y / 1000.0
                 yOptions.topBounds = 0.0
-                yOptions.bottomBounds = contentSize.height + this.contentInset!!.bottom - frame.size.height
+                yOptions.bottomBounds = contentSize.height + contentInset.bottom - frame.size.height
                 yOptions.viewBounds = frame.size.height
                 currentAnimationY = UIViewAnimator.decayBounds(this, "contentOffset.y", yOptions, null)
             }
@@ -205,7 +203,7 @@ open class UIScrollView : UIView {
         windowSizePoint = offset
     }
 
-    private fun computeMovePoint(point: CGPoint, PagingEnabled: Boolean): CGPoint {
+    private fun computeMovePoint(point: CGPoint, pagingEnabled: Boolean): CGPoint {
         val y = computeY(point.y)
         val x = computeX(point.x)
         return CGPoint(x, y)
@@ -232,7 +230,7 @@ open class UIScrollView : UIView {
         val mAlwaysBounceOrientation = if (isX) alwaysBounceHorizontal else alwaysBounceVertical
 
         var retValue = xOry
-        val deltaBottom = calculateContentSizeValue + this.contentInset!!.bottom + this.contentInset!!.top - calculateThisValue
+        val deltaBottom = calculateContentSizeValue + contentInset.bottom + contentInset.top - calculateThisValue
         val over = xOry - deltaBottom
 
         if (calculateContentSizeValue < calculateThisValue) {
@@ -251,7 +249,7 @@ open class UIScrollView : UIView {
             }
 
             //out of bottom
-            if (xOry > Math.abs(calculateContentSizeValue + this.contentInset!!.bottom + this.contentInset!!.top - calculateThisValue)) {
+            if (xOry > Math.abs(calculateContentSizeValue + contentInset.bottom + contentInset.top - calculateThisValue)) {
                 retValue = deltaBottom
                 if (bounces) {
                     // can Bounces
@@ -284,7 +282,7 @@ open class UIScrollView : UIView {
                 UIViewAnimator.addAnimationState(self, "contentOffset.y", oldValue.y, this.contentOffset.y)
             }, null)
         } else {
-            scrollTo((this.contentOffset.x * UIScreen.mainScreen.scale()).toInt(), (this.contentOffset.y * UIScreen.mainScreen.scale() - this.contentInset!!.top).toInt())
+            scrollTo((this.contentOffset.x * UIScreen.mainScreen.scale()).toInt(), (this.contentOffset.y * UIScreen.mainScreen.scale() - contentInset.top).toInt())
             if (delegate != null) {
                 delegate!!.scrollViewDidScroll(this)
             }
@@ -343,4 +341,5 @@ open class UIScrollView : UIView {
     companion object {
         private val FINGER_VELOCITY = 300.0
     }
+
 }

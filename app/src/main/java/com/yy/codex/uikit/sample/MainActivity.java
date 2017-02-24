@@ -34,6 +34,7 @@ import com.yy.codex.uikit.NSRange;
 import com.yy.codex.uikit.UIBarButtonItem;
 import com.yy.codex.uikit.UIButton;
 import com.yy.codex.uikit.UIColor;
+import com.yy.codex.uikit.UIConstraint;
 import com.yy.codex.uikit.UIControl;
 import com.yy.codex.uikit.UIEdgeInsets;
 import com.yy.codex.uikit.UIFont;
@@ -47,6 +48,7 @@ import com.yy.codex.uikit.UINavigationController;
 import com.yy.codex.uikit.UINavigationController_ActivityBase;
 import com.yy.codex.uikit.UIReturnKeyType;
 import com.yy.codex.uikit.UIScreen;
+import com.yy.codex.uikit.UISlider;
 import com.yy.codex.uikit.UITabBarActivity;
 import com.yy.codex.uikit.UITabBarController;
 import com.yy.codex.uikit.UITabBarItem;
@@ -97,45 +99,6 @@ public class MainActivity extends UITabBarActivity {
 
 }
 
-class TestTextView extends UIView {
-
-    public TestTextView(@NotNull Context context, @NotNull View view) {
-        super(context, view);
-    }
-
-    public TestTextView(@NotNull Context context) {
-        super(context);
-    }
-
-    public TestTextView(@NotNull Context context, @NotNull AttributeSet attrs) {
-        super(context, attrs);
-    }
-
-    public TestTextView(@NotNull Context context, @NotNull AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-    }
-
-    public TestTextView(@NotNull Context context, @NotNull AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-    }
-
-    @Override
-    protected void onDraw(@NotNull Canvas canvas) {
-        super.onDraw(canvas);
-        TextPaint textPaint = new TextPaint();
-        textPaint.setColor(Color.BLACK);
-        textPaint.setAntiAlias(true);
-        textPaint.setTextSize(30.0f);
-        StaticLayout staticLayout = new StaticLayout("123123123123123123123123123", textPaint, 200, Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
-        staticLayout.draw(canvas);
-        int lineNumber = staticLayout.getLineForOffset(1);
-        float ss = staticLayout.getPrimaryHorizontal(1);
-        float sss =staticLayout.getSecondaryHorizontal(1);
-        NSLog.INSTANCE.log(ss);
-    }
-
-}
-
 class TestViewController extends UIViewController {
 
     public TestViewController(Context context) {
@@ -153,32 +116,11 @@ class TestViewController extends UIViewController {
         setTitle("Test");
         getNavigationItem().setRightBarButtonItem(new UIBarButtonItem("Next", this, "handleNextButtonTapped"));
 
-//        TestTextView testTextView = new TestTextView(getContext());
-//        testTextView.setFrame(new CGRect(0, 30, 300, 100));
-//        testTextView.setBackgroundColor(new UIColor(0xe2/255.0, 0xe2/255.0, 0xe2/255.0, 1.0));
-//        getView().addSubview(testTextView);
+        UISlider slider = new UISlider(getContext());
+        slider.setConstraint(UIConstraint.Companion.center());
+        slider.getConstraint().setWidth("200");
+        getView().addSubview(slider);
 
-//        TextView textView = new TextView(getContext());
-//        textView.setMaxWidth((int)(200 * UIScreen.Companion.getMainScreen().scale()));
-//        textView.setMaxLines(999999);
-//        textView.setText("hao123是汇集全网优质网址及资源的中文上网导航。及时收录影视、音乐、小说、游戏等分类的网址和内容,让您的网络生活更简单精彩。上网,从hao123开始。");
-//
-//        Layout layout = textView.getLayout();
-//        layout.getPaint().setColor(0xffff0000);
-//
-//
-//
-//        UIView wrapper = new UIView(getContext(), textView);
-//        wrapper.setBackgroundColor(new UIColor(0xe2/255.0, 0xe2/255.0, 0xe2/255.0, 1.0));
-//        wrapper.setFrame(new CGRect(0, 0, 200, 200));
-//        getView().addView(wrapper);
-
-//        UITextField textField = (UITextField) getView().findViewById(R.id.roundView);
-//        textField.setReturnKeyType(UIReturnKeyType.Next);
-//        textField.setPlaceholder("请输入密码");
-//        textField.setBorderStyle(UITextField.BorderStyle.Line);
-//        textField.setClearButtonMode(UITextField.ViewMode.WhileEditing);
-//        textField.setAlignment(Layout.Alignment.ALIGN_CENTER);
     }
 
     private void handleNextButtonTapped() {

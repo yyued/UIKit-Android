@@ -33,12 +33,12 @@ class TestUISlider : UIView {
         // configure status
         val s3 = UISlider(context)
         s3.frame = CGRect(10.0, 260.0, 200.0, 42.0)
-        s3.value = 1.0
+        s3.progressValue = 1.0
         addSubview(s3)
 
         // onValueChanged
         s1.addBlock(Runnable {
-            NSLog.log(s1.value)
+            NSLog.log(s1.progressValue)
         }, UIControl.Event.ValueChanged)
     }
 }
