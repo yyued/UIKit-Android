@@ -1,5 +1,6 @@
 package com.yy.codex.uikit
 
+import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.os.Build
@@ -152,6 +153,11 @@ class UITextField : UIControl, UITextInput.Delegate, UITextInputTraits {
             field = value
             resetLayouts()
         }
+    var selection: NSRange? = null
+        set(value) {
+            field = value
+            resetSelection()
+        }
 
     override var keyboardType: UIKeyboardType = UIKeyboardType.Default
 
@@ -203,6 +209,7 @@ class UITextField : UIControl, UITextInput.Delegate, UITextInputTraits {
         }
         if (isFirstResponder()) {
             setupPlaceholder()
+            selection = null
             input.endEditing()
             hideCursorView()
         }
@@ -224,7 +231,7 @@ class UITextField : UIControl, UITextInput.Delegate, UITextInputTraits {
                 becomeFirstResponder()
             }
             else {
-                if (touchStartTimestamp + 300 > System.currentTimeMillis()) {
+                if (selection == null && touchStartTimestamp + 300 > System.currentTimeMillis()) {
                     if (touchStartInputPosition == input.cursorPosition) {
                         showPositionMenu()
                     }
@@ -246,12 +253,15 @@ class UITextField : UIControl, UITextInput.Delegate, UITextInputTraits {
     override fun keyboardPressDown(event: UIKeyEvent) {
         super.keyboardPressDown(event)
         if (event.keyCode == KeyEvent.KEYCODE_DEL) {
-            input.delete()
+            input.delete(selection)
         }
     }
 
     override fun textDidChanged(onDelete: Boolean) {
         resetText(onDelete)
+        selection?.let {
+            selection = null
+        }
     }
 
     override fun textShouldChange(range: NSRange, replacementString: String): Boolean {
@@ -290,9 +300,43 @@ class UITextField : UIControl, UITextInput.Delegate, UITextInputTraits {
     internal var cursorMoveNextTiming: Long = 0
     internal var cursorMovingPrevious = false
     internal var cursorMovingNext = false
-
     internal var touchStartTimestamp: Long = 0
     internal var touchStartInputPosition: Int = 0
+    internal var selectionOperatingLeft = false
+    internal var selectionOperatingRight = false
+
+    private fun onChoose() {
+        val textLength = label.text?.length ?: return
+        if (input.cursorPosition >= 2) {
+            selection = NSRange(input.cursorPosition - 2, 2)
+        }
+        else if (textLength > 0) {
+            onChooseAll()
+        }
+    }
+
+    private fun onChooseAll() {
+        selection = NSRange(0, label.text?.length ?: 0)
+    }
+
+    private fun onCrop() {
+        selection?.let {
+            text?.substring(it.location, it.location + it.length)?.let {
+                val manager = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                manager.primaryClip = ClipData.newPlainText(it, it)
+            }
+            input.delete(it)
+        }
+    }
+
+    private fun onCopy() {
+        selection?.let {
+            text?.substring(it.location, it.location + it.length)?.let {
+                val manager = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                manager.primaryClip = ClipData.newPlainText(it, it)
+            }
+        }
+    }
 
     private fun onPaste() {
         val manager = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager

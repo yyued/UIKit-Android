@@ -29,12 +29,12 @@ internal object UIViewHelpers {
         return null
     }
 
-    fun pointInside(view: UIView, point: CGPoint): Boolean {
+    fun pointInside(view: UIView, point: CGPoint, allowMovement: CGPoint? = null): Boolean {
         val h = view.frame.size.height
         val w = view.frame.size.width
         val touchX = point.x
         val touchY = point.y
-        if (touchY <= h && touchX <= w && touchY >= 0 && touchX >= 0) {
+        if (touchY <= h + (allowMovement?.y ?: 0.0) && touchX <= w + (allowMovement?.x ?: 0.0) && touchY >= -(allowMovement?.y ?: 0.0) && touchX >= -(allowMovement?.x ?: 0.0)) {
             return true
         }
         return false

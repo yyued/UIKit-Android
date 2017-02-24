@@ -126,17 +126,18 @@ class UITextInput {
         }
     }
 
-    fun delete() {
+    fun delete(range: NSRange? = null) {
         currentOperationDeleting = true
         editor?.let {
             val editable = it.text
             if (editable.length > 0) {
-                if (it.selectionStart < it.selectionEnd) {
-                    editable.delete(it.selectionStart, it.selectionEnd)
+                val range = range ?: NSRange(it.selectionStart, it.selectionEnd - it.selectionStart)
+                if (range.length > 0) {
+                    editable.delete(range.location, range.location + range.length)
                 }
                 else {
-                    if (it.selectionEnd > 0) {
-                        editable.delete(it.selectionEnd - 1, it.selectionEnd)
+                    if (range.location > 0) {
+                        editable.delete(range.location - 1, range.location)
                     }
                 }
             }

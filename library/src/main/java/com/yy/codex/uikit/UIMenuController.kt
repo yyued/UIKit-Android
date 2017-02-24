@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Path
+import android.view.MotionEvent
 import com.yy.codex.foundation.NSLog
 import com.yy.codex.foundation.lets
 
@@ -70,9 +71,10 @@ class UIMenuController {
         }
     }
 
-    fun setTargetWithRect(targetRect: CGRect, targetView: UIView) {
+    fun setTargetWithRect(targetRect: CGRect, targetView: UIView, touchesView: UIView? = null) {
         this.targetRect = targetRect
         this.targetView = targetView
+        this.touchesView = touchesView
     }
 
     var arrowDirection: ArrowDirection = ArrowDirection.Default
@@ -85,9 +87,10 @@ class UIMenuController {
 
     private var targetRect: CGRect? = null
     private var targetView: UIView? = null
+    private var touchesView: UIView? = null
     private var menuView: UIView? = null
     private var triangleView: UIView? = null
-    private var maskView: UIView? = null
+    private var maskView: UIMenuViewMaskView? = null
 
     private constructor()
 
@@ -101,12 +104,13 @@ class UIMenuController {
                 menuView?.layer?.cornerRadius = 6.0
             }
             if (maskView == null) {
-                maskView = UIView(it.context)
+                maskView = UIMenuViewMaskView(it.context)
                 maskView?.setBackgroundColor(UIColor.clearColor)
                 maskView?.frame = CGRect(0.0, 0.0, UIScreen.mainScreen.bounds().width, UIScreen.mainScreen.bounds().height)
                 maskView?.addGestureRecognizer(UITapGestureRecognizer(this, "onMaskViewTouched:"))
             }
             lets(menuView, maskView) { menuView, maskView ->
+                maskView.touchesView = this.touchesView
                 menuView.subviews.forEach(UIView::removeFromSuperview)
                 var x: Double = 0.0
                 var height: Double = 36.0
@@ -187,6 +191,21 @@ class UIMenuController {
 
     private fun onMaskViewTouched(sender: UITapGestureRecognizer) {
         setMenuVisible(false, true)
+    }
+
+    inner private class UIMenuViewMaskView(context: Context): UIView(context) {
+
+        internal var touchesView: UIView? = null
+
+        override fun hitTest(point: CGPoint, event: MotionEvent): UIView? {
+            touchesView?.let {
+                if (UIViewHelpers.pointInside(it, this.convertPoint(point, it))) {
+                    return null
+                }
+            }
+            return super.hitTest(point, event)
+        }
+
     }
 
     inner private class UIMenuViewTriangleView(context: Context, val arrowDirection: ArrowDirection): UIView(context) {

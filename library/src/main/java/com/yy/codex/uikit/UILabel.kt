@@ -246,9 +246,9 @@ class UILabel : UIView {
 
     /* Text Selector */
 
-    private var selectorBackgroundViews: List<UIView> = listOf()
-    private var selectorLeftHandleView: UIButton? = null
-    private var selectorRightHandleView: UIButton? = null
+    internal var selectorBackgroundViews: List<UIView> = listOf()
+    internal var selectorLeftHandleView: UIButton? = null
+    internal var selectorRightHandleView: UIButton? = null
 
     private fun createLeftSelectorHandles(textHeight: Double) {
         if (selectorLeftHandleView == null) {
@@ -336,7 +336,7 @@ class UILabel : UIView {
             val height = it.height + 10.0
             createLeftSelectorHandles(height)
             selectorLeftHandleView?.let {
-                it.frame = CGRect(x, y, 10.0, height)
+                it.frame = CGRect(if (x <= 4.0) -4.0 else x, y, 10.0, height)
                 addSubview(it)
             }
         }
@@ -346,7 +346,7 @@ class UILabel : UIView {
             val height = it.height + 10.0
             createRightSelectorHandles(height)
             selectorRightHandleView?.let {
-                it.frame = CGRect(x, y, 10.0, height)
+                it.frame = CGRect(if (x <= 4.0) -4.0 else x, y, 10.0, height)
                 addSubview(it)
             }
         }
