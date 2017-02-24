@@ -19,5 +19,6 @@ internal fun UITextView.resetCursorLayout() {
     cursorView.frame = CGRect(0.0, 0.0, 2.0, 20.0)
     label.textRect(input.cursorPosition - 1)?.let {
         cursorView.frame = CGRect(it.x + it.width, it.y, 2.0, it.height)
+        scrollToVisible(CGRect(cursorView.frame.x - 1.0, cursorView.frame.y + cursorView.frame.height - 1.0, 1.0, 1.0), true)
     }
 }

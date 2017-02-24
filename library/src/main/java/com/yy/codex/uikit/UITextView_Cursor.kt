@@ -65,7 +65,7 @@ internal fun UITextView.operateCursor(sender: UILongPressGestureRecognizer) {
             return
         }
         val location = sender.location(label)
-        moveCursor(location.setY(location.y + contentOffset.y))
+        moveCursor(location.setY(location.y))
     }
 }
 
@@ -76,7 +76,7 @@ internal fun UITextView.operateCursor(sender: UITapGestureRecognizer) {
             return
         }
         val location = sender.location(label)
-        moveCursor(location.setY(location.y + contentOffset.y))
+        moveCursor(location.setY(location.y))
     }
 }
 

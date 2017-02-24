@@ -12,7 +12,7 @@
         app:constraint.centerHorizontally="true"
         app:constraint.centerVertically="true"
         app:constraint.width="200"
-        app:constraint.height="200">
+        app:constraint.height="88">
     </com.yy.codex.uikit.UITextView>
     <!--<com.yy.codex.uikit.UILabel-->
         <!--android:layout_width="wrap_content"-->

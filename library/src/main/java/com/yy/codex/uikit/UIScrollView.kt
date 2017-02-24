@@ -35,31 +35,51 @@ open class UIScrollView : UIView {
     /* Scrolls */
 
     private var panGestureRecognizer: UIPanGestureRecognizer? = null
+
     var contentOffset = CGPoint(0.0, 0.0)
         private set
+
     var contentSize = CGSize(0.0, 0.0)
+        set(value) {
+            field = value
+            if (contentSize.width < contentOffset.x + frame.width) {
+                setContentOffset(CGPoint(Math.max(0.0, contentSize.width - frame.width), contentOffset.y), true)
+            }
+            if (contentSize.height < contentOffset.y + frame.height) {
+                setContentOffset(CGPoint(contentOffset.x, Math.max(0.0, contentSize.height - frame.height)), true)
+            }
+        }
+
     private var contentInset = UIEdgeInsets.zero
 
     protected open var delegate: UIScrollViewDelegate? = null
 
-    public var tracking: Boolean = false
-    private var scrollEnabled: Boolean = false
-    public var alwaysBounceVertical: Boolean = false
-    public var alwaysBounceHorizontal: Boolean = false
+    var tracking: Boolean = false
+        private set
+
+    var scrollEnabled: Boolean = false
+
+    var alwaysBounceVertical: Boolean = false
+
+    var alwaysBounceHorizontal: Boolean = false
+
     var bounces: Boolean = false
-    private var pagingEnabled: Boolean = false
-    public var decelerating: Boolean = false
-    public var dragging: Boolean = false
+
+    var pagingEnabled: Boolean = false
+
+    var decelerating: Boolean = false
+        private set
+
+    var dragging: Boolean = false
+        private set
 
     /*Animation*/
     private var currentAnimationY: UIViewAnimation? = null
     private var currentAnimationX: UIViewAnimation? = null
-    private var verticalMoveDiscance = 0.0
-    private var horizontalMoveDiscance = 0.0
+    private var verticalMoveDistance = 0.0
+    private var horizontalMoveDistance = 0.0
     private var trackingPoint: CGPoint? = null
-
     private var windowSizePoint: CGPoint? = null
-
     private var fingerVerticalMoveDistance = 0.00
     private var fingerHorizontalMoveDistance = 0.00
 
@@ -116,10 +136,10 @@ open class UIScrollView : UIView {
         }
         if (dragging && panGestureRecognizer.state === UIGestureRecognizerState.Changed) {
             /* Move */
-            val offset = calculateMovePoint(CGPoint(originX, originY), pagingEnabled)
+            val offset = computeMovePoint(CGPoint(originX, originY), pagingEnabled)
 
-            verticalMoveDiscance = originY + Math.abs(trackingPoint!!.y) - windowSizePoint!!.y
-            horizontalMoveDiscance = originX + Math.abs(trackingPoint!!.x) - windowSizePoint!!.x
+            verticalMoveDistance = originY + Math.abs(trackingPoint!!.y) - windowSizePoint!!.y
+            horizontalMoveDistance = originX + Math.abs(trackingPoint!!.x) - windowSizePoint!!.x
 
             setContentOffset(offset)
         } else if (panGestureRecognizer.state === UIGestureRecognizerState.Ended) {
@@ -134,7 +154,7 @@ open class UIScrollView : UIView {
             val velocity = panGestureRecognizer.velocity()
 
             if (pagingEnabled) {
-                calculateScrollPagingPoint(velocity)
+                computeScrollPagingPoint(velocity)
                 setContentOffsetWithSpring(windowSizePoint!!, velocity.x)
             } else {
                 val xOptions = UIViewAnimator.UIViewAnimationDecayBoundsOptions()
@@ -156,20 +176,20 @@ open class UIScrollView : UIView {
                 yOptions.viewBounds = frame.size.height
                 currentAnimationY = UIViewAnimator.decayBounds(this, "contentOffset.y", yOptions, null)
             }
-            horizontalMoveDiscance = 0.0
-            verticalMoveDiscance = 0.0
+            horizontalMoveDistance = 0.0
+            verticalMoveDistance = 0.0
         }
     }
 
-    private fun calculateScrollPagingPoint(velocity: CGPoint) {
+    private fun computeScrollPagingPoint(velocity: CGPoint) {
         var verticalPageCurrentIndex = Math.round(windowSizePoint!!.y / frame.size.height).toInt()
         var horizontalPageCurrentIndex = Math.round(windowSizePoint!!.x / frame.size.width).toInt()
 
         var moveOffsetX = horizontalPageCurrentIndex * frame.size.width
         var moveOffsetY = verticalPageCurrentIndex * frame.size.height
-        if (Math.abs(horizontalMoveDiscance) > fingerHorizontalMoveDistance || Math.abs(verticalMoveDiscance) > fingerVerticalMoveDistance || Math.abs(velocity.x) > FINGER_VELOCITY || Math.abs(velocity.y) > FINGER_VELOCITY) {
-            verticalPageCurrentIndex = if (verticalMoveDiscance > 0) ++verticalPageCurrentIndex else --verticalPageCurrentIndex
-            horizontalPageCurrentIndex = if (horizontalMoveDiscance > 0) ++horizontalPageCurrentIndex else --horizontalPageCurrentIndex
+        if (Math.abs(horizontalMoveDistance) > fingerHorizontalMoveDistance || Math.abs(verticalMoveDistance) > fingerVerticalMoveDistance || Math.abs(velocity.x) > FINGER_VELOCITY || Math.abs(velocity.y) > FINGER_VELOCITY) {
+            verticalPageCurrentIndex = if (verticalMoveDistance > 0) ++verticalPageCurrentIndex else --verticalPageCurrentIndex
+            horizontalPageCurrentIndex = if (horizontalMoveDistance > 0) ++horizontalPageCurrentIndex else --horizontalPageCurrentIndex
             if (verticalPageCurrentIndex < 0) {
                 verticalPageCurrentIndex = 0
             }
@@ -181,25 +201,25 @@ open class UIScrollView : UIView {
             moveOffsetY = verticalPageCurrentIndex * frame.size.height
         }
 
-        val offset = calculateMovePoint(CGPoint(moveOffsetX, moveOffsetY), pagingEnabled)
+        val offset = computeMovePoint(CGPoint(moveOffsetX, moveOffsetY), pagingEnabled)
         windowSizePoint = offset
     }
 
-    private fun calculateMovePoint(point: CGPoint, PagingEnabled: Boolean): CGPoint {
-        val y = calculateY(point.y)
-        val x = calculateX(point.x)
+    private fun computeMovePoint(point: CGPoint, PagingEnabled: Boolean): CGPoint {
+        val y = computeY(point.y)
+        val x = computeX(point.x)
         return CGPoint(x, y)
     }
 
-    private fun calculateY(y: Double): Double {
-        return calculateXY(y, false)
+    private fun computeY(y: Double): Double {
+        return computeXY(y, false)
     }
 
-    private fun calculateX(x: Double): Double {
-        return calculateXY(x, true)
+    private fun computeX(x: Double): Double {
+        return computeXY(x, true)
     }
 
-    private fun calculateXY(xOry: Double, isX: Boolean): Double {
+    private fun computeXY(xOry: Double, isX: Boolean): Double {
         val contentSizeWidth = contentSize.width
         val contentSizeHeight = contentSize.height
 
@@ -270,6 +290,22 @@ open class UIScrollView : UIView {
             }
             UIViewAnimator.addAnimationState(self, "contentOffset.x", oldValue.x, this.contentOffset.x)
             UIViewAnimator.addAnimationState(self, "contentOffset.y", oldValue.y, this.contentOffset.y)
+        }
+    }
+
+    open fun scrollToVisible(visibleRect: CGRect, animated: Boolean) {
+        val leftVisible = visibleRect.x < contentOffset.x + frame.width
+        val topVisible = visibleRect.y < contentOffset.y + frame.height
+        var computedOffsetX = contentOffset.x
+        var computedOffsetY = contentOffset.y
+        if (!leftVisible) {
+            computedOffsetX = if (visibleRect.width < frame.width) visibleRect.x + visibleRect.width - frame.width else visibleRect.x
+        }
+        if (!topVisible) {
+            computedOffsetY = if (visibleRect.height < frame.height) visibleRect.y + visibleRect.height - frame.height else visibleRect.y
+        }
+        if (!leftVisible || !topVisible) {
+            setContentOffset(CGPoint(computedOffsetX, computedOffsetY), animated)
         }
     }
 

@@ -48,6 +48,10 @@ internal object UIViewHelpers {
         var viewX = viewRoot.frame.origin.x
         var viewY = viewRoot.frame.origin.y
         while (viewRoot.superview != null) {
+            (viewRoot.superview as? UIScrollView)?.let {
+                viewX -= it.contentOffset.x
+                viewY -= it.contentOffset.y
+            }
             viewRoot.superview?.let {
                 viewRoot = it
             }
@@ -58,6 +62,10 @@ internal object UIViewHelpers {
         var toViewX = toViewRoot.frame.origin.x
         var toViewY = toViewRoot.frame.origin.y
         while (toViewRoot.superview != null) {
+            (toViewRoot.superview as? UIScrollView)?.let {
+                toViewX -= it.contentOffset.x
+                toViewY -= it.contentOffset.y
+            }
             toViewRoot.superview?.let {
                 toViewRoot = it
             }
