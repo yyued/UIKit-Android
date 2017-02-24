@@ -24,6 +24,7 @@ class UIMenuController {
     }
 
     var menuVisible = false
+    private var currentAnimation: UIViewAnimation? = null
 
     fun setMenuVisible(visible: Boolean, animated: Boolean) {
         menuVisible = visible
@@ -31,6 +32,7 @@ class UIMenuController {
             createMenuView()
         }
         lets(targetView, menuView, maskView) { targetView, menuView, maskView ->
+            currentAnimation?.let { it.cancel() }
             if (menuVisible) {
                 val rootView = UIViewHelpers.findRootView(targetView) ?: return@lets
                 resetLayouts(rootView)
@@ -39,7 +41,7 @@ class UIMenuController {
                 if (animated) {
                     maskView.alpha = 0.0f
                     menuView.alpha = 0.0f
-                    UIViewAnimator.linear(Runnable {
+                    currentAnimation = UIViewAnimator.linear(Runnable {
                         maskView.alpha = 1.0f
                         menuView.alpha = 1.0f
                     })
@@ -53,7 +55,7 @@ class UIMenuController {
                 if (animated) {
                     maskView.alpha = 1.0f
                     menuView.alpha = 1.0f
-                    UIViewAnimator.linear(0.25, Runnable {
+                    currentAnimation = UIViewAnimator.linear(0.25, Runnable {
                         maskView.alpha = 0.0f
                         menuView.alpha = 0.0f
                     }, Runnable {

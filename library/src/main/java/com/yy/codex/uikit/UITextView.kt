@@ -87,11 +87,14 @@ class UITextView : UIScrollView, UITextInput.Delegate {
     }
 
     fun onLongPressed(sender: UILongPressGestureRecognizer) {
-        if (sender.state == UIGestureRecognizerState.Began) {
+        if (sender.state == UIGestureRecognizerState.Began && isFirstResponder()) {
             touchStartTimestamp = System.currentTimeMillis()
             touchStartInputPosition = input.cursorPosition
+            UIMenuController.sharedMenuController.setMenuVisible(false, true)
+            operateCursor(sender)
         }
-        if (isFirstResponder()) {
+        if (sender.state == UIGestureRecognizerState.Changed && isFirstResponder()) {
+            UIMenuController.sharedMenuController.setMenuVisible(false, true)
             operateCursor(sender)
         }
         else if (sender.state == UIGestureRecognizerState.Ended) {
@@ -118,9 +121,15 @@ class UITextView : UIScrollView, UITextInput.Delegate {
             operateCursor(sender)
         }
         else {
-            touchStartInputPosition = input.cursorPosition
+            val menuVisible = UIMenuController.sharedMenuController.menuVisible
+            if (!menuVisible) {
+                touchStartInputPosition = input.cursorPosition
+            }
+            else {
+                UIMenuController.sharedMenuController.setMenuVisible(false, true)
+            }
             operateCursor(sender)
-            if (selection == null) {
+            if (!menuVisible && selection == null) {
                 if (touchStartInputPosition == input.cursorPosition) {
                     showPositionMenu()
                 }

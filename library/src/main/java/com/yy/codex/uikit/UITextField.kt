@@ -223,8 +223,14 @@ class UITextField : UIControl, UITextInput.Delegate, UITextInputTraits {
     override fun onEvent(event: Event) {
         super.onEvent(event)
         if (event == UIControl.Event.TouchDown) {
-            touchStartTimestamp = System.currentTimeMillis()
-            touchStartInputPosition = input.cursorPosition
+            val menuVisible = UIMenuController.sharedMenuController.menuVisible
+            if (menuVisible) {
+                UIMenuController.sharedMenuController.setMenuVisible(false, true)
+            }
+            else {
+                touchStartTimestamp = System.currentTimeMillis()
+                touchStartInputPosition = input.cursorPosition
+            }
         }
         else if (event == UIControl.Event.TouchUpInside) {
             if (!isFirstResponder()) {
