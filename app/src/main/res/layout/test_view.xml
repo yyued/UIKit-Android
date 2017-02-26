@@ -26,13 +26,23 @@
         <!--app:view.maxWidth="120"-->
         <!--app:label.linebreakMode="ByTruncatingTail">-->
     <!--</com.yy.codex.uikit.UILabel>-->
-    <com.yy.codex.uikit.UITextField
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:constraint.enabled="true"
-        app:constraint.centerHorizontally="true"
-        app:constraint.centerVertically="true"
-        app:constraint.width="200"
-        app:constraint.height="30">
-    </com.yy.codex.uikit.UITextField>
+    <!--<com.yy.codex.uikit.UITextField-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--app:constraint.enabled="true"-->
+        <!--app:constraint.centerHorizontally="true"-->
+        <!--app:constraint.centerVertically="true"-->
+        <!--app:constraint.width="200"-->
+        <!--app:constraint.height="30">-->
+    <!--</com.yy.codex.uikit.UITextField>-->
+
+    <!--<com.yy.codex.uikit.UISwitch-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--app:constraint.enabled="true"-->
+        <!--app:constraint.centerHorizontally="true"-->
+        <!--app:constraint.bottom="0"-->
+        <!--app:constraint.height="32">-->
+    <!--</com.yy.codex.uikit.UISwitch>-->
+
 </com.yy.codex.uikit.UIView>

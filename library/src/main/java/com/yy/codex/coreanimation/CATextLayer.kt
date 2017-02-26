@@ -11,7 +11,7 @@ import com.yy.codex.uikit.UIScreen
  * Created by adi on 17/1/10.
  */
 
-class CATextLayer(frame: CGRect) : CALayer(frame) {
+open class CATextLayer(frame: CGRect) : CALayer(frame) {
 
     var string: String? = null
         set(value) {

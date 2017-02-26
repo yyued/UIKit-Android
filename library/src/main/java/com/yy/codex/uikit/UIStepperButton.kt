@@ -57,32 +57,32 @@ class UIStepperButton : UIButton {
 
     // supp
 
-    private fun resetBackgroundColor() {
-        setBackgroundColor(currentBackgroundColor())
-    }
-
-    private fun currentBackgroundColor(): UIColor? {
-        val state = state
-        if (bgColors[state] != null) {
-            return bgColors[state]
-        } else if (bgColors[EnumSet.of(UIControl.State.Normal)] != null) {
-            return bgColors[EnumSet.of(UIControl.State.Normal)]
-        } else {
-            if (state.contains(UIControl.State.Highlighted) && state.contains(UIControl.State.Normal)) {
-                serachStepper()?.let {
-                    return it.bgColor.colorWithDarken(0.3)
-                }
-            }
-            if (state.contains(UIControl.State.Selected)){
-                serachStepper()?.let {
-                    return it.tintColor ?: it.defaultTint
-                }
-            }
-            return serachStepper()?.let {
-                return it.bgColor
-            }
-        }
-    }
+//    private fun resetBackgroundColor() {
+//        setBackgroundColor(currentBackgroundColor())
+//    }
+//
+//    private fun currentBackgroundColor(): UIColor? {
+//        val state = state
+//        if (bgColors[state] != null) {
+//            return bgColors[state]
+//        } else if (bgColors[EnumSet.of(UIControl.State.Normal)] != null) {
+//            return bgColors[EnumSet.of(UIControl.State.Normal)]
+//        } else {
+//            if (state.contains(UIControl.State.Highlighted) && state.contains(UIControl.State.Normal)) {
+//                serachStepper()?.let {
+//                    return it.bgColor.colorWithDarken(0.3)
+//                }
+//            }
+//            if (state.contains(UIControl.State.Selected)){
+//                serachStepper()?.let {
+//                    return it.tintColor ?: it.defaultTint
+//                }
+//            }
+//            return serachStepper()?.let {
+//                return it.bgColor
+//            }
+//        }
+//    }
 
     fun serachStepper(): UIStepper? {
         var nextResponder = nextResponder

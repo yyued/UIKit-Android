@@ -96,7 +96,7 @@
             <enum name="BottomRight" value="12" />
         </attr>
     </declare-styleable>
-    <declare-styleable name="UILabel" parnet="UIView">
+    <declare-styleable name="UILabel" parent="UIView">
         <attr name="label.text" format="string" />
         <attr name="label.fontSize" format="float" />
         <attr name="label.textColor" format="color" />
@@ -112,6 +112,10 @@
             <enum name="Center" value="1" />
             <enum name="Opposite" value="2" />
         </attr>
+    </declare-styleable>
+    <declare-styleable name="UISlider" parent="UIControl">
+    </declare-styleable>
+    <declare-styleable name="UISwitch" parent="UIControl">
     </declare-styleable>
 
 </resources>

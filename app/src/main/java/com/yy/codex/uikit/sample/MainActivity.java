@@ -48,6 +48,8 @@ import com.yy.codex.uikit.UINavigationController;
 import com.yy.codex.uikit.UINavigationController_ActivityBase;
 import com.yy.codex.uikit.UIReturnKeyType;
 import com.yy.codex.uikit.UIScreen;
+import com.yy.codex.uikit.UISegmentedControl;
+import com.yy.codex.uikit.UISegmentedItem;
 import com.yy.codex.uikit.UISlider;
 import com.yy.codex.uikit.UISwitch;
 import com.yy.codex.uikit.UITabBarActivity;
@@ -117,9 +119,15 @@ class TestViewController extends UIViewController {
         setTitle("Test");
         getNavigationItem().setRightBarButtonItem(new UIBarButtonItem("Next", this, "handleNextButtonTapped"));
 
-        UISwitch slider = new UISwitch(getContext());
-        slider.setConstraint(UIConstraint.Companion.center());
-        getView().addSubview(slider);
+        UISegmentedControl segmentedControl = new UISegmentedControl(getContext());
+        segmentedControl.setConstraint(UIConstraint.Companion.center());
+        segmentedControl.getConstraint().setWidth("80%");
+        ArrayList<UISegmentedItem> items = new ArrayList<>();
+        items.add(new UISegmentedItem("热门"));
+        items.add(new UISegmentedItem("最新"));
+        items.add(new UISegmentedItem("直播"));
+        segmentedControl.setItems(items);
+        getView().addSubview(segmentedControl);
 
     }
 

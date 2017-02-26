@@ -197,14 +197,21 @@ internal object CALayerPainter {
     }
 
     private fun createBitmapWithMaskLayer(layer: CALayer): Bitmap {
+        layer.mask?.let {
+            if (it.frame.width > 0 && it.frame.height > 0) {
+                val bitmap = createEmptyBitmap(it)
+                it.drawLayerTreeInCanvas(Canvas(bitmap))
+                return bitmap
+            }
+        }
         val origin = CALayer.calculateOriginInSuperCoordinate(layer)
         val scaledDensity = UIScreen.mainScreen.scale().toFloat()
-        val cornerRaidus = layer.cornerRadius.toFloat() * scaledDensity
+        val cornerRadius = layer.cornerRadius.toFloat() * scaledDensity
         val bitmapW = (layer.frame.size.width * scaledDensity + origin.x).toInt()
         val bitmapH = (layer.frame.size.height * scaledDensity + origin.y).toInt()
         val bitmap = Bitmap.createBitmap(bitmapW, bitmapH, Bitmap.Config.ARGB_8888)
         val rectF = RectF(origin.x.toFloat(), origin.y.toFloat(), bitmapW.toFloat(), bitmapH.toFloat())
-        Canvas(bitmap).drawRoundRect(rectF, cornerRaidus, cornerRaidus, Paint(Paint.ANTI_ALIAS_FLAG))
+        Canvas(bitmap).drawRoundRect(rectF, cornerRadius, cornerRadius, Paint(Paint.ANTI_ALIAS_FLAG))
         return bitmap
     }
 

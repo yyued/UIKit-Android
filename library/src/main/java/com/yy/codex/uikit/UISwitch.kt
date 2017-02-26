@@ -34,7 +34,7 @@ class UISwitch : UIControl {
     }
 
     override fun intrinsicContentSize(): CGSize {
-        return CGSize(51.0, 44.0)
+        return CGSize(52.0, 44.0)
     }
 
     /* appearance */
@@ -43,7 +43,9 @@ class UISwitch : UIControl {
 
     private fun initContentView() {
         contentView = UIView(context)
-        contentView.frame = CGRect(0.0, 0.0, 52.0, 44.0)
+        contentView.constraint = UIConstraint.center()
+        contentView.constraint?.width = "52"
+        contentView.constraint?.height = "32"
         initOffBackgroundView()
         contentView.addSubview(offBackgroundView)
         initOnBackgroundView()
@@ -56,7 +58,7 @@ class UISwitch : UIControl {
 
     private fun initOffBackgroundView() {
         offBackgroundView = UIView(context)
-        offBackgroundView.frame = CGRect(0.0, 0.0, 51.0, 32.0)
+        offBackgroundView.frame = CGRect(0.0, 0.0, 52.0, 32.0)
         offBackgroundView.alpha = 1.0f
         offBackgroundView.wantsLayer = true
         offBackgroundView.layer.cornerRadius = 16.0
@@ -69,7 +71,7 @@ class UISwitch : UIControl {
 
     private fun initOnBackgroundView() {
         onBackgroundView = UIView(context)
-        onBackgroundView.frame = CGRect(0.0, 0.0, 51.0, 32.0)
+        onBackgroundView.frame = CGRect(0.0, 0.0, 52.0, 32.0)
         onBackgroundView.alpha = 0.0f
         onBackgroundView.wantsLayer = true
         onBackgroundView.layer.cornerRadius = 16.0
@@ -83,8 +85,8 @@ class UISwitch : UIControl {
         handleView.frame = CGRect(1.0, 1.0, kHandleRadius.toDouble(), kHandleRadius.toDouble())
         handleView.alpha = 1.0f
         handleView.wantsLayer = true
-        handleView.layer.shadowX = 2.0
-        handleView.layer.shadowY = 2.0
+        handleView.layer.shadowX = 1.0
+        handleView.layer.shadowY = 1.0
         handleView.layer.shadowRadius = 0.5
         handleView.layer.shadowColor = UIColor(.3, .3, .3, .2)
         handleView.layer.cornerRadius = kHandleRadius / 2.0
@@ -131,8 +133,9 @@ class UISwitch : UIControl {
     override fun onEvent(event: UIControl.Event) {
         super.onEvent(event)
         when (event) {
-            UIControl.Event.TouchDown -> if(!active) setActive(true) else return
-            UIControl.Event.TouchDragExit -> setOn(this.on, true)
+            UIControl.Event.TouchDown -> setActive(true)
+            UIControl.Event.TouchDragEnter -> setActive(true)
+            UIControl.Event.TouchDragExit -> setActive(false)
             UIControl.Event.TouchUpInside -> setOn(!this.on, true)
             UIControl.Event.TouchUpOutside -> setOn(this.on, true)
         }

@@ -17,27 +17,34 @@ open class UIButton : UIControl {
 
     lateinit var titleLabel: UILabel
         private set
-    private var titles = HashMap<EnumSet<UIControl.State>, String>()
+    protected var titles = HashMap<EnumSet<UIControl.State>, String>()
     protected var titleColors = HashMap<EnumSet<UIControl.State>, UIColor>()
-    private var attributedTitles = HashMap<EnumSet<UIControl.State>, NSAttributedString>()
+    protected var backgroundColors = HashMap<EnumSet<UIControl.State>, UIColor>()
+    protected var attributedTitles = HashMap<EnumSet<UIControl.State>, NSAttributedString>()
+
     var font = UIFont(17f)
         set(value) {
             field = value
             resetTitleLabel()
         }
+
     lateinit var imageView: UIImageView
         private set
+
     private var images = HashMap<EnumSet<UIControl.State>, UIImage>()
+
     var contentEdgeInsets = UIEdgeInsets(0.0, 0.0, 0.0, 0.0)
         set(value) {
             field = value
             layoutSubviews()
         }
+
     var titleEdgeInsets = UIEdgeInsets(0.0, 0.0, 0.0, 0.0)
         set(value) {
             field = value
             layoutSubviews()
         }
+
     var imageEdgeInsets = UIEdgeInsets(0.0, 0.0, 0.0, 0.0)
         set(value) {
             field = value
@@ -90,6 +97,7 @@ open class UIButton : UIControl {
         super.resetState()
         resetTitleLabel()
         resetImageView()
+        resetBackgroundColor()
     }
 
     /* UIView */
@@ -173,6 +181,35 @@ open class UIButton : UIControl {
             state.remove(UIControl.State.Normal)
         }
         titleColors.put(state, color)
+        resetTitleLabel()
+    }
+
+    fun resetBackgroundColor() {
+        currentBackgroundColor()?.let {
+            this.setBackgroundColor(it)
+        }
+    }
+
+    open fun currentBackgroundColor(): UIColor? {
+        val state = state
+        if (backgroundColors[state] != null) {
+            return backgroundColors[state]
+        } else if (backgroundColors[EnumSet.of(UIControl.State.Normal)] != null) {
+            return backgroundColors[EnumSet.of(UIControl.State.Normal)]
+        } else {
+            return null
+        }
+    }
+
+    fun setBackgroundColor(color: UIColor, state: UIControl.State) {
+        setBackgroundColor(color, EnumSet.of(UIControl.State.Normal, state))
+    }
+
+    fun setBackgroundColor(color: UIColor, state: EnumSet<UIControl.State>) {
+        if (state.contains(UIControl.State.Selected)) {
+            state.remove(UIControl.State.Normal)
+        }
+        backgroundColors.put(state, color)
         resetTitleLabel()
     }
 

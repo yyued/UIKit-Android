@@ -8,7 +8,7 @@ import com.yy.codex.uikit.UIScreen
  * Created by adi on 17/1/10.
  */
 
-class CAShapeLayer : CALayer() {
+open class CAShapeLayer : CALayer() {
 
     var path: Path? = null
         set(value) {

@@ -1,178 +1,172 @@
 package com.yy.codex.uikit
 
 import android.content.Context
+import android.graphics.Matrix
+import android.graphics.Path
 import android.util.AttributeSet
 import android.view.View
+import com.yy.codex.coreanimation.CAShapeLayer
+import java.util.*
 
 /**
  * Created by adi on 17/2/7.
  */
 
-class UISegmentedItem {
-    var title = ""
-    var enable = true
-    var selected = false
+class UISegmentedItem(val title: String) {
 
-    constructor()
-
-    constructor(title: String){
-        this.title = title
-    }
-
-    constructor(title: String, enable: Boolean){
-        this.title = title
-        this.enable = enable
-    }
+    var enabled = true
 
 }
 
 class UISegmentedControl : UIControl {
+
     constructor(context: Context, view: View) : super(context, view)
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
 
-
     override fun init() {
         super.init()
-
-        defaultTint = UIColor(0x12 / 255.0, 0x6a / 255.0, 1.0, 1.0)
-
         contentView = UIView(context)
+        contentView.constraint = UIConstraint.full()
         addSubview(contentView)
-
-        borderView = UIView(context)
-        borderView.userInteractionEnabled = false
-        borderView.wantsLayer = true
-        borderView.layer.borderWidth = 1.0
-        borderView.layer.borderColor = tintColor ?: defaultTint
-        borderView.layer.cornerRadius = 3.0
+        initBorderView()
         addSubview(borderView)
     }
 
-    override fun layoutSubviews() {
-        super.layoutSubviews()
-        val borderW = borderView.layer.borderWidth
-        val buttonW = (frame.width - (buttons.size + 1) * borderW) / buttons.size
-        contentView.frame = CGRect(0.0, 0.0, frame.width, frame.height)
-        borderView.frame = CGRect(0.0, 0.0, frame.width, frame.height)
-        for (idx in 0..buttons.size-1){
-            if (idx == 0){
-                buttons.get(0).frame = CGRect(1.0, 1.0, buttonW, 28.0)
-            }
-            else if (idx == buttons.size-1){
-                val ret = if (numberOfSegments % 2 == 0) 1.0 else 0.5
-                val w = frame.width - (borderW +  buttonW) * idx - ret
-                buttons.get(idx).frame = CGRect((borderW +  buttonW) * idx , 1.0, w, 28.0)
-            }
-            else {
-                buttons.get(idx).frame = CGRect((borderW +  buttonW) * idx , 1.0, buttonW, 28.0)
-            }
-        }
-        for (idx in 0..divs.size-1){
-            divs.get(idx).frame = CGRect(buttonW * (idx + 1) + borderW * idx, 0.0, borderW, 30.0)
-        }
+    override fun intrinsicContentSize(): CGSize {
+        return CGSize(0.0, 28.0);
     }
 
     override fun tintColorDidChanged() {
         super.tintColorDidChanged()
-        borderView.layer.borderColor = tintColor ?: defaultTint
-        divs.map {
-            it.setBackgroundColor(tintColor ?: defaultTint)
-        }
+        borderView.layer.borderColor = tintColor ?: UIColor.clearColor
     }
+
+    override fun layoutSubviews() {
+        super.layoutSubviews()
+        resetItemsView()
+    }
+
+    /* public */
+
+    var items: List<UISegmentedItem> = listOf()
+        set(value) {
+            field = value
+            selectedIndex = 0
+            resetItemsView()
+        }
+
+    var selectedColor: UIColor = UIColor.whiteColor
+
+    var selectedIndex = 0
+        set(value) {
+            field = value
+            if (field < contentButtons.count()) {
+                contentButtons.forEach { it.select = false }
+                contentButtons[field].select = true
+            }
+        }
 
     /* props */
 
     lateinit private var contentView: UIView
-
     lateinit private var borderView: UIView
+    private var contentButtons: List<UIButton> = listOf()
 
-    private var items: List<UISegmentedItem> = listOf()
+    private fun initBorderView() {
+        borderView = UIView(context)
+        borderView.constraint = UIConstraint.full()
+        borderView.userInteractionEnabled = false
+        borderView.wantsLayer = true
+        borderView.layer.borderWidth = 1.0
+        borderView.layer.borderColor = tintColor ?: UIColor.clearColor
+        borderView.layer.cornerRadius = 6.0
+    }
 
-    private var buttons: List<UISegmentedButton> = listOf()
+    private fun createLeftMask(width: Float): Path {
+        val maskPath = Path()
+        maskPath.moveTo(width, 0.0f)
+        maskPath.cubicTo(width, 0.0f, width, 2.5f, width, 6f)
+        maskPath.cubicTo(width, 10.72f, width, 17.28f, width, 22.0f)
+        maskPath.cubicTo(width, 25.5f, width, 28.0f, width, 28.0f)
+        maskPath.lineTo(6.45f, 28.0f)
+        maskPath.cubicTo(2.89f, 28.0f, 0.0f, 25.31f, 0.0f, 22.0f)
+        maskPath.lineTo(0.0f, 6.0f)
+        maskPath.cubicTo(0.0f, 2.69f, 2.89f, 0.0f, 6.45f, 0.0f)
+        maskPath.lineTo(width, 0.0f)
+        maskPath.close()
+        return maskPath
+    }
 
-    private var divs: List<UIView> = listOf()
+    private fun createRightMask(width: Float): Path {
+        val maskPath = Path()
+        maskPath.moveTo(0.0f, 0.0f)
+        maskPath.cubicTo(0.0f, 0.0f, 0.0f, 2.5f, 0.0f, 6f)
+        maskPath.cubicTo(0.0f, 10.72f, 0.0f, 17.28f, 0.0f, 22.0f)
+        maskPath.cubicTo(0.0f, 25.5f, 0.0f, 28.0f, 0.0f, 28.0f)
+        maskPath.lineTo(width - 6.45f, 28.0f)
+        maskPath.cubicTo(width - 2.89f, 28.0f, width, 25.31f, width, 22.0f)
+        maskPath.lineTo(width, 6.0f)
+        maskPath.cubicTo(width, 2.69f, width - 2.89f, 0.0f, width - 6.45f, 0.0f)
+        maskPath.lineTo(0.0f, 0.0f)
+        maskPath.close()
+        return maskPath
+    }
 
-    private var numberOfSegments: Int = 0
-
-    var activeIndex: Int = 0
-        private set
-
-    var defaultTint: UIColor = UIColor(0x12 / 255.0, 0x6a / 255.0, 1.0, 1.0)
-        private set
-
-    var bgColor: UIColor = UIColor.whiteColor // @Td should be clearColor
-
-    /* for SegmentedButton */
-
-    fun onSelectWithButton(btn: UISegmentedButton){
-        val selectIdx = buttons.indexOf(btn)
-        buttons.forEachIndexed { idx, button ->
-            if (idx == selectIdx){
-                button.select = true
-                activeIndex = idx
-                onEvent(Event.ValueChanged)
+    private fun resetItemsView() {
+        contentView.subviews.forEach(UIView::removeFromSuperview)
+        val buttons = items.mapIndexed { idx, it ->
+            val button = UIButton(context)
+            button.tag = idx
+            button.addTarget(this, "onItemButtonTouchUpInside:", Event.TouchUpInside)
+            button.wantsLayer = true
+            if (idx == 0) {
+                val maskLayer = CAShapeLayer()
+                maskLayer.frame = CGRect(0.0, 0.0, frame.width / items.count() + 1, frame.height)
+                maskLayer.path = createLeftMask((frame.width / items.count() + 1).toFloat())
+                maskLayer.fillColor = UIColor.blackColor
+                button.layer.mask = maskLayer
+                button.layer.clipToBounds = true
             }
-            else {
-                button.select = false
+            else if (idx == items.count() - 1) {
+                val maskLayer = CAShapeLayer()
+                maskLayer.frame = CGRect(0.0, 0.0, frame.width / items.count() + 1, frame.height)
+                maskLayer.path = createRightMask((frame.width / items.count() + 1).toFloat())
+                maskLayer.fillColor = UIColor.blackColor
+                button.layer.mask = maskLayer
+                button.layer.clipToBounds = true
             }
-        }
-    }
-
-    /* exports */
-
-    fun setItems(items: List<UISegmentedItem>){
-        this.items = items
-        numberOfSegments = items.size
-
-        for(button in buttons){
-            button.removeFromSuperview()
-        }
-        for (div in divs){
-            div.removeFromSuperview()
-        }
-
-        val mutableButtons: MutableList<UISegmentedButton> = arrayListOf()
-        val mutableDivs: MutableList<UIView> = arrayListOf()
-        for ((idx, item) in items.withIndex()){
-            val button = UISegmentedButton(context)
-            button.setTitle(item.title, UIControl.State.Normal)
-            button.setTitleColor(UIColor.clearColor, UIControl.State.Selected)
-            button.enable = item.enable
-            mutableButtons.add(button)
-            contentView.addSubview(button)
-            button.select = (idx == 0)
-            if (idx > 0){
-                val div = UIView(context)
-                div.setBackgroundColor(tintColor)
-                mutableDivs.add(div)
-                contentView.addSubview(div)
+            button.constraint = UIConstraint.horizonStack(idx, items.count())
+            button.constraint?.width = button.constraint?.width + " + 2"
+            button.setTitle(it.title, State.Normal)
+            button.setTitleColor(tintColor ?: UIColor.clearColor, State.Normal)
+            button.setTitleColor(tintColor ?: UIColor.clearColor, EnumSet.of(State.Normal, State.Highlighted))
+            button.setTitleColor(selectedColor, State.Selected)
+            button.setTitleColor(selectedColor, EnumSet.of(State.Selected, State.Highlighted))
+            button.setBackgroundColor(UIColor.clearColor, State.Normal)
+            button.setBackgroundColor((tintColor ?: UIColor.clearColor).colorWithAlpha(0.25), EnumSet.of(State.Normal, State.Highlighted))
+            button.setBackgroundColor((tintColor ?: UIColor.clearColor).colorWithAlpha(0.75), EnumSet.of(State.Selected, State.Highlighted))
+            button.setBackgroundColor(tintColor ?: UIColor.clearColor, State.Selected)
+            button.select = idx == selectedIndex
+            if (idx > 0) {
+                val line = UIPixelLine(context)
+                line.vertical = true
+                line.frame = CGRect(0.0,0.0,1.0,28.0)
+                line.color = tintColor ?: UIColor.clearColor
+                button.addSubview(line)
             }
+            return@mapIndexed button
         }
-        buttons = mutableButtons.toList()
-        divs = mutableDivs.toList()
-
-        layoutSubviews()
+        buttons.forEach { contentView.addSubview(it) }
+        contentButtons = buttons
     }
 
-    fun getTitleAtIndex(atIndex: Int):String{
-        return items.get(atIndex).title
-    }
-
-    fun insertTitleAtIndex(title: String, atIndex: Int){
-        // @Td
-    }
-
-    fun setTitleAtIndex(title: String, atIndex: Int){
-        // @Td
-    }
-
-    override fun setBackgroundColor(color: UIColor?) {
-        super.setBackgroundColor(color)
-        color?.let {
-            bgColor = it
+    private fun onItemButtonTouchUpInside(sender: UIButton) {
+        (sender.tag as? Int)?.let {
+            selectedIndex = it
         }
     }
+
 }

@@ -170,11 +170,18 @@ open class CALayer {
     */
     var isNewCanvasContext = false
         get() {
-            val result = this.transforms != null && this.transforms!!.size > 0 || this.sublayers.size > 0 && this.clipToBounds
-            return result
+            transforms?.let {
+                if (it.size > 0 || sublayers.size > 0) {
+                    return true
+                }
+            }
+            if (clipToBounds) {
+                return true
+            }
+            return false
         }
 
-    var mask: CALayer? = null // not support
+    var mask: CALayer? = null
         set(value) {
             if (field != value) {
                 field = value
@@ -282,7 +289,7 @@ open class CALayer {
     /* category CALayer Appearance */
 
     fun drawRect(canvas: Canvas, rect: CGRect) {
-        if (this.askIfNeedDisplay()) {
+        if (frame.width > 0 && frame.height > 0) {
             this.resetNeedDisplayToFalse()
             drawAllLayers(canvas, rect)
         }
@@ -311,10 +318,6 @@ open class CALayer {
         for (item in this.sublayers) {
             item.drawLayerTreeInCanvas(canvas)
         }
-    }
-
-    private fun askIfNeedDisplay(): Boolean {
-        return true
     }
 
     private fun resetNeedDisplayToFalse() {
