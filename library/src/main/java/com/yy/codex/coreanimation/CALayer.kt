@@ -72,7 +72,7 @@ open class CALayer {
             }
         }
 
-    var borderColor = com.yy.codex.uikit.UIColor.Companion.blackColor
+    var borderColor: UIColor? = null
         set(value) {
             if (field != value) {
                 field = value

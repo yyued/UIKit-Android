@@ -27,7 +27,7 @@ internal object CALayerPainter {
             if (layer.bitmap != null) {
                 drawRoundRectBitmap(canvas, layer)
             }
-            if (layer.borderWidth > 0) {
+            if (layer.borderWidth > 0 && layer.borderColor != null) {
                 drawRoundRectBorder(canvas, layer)
             }
         } else {
@@ -35,7 +35,7 @@ internal object CALayerPainter {
             if (layer.bitmap != null) {
                 drawRectBitmap(canvas, layer)
             }
-            if (layer.borderWidth > 0) {
+            if (layer.borderWidth > 0 && layer.borderColor != null) {
                 drawRectBorder(canvas, layer)
             }
         }
@@ -108,14 +108,15 @@ internal object CALayerPainter {
         val borderWidth = layer.borderWidth.toFloat() * scaledDensity
         val cornerRadius = layer.cornerRadius.toFloat() * scaledDensity
         val halfBorderW = borderWidth / 2.0f
-
         paint.reset()
         paint.isAntiAlias = true
         paint.style = Paint.Style.STROKE
         paint.strokeWidth = borderWidth
-        paint.color = layer.borderColor.toInt()
-        var rectFCopyed = frame.shrinkToRectF(halfBorderW, origin)
-        canvas.drawRoundRect(rectFCopyed, cornerRadius, cornerRadius, paint)
+        layer.borderColor?.let {
+            paint.color = it.toInt()
+        }
+        var rectCopyed = frame.shrinkToRectF(halfBorderW, origin)
+        canvas.drawRoundRect(rectCopyed, cornerRadius, cornerRadius, paint)
     }
 
     private fun drawRect(canvas: Canvas, layer: CALayer) {
@@ -169,9 +170,11 @@ internal object CALayerPainter {
         paint.reset()
         paint.style = Paint.Style.STROKE
         paint.strokeWidth = borderWidth
-        paint.color = layer.borderColor.toInt()
-        var rectFCopyed = frame.shrinkToRectF(halfBorderW, origin)
-        canvas.drawRect(rectFCopyed, paint)
+        layer.borderColor?.let {
+            paint.color = it.toInt()
+        }
+        var rectCopyed = frame.shrinkToRectF(halfBorderW, origin)
+        canvas.drawRect(rectCopyed, paint)
     }
 
     private fun createEmptyBitmap(rect: CGRect): Bitmap {

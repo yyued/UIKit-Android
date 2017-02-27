@@ -29,18 +29,45 @@ class UIProgressView : UIControl {
 
     override fun init() {
         super.init()
-
         trackView = UIView(context)
         trackView.wantsLayer = true
         trackView.layer.backgroundColor = UIColor(0xb7 / 255.0, 0xb7 / 255.0, 0xb7 / 255.0, 1.0)
         trackView.layer.cornerRadius = 1.0
         addSubview(trackView)
-
         progressView = UIView(context)
         progressView.wantsLayer = true
-        progressView.layer.backgroundColor = if (tintColor != null) tintColor!! else UIColor(0x10 / 255.0, 0x6a / 255.0, 1.0, 1.0)
+        progressView.layer.backgroundColor = tintColor
         progressView.layer.cornerRadius = 1.0
         addSubview(progressView)
+    }
+
+    override fun intrinsicContentSize(): CGSize {
+        return CGSize(0.0, 2.0)
+    }
+
+    override fun prepareProps(attrs: AttributeSet) {
+        super.prepareProps(attrs)
+        val typedArray = context.theme.obtainStyledAttributes(attrs, R.styleable.UIProgressView, 0, 0)
+        typedArray.getFloat(R.styleable.UIProgressView_progressview_value, 0.0f)?.let {
+            initializeAttributes.put("UIProgressView.value", it)
+        }
+        typedArray.getColor(R.styleable.UIProgressView_progressview_trackColor, -1)?.let {
+            if (it != -1) {
+                initializeAttributes.put("UIProgressView.trackColor", UIColor(it))
+            }
+        }
+    }
+
+    override fun resetProps() {
+        super.resetProps()
+        initializeAttributes?.let {
+            (it["UIProgressView.value"] as? Float)?.let {
+                value = it.toDouble()
+            }
+            (it["UIProgressView.trackColor"] as? UIColor)?.let {
+                trackColor = it
+            }
+        }
     }
 
     /* appearance */
@@ -50,7 +77,7 @@ class UIProgressView : UIControl {
     private lateinit var trackView: UIView
 
     var value: Double = 0.5
-        set(value) {
+        private set(value) {
             if (field == value){
                 return
             }
@@ -64,7 +91,6 @@ class UIProgressView : UIControl {
                 field = value
             }
             onEvent(Event.ValueChanged)
-            setValueAnimated(value)
         }
 
     var trackColor: UIColor = UIColor(0xb7 / 255.0, 0xb7 / 255.0, 0xb7 / 255.0, 1.0)
@@ -77,11 +103,8 @@ class UIProgressView : UIControl {
 
     override fun layoutSubviews() {
         super.layoutSubviews()
-        val frameW = frame.size.width
-        trackView.frame = CGRect(0.0, 15.0, frameW, 2.0)
-        trackView.layer.backgroundColor = trackColor
-        progressView.frame = CGRect(0.0, 15.0, frameW * value, 2.0)
-        progressView.layer.backgroundColor = if (tintColor != null) tintColor!! else UIColor(0x10 / 255.0, 0x6a / 255.0, 1.0, 1.0)
+        trackView.frame = CGRect(0.0, 0.0, frame.size.width, 2.0)
+        progressView.frame = CGRect(0.0, 0.0, frame.size.width * value, 2.0)
     }
 
     override fun tintColorDidChanged() {
@@ -93,15 +116,17 @@ class UIProgressView : UIControl {
 
     /* support */
 
-    private fun setValueAnimated(value: Double){
-        cancelAnimation()
-        currentAnimation = UIViewAnimator.spring(Runnable {
-            progressView.frame = CGRect(0.0, 15.0, frame.size.width * value, 2.0)
-        })
-    }
-
-    private fun cancelAnimation() {
+    fun setValue(value: Double, animated: Boolean){
+        this.value = value
         currentAnimation?.let(UIViewAnimation::cancel)
+        if (animated) {
+            currentAnimation = UIViewAnimator.springWithBounciness(1.0, 20.0, Runnable {
+                progressView.frame = CGRect(0.0, 0.0, frame.size.width * value, 2.0)
+            }, Runnable {  })
+        }
+        else {
+            progressView.frame = CGRect(0.0, 0.0, frame.size.width * value, 2.0)
+        }
     }
 
 }

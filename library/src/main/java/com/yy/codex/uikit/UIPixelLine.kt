@@ -38,6 +38,31 @@ class UIPixelLine : UIView {
             invalidate()
         }
 
+    override fun prepareProps(attrs: AttributeSet) {
+        super.prepareProps(attrs)
+        val typedArray = context.theme.obtainStyledAttributes(attrs, R.styleable.UIPixelLine, 0, 0)
+        typedArray.getBoolean(R.styleable.UIPixelLine_pixelline_vertical, false)?.let {
+            initializeAttributes.put("UIPixelLine.vertical", it)
+        }
+        typedArray.getColor(R.styleable.UIPixelLine_pixelline_color, -1)?.let {
+            if (it != -1) {
+                initializeAttributes.put("UIPixelLine.color", UIColor(it))
+            }
+        }
+    }
+
+    override fun resetProps() {
+        super.resetProps()
+        initializeAttributes?.let {
+            (it["UIPixelLine.vertical"] as? Boolean)?.let {
+                vertical = it
+            }
+            (it["UIPixelLine.color"] as? UIColor)?.let {
+                color = it
+            }
+        }
+    }
+
     private val paint = Paint()
 
     override fun onDraw(canvas: Canvas) {

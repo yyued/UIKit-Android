@@ -34,6 +34,23 @@ class UISlider : UIControl {
         resetViewFrames()
     }
 
+    override fun prepareProps(attrs: AttributeSet) {
+        super.prepareProps(attrs)
+        val typedArray = context.theme.obtainStyledAttributes(attrs, R.styleable.UISlider, 0, 0)
+        typedArray.getFloat(R.styleable.UISlider_slider_progressValue, 0.0f)?.let {
+            initializeAttributes.put("UISlider.progressValue", it)
+        }
+    }
+
+    override fun resetProps() {
+        super.resetProps()
+        initializeAttributes?.let {
+            (it["UISlider.progressValue"] as? Float)?.let {
+                progressValue = it.toDouble()
+            }
+        }
+    }
+
     override fun tintColorDidChanged() {
         super.tintColorDidChanged()
         lets(progressView, tintColor, { progressView, tintColor ->
