@@ -7,6 +7,7 @@ import android.util.AttributeSet
 import android.view.View
 import com.yy.codex.foundation.NSLog
 import com.yy.codex.foundation.lets
+import java.util.*
 
 /**
  * Created by it on 17/1/23.
@@ -14,16 +15,13 @@ import com.yy.codex.foundation.lets
 open class UITableView : UIScrollView {
 
     interface UITableViewDataSource {
-
         fun tableViewNumberOfRowsInSection(tableView: UITableView, section: Int): Int
         fun tableViewCellForRowAtIndexPath(tableView: UITableView, indexPath: NSIndexPath): UITableViewCell
-
         fun numberOfSectionsInTableView(tableView: UITableView): Int
         fun tableViewTitleForHeaderInSection(tableView: UITableView, section: Int): String?
     }
 
     interface UITableViewDelegate: UIScrollView.UIScrollViewDelegate {
-
         fun tableViewHeightForRowAtIndexPath(tableView: UITableView, indexPath: NSIndexPath): Double
         fun tableViewDidSelectRowAtIndexPath(tableView: UITableView, indexPath: NSIndexPath)
         fun tableViewHeightForHeaderInSection(tableView: UITableView, section: Int): Double
@@ -36,8 +34,10 @@ open class UITableView : UIScrollView {
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes) {}
 
-    var rowHeight = 0
+    var rowHeight = 0.0
+
     var sectionHeaderHeight = 0
+
     var sectionFooterHeight = 0
 
     var numberOfSections = 0
@@ -62,12 +62,15 @@ open class UITableView : UIScrollView {
         return delegate as? UITableViewDelegate
     }
 
+    internal var lastVisibleHash: String = ""
 
-    init {
-    }
+    internal var cellPositions: List<UITableViewCellPosition> = listOf()
+
+    internal var cellInstances: HashMap<String, MutableList<UITableViewReusableCell>> = hashMapOf()
 
     fun reloadData() {
-
+        _reloadCellCaches()
+        _updateCells()
     }
 
     fun cellForRowAtIndexPath(indexPath: NSIndexPath): UITableViewCell? {
@@ -80,8 +83,10 @@ open class UITableView : UIScrollView {
 
     override fun layoutSubviews() {
         super.layoutSubviews()
-
-        updateRowData()
+        _updateCells()
+        subviews.forEach {
+            (it as? UITableViewCell)?.let { it.frame = it.frame.setWidth(frame.width) }
+        }
     }
 
     override fun touchesBegan(touches: List<UITouch>, event: UIEvent) {

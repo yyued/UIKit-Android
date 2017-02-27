@@ -8,17 +8,25 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.yy.codex.uikit.CGRect;
+import com.yy.codex.uikit.NSIndexPath;
 import com.yy.codex.uikit.UIBarButtonItem;
 import com.yy.codex.uikit.UIColor;
+import com.yy.codex.uikit.UIConstraint;
 import com.yy.codex.uikit.UIImage;
+import com.yy.codex.uikit.UILabel;
 import com.yy.codex.uikit.UINavigationController;
 import com.yy.codex.uikit.UINavigationController_ActivityBase;
+import com.yy.codex.uikit.UIScrollView;
 import com.yy.codex.uikit.UITabBarActivity;
 import com.yy.codex.uikit.UITabBarItem;
+import com.yy.codex.uikit.UITableView;
+import com.yy.codex.uikit.UITableViewCell;
+import com.yy.codex.uikit.UITableViewCellStyle;
 import com.yy.codex.uikit.UIView;
 import com.yy.codex.uikit.UIViewController;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,6 +83,81 @@ class TestViewController extends UIViewController {
         super.viewDidLoad();
         setTitle("Test");
         getNavigationItem().setRightBarButtonItem(new UIBarButtonItem("Next", this, "handleNextButtonTapped"));
+
+        UITableView tableView = new UITableView(getContext());
+        tableView.setConstraint(UIConstraint.Companion.full());
+        tableView.setDataSource(new UITableView.UITableViewDataSource() {
+            @Override
+            public int tableViewNumberOfRowsInSection(@NotNull UITableView tableView, int section) {
+                return 100;
+            }
+
+            @NotNull
+            @Override
+            public UITableViewCell tableViewCellForRowAtIndexPath(@NotNull UITableView tableView, @NotNull NSIndexPath indexPath) {
+                UITableViewCell cell = new UITableViewCell(getContext(), UITableViewCellStyle.UITableViewCellStyleDefault, "Cell");
+                UILabel label = new UILabel(getContext());
+                label.setText("123");
+                label.setFrame(new CGRect(0.0, 0.0, 100.0, 22.0));
+                cell.addSubview(label);
+                return cell;
+            }
+
+            @Override
+            public int numberOfSectionsInTableView(@NotNull UITableView tableView) {
+                return 1;
+            }
+
+            @Nullable
+            @Override
+            public String tableViewTitleForHeaderInSection(@NotNull UITableView tableView, int section) {
+                return null;
+            }
+        });
+        tableView.setDelegate(new UITableView.UITableViewDelegate() {
+            @Override
+            public double tableViewHeightForRowAtIndexPath(@NotNull UITableView tableView, @NotNull NSIndexPath indexPath) {
+                return 44.0;
+            }
+
+            @Override
+            public void tableViewDidSelectRowAtIndexPath(@NotNull UITableView tableView, @NotNull NSIndexPath indexPath) {
+
+            }
+
+            @Override
+            public double tableViewHeightForHeaderInSection(@NotNull UITableView tableView, int section) {
+                return 0;
+            }
+
+            @Override
+            public void scrollViewDidScroll(@NotNull UIScrollView scrollView) {
+
+            }
+
+            @Override
+            public void scrollViewWillBeginDragging(@NotNull UIScrollView scrollView) {
+
+            }
+
+            @Override
+            public void scrollViewDidEndDragging(@NotNull UIScrollView scrollView, boolean willDecelerate) {
+
+            }
+
+            @Override
+            public void scrollViewWillBeginDecelerating(@NotNull UIScrollView scrollView) {
+
+            }
+
+            @Override
+            public void scrollViewDidEndDecelerating(@NotNull UIScrollView scrollView) {
+
+            }
+        });
+        getView().addSubview(tableView);
+        tableView.reloadData();
+
     }
 
     private void handleNextButtonTapped() {
