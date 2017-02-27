@@ -1,72 +1,26 @@
 package com.yy.codex.uikit.sample;
 
 import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Path;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
-import android.text.BoringLayout;
-import android.text.DynamicLayout;
-import android.text.Layout;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.StaticLayout;
-import android.text.TextPaint;
-import android.text.TextUtils;
-import android.text.style.AbsoluteSizeSpan;
-import android.text.style.ForegroundColorSpan;
-import android.text.style.TypefaceSpan;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.TextView;
 
-import com.yy.codex.foundation.NSInvocation;
-import com.yy.codex.foundation.NSLog;
-import com.yy.codex.foundation.NSNotification;
-import com.yy.codex.foundation.NSNotificationCenter;
 import com.yy.codex.uikit.CGRect;
-import com.yy.codex.uikit.NSAttributedString;
-import com.yy.codex.uikit.NSRange;
 import com.yy.codex.uikit.UIBarButtonItem;
-import com.yy.codex.uikit.UIButton;
 import com.yy.codex.uikit.UIColor;
-import com.yy.codex.uikit.UIConstraint;
-import com.yy.codex.uikit.UIControl;
-import com.yy.codex.uikit.UIEdgeInsets;
-import com.yy.codex.uikit.UIFont;
 import com.yy.codex.uikit.UIImage;
-import com.yy.codex.uikit.UIKeyboardManager;
-import com.yy.codex.uikit.UIKeyboardType;
-import com.yy.codex.uikit.UILabel;
-import com.yy.codex.uikit.UIMenuController;
-import com.yy.codex.uikit.UIMenuItem;
 import com.yy.codex.uikit.UINavigationController;
 import com.yy.codex.uikit.UINavigationController_ActivityBase;
-import com.yy.codex.uikit.UIPageControl;
-import com.yy.codex.uikit.UIProgressView;
-import com.yy.codex.uikit.UIReturnKeyType;
-import com.yy.codex.uikit.UIScreen;
-import com.yy.codex.uikit.UISegmentedControl;
-import com.yy.codex.uikit.UISegmentedItem;
-import com.yy.codex.uikit.UISlider;
-import com.yy.codex.uikit.UIStepper;
-import com.yy.codex.uikit.UISwitch;
 import com.yy.codex.uikit.UITabBarActivity;
-import com.yy.codex.uikit.UITabBarController;
 import com.yy.codex.uikit.UITabBarItem;
-import com.yy.codex.uikit.UITextField;
-import com.yy.codex.uikit.UITextView;
 import com.yy.codex.uikit.UIView;
 import com.yy.codex.uikit.UIViewController;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class MainActivity extends UITabBarActivity {
@@ -121,7 +75,6 @@ class TestViewController extends UIViewController {
         super.viewDidLoad();
         setTitle("Test");
         getNavigationItem().setRightBarButtonItem(new UIBarButtonItem("Next", this, "handleNextButtonTapped"));
-
     }
 
     private void handleNextButtonTapped() {

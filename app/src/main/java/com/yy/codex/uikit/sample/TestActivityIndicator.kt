@@ -4,7 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import com.yy.codex.uikit.CGRect
-import com.yy.codex.uikit.UIActivityIndicator
+import com.yy.codex.uikit.UIActivityIndicatorView
 import com.yy.codex.uikit.UIColor
 import com.yy.codex.uikit.UIView
 
@@ -22,18 +22,18 @@ class TestActivityIndicator : UIView {
         super.init()
 
         // simple
-        val s1 = UIActivityIndicator(context)
+        val s1 = UIActivityIndicatorView(context)
         s1.frame = CGRect(140.0, 140.0, 30.0, 30.0)
         addSubview(s1)
 
         // configure appearance
-        val s2 = UIActivityIndicator(context)
+        val s2 = UIActivityIndicatorView(context)
         s2.frame = CGRect(140.0, 240.0, 30.0, 30.0)
         s2.color = UIColor.orangeColor
         addSubview(s2)
 
         // configure size
-        val s3 = UIActivityIndicator(context)
+        val s3 = UIActivityIndicatorView(context)
         s3.frame = CGRect(140.0, 340.0, 60.0, 60.0)
         addSubview(s3)
 

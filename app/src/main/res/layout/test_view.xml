@@ -4,16 +4,16 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="#ffffff">
-    <com.yy.codex.uikit.UITextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/roundView"
-        app:constraint.enabled="true"
-        app:constraint.centerHorizontally="true"
-        app:constraint.centerVertically="true"
-        app:constraint.width="200"
-        app:constraint.height="88">
-    </com.yy.codex.uikit.UITextView>
+    <!--<com.yy.codex.uikit.UITextView-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:id="@+id/roundView"-->
+        <!--app:constraint.enabled="true"-->
+        <!--app:constraint.centerHorizontally="true"-->
+        <!--app:constraint.centerVertically="true"-->
+        <!--app:constraint.width="200"-->
+        <!--app:constraint.height="88">-->
+    <!--</com.yy.codex.uikit.UITextView>-->
     <!--<com.yy.codex.uikit.UILabel-->
         <!--android:layout_width="wrap_content"-->
         <!--android:layout_height="wrap_content"-->
@@ -85,5 +85,13 @@
         <!--app:pagecontrol.currentPage="5"-->
         <!--&gt;-->
     <!--</com.yy.codex.uikit.UIPageControl>-->
+    <com.yy.codex.uikit.UIActivityIndicatorView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint.enabled="true"
+        app:constraint.centerVertically="true"
+        app:constraint.centerHorizontally="true"
+        app:activityIndicator.animating="true">
+    </com.yy.codex.uikit.UIActivityIndicatorView>
 
 </com.yy.codex.uikit.UIView>

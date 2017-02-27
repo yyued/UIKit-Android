@@ -147,5 +147,9 @@
         <attr name="pagecontrol.pageIndicatorColor" format="color"/>
         <attr name="pagecontrol.currentPageIndicatorColor" format="color"/>
     </declare-styleable>
+    <declare-styleable name="UIActivityIndicatorView" parent="UIView">
+        <attr name="activityIndicator.color" format="color"/>
+        <attr name="activityIndicator.animating" format="boolean"/>
+    </declare-styleable>
 
 </resources>
