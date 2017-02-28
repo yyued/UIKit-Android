@@ -7,6 +7,7 @@ import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
 import android.view.View;
 
+import com.yy.codex.foundation.NSLog;
 import com.yy.codex.uikit.CGRect;
 import com.yy.codex.uikit.NSIndexPath;
 import com.yy.codex.uikit.UIBarButtonItem;
@@ -89,17 +90,25 @@ class TestViewController extends UIViewController {
         tableView.setDataSource(new UITableView.UITableViewDataSource() {
             @Override
             public int tableViewNumberOfRowsInSection(@NotNull UITableView tableView, int section) {
-                return 100;
+                return 100000;
             }
 
             @NotNull
             @Override
             public UITableViewCell tableViewCellForRowAtIndexPath(@NotNull UITableView tableView, @NotNull NSIndexPath indexPath) {
-                UITableViewCell cell = new UITableViewCell(getContext(), UITableViewCellStyle.UITableViewCellStyleDefault, "Cell");
-                UILabel label = new UILabel(getContext());
-                label.setText("123");
-                label.setFrame(new CGRect(0.0, 0.0, 100.0, 22.0));
-                cell.addSubview(label);
+                UITableViewCell cell = tableView.dequeueReusableCellWithIdentifier("Cell");
+                if (cell == null) {
+                    NSLog.INSTANCE.log("NULL Cell");
+                    cell = new UITableViewCell(getContext(), UITableViewCellStyle.UITableViewCellStyleDefault, "Cell");
+                    UILabel label = new UILabel(getContext());
+                    label.setTag("myLabel");
+                    label.setFrame(new CGRect(0.0, 0.0, 100.0, 22.0));
+                    cell.addSubview(label);
+                }
+                UILabel myLabel = (UILabel) cell.findViewWithTag("myLabel");
+                if (myLabel instanceof UILabel) {
+                    myLabel.setText(indexPath.getRow() + "");
+                }
                 return cell;
             }
 

@@ -8,17 +8,24 @@ internal fun UITableView._reloadCellCaches() {
     _reloadCellPositionCaches()
 }
 
+internal fun UITableView._reloadContentSize() {
+    if (_cellPositions.size > 0) {
+        val maxY = _cellPositions.last().value + _cellPositions.last().height
+        contentSize = CGSize(0.0, maxY)
+    }
+}
+
 internal fun UITableView._requestVisiblePositions(): List<UITableViewCellPosition> {
     val results: MutableList<UITableViewCellPosition> = mutableListOf()
     val startPosition = _requestCellPositionWithPoint(contentOffset.y)
     val endPosition = _requestCellPositionWithPoint(contentOffset.y + frame.height)
     results.add(startPosition)
-    if (endPosition != startPosition) {
-        cellPositions.indexOf(startPosition)?.let {
+    if (endPosition !== startPosition) {
+        _cellPositions.indexOf(startPosition)?.let {
             val startIndex= it
-            cellPositions.indexOf(endPosition)?.let {
+            _cellPositions.indexOf(endPosition)?.let {
                 val endIndex = it
-                (startIndex + 1 until endIndex).forEach { results.add(cellPositions[it]) }
+                (startIndex + 1 until endIndex).forEach { results.add(_cellPositions[it]) }
             }
         }
         results.add(endPosition)
@@ -34,20 +41,26 @@ internal fun UITableView._computeVisibleHash(visiblePositions: List<UITableViewC
 
 private fun UITableView._requestCellPositionWithPoint(atPoint: Double): UITableViewCellPosition {
     var left = 0
-    var right = cellPositions.size - 1
+    var right = _cellPositions.size - 1
+    if (atPoint < _cellPositions[left].value) {
+        return _cellPositions[left]
+    }
+    else if (atPoint > _cellPositions[right].value) {
+        return _cellPositions[right]
+    }
     while (true) {
         if (right - left < 2) {
-            return cellPositions[left]
+            return _cellPositions[left]
         }
         val mid = Math.ceil((left + right) / 2.0).toInt()
-        if (atPoint < cellPositions[mid].value) {
+        if (atPoint < _cellPositions[mid].value) {
             right = mid
         }
-        else if (atPoint > cellPositions[mid].value) {
+        else if (atPoint > _cellPositions[mid].value) {
             left = mid
         }
         else {
-            return cellPositions[mid]
+            return _cellPositions[mid]
         }
     }
 }
@@ -68,7 +81,7 @@ private fun UITableView._reloadCellPositionCaches() {
                 currentY += rowHeight
             }
         }
-        this.cellPositions = cellPositions.toList()
+        this._cellPositions = cellPositions.toList()
     }
 }
 

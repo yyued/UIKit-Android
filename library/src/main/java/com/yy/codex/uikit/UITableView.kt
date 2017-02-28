@@ -64,17 +64,14 @@ open class UITableView : UIScrollView {
 
     internal var lastVisibleHash: String = ""
 
-    internal var cellPositions: List<UITableViewCellPosition> = listOf()
+    internal var _cellPositions: List<UITableViewCellPosition> = listOf()
 
-    internal var cellInstances: HashMap<String, MutableList<UITableViewReusableCell>> = hashMapOf()
+    internal var _cellInstances: HashMap<String, MutableList<UITableViewReusableCell>> = hashMapOf()
 
     fun reloadData() {
         _reloadCellCaches()
+        _reloadContentSize()
         _updateCells()
-    }
-
-    fun cellForRowAtIndexPath(indexPath: NSIndexPath): UITableViewCell? {
-        return null
     }
 
     override fun didMoveToSuperview() {
@@ -92,29 +89,29 @@ open class UITableView : UIScrollView {
     override fun touchesBegan(touches: List<UITouch>, event: UIEvent) {
         super.touchesBegan(touches, event)
 
-        if (!decelerating) {
-            var touch = touches.first()
-            var touchPoint = touch.locationInView(this)
-
-            var middleCount = (visibleCells.count() / 2).toInt()
-            var middleCell = visibleCells[middleCount]
-            if (touchPoint.y > middleCell.frame.origin.y && touchPoint.y < middleCell.frame.size.height) {
-                delegate()?.tableViewDidSelectRowAtIndexPath(this, NSIndexPath(middleCount, 0))
-            }
-
-            for (i in 1 until middleCount) {
-                var bottom = middleCount + i
-                var top = middleCount - i
-                var cell = visibleCells[bottom]
-                if (touchPoint.y > middleCell.frame.origin.y && touchPoint.y < middleCell.frame.size.height) {
-                    delegate()?.tableViewDidSelectRowAtIndexPath(this, NSIndexPath(middleCount, 0))
-                }
-                cell = visibleCells[top]
-                if (touchPoint.y > middleCell.frame.origin.y && touchPoint.y < middleCell.frame.size.height) {
-                    delegate()?.tableViewDidSelectRowAtIndexPath(this, NSIndexPath(middleCount, 0))
-                }
-            }
-        }
+//        if (!decelerating) {
+//            var touch = touches.first()
+//            var touchPoint = touch.locationInView(this)
+//
+//            var middleCount = (visibleCells.count() / 2).toInt()
+//            var middleCell = visibleCells[middleCount]
+//            if (touchPoint.y > middleCell.frame.origin.y && touchPoint.y < middleCell.frame.size.height) {
+//                delegate()?.tableViewDidSelectRowAtIndexPath(this, NSIndexPath(middleCount, 0))
+//            }
+//
+//            for (i in 1 until middleCount) {
+//                var bottom = middleCount + i
+//                var top = middleCount - i
+//                var cell = visibleCells[bottom]
+//                if (touchPoint.y > middleCell.frame.origin.y && touchPoint.y < middleCell.frame.size.height) {
+//                    delegate()?.tableViewDidSelectRowAtIndexPath(this, NSIndexPath(middleCount, 0))
+//                }
+//                cell = visibleCells[top]
+//                if (touchPoint.y > middleCell.frame.origin.y && touchPoint.y < middleCell.frame.size.height) {
+//                    delegate()?.tableViewDidSelectRowAtIndexPath(this, NSIndexPath(middleCount, 0))
+//                }
+//            }
+//        }
     }
 
     private fun updateRowData() {
@@ -173,75 +170,75 @@ open class UITableView : UIScrollView {
 
     override fun setContentOffset(contentOffset: CGPoint, animated: Boolean) {
         super.setContentOffset(contentOffset, animated)
-
-        var actionCells: MutableList<UITableViewCell> = mutableListOf()
-        var actionIndexPaths: MutableList<NSIndexPath> = mutableListOf()
-
-        var isCellOutOfTop = true
-
-        for (i in 0 until visibleCells.count()) {
-            var topCell = visibleCells[i]
-            var bottomCell = visibleCells[visibleCells.count() - (i + 1)]
-            var topIndexPath = indexPathsForVisibleRows[i]
-            var bottomIndexPath = indexPathsForVisibleRows[visibleCells.count() - (i + 1)]
-            if ((contentOffset.y >= topCell.frame.origin.y + topCell.frame.size.height) && contentOffset.y > contentOffsetY && contentOffset.y < contentSize.height - frame.size.height) {
-                actionCells.add(topCell)
-                actionIndexPaths.add(NSIndexPath(bottomIndexPath.row + (i + 1), bottomIndexPath.section))
-            }
-            else if ((contentOffset.y + frame.size.height <= bottomCell.frame.origin.y) && contentOffset.y < contentOffsetY && contentOffset.y > 0) {
-                isCellOutOfTop = false
-                actionCells.add(bottomCell)
-                actionIndexPaths.add(NSIndexPath(topIndexPath.row + (i - 1), bottomIndexPath.section))
-            }
-        }
-
-        contentOffsetY = contentOffset.y
-
-        if (actionCells.count() > 0) {
-            for (i in 0 until actionCells.count()) {
-                var actionCell = actionCells[i]
-                var actionIndexPath = actionIndexPaths[i]
-
-                var topFirstCell = visibleCells.first()
-                var bottomFirstCell = visibleCells.last()
-
-                addReuseableCell(actionCell)
-
-                if (visibleCells.contains(actionCell)) {
-                    visibleCells.remove(actionCell)
-                }
-
-//                if (actionIndexPath.section < numberOfSections) {
-//                    if (actionIndexPath.row >= willLoadNumberOfRow) {
-//                        var headerFooterView = delegateWantsHeaderTitleForSection(actionIndexPath.section + 1)
-//                        headerFooterView?.let {
-//                            contentView.addSubview(it)
-//                            it.frame = it.frame.setY(bottomCell.frame.size.height + bottomCell.frame.origin.y)
-//                        }
-//                    }
+        _updateCells()
+//        var actionCells: MutableList<UITableViewCell> = mutableListOf()
+//        var actionIndexPaths: MutableList<NSIndexPath> = mutableListOf()
+//
+//        var isCellOutOfTop = true
+//
+//        for (i in 0 until visibleCells.count()) {
+//            var topCell = visibleCells[i]
+//            var bottomCell = visibleCells[visibleCells.count() - (i + 1)]
+//            var topIndexPath = indexPathsForVisibleRows[i]
+//            var bottomIndexPath = indexPathsForVisibleRows[visibleCells.count() - (i + 1)]
+//            if ((contentOffset.y >= topCell.frame.origin.y + topCell.frame.size.height) && contentOffset.y > contentOffsetY && contentOffset.y < contentSize.height - frame.size.height) {
+//                actionCells.add(topCell)
+//                actionIndexPaths.add(NSIndexPath(bottomIndexPath.row + (i + 1), bottomIndexPath.section))
+//            }
+//            else if ((contentOffset.y + frame.size.height <= bottomCell.frame.origin.y) && contentOffset.y < contentOffsetY && contentOffset.y > 0) {
+//                isCellOutOfTop = false
+//                actionCells.add(bottomCell)
+//                actionIndexPaths.add(NSIndexPath(topIndexPath.row + (i - 1), bottomIndexPath.section))
+//            }
+//        }
+//
+//        contentOffsetY = contentOffset.y
+//
+//        if (actionCells.count() > 0) {
+//            for (i in 0 until actionCells.count()) {
+//                var actionCell = actionCells[i]
+//                var actionIndexPath = actionIndexPaths[i]
+//
+//                var topFirstCell = visibleCells.first()
+//                var bottomFirstCell = visibleCells.last()
+//
+//                addReuseableCell(actionCell)
+//
+//                if (visibleCells.contains(actionCell)) {
+//                    visibleCells.remove(actionCell)
 //                }
-
-//                if (actionIndexPath.row <= 0 && actionIndexPath.section > 0) {
-//                    var headerFooterView = delegateWantsHeaderTitleForSection(actionIndexPath.section - 1)
-//                    headerFooterView?.let {
-//                        contentView.addSubview(it)
-//                        it.frame = it.frame.setY(topCell.frame.size.height + topCell.frame.origin.y)
-//                    }
+//
+////                if (actionIndexPath.section < numberOfSections) {
+////                    if (actionIndexPath.row >= willLoadNumberOfRow) {
+////                        var headerFooterView = delegateWantsHeaderTitleForSection(actionIndexPath.section + 1)
+////                        headerFooterView?.let {
+////                            contentView.addSubview(it)
+////                            it.frame = it.frame.setY(bottomCell.frame.size.height + bottomCell.frame.origin.y)
+////                        }
+////                    }
+////                }
+//
+////                if (actionIndexPath.row <= 0 && actionIndexPath.section > 0) {
+////                    var headerFooterView = delegateWantsHeaderTitleForSection(actionIndexPath.section - 1)
+////                    headerFooterView?.let {
+////                        contentView.addSubview(it)
+////                        it.frame = it.frame.setY(topCell.frame.size.height + topCell.frame.origin.y)
+////                    }
+////                }
+//
+//                var indexPatch = NSIndexPath(actionIndexPath.row, 0)
+//                var cellHeight = delegate()?.tableViewHeightForRowAtIndexPath(this, indexPatch) ?: 50.00
+//                var cell = dataSource?.tableViewCellForRowAtIndexPath(this, indexPatch) as UITableViewCell
+//                if (isCellOutOfTop) {
+//                    cell.frame = CGRect(0.00, bottomFirstCell.frame.origin.y + bottomFirstCell.frame.size.height, frame.size.width, cellHeight + 1)
+//                    visibleCells.add(cell)
 //                }
-
-                var indexPatch = NSIndexPath(actionIndexPath.row, 0)
-                var cellHeight = delegate()?.tableViewHeightForRowAtIndexPath(this, indexPatch) ?: 50.00
-                var cell = dataSource?.tableViewCellForRowAtIndexPath(this, indexPatch) as UITableViewCell
-                if (isCellOutOfTop) {
-                    cell.frame = CGRect(0.00, bottomFirstCell.frame.origin.y + bottomFirstCell.frame.size.height, frame.size.width, cellHeight + 1)
-                    visibleCells.add(cell)
-                }
-                else {
-                    cell.frame = CGRect(0.00, topFirstCell.frame.origin.y - cellHeight - 1, frame.size.width, cellHeight + 1)
-                    visibleCells.add(0, cell)
-                }
-            }
-        }
+//                else {
+//                    cell.frame = CGRect(0.00, topFirstCell.frame.origin.y - cellHeight - 1, frame.size.width, cellHeight + 1)
+//                    visibleCells.add(0, cell)
+//                }
+//            }
+//        }
     }
 
     private fun addReuseableCell(cell: UITableViewCell) {
@@ -273,20 +270,16 @@ open class UITableView : UIScrollView {
         this.contentSize = CGSize(0.0, contentSizeHeight)
     }
 
-    public fun dequeueReusableCellWithIdentifier(identifier: String): UITableViewCell? {
-        var cells: MutableList<UITableViewCell>? = reuseableCells.get(identifier)
-        var cell = cells?.first()
-        cell.let {
-            cells?.remove(it)
-        }
+    fun dequeueReusableCellWithIdentifier(reuseIdentifier: String): UITableViewCell? {
+        val cell = _dequeueCell(reuseIdentifier)
         return cell
     }
 
-    public fun numberOfRowsInSection(section: Int): Int {
+    fun numberOfRowsInSection(section: Int): Int {
         return 0
     }
 
-    public fun dequeueReusableHeaderFooterViewWithIdentifier(identifier: String) {
+    fun dequeueReusableHeaderFooterViewWithIdentifier(identifier: String) {
 
     }
 }
