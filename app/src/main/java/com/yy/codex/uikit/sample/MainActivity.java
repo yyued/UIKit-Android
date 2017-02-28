@@ -90,7 +90,7 @@ class TestViewController extends UIViewController {
         tableView.setDataSource(new UITableView.UITableViewDataSource() {
             @Override
             public int tableViewNumberOfRowsInSection(@NotNull UITableView tableView, int section) {
-                return 100000;
+                return 30;
             }
 
             @NotNull
@@ -166,6 +166,18 @@ class TestViewController extends UIViewController {
         });
         getView().addSubview(tableView);
         tableView.reloadData();
+
+
+
+        UIView headerView = new UIView(getContext());
+        headerView.setFrame(new CGRect(0.0, 0.0, 0.0, 44.0));
+        headerView.setBackgroundColor(UIColor.Companion.getYellowColor());
+        tableView.setHeaderView(headerView);
+
+        UIView footerView = new UIView(getContext());
+        footerView.setFrame(new CGRect(0.0, 0.0, 0.0, 44.0));
+        footerView.setBackgroundColor(UIColor.Companion.getRedColor());
+        tableView.setFooterView(footerView);
 
     }
 

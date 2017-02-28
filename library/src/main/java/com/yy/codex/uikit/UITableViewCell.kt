@@ -1,6 +1,10 @@
 package com.yy.codex.uikit
 
 import android.content.Context
+import android.os.Build
+import android.support.annotation.RequiresApi
+import android.util.AttributeSet
+import android.view.View
 
 /**
  * Created by it on 17/1/23.
@@ -10,22 +14,21 @@ enum class UITableViewCellStyle {
     UITableViewCellStyleDefault
 }
 
-open class UITableViewCell(context: Context, val style: UITableViewCellStyle, val reuseIdentifier: String) : UIView(context) {
+open class UITableViewCell : UIView {
 
-    var line = UIPixelLine(context)
-    init {
-        addSubview(line)
-        line.setBackgroundColor(UIColor.blackColor)
+    constructor(context: Context, view: View) : super(context, view) {}
+    constructor(context: Context) : super(context) {}
+    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {}
+    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {}
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes) {}
+
+    constructor(context: Context, style: UITableViewCellStyle, reuseIdentifier: String): super(context) {
+        this.style = style
+        this.reuseIdentifier = reuseIdentifier
     }
 
-    override fun layoutSubviews() {
-        super.layoutSubviews()
+    var style: UITableViewCellStyle = UITableViewCellStyle.UITableViewCellStyleDefault
+    var reuseIdentifier: String? = null
 
-        line.frame = CGRect(0.00, frame.size.height - 1, frame.size.width, 1.00)
-    }
-
-    override fun touchesBegan(touches: List<UITouch>, event: UIEvent) {
-        super.touchesBegan(touches, event)
-
-    }
 }

@@ -8,6 +8,14 @@ import java.util.*
  * Created by cuiminghui on 2017/2/27.
  */
 
+fun UITableView._updateCellsFrame() {
+    subviews.forEach {
+        (it as? UITableViewCell)?.let {
+            it.frame = it.frame.setWidth(frame.width)
+        }
+    }
+}
+
 internal fun UITableView._updateCells() {
     val dataSource = dataSource ?: return
     val visiblePositions = _requestVisiblePositions()
@@ -40,10 +48,11 @@ internal fun UITableView._dequeueCell(reuseIdentifier: String): UITableViewCell?
 }
 
 private fun UITableView._enqueueCell(cell: UITableViewCell, cellPosition: UITableViewCellPosition) {
-    if (_cellInstances[cell.reuseIdentifier] == null) {
-        _cellInstances[cell.reuseIdentifier] = mutableListOf()
+    val reuseIdentifier = cell.reuseIdentifier ?: return
+    if (_cellInstances[reuseIdentifier] == null) {
+        _cellInstances[reuseIdentifier] = mutableListOf()
     }
-    _cellInstances[cell.reuseIdentifier]?.let {
+    _cellInstances[reuseIdentifier]?.let {
         var found = false
         it.toList().forEach {
             if (it.cell === cell) {
