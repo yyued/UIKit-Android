@@ -19,41 +19,41 @@ class TestUIPageControl : UIView {
     override fun init() {
         super.init()
 
-        setBackgroundColor(UIColor.yellowColor.colorWithAlpha(0.3))
-
-        // simple
-        val s1 = UIPageControl(context)
-        s1.frame = CGRect(10.0, 50.0, 100.0, 32.0)
-        addSubview(s1)
-
-        // configure appearance
-        val s2 = UIPageControl(context)
-        s2.frame = CGRect(10.0, 100.0, 100.0, 32.0)
-        s2.pageIndicatorColor = UIColor.orangeColor.colorWithAlpha(0.6)
-        s2.currentPageIndicatorColor = UIColor.orangeColor
-        addSubview(s2)
-
-        // configure status, numberOfPages
-        val s3 = UIPageControl(context)
-        s3.frame = CGRect(10.0, 150.0, 100.0, 32.0)
-        s3.numberOfPages = 5
-        addSubview(s3)
-
-        // configure status, hidesForSinglePage
-        val s4 = UIPageControl(context)
-        s4.frame = CGRect(10.0, 200.0, 100.0, 32.0)
-        addSubview(s4)
-        postDelayed({
-            s4.hidesForSinglePage = true
-            s4.numberOfPages = 1
-        }, 1000)
-
-        // onValueChanged
-        s1.addBlock(Runnable{
-            NSLog.log(s1.currentPage)
-        }, UIControl.Event.ValueChanged)
-        postDelayed({
-            s1.currentPage = 1
-        }, 2000)
+//        setBackgroundColor(UIColor.yellowColor.colorWithAlpha(0.3))
+//
+//        // simple
+//        val s1 = UIPageControl(context)
+//        s1.frame = CGRect(10.0, 50.0, 100.0, 32.0)
+//        addSubview(s1)
+//
+//        // configure appearance
+//        val s2 = UIPageControl(context)
+//        s2.frame = CGRect(10.0, 100.0, 100.0, 32.0)
+//        s2.pageIndicatorColor = UIColor.orangeColor.colorWithAlpha(0.6)
+//        s2.currentPageIndicatorColor = UIColor.orangeColor
+//        addSubview(s2)
+//
+//        // configure status, numberOfPages
+//        val s3 = UIPageControl(context)
+//        s3.frame = CGRect(10.0, 150.0, 100.0, 32.0)
+//        s3.numberOfPages = 5
+//        addSubview(s3)
+//
+//        // configure status, hidesForSinglePage
+//        val s4 = UIPageControl(context)
+//        s4.frame = CGRect(10.0, 200.0, 100.0, 32.0)
+//        addSubview(s4)
+//        postDelayed({
+//            s4.hidesForSinglePage = true
+//            s4.numberOfPages = 1
+//        }, 1000)
+//
+//        // onValueChanged
+//        s1.addBlock(Runnable{
+//            NSLog.log(s1.currentPage)
+//        }, UIControl.Event.ValueChanged)
+//        postDelayed({
+//            s1.currentPage = 1
+//        }, 2000)
     }
 }

@@ -1,69 +1,35 @@
 package com.yy.codex.uikit.sample;
 
 import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Path;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
-import android.text.BoringLayout;
-import android.text.DynamicLayout;
-import android.text.Layout;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.StaticLayout;
-import android.text.TextPaint;
-import android.text.TextUtils;
-import android.text.style.AbsoluteSizeSpan;
-import android.text.style.ForegroundColorSpan;
-import android.text.style.TypefaceSpan;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.TextView;
 
-import com.yy.codex.foundation.NSInvocation;
 import com.yy.codex.foundation.NSLog;
-import com.yy.codex.foundation.NSNotification;
-import com.yy.codex.foundation.NSNotificationCenter;
 import com.yy.codex.uikit.CGRect;
-import com.yy.codex.uikit.NSAttributedString;
-import com.yy.codex.uikit.NSRange;
+import com.yy.codex.uikit.NSIndexPath;
 import com.yy.codex.uikit.UIBarButtonItem;
-import com.yy.codex.uikit.UIButton;
 import com.yy.codex.uikit.UIColor;
 import com.yy.codex.uikit.UIConstraint;
-import com.yy.codex.uikit.UIControl;
-import com.yy.codex.uikit.UIEdgeInsets;
-import com.yy.codex.uikit.UIFont;
 import com.yy.codex.uikit.UIImage;
-import com.yy.codex.uikit.UIKeyboardManager;
-import com.yy.codex.uikit.UIKeyboardType;
 import com.yy.codex.uikit.UILabel;
-import com.yy.codex.uikit.UIMenuController;
-import com.yy.codex.uikit.UIMenuItem;
 import com.yy.codex.uikit.UINavigationController;
 import com.yy.codex.uikit.UINavigationController_ActivityBase;
-import com.yy.codex.uikit.UIReturnKeyType;
-import com.yy.codex.uikit.UIScreen;
-import com.yy.codex.uikit.UISegmentedControl;
-import com.yy.codex.uikit.UISegmentedItem;
-import com.yy.codex.uikit.UISlider;
-import com.yy.codex.uikit.UISwitch;
+import com.yy.codex.uikit.UIScrollView;
 import com.yy.codex.uikit.UITabBarActivity;
-import com.yy.codex.uikit.UITabBarController;
 import com.yy.codex.uikit.UITabBarItem;
-import com.yy.codex.uikit.UITextField;
-import com.yy.codex.uikit.UITextView;
+import com.yy.codex.uikit.UITableView;
+import com.yy.codex.uikit.UITableViewCell;
+import com.yy.codex.uikit.UITableViewCellStyle;
 import com.yy.codex.uikit.UIView;
 import com.yy.codex.uikit.UIViewController;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class MainActivity extends UITabBarActivity {
@@ -119,15 +85,99 @@ class TestViewController extends UIViewController {
         setTitle("Test");
         getNavigationItem().setRightBarButtonItem(new UIBarButtonItem("Next", this, "handleNextButtonTapped"));
 
-        UISegmentedControl segmentedControl = new UISegmentedControl(getContext());
-        segmentedControl.setConstraint(UIConstraint.Companion.center());
-        segmentedControl.getConstraint().setWidth("80%");
-        ArrayList<UISegmentedItem> items = new ArrayList<>();
-        items.add(new UISegmentedItem("热门"));
-        items.add(new UISegmentedItem("最新"));
-        items.add(new UISegmentedItem("直播"));
-        segmentedControl.setItems(items);
-        getView().addSubview(segmentedControl);
+        UITableView tableView = new UITableView(getContext());
+        tableView.setConstraint(UIConstraint.Companion.full());
+        tableView.setDataSource(new UITableView.UITableViewDataSource() {
+            @Override
+            public int tableViewNumberOfRowsInSection(@NotNull UITableView tableView, int section) {
+                return 30;
+            }
+
+            @NotNull
+            @Override
+            public UITableViewCell tableViewCellForRowAtIndexPath(@NotNull UITableView tableView, @NotNull NSIndexPath indexPath) {
+                UITableViewCell cell = tableView.dequeueReusableCellWithIdentifier("Cell");
+                if (cell == null) {
+                    NSLog.INSTANCE.log("NULL Cell");
+                    cell = new UITableViewCell(getContext(), UITableViewCellStyle.UITableViewCellStyleDefault, "Cell");
+                    UILabel label = new UILabel(getContext());
+                    label.setTag("myLabel");
+                    label.setFrame(new CGRect(0.0, 0.0, 100.0, 22.0));
+                    cell.addSubview(label);
+                }
+                UILabel myLabel = (UILabel) cell.findViewWithTag("myLabel");
+                if (myLabel instanceof UILabel) {
+                    myLabel.setText(indexPath.getRow() + "");
+                }
+                return cell;
+            }
+
+            @Override
+            public int numberOfSectionsInTableView(@NotNull UITableView tableView) {
+                return 1;
+            }
+
+            @Nullable
+            @Override
+            public String tableViewTitleForHeaderInSection(@NotNull UITableView tableView, int section) {
+                return null;
+            }
+        });
+        tableView.setDelegate(new UITableView.UITableViewDelegate() {
+            @Override
+            public double tableViewHeightForRowAtIndexPath(@NotNull UITableView tableView, @NotNull NSIndexPath indexPath) {
+                return 44.0;
+            }
+
+            @Override
+            public void tableViewDidSelectRowAtIndexPath(@NotNull UITableView tableView, @NotNull NSIndexPath indexPath) {
+
+            }
+
+            @Override
+            public double tableViewHeightForHeaderInSection(@NotNull UITableView tableView, int section) {
+                return 0;
+            }
+
+            @Override
+            public void scrollViewDidScroll(@NotNull UIScrollView scrollView) {
+
+            }
+
+            @Override
+            public void scrollViewWillBeginDragging(@NotNull UIScrollView scrollView) {
+
+            }
+
+            @Override
+            public void scrollViewDidEndDragging(@NotNull UIScrollView scrollView, boolean willDecelerate) {
+
+            }
+
+            @Override
+            public void scrollViewWillBeginDecelerating(@NotNull UIScrollView scrollView) {
+
+            }
+
+            @Override
+            public void scrollViewDidEndDecelerating(@NotNull UIScrollView scrollView) {
+
+            }
+        });
+        getView().addSubview(tableView);
+        tableView.reloadData();
+
+
+
+        UIView headerView = new UIView(getContext());
+        headerView.setFrame(new CGRect(0.0, 0.0, 0.0, 44.0));
+        headerView.setBackgroundColor(UIColor.Companion.getYellowColor());
+        tableView.setHeaderView(headerView);
+
+        UIView footerView = new UIView(getContext());
+        footerView.setFrame(new CGRect(0.0, 0.0, 0.0, 44.0));
+        footerView.setBackgroundColor(UIColor.Companion.getRedColor());
+        tableView.setFooterView(footerView);
 
     }
 

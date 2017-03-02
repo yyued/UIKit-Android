@@ -37,6 +37,55 @@ class UISwitch : UIControl {
         return CGSize(52.0, 44.0)
     }
 
+    override fun prepareProps(attrs: AttributeSet) {
+        super.prepareProps(attrs)
+        val typedArray = context.theme.obtainStyledAttributes(attrs, R.styleable.UISwitch, 0, 0)
+        typedArray.getBoolean(R.styleable.UISwitch_switch_on, false)?.let {
+            initializeAttributes.put("UISwitch.on", it)
+        }
+        typedArray.getColor(R.styleable.UISwitch_switch_onThumbColor, -1)?.let {
+            if (it != -1) {
+                initializeAttributes.put("UISwitch.onThumbColor", UIColor(it))
+            }
+        }
+        typedArray.getColor(R.styleable.UISwitch_switch_onTrackColor, -1)?.let {
+            if (it != -1) {
+                initializeAttributes.put("UISwitch.onTrackColor", UIColor(it))
+            }
+        }
+        typedArray.getColor(R.styleable.UISwitch_switch_offThumbColor, -1)?.let {
+            if (it != -1) {
+                initializeAttributes.put("UISwitch.offThumbColor", UIColor(it))
+            }
+        }
+        typedArray.getColor(R.styleable.UISwitch_switch_offTrackColor, -1)?.let {
+            if (it != -1) {
+                initializeAttributes.put("UISwitch.offTrackColor", UIColor(it))
+            }
+        }
+    }
+
+    override fun resetProps() {
+        super.resetProps()
+        initializeAttributes?.let {
+            (it["UISwitch.on"] as? Boolean)?.let {
+                on = it
+            }
+            (it["UISwitch.onThumbColor"] as? UIColor)?.let {
+                onThumbColor = it
+            }
+            (it["UISwitch.onTrackColor"] as? UIColor)?.let {
+                onTrackColor = it
+            }
+            (it["UISwitch.offThumbColor"] as? UIColor)?.let {
+                offThumbColor = it
+            }
+            (it["UISwitch.offTrackColor"] as? UIColor)?.let {
+                offTrackColor = it
+            }
+        }
+    }
+
     /* appearance */
 
     private lateinit var contentView: UIView

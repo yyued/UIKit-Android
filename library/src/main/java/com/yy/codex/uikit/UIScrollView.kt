@@ -7,6 +7,7 @@ import android.util.AttributeSet
 import android.view.View
 
 import com.yy.codex.foundation.NSLog
+import com.yy.codex.foundation.lets
 
 import java.util.Timer
 import java.util.TimerTask
@@ -103,20 +104,24 @@ open class UIScrollView : UIView {
         }
     }
 
+    private var _bounceAnimationCancelled = false
+
     override fun touchesBegan(touches: List<UITouch>, event: UIEvent) {
         super.touchesBegan(touches, event)
-        if (currentAnimationY != null) {
-            currentAnimationY!!.cancel()
-            currentAnimationY = null
-        }
-
-        if (currentAnimationX != null) {
-            currentAnimationX!!.cancel()
-            currentAnimationX = null
-        }
-
+        _bounceAnimationCancelled = checkOutOfBounds()
+        currentAnimationY?.let(UIViewAnimation::cancel)
+        currentAnimationY = null
+        currentAnimationX?.let(UIViewAnimation::cancel)
+        currentAnimationX = null
         tracking = true
         decelerating = false
+    }
+
+    override fun touchesEnded(touches: List<UITouch>, event: UIEvent) {
+        super.touchesEnded(touches, event)
+        if (_bounceAnimationCancelled && checkOutOfBounds()) {
+            setContentOffsetWithSpring(requestBoundsPoint(contentOffset))
+        }
     }
 
     fun handlePan(panGestureRecognizer: UIPanGestureRecognizer) {
@@ -127,18 +132,16 @@ open class UIScrollView : UIView {
             dragging = true
             trackingPoint = CGPoint(originX, originY)
             panGestureRecognizer.setTranslation(contentOffset)
-            if (delegate != null) {
-                delegate!!.scrollViewWillBeginDragging(this)
-            }
+            delegate?.let { it.scrollViewWillBeginDragging(this) }
             return
         }
         if (dragging && panGestureRecognizer.state === UIGestureRecognizerState.Changed) {
             /* Move */
             val offset = computeMovePoint(CGPoint(originX, originY), pagingEnabled)
-
-            verticalMoveDistance = originY + Math.abs(trackingPoint!!.y) - windowSizePoint!!.y
-            horizontalMoveDistance = originX + Math.abs(trackingPoint!!.x) - windowSizePoint!!.x
-
+            lets(trackingPoint, windowSizePoint) { trackingPoint, windowSizePoint ->
+                verticalMoveDistance = originY + Math.abs(trackingPoint.y) - windowSizePoint.y
+                horizontalMoveDistance = originX + Math.abs(trackingPoint.x) - windowSizePoint.x
+            }
             setContentOffset(offset)
         } else if (panGestureRecognizer.state === UIGestureRecognizerState.Ended) {
             /* Ended */
@@ -148,13 +151,15 @@ open class UIScrollView : UIView {
             delegate?.let {
                 it.scrollViewDidEndDragging(this, false)
             }
-
             val velocity = panGestureRecognizer.velocity()
-
             if (pagingEnabled) {
                 computeScrollPagingPoint(velocity)
-                setContentOffsetWithSpring(windowSizePoint!!, velocity.x)
+                windowSizePoint?.let {
+                    setContentOffsetWithSpring(it)
+                }
             } else {
+                currentAnimationX?.let { it.cancel() }
+                currentAnimationY?.let { it.cancel() }
                 val xOptions = UIViewAnimator.UIViewAnimationDecayBoundsOptions()
                 xOptions.allowBounds = bounces
                 xOptions.alwaysBounds = alwaysBounceHorizontal
@@ -180,9 +185,8 @@ open class UIScrollView : UIView {
     }
 
     private fun computeScrollPagingPoint(velocity: CGPoint) {
-        var verticalPageCurrentIndex = Math.round(windowSizePoint!!.y / frame.size.height).toInt()
-        var horizontalPageCurrentIndex = Math.round(windowSizePoint!!.x / frame.size.width).toInt()
-
+        var verticalPageCurrentIndex = Math.round((windowSizePoint?.y ?: 0.0) / frame.size.height).toInt()
+        var horizontalPageCurrentIndex = Math.round((windowSizePoint?.x ?: 0.0) / frame.size.width).toInt()
         var moveOffsetX = horizontalPageCurrentIndex * frame.size.width
         var moveOffsetY = verticalPageCurrentIndex * frame.size.height
         if (Math.abs(horizontalMoveDistance) > fingerHorizontalMoveDistance || Math.abs(verticalMoveDistance) > fingerVerticalMoveDistance || Math.abs(velocity.x) > FINGER_VELOCITY || Math.abs(velocity.y) > FINGER_VELOCITY) {
@@ -198,7 +202,6 @@ open class UIScrollView : UIView {
             moveOffsetX = horizontalPageCurrentIndex * frame.size.width
             moveOffsetY = verticalPageCurrentIndex * frame.size.height
         }
-
         val offset = computeMovePoint(CGPoint(moveOffsetX, moveOffsetY), pagingEnabled)
         windowSizePoint = offset
     }
@@ -274,17 +277,17 @@ open class UIScrollView : UIView {
         val self = this
         this.contentOffset = contentOffset
         if (animated) {
-            if (currentAnimationY != null) {
-                currentAnimationY!!.cancel()
-            }
-            currentAnimationY = UIViewAnimator.linear(0.25, Runnable {
+            currentAnimationX?.let { it.cancel() }
+            currentAnimationY?.let { it.cancel() }
+            currentAnimationX = UIViewAnimator.linear(0.25, Runnable {
                 UIViewAnimator.addAnimationState(self, "contentOffset.x", oldValue.x, this.contentOffset.x)
                 UIViewAnimator.addAnimationState(self, "contentOffset.y", oldValue.y, this.contentOffset.y)
             }, null)
+            currentAnimationY = currentAnimationX
         } else {
             scrollTo((this.contentOffset.x * UIScreen.mainScreen.scale()).toInt(), (this.contentOffset.y * UIScreen.mainScreen.scale() - contentInset.top).toInt())
-            if (delegate != null) {
-                delegate!!.scrollViewDidScroll(this)
+            delegate?.let {
+                it.scrollViewDidScroll(this)
             }
             UIViewAnimator.addAnimationState(self, "contentOffset.x", oldValue.x, this.contentOffset.x)
             UIViewAnimator.addAnimationState(self, "contentOffset.y", oldValue.y, this.contentOffset.y)
@@ -307,32 +310,46 @@ open class UIScrollView : UIView {
         }
     }
 
-    private fun setContentOffsetWithSpring(contentOffset: CGPoint, velocity: Double) {
-        currentAnimationY = UIViewAnimator.springWithOptions(120.0, 20.0, Runnable { setContentOffset(contentOffset, false) }, null)
+    private fun setContentOffsetWithSpring(contentOffset: CGPoint) {
+        currentAnimationX?.let { it.cancel() }
+        currentAnimationY?.let { it.cancel() }
+        currentAnimationX = UIViewAnimator.springWithOptions(120.0, 20.0, Runnable { setContentOffset(contentOffset, false) }, null)
+        currentAnimationY = currentAnimationX
     }
 
-    private fun overBoundsCheck(point: CGPoint): CGPoint {
-        val nearestBoundsY = overBoundsCheckY(point.y)
-        val nearestBoundsX = overBoundsCheckX(point.x)
+    private fun checkOutOfBounds(): Boolean {
+        if (contentOffset.x < 0.0 || contentOffset.y < 0.0) {
+            return true
+        }
+        else if (contentOffset.x > contentSize.width - frame.size.width && contentSize.width > 0 || contentOffset.y > contentSize.height - frame.size.height && contentSize.height > 0) {
+            return true
+        }
+        return false
+    }
+
+    private fun requestBoundsPoint(point: CGPoint): CGPoint {
+        val nearestBoundsY = requestBoundsY(point.y)
+        val nearestBoundsX = requestBoundsX(point.x)
         return CGPoint(nearestBoundsX, nearestBoundsY)
     }
 
-    private fun overBoundsCheckX(x: Double): Double {
+    private fun requestBoundsX(x: Double): Double {
         var nearestBoundsX = x
-        //check x
         if (x < 0.0) {
             nearestBoundsX = 0.0
-        } else if (x > contentSize.width - frame.size.width && contentSize.width > 0) {
+        }
+        else if (x > contentSize.width - frame.size.width && contentSize.width > 0) {
             nearestBoundsX = contentSize.width - frame.size.width
         }
         return nearestBoundsX
     }
 
-    private fun overBoundsCheckY(y: Double): Double {
+    private fun requestBoundsY(y: Double): Double {
         var nearestBoundsY = y
         if (y < 0.0) {
             nearestBoundsY = 0.0
-        } else if (y > contentSize.height - frame.size.height && contentSize.height > 0) {
+        }
+        else if (y > contentSize.height - frame.size.height && contentSize.height > 0) {
             nearestBoundsY = contentSize.height - frame.size.height
         }
         return nearestBoundsY

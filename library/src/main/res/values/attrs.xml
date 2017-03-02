@@ -113,9 +113,43 @@
             <enum name="Opposite" value="2" />
         </attr>
     </declare-styleable>
+    <declare-styleable name="UIScrollView" parent="UIView">
+    </declare-styleable>
+    <declare-styleable name="UIPixelLine" parent="UIView">
+        <attr name="pixelline.color" format="color"/>
+        <attr name="pixelline.vertical" format="boolean"/>
+    </declare-styleable>
     <declare-styleable name="UISlider" parent="UIControl">
+        <attr name="slider.progressValue" format="float"/>
     </declare-styleable>
     <declare-styleable name="UISwitch" parent="UIControl">
+        <attr name="switch.on" format="boolean"/>
+        <attr name="switch.onThumbColor" format="color"/>
+        <attr name="switch.onTrackColor" format="color"/>
+        <attr name="switch.offThumbColor" format="color"/>
+        <attr name="switch.offTrackColor" format="color"/>
+    </declare-styleable>
+    <declare-styleable name="UIProgressView" parent="UIControl">
+        <attr name="progressview.value" format="float"/>
+        <attr name="progressview.trackColor" format="color"/>
+    </declare-styleable>
+    <declare-styleable name="UIStepper" parent="UIControl">
+        <attr name="stepper.value" format="float"/>
+        <attr name="stepper.minValue" format="float"/>
+        <attr name="stepper.maxValue" format="float"/>
+        <attr name="stepper.stepValue" format="float"/>
+        <attr name="stepper.wraps" format="boolean"/>
+    </declare-styleable>
+    <declare-styleable name="UIPageControl" parent="UIView">
+        <attr name="pagecontrol.currentPage" format="integer"/>
+        <attr name="pagecontrol.numberOfPages" format="integer"/>
+        <attr name="pagecontrol.hidesForSinglePage" format="boolean"/>
+        <attr name="pagecontrol.pageIndicatorColor" format="color"/>
+        <attr name="pagecontrol.currentPageIndicatorColor" format="color"/>
+    </declare-styleable>
+    <declare-styleable name="UIActivityIndicatorView" parent="UIView">
+        <attr name="activityIndicator.color" format="color"/>
+        <attr name="activityIndicator.animating" format="boolean"/>
     </declare-styleable>
 
 </resources>

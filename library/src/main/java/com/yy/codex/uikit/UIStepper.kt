@@ -27,87 +27,134 @@ class UIStepper : UIControl {
 
     override fun init() {
         super.init()
+        initContentView()
+        addSubview(contentView)
+        initBorderView()
+        addSubview(borderView)
+        initDividerView()
+        addSubview(dividerView)
+    }
 
-        defaultTint = UIColor(0x12 / 255.0, 0x6a / 255.0, 1.0, 1.0)
+    override fun prepareProps(attrs: AttributeSet) {
+        super.prepareProps(attrs)
+        val typedArray = context.theme.obtainStyledAttributes(attrs, R.styleable.UIStepper, 0, 0)
+        typedArray.getFloat(R.styleable.UIStepper_stepper_value, 0.0f)?.let {
+            initializeAttributes.put("UIStepper.value", it)
+        }
+        typedArray.getFloat(R.styleable.UIStepper_stepper_minValue, 0.0f)?.let {
+            initializeAttributes.put("UIStepper.minValue", it)
+        }
+        typedArray.getFloat(R.styleable.UIStepper_stepper_maxValue, 100.0f)?.let {
+            initializeAttributes.put("UIStepper.maxValue", it)
+        }
+        typedArray.getFloat(R.styleable.UIStepper_stepper_stepValue, 1.0f)?.let {
+            initializeAttributes.put("UIStepper.stepValue", it)
+        }
+        typedArray.getBoolean(R.styleable.UIStepper_stepper_wraps, true)?.let {
+            initializeAttributes.put("UIStepper.wraps", it)
+        }
+    }
 
+    override fun resetProps() {
+        super.resetProps()
+        initializeAttributes?.let {
+            (it["UIStepper.value"] as? Float)?.let {
+                value = it.toDouble()
+            }
+            (it["UIStepper.minValue"] as? Float)?.let {
+                minValue = it.toDouble()
+            }
+            (it["UIStepper.maxValue"] as? Float)?.let {
+                maxValue = it.toDouble()
+            }
+            (it["UIStepper.stepValue"] as? Float)?.let {
+                stepValue = it.toDouble()
+            }
+            (it["UIStepper.wraps"] as? Boolean)?.let {
+                wraps = it
+            }
+        }
+    }
+
+    override fun intrinsicContentSize(): CGSize {
+        return CGSize(95.0, 30.0)
+    }
+
+    override fun willMoveToWindow() {
+        super.willMoveToWindow()
+        resetEnabled()
+    }
+
+    private lateinit var contentView : UIView
+
+    private fun initContentView() {
         contentView = UIView(context)
         contentView.frame = CGRect(0.0, 0.0, 95.0, 30.0)
-        addSubview(contentView)
+        initDecreaseButton()
+        contentView.addSubview(decreaseButton)
+        initIncreaseButton()
+        contentView.addSubview(increaseButton)
+    }
 
-        decreaseBtn = UIStepperButton(context)
-        decreaseBtn.frame = CGRect(0.0, 0.0, 46.0, 30.0)
-        decreaseBtn.setImage(UIImage("iVBORw0KGgoAAAANSUhEUgAAAC4AAAAEAQMAAADLQJ8kAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAABlBMVEUAev8AAADIAEdQAAAAAWJLR0QB/wIt3gAAAAlwSFlzAAALEgAACxIB0t1+/AAAAAtJREFUCNdjYMANAAAcAAHMmrA6AAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDE3LTAyLTEzVDExOjE2OjA4KzA4OjAwvyjpMwAAACV0RVh0ZGF0ZTptb2RpZnkAMjAxNy0wMi0xM1QxMToxNjowOCswODowMM51UY8AAAAASUVORK5CYII=", 3.0), UIControl.State.Normal)
-        contentView.addSubview(decreaseBtn)
+    private lateinit var decreaseButton: UIButton
 
-        increaseBtn = UIStepperButton(context)
-        increaseBtn.frame = CGRect(47.0, 0.0, 46.0, 30.0)
-        increaseBtn.setImage(UIImage("iVBORw0KGgoAAAANSUhEUgAAAC4AAAAuAgMAAAAq18OkAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAACVBMVEUAAAAAev8AAADuBBdfAAAAAXRSTlMAQObYZgAAAAFiS0dEAIgFHUgAAAAJcEhZcwAACxIAAAsSAdLdfvwAAAAdSURBVCjPY2AAAVEHBgQY4ZxQBAggljPwrh5cHADQ1R3PZlHuywAAACV0RVh0ZGF0ZTpjcmVhdGUAMjAxNy0wMi0xM1QxMToxNjowNSswODowMN7/iPMAAAAldEVYdGRhdGU6bW9kaWZ5ADIwMTctMDItMTNUMTE6MTY6MDUrMDg6MDCvojBPAAAAAElFTkSuQmCC", 3.0), UIControl.State.Normal)
-        contentView.addSubview(increaseBtn)
+    private fun initDecreaseButton() {
+        decreaseButton = UIButton(context)
+        decreaseButton.frame = CGRect(0.0, 0.0, 46.0, 30.0)
+        decreaseButton.setImage(UIImage("iVBORw0KGgoAAAANSUhEUgAAAC4AAAAEAQMAAADLQJ8kAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAABlBMVEUAev8AAADIAEdQAAAAAWJLR0QB/wIt3gAAAAlwSFlzAAALEgAACxIB0t1+/AAAAAtJREFUCNdjYMANAAAcAAHMmrA6AAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDE3LTAyLTEzVDExOjE2OjA4KzA4OjAwvyjpMwAAACV0RVh0ZGF0ZTptb2RpZnkAMjAxNy0wMi0xM1QxMToxNjowOCswODowMM51UY8AAAAASUVORK5CYII=", 3.0), UIControl.State.Normal)
+        decreaseButton.addTarget(this, "onDecreaseButtonTouchUpInside", Event.TouchUpInside)
+    }
 
+    private fun onDecreaseButtonTouchUpInside() {
+        value = if (wraps) Math.max(minValue, value - stepValue) else if (value - stepValue <= minValue) value else value - stepValue
+    }
+
+    private lateinit var increaseButton: UIButton
+
+    private fun initIncreaseButton() {
+        increaseButton = UIButton(context)
+        increaseButton.frame = CGRect(47.0, 0.0, 46.0, 30.0)
+        increaseButton.setImage(UIImage("iVBORw0KGgoAAAANSUhEUgAAAC4AAAAuAgMAAAAq18OkAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAACVBMVEUAAAAAev8AAADuBBdfAAAAAXRSTlMAQObYZgAAAAFiS0dEAIgFHUgAAAAJcEhZcwAACxIAAAsSAdLdfvwAAAAdSURBVCjPY2AAAVEHBgQY4ZxQBAggljPwrh5cHADQ1R3PZlHuywAAACV0RVh0ZGF0ZTpjcmVhdGUAMjAxNy0wMi0xM1QxMToxNjowNSswODowMN7/iPMAAAAldEVYdGRhdGU6bW9kaWZ5ADIwMTctMDItMTNUMTE6MTY6MDUrMDg6MDCvojBPAAAAAElFTkSuQmCC", 3.0), UIControl.State.Normal)
+        increaseButton.addTarget(this, "onIncreaseButtonTouchUpInside", Event.TouchUpInside)
+    }
+
+    private fun onIncreaseButtonTouchUpInside() {
+        value = if (wraps) Math.min(maxValue, value + stepValue) else if (value + stepValue >= minValue) value else value + stepValue
+    }
+
+    private lateinit var borderView: UIView
+
+    private fun initBorderView() {
         borderView = UIView(context)
         borderView.frame = CGRect(0.0, 0.0, 95.0, 30.0)
         borderView.userInteractionEnabled = false
         borderView.wantsLayer = true
         borderView.layer.borderWidth = 1.0
-        borderView.layer.borderColor = tintColor ?: defaultTint
+        borderView.layer.borderColor = tintColor
         borderView.layer.cornerRadius = 3.0
-        addSubview(borderView)
-
-        dividerView = UIView(context)
-        dividerView.frame = CGRect(46.0, 0.0, 1.0, 30.0)
-        dividerView.setBackgroundColor(tintColor ?: defaultTint)
-        addSubview(dividerView)
     }
-
-    // appearance
-
-    private lateinit var decreaseBtn : UIStepperButton
-
-    private lateinit var increaseBtn : UIStepperButton
-
-    private lateinit var contentView : UIView
-
-    private lateinit var borderView: UIView
 
     private lateinit var dividerView : UIView
 
-    var bgColor: UIColor = UIColor.whiteColor // @Td should be clearColor
-
-    var defaultTint: UIColor = UIColor(0x12 / 255.0, 0x6a / 255.0, 1.0, 1.0)
-        private set
+    private fun initDividerView() {
+        dividerView = UIView(context)
+        dividerView.frame = CGRect(46.0, 0.0, 1.0, 30.0)
+        dividerView.setBackgroundColor(tintColor)
+    }
 
     override fun tintColorDidChanged() {
         super.tintColorDidChanged()
-        borderView.layer.borderColor = tintColor ?: defaultTint
-        dividerView.setBackgroundColor(tintColor ?: defaultTint)
+        borderView.layer.borderColor = tintColor
+        dividerView.setBackgroundColor(tintColor)
     }
-
-    override fun layoutSubviews() {
-        super.layoutSubviews()
-        increaseBtn.enable = if (wraps) true else (value < maxValue)
-        decreaseBtn.enable = if (wraps) true else (value > minValue)
-    }
-
-    // data
 
     var value : Double = 0.0
         set(value) {
             if (field == value) {
                 return
             }
-            if (value <= minValue){
-                field = if (wraps) maxValue else minValue
-                decreaseBtn.enable = wraps
-            }
-            else if (value >= maxValue){
-                field = if (wraps) minValue else maxValue
-                increaseBtn.enable = wraps
-            }
-            else {
-                field = value
-                increaseBtn.enable = true
-                decreaseBtn.enable = true
-            }
+            field = value
+            resetEnabled()
             onEvent(Event.ValueChanged)
         }
 
@@ -117,7 +164,7 @@ class UIStepper : UIControl {
                 return
             }
             field = value
-            layoutSubviews()
+            resetEnabled()
         }
 
     var maxValue : Double = 100.0
@@ -126,7 +173,7 @@ class UIStepper : UIControl {
                 return
             }
             field = value
-            layoutSubviews()
+            resetEnabled()
         }
 
     var stepValue : Double = 1.0
@@ -135,21 +182,21 @@ class UIStepper : UIControl {
                 return
             }
             field = value
-            layoutSubviews()
+            resetEnabled()
         }
 
-    var wraps : Boolean = false
+    var wraps : Boolean = true
         set(value) {
             if (field == value){
                 return
             }
             field = value
-            layoutSubviews()
+            resetEnabled()
         }
 
-    // supp
-
-    fun onSelectWithButton(btn: UIStepperButton){
-        value += if (btn == increaseBtn) stepValue else -stepValue
+    private fun resetEnabled() {
+        increaseButton.enable = if (wraps) (value + stepValue <= maxValue) else (value + stepValue < maxValue)
+        decreaseButton.enable = if (wraps) (value - stepValue >= minValue) else (value - stepValue > minValue)
     }
+
 }

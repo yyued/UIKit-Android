@@ -45,4 +45,53 @@
         <!--app:constraint.height="32">-->
     <!--</com.yy.codex.uikit.UISwitch>-->
 
+    <!--<com.yy.codex.uikit.UISlider-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--app:constraint.enabled="true"-->
+        <!--app:constraint.centerVertically="true"-->
+        <!--app:constraint.centerHorizontally="true"-->
+        <!--app:constraint.width="50%"-->
+        <!--app:slider.progressValue="0.5">-->
+    <!--</com.yy.codex.uikit.UISlider>-->
+
+    <!--<com.yy.codex.uikit.UIProgressView-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--app:constraint.enabled="true"-->
+        <!--app:constraint.centerHorizontally="true"-->
+        <!--app:constraint.centerVertically="true"-->
+        <!--app:constraint.width="100%"-->
+        <!--app:progressview.value="0.5">-->
+    <!--</com.yy.codex.uikit.UIProgressView>-->
+
+    <!--<com.yy.codex.uikit.UIStepper-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--app:constraint.enabled="true"-->
+        <!--app:constraint.centerVertically="true"-->
+        <!--app:constraint.centerHorizontally="true"-->
+        <!--&gt;-->
+    <!--</com.yy.codex.uikit.UIStepper>-->
+
+    <!--<com.yy.codex.uikit.UIPageControl-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--app:constraint.enabled="true"-->
+        <!--app:constraint.centerHorizontally="true"-->
+        <!--app:constraint.centerVertically="true"-->
+        <!--app:constraint.width="100%"-->
+        <!--app:pagecontrol.numberOfPages="10"-->
+        <!--app:pagecontrol.currentPage="5"-->
+        <!--&gt;-->
+    <!--</com.yy.codex.uikit.UIPageControl>-->
+    <!--<com.yy.codex.uikit.UIActivityIndicatorView-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--app:constraint.enabled="true"-->
+        <!--app:constraint.centerVertically="true"-->
+        <!--app:constraint.centerHorizontally="true"-->
+        <!--app:activityIndicator.animating="true">-->
+    <!--</com.yy.codex.uikit.UIActivityIndicatorView>-->
+
 </com.yy.codex.uikit.UIView>
