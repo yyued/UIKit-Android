@@ -301,13 +301,13 @@ open class UIButton : UIControl {
         if (contentVerticalAlignment === UIControl.ContentVerticalAlignment.Center) {
             imageViewOriginY = (frame.size.height - imageView.intrinsicContentSize().height) / 2.0
             titleLabelOriginY = (frame.size.height - titleLabel.intrinsicContentSize().height) / 2.0
-            imageViewOriginY = Math.ceil(imageViewOriginY)
-            titleLabelOriginY = Math.ceil(titleLabelOriginY)
+            imageViewOriginY = imageViewOriginY
+            titleLabelOriginY = titleLabelOriginY
         } else if (contentVerticalAlignment === UIControl.ContentVerticalAlignment.Bottom) {
             imageViewOriginY = frame.size.height - imageView.intrinsicContentSize().height
             titleLabelOriginY = frame.size.height - titleLabel.intrinsicContentSize().height
-            imageViewOriginY = Math.ceil(imageViewOriginY)
-            titleLabelOriginY = Math.ceil(titleLabelOriginY)
+            imageViewOriginY = imageViewOriginY
+            titleLabelOriginY = titleLabelOriginY
         }
         if (contentHorizontalAlignment === UIControl.ContentHorizontalAlignment.Left) {
             imageView.frame = CGRect(

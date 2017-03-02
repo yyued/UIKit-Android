@@ -69,6 +69,18 @@ class UISegmentedControl : UIControl {
             }
         }
 
+    var font: UIFont? = null
+        set(value) {
+            field = value
+            resetItemsView()
+        }
+
+    var textColor: UIColor? = null
+        set(value) {
+            field = value
+            resetItemsView()
+        }
+
     /* props */
 
     lateinit private var contentView: UIView
@@ -116,12 +128,13 @@ class UISegmentedControl : UIControl {
     }
 
     private fun resetItemsView() {
-        contentView.subviews.forEach(UIView::removeFromSuperview)
+        contentButtons.forEach(UIView::removeFromSuperview)
         val buttons = items.mapIndexed { idx, it ->
             val button = UIButton(context)
+            button.wantsLayer = true
+            button.font = font ?: UIFont(14.0f)
             button.tag = idx
             button.addTarget(this, "onItemButtonTouchUpInside:", Event.TouchUpInside)
-            button.wantsLayer = true
             if (idx == 0) {
                 val maskLayer = CAShapeLayer()
                 maskLayer.frame = CGRect(0.0, 0.0, frame.width / items.count() + 1, frame.height)
@@ -141,8 +154,8 @@ class UISegmentedControl : UIControl {
             button.constraint = UIConstraint.horizonStack(idx, items.count())
             button.constraint?.width = button.constraint?.width + " + 2"
             button.setTitle(it.title, State.Normal)
-            button.setTitleColor(tintColor ?: UIColor.clearColor, State.Normal)
-            button.setTitleColor(tintColor ?: UIColor.clearColor, EnumSet.of(State.Normal, State.Highlighted))
+            button.setTitleColor(textColor ?: tintColor ?: UIColor.clearColor, State.Normal)
+            button.setTitleColor(textColor ?: tintColor ?: UIColor.clearColor, EnumSet.of(State.Normal, State.Highlighted))
             button.setTitleColor(selectedColor, State.Selected)
             button.setTitleColor(selectedColor, EnumSet.of(State.Selected, State.Highlighted))
             button.setBackgroundColor(UIColor.clearColor, State.Normal)
