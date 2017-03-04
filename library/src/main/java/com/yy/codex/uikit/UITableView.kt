@@ -64,11 +64,15 @@ open class UITableView : UIScrollView {
 
     internal var _cellInstances: HashMap<String, MutableList<UITableViewReusableCell>> = hashMapOf()
 
+    internal var _sectionsHeaderView: List<UITableViewSectionHeaderViewWrapper?> = listOf()
+
     fun reloadData() {
+        _reloadSectionHeaderFooterView()
         _reloadCellCaches()
         _reloadContentSize()
         _updateCells()
         _updateHeaderFooterViewFrame()
+        _updateSectionHeaderFooterFrame()
     }
 
     override fun didMoveToSuperview() {
@@ -80,11 +84,13 @@ open class UITableView : UIScrollView {
         _updateCellsFrame()
         _updateCells()
         _updateHeaderFooterViewFrame()
+        _updateSectionHeaderFooterFrame()
     }
 
     override fun setContentOffset(contentOffset: CGPoint, animated: Boolean) {
         super.setContentOffset(contentOffset, animated)
         _updateCells()
+        _updateSectionHeaderFooterFrame()
     }
 
     fun dequeueReusableCellWithIdentifier(reuseIdentifier: String): UITableViewCell? {

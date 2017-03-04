@@ -74,6 +74,9 @@ private fun UITableView._reloadCellPositionCaches() {
         currentY += headerView?.frame?.height ?: 0.0
         (0 until sectionCount).forEach {
             val section = it
+            val sectionHeader = _sectionsHeaderView[section]
+            sectionHeader?.startY = currentY
+            currentY += sectionHeader?.headerHeight ?: 0.0
             val rowCount = dataSource.tableViewNumberOfRowsInSection(this, it)
             (0 until rowCount).forEach {
                 val row = it
@@ -81,6 +84,7 @@ private fun UITableView._reloadCellPositionCaches() {
                 cellPositions.add(UITableViewCellPosition(currentY, rowHeight, NSIndexPath(section, row)))
                 currentY += rowHeight
             }
+            sectionHeader?.endY = currentY
         }
         this._cellPositions = cellPositions.toList()
     }

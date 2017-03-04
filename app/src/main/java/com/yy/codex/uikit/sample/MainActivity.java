@@ -114,13 +114,13 @@ class TestViewController extends UIViewController {
 
             @Override
             public int numberOfSectionsInTableView(@NotNull UITableView tableView) {
-                return 1;
+                return 3;
             }
 
             @Nullable
             @Override
             public String tableViewTitleForHeaderInSection(@NotNull UITableView tableView, int section) {
-                return null;
+                return "Hello";
             }
         });
         tableView.setDelegate(new UITableView.UITableViewDelegate() {
