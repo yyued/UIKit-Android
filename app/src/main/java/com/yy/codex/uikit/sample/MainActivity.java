@@ -89,13 +89,13 @@ class TestViewController extends UIViewController {
         tableView.setConstraint(UIConstraint.Companion.full());
         tableView.setDataSource(new UITableView.UITableViewDataSource() {
             @Override
-            public int tableViewNumberOfRowsInSection(@NotNull UITableView tableView, int section) {
+            public int numberOfRowsInSection(@NotNull UITableView tableView, int section) {
                 return 30;
             }
 
             @NotNull
             @Override
-            public UITableViewCell tableViewCellForRowAtIndexPath(@NotNull UITableView tableView, @NotNull NSIndexPath indexPath) {
+            public UITableViewCell cellForRowAtIndexPath(@NotNull UITableView tableView, @NotNull NSIndexPath indexPath) {
                 UITableViewCell cell = tableView.dequeueReusableCellWithIdentifier("Cell");
                 if (cell == null) {
                     NSLog.INSTANCE.log("NULL Cell");
@@ -113,30 +113,36 @@ class TestViewController extends UIViewController {
             }
 
             @Override
-            public int numberOfSectionsInTableView(@NotNull UITableView tableView) {
+            public int numberOfSections(@NotNull UITableView tableView) {
                 return 3;
             }
 
             @Nullable
             @Override
-            public String tableViewTitleForHeaderInSection(@NotNull UITableView tableView, int section) {
+            public String titleForHeaderInSection(@NotNull UITableView tableView, int section) {
                 return "Hello";
             }
         });
         tableView.setDelegate(new UITableView.UITableViewDelegate() {
+            @Nullable
             @Override
-            public double tableViewHeightForRowAtIndexPath(@NotNull UITableView tableView, @NotNull NSIndexPath indexPath) {
+            public UIView viewForHeaderInSection(@NotNull UITableView tableView, int section) {
+                return null;
+            }
+
+            @Override
+            public double heightForRowAtIndexPath(@NotNull UITableView tableView, @NotNull NSIndexPath indexPath) {
                 return 44.0;
             }
 
             @Override
-            public void tableViewDidSelectRowAtIndexPath(@NotNull UITableView tableView, @NotNull NSIndexPath indexPath) {
+            public void didSelectRowAtIndexPath(@NotNull UITableView tableView, @NotNull NSIndexPath indexPath) {
 
             }
 
             @Override
-            public double tableViewHeightForHeaderInSection(@NotNull UITableView tableView, int section) {
-                return 0;
+            public double heightForHeaderInSection(@NotNull UITableView tableView, int section) {
+                return 28;
             }
 
             @Override

@@ -41,8 +41,8 @@ class UIColor(val r: Double, val g: Double, val b: Double, val a: Double) {
         val redColor = UIColor(1.0, 0.0, 0.0, 1.0)
         val greenColor = UIColor(0.0, 1.0, 0.0, 1.0)
         val blueColor = UIColor(0.0, 0.0, 1.0, 1.0)
-        val grayColor = UIColor(.3, .3, .3, 1.0)
-        val orangeColor = UIColor(1.0, .38, 0.0, 1.0)
+        val grayColor = UIColor(0.3, 0.3, 0.3, 1.0)
+        val orangeColor = UIColor(1.0, 0.38, 0.0, 1.0)
         val yellowColor = UIColor(1.0, 1.0, 0.0, 1.0)
     }
 

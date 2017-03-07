@@ -13,16 +13,17 @@ import java.util.*
 open class UITableView : UIScrollView {
 
     interface UITableViewDataSource {
-        fun tableViewNumberOfRowsInSection(tableView: UITableView, section: Int): Int
-        fun tableViewCellForRowAtIndexPath(tableView: UITableView, indexPath: NSIndexPath): UITableViewCell
-        fun numberOfSectionsInTableView(tableView: UITableView): Int
-        fun tableViewTitleForHeaderInSection(tableView: UITableView, section: Int): String?
+        fun numberOfRowsInSection(tableView: UITableView, section: Int): Int
+        fun cellForRowAtIndexPath(tableView: UITableView, indexPath: NSIndexPath): UITableViewCell
+        fun numberOfSections(tableView: UITableView): Int
+        fun titleForHeaderInSection(tableView: UITableView, section: Int): String?
     }
 
     interface UITableViewDelegate: UIScrollView.UIScrollViewDelegate {
-        fun tableViewHeightForRowAtIndexPath(tableView: UITableView, indexPath: NSIndexPath): Double
-        fun tableViewDidSelectRowAtIndexPath(tableView: UITableView, indexPath: NSIndexPath)
-        fun tableViewHeightForHeaderInSection(tableView: UITableView, section: Int): Double
+        fun heightForRowAtIndexPath(tableView: UITableView, indexPath: NSIndexPath): Double
+        fun didSelectRowAtIndexPath(tableView: UITableView, indexPath: NSIndexPath)
+        fun heightForHeaderInSection(tableView: UITableView, section: Int): Double
+        fun viewForHeaderInSection(tableView: UITableView, section: Int): UIView?
     }
 
     constructor(context: Context, view: View) : super(context, view) {}

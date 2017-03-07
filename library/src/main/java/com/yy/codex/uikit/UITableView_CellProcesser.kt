@@ -25,12 +25,12 @@ internal fun UITableView._updateCells() {
     }
     lastVisibleHash = currentVisibleHash
     _markCellReusable(visiblePositions).forEach {
-        val cell = dataSource.tableViewCellForRowAtIndexPath(this, it.indexPath)
+        val cell = dataSource.cellForRowAtIndexPath(this, it.indexPath)
         cell.frame = CGRect(0.0, it.value, frame.width, it.height)
         _enqueueCell(cell, it)
         if (cell.superview !== this) {
             cell.removeFromSuperview()
-            addSubview(cell)
+            insertSubview(cell, 0)
         }
     }
 }

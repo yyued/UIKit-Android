@@ -74,7 +74,8 @@ open class UIScrollView : UIView {
     var dragging: Boolean = false
         private set
 
-    /*Animation*/
+    /* Private */
+
     private var currentAnimationY: UIViewAnimation? = null
     private var currentAnimationX: UIViewAnimation? = null
     private var verticalMoveDistance = 0.0
@@ -83,6 +84,8 @@ open class UIScrollView : UIView {
     private var windowSizePoint: CGPoint? = null
     private var fingerVerticalMoveDistance = 0.00
     private var fingerHorizontalMoveDistance = 0.00
+    private lateinit var horizontalScrollIndicator: UIView
+    private lateinit var verticalScrollIndicator: UIView
 
     override fun init() {
         super.init()
@@ -94,14 +97,18 @@ open class UIScrollView : UIView {
         bounces = true
         windowSizePoint = CGPoint(0.0, 0.0)
         contentInset = UIEdgeInsets(0.0, 0.0, 0.0, 0.0)
-        fingerVerticalMoveDistance = frame.size.height / 5
-        fingerHorizontalMoveDistance = frame.size.width / 5
+        fingerVerticalMoveDistance = frame.size.height / 5.0
+        fingerHorizontalMoveDistance = frame.size.width / 5.0
         panGestureRecognizer = UIPanGestureRecognizer(this, "handlePan:")
         if (scrollEnabled) {
             panGestureRecognizer?.let {
                 addGestureRecognizer(it)
             }
         }
+        horizontalScrollIndicator = UIView(context)
+        verticalScrollIndicator = UIView(context)
+        addSubview(horizontalScrollIndicator)
+        addSubview(verticalScrollIndicator)
     }
 
     private var _bounceAnimationCancelled = false
@@ -133,6 +140,7 @@ open class UIScrollView : UIView {
             trackingPoint = CGPoint(originX, originY)
             panGestureRecognizer.setTranslation(contentOffset)
             delegate?.let { it.scrollViewWillBeginDragging(this) }
+            showScrollIndicator()
             return
         }
         if (dragging && panGestureRecognizer.state === UIGestureRecognizerState.Changed) {
@@ -143,6 +151,7 @@ open class UIScrollView : UIView {
                 horizontalMoveDistance = originX + Math.abs(trackingPoint.x) - windowSizePoint.x
             }
             setContentOffset(offset)
+            updateScrollIndicator()
         } else if (panGestureRecognizer.state === UIGestureRecognizerState.Ended) {
             /* Ended */
             dragging = false
@@ -181,6 +190,7 @@ open class UIScrollView : UIView {
             }
             horizontalMoveDistance = 0.0
             verticalMoveDistance = 0.0
+            hideScrollIndicator()
         }
     }
 
@@ -353,6 +363,18 @@ open class UIScrollView : UIView {
             nearestBoundsY = contentSize.height - frame.size.height
         }
         return nearestBoundsY
+    }
+
+    private fun showScrollIndicator() {
+
+    }
+
+    private fun updateScrollIndicator() {
+
+    }
+
+    private fun hideScrollIndicator() {
+
     }
 
     companion object {

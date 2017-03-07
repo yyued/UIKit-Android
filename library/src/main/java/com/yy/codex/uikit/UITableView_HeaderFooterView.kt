@@ -34,8 +34,13 @@ internal fun UITableView._updateHeaderFooterViewFrame() {
 internal fun UITableView._updateSectionHeaderFooterFrame() {
     _sectionsHeaderView.forEach {
         it?.let {
-            if (contentOffset.y > it.startY && contentOffset.y < it.endY) {
-                it.view.frame = CGRect(0.0, contentOffset.y, frame.width, it.headerHeight)
+            if (contentOffset.y >= it.startY && contentOffset.y < it.endY) {
+                if (contentOffset.y > it.endY - it.headerHeight) {
+                    it.view.frame = CGRect(0.0, scrollY / UIScreen.mainScreen.scale() - (contentOffset.y - (it.endY - it.headerHeight)), frame.width, it.headerHeight)
+                }
+                else {
+                    it.view.frame = CGRect(0.0, scrollY / UIScreen.mainScreen.scale(), frame.width, it.headerHeight)
+                }
             }
             else {
                 it.view.frame = CGRect(0.0, it.startY, frame.width, it.headerHeight)
@@ -47,7 +52,7 @@ internal fun UITableView._updateSectionHeaderFooterFrame() {
 internal fun UITableView._reloadSectionHeaderFooterView() {
     _sectionsHeaderView.forEach { it?.let { it.view.removeFromSuperview() } }
     dataSource?.let {
-        _sectionsHeaderView = (0 until it.numberOfSectionsInTableView(this)).map {
+        _sectionsHeaderView = (0 until it.numberOfSections(this)).map {
             val idx = it
             _requestSectionHeaderView(it)?.let {
                 return@map UITableViewSectionHeaderViewWrapper(it, 0.0, 0.0, _requestSectionHeaderHeight(idx))
@@ -61,8 +66,9 @@ internal fun UITableView._reloadSectionHeaderFooterView() {
 
 internal fun UITableView._requestSectionHeaderView(section: Int): UIView? {
     dataSource?.let {
-        it.tableViewTitleForHeaderInSection(this, section)?.let {
+        it.titleForHeaderInSection(this, section)?.let {
             val view = UITableViewSectionHeaderView(context)
+            view.textLabel.text = it
             return view
         }
     }
@@ -70,6 +76,9 @@ internal fun UITableView._requestSectionHeaderView(section: Int): UIView? {
 }
 
 internal fun UITableView._requestSectionHeaderHeight(section: Int): Double {
+    delegate()?.let {
+        return it.heightForHeaderInSection(this, section)
+    }
     return 28.0
 }
 
@@ -79,12 +88,12 @@ internal class UITableViewSectionHeaderView(context: Context) : UIView(context) 
 
     override fun init() {
         super.init()
-        setBackgroundColor(UIColor.blueColor)
         textLabel = UILabel(context)
         textLabel.constraint = UIConstraint()
         textLabel.constraint?.left = "15"
         textLabel.constraint?.centerVertically = true
         addSubview(textLabel)
+        setBackgroundColor(UIColor(0xf2 / 255.0, 0xf2 / 255.0, 0xf2 / 255.0, 1.0))
     }
 
 }

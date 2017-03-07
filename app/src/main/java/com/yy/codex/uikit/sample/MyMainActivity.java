@@ -98,13 +98,13 @@ class MyTestView extends UIView implements UITableView.UITableViewDataSource {
     }
 
     @Override
-    public int tableViewNumberOfRowsInSection(@NotNull UITableView tableView, int section) {
+    public int numberOfRowsInSection(@NotNull UITableView tableView, int section) {
         return 100;
     }
 
     @NotNull
     @Override
-    public UITableViewCell tableViewCellForRowAtIndexPath(@NotNull UITableView tableView, @NotNull NSIndexPath indexPath) {
+    public UITableViewCell cellForRowAtIndexPath(@NotNull UITableView tableView, @NotNull NSIndexPath indexPath) {
 
         UITableViewCell cell = tableView.dequeueReusableCellWithIdentifier("test");
         if (cell == null) {
@@ -118,13 +118,13 @@ class MyTestView extends UIView implements UITableView.UITableViewDataSource {
     }
 
     @Override
-    public int numberOfSectionsInTableView(@NotNull UITableView tableView) {
+    public int numberOfSections(@NotNull UITableView tableView) {
         return 1;
     }
 
     @Nullable
     @Override
-    public String tableViewTitleForHeaderInSection(@NotNull UITableView tableView, int section) {
+    public String titleForHeaderInSection(@NotNull UITableView tableView, int section) {
         return "TTT";
     }
 }
