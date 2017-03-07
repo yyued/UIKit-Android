@@ -56,13 +56,13 @@ open class UIScrollView : UIView {
     var tracking: Boolean = false
         internal set
 
-    var scrollEnabled: Boolean = false
+    var scrollEnabled: Boolean = true
 
     var alwaysBounceVertical: Boolean = false
 
     var alwaysBounceHorizontal: Boolean = false
 
-    var bounces: Boolean = false
+    var bounces: Boolean = true
 
     var pagingEnabled: Boolean = false
 
@@ -71,6 +71,10 @@ open class UIScrollView : UIView {
 
     var dragging: Boolean = false
         internal set
+
+    var showsHorizontalScrollIndicator: Boolean = true
+
+    var showsVerticalScrollIndicator: Boolean = true
 
     open fun setContentOffset(contentOffset: CGPoint, animated: Boolean = false) {
         _setContentOffset(contentOffset, animated)
@@ -93,30 +97,14 @@ open class UIScrollView : UIView {
     internal var _fingerHorizontalMoveDistance = 0.00
     internal lateinit var _horizontalScrollIndicator: UIView
     internal lateinit var _verticalScrollIndicator: UIView
+    internal var _scrollIndicatorHideAnimation: UIViewAnimation? = null
     internal var _bounceAnimationCancelled = false
 
     override fun init() {
         super.init()
-        tracking = false
-        scrollEnabled = true
-        alwaysBounceVertical = false
-        alwaysBounceHorizontal = false
-        pagingEnabled = false
-        bounces = true
-        _windowSizePoint = CGPoint(0.0, 0.0)
         contentInset = UIEdgeInsets(0.0, 0.0, 0.0, 0.0)
-        _fingerVerticalMoveDistance = frame.size.height / 5.0
-        _fingerHorizontalMoveDistance = frame.size.width / 5.0
-        _panGestureRecognizer = UIPanGestureRecognizer(this, "handlePan:")
-        if (scrollEnabled) {
-            _panGestureRecognizer?.let {
-                addGestureRecognizer(it)
-            }
-        }
-        _horizontalScrollIndicator = UIView(context)
-        _verticalScrollIndicator = UIView(context)
-        addSubview(_horizontalScrollIndicator)
-        addSubview(_verticalScrollIndicator)
+        _initScroller()
+        _initScrollIndicator()
     }
 
     override fun touchesBegan(touches: List<UITouch>, event: UIEvent) {
@@ -142,16 +130,10 @@ open class UIScrollView : UIView {
         }
     }
 
-    internal fun showScrollIndicator() {
-
-    }
-
-    internal fun updateScrollIndicator() {
-
-    }
-
-    internal fun hideScrollIndicator() {
-
+    override fun layoutSubviews() {
+        super.layoutSubviews()
+        _fingerVerticalMoveDistance = frame.size.height / 5.0
+        _fingerHorizontalMoveDistance = frame.size.width / 5.0
     }
 
 }

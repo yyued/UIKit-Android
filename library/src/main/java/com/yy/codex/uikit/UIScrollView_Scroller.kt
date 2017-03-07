@@ -8,23 +8,47 @@ import com.yy.codex.foundation.lets
 
 private val FINGER_VELOCITY = 300.0
 
+internal fun UIScrollView._initScroller() {
+    _windowSizePoint = CGPoint(0.0, 0.0)
+    _panGestureRecognizer = UIPanGestureRecognizer(this, "handlePan:")
+    _panGestureRecognizer?.let {
+        addGestureRecognizer(it)
+    }
+}
+
 internal fun UIScrollView._scrollerTouchBegan() {
-    _bounceAnimationCancelled = _checkOutOfBounds()
+    if (!scrollEnabled) {
+        return
+    }
+    val nowDecelerating = decelerating
+    _bounceAnimationCancelled = decelerating && _checkOutOfBounds()
     _currentAnimationY?.let(UIViewAnimation::cancel)
     _currentAnimationY = null
     _currentAnimationX?.let(UIViewAnimation::cancel)
     _currentAnimationX = null
     tracking = true
     decelerating = false
+    if (nowDecelerating) {
+        _showScrollIndicator()
+    }
 }
 
 internal fun UIScrollView._scrollerTouchEnded() {
+    if (!scrollEnabled) {
+        return
+    }
     if (_bounceAnimationCancelled && _checkOutOfBounds()) {
         _setContentOffsetWithSpring(_requestBoundsPoint(contentOffset))
+    }
+    if (!dragging) {
+        _hideScrollIndicator()
     }
 }
 
 internal fun UIScrollView._scrollerHandlePan(panGestureRecognizer: UIPanGestureRecognizer) {
+    if (!scrollEnabled) {
+        return
+    }
     val originY = -panGestureRecognizer.translation().y
     val originX = -panGestureRecognizer.translation().x
     if (!dragging) {
@@ -33,7 +57,7 @@ internal fun UIScrollView._scrollerHandlePan(panGestureRecognizer: UIPanGestureR
         _trackingPoint = CGPoint(originX, originY)
         panGestureRecognizer.setTranslation(contentOffset)
         delegate?.let { it.scrollViewWillBeginDragging(this) }
-        showScrollIndicator()
+        _showScrollIndicator()
     }
     else if (dragging && panGestureRecognizer.state === UIGestureRecognizerState.Changed) {
         /* Move */
@@ -43,7 +67,6 @@ internal fun UIScrollView._scrollerHandlePan(panGestureRecognizer: UIPanGestureR
             _horizontalMoveDistance = originX + Math.abs(trackingPoint.x) - windowSizePoint.x
         }
         setContentOffset(offset)
-        updateScrollIndicator()
     }
     else if (panGestureRecognizer.state === UIGestureRecognizerState.Ended) {
         /* Ended */
@@ -79,11 +102,13 @@ internal fun UIScrollView._scrollerHandlePan(panGestureRecognizer: UIPanGestureR
             yOptions.topBounds = 0.0
             yOptions.bottomBounds = contentSize.height + contentInset.bottom - frame.size.height
             yOptions.viewBounds = frame.size.height
-            _currentAnimationY = UIViewAnimator.decayBounds(this, "contentOffset.y", yOptions, null)
+            _currentAnimationY = UIViewAnimator.decayBounds(this, "contentOffset.y", yOptions, Runnable {
+                decelerating = false
+                _hideScrollIndicator()
+            })
         }
         _horizontalMoveDistance = 0.0
         _verticalMoveDistance = 0.0
-        hideScrollIndicator()
     }
 }
 
@@ -106,6 +131,7 @@ internal fun UIScrollView._setContentOffset(contentOffset: CGPoint, animated: Bo
         }
         UIViewAnimator.addAnimationState(self, "contentOffset.x", oldValue.x, this.contentOffset.x)
         UIViewAnimator.addAnimationState(self, "contentOffset.y", oldValue.y, this.contentOffset.y)
+        _updateScrollIndicator()
     }
 }
 
@@ -136,7 +162,8 @@ private fun UIScrollView._checkOutOfBounds(): Boolean {
     if (contentOffset.x < 0.0 || contentOffset.y < 0.0) {
         return true
     }
-    else if (contentOffset.x > contentSize.width - frame.size.width && contentSize.width > 0 || contentOffset.y > contentSize.height - frame.size.height && contentSize.height > 0) {
+    else if (contentOffset.x > contentSize.width - frame.size.width && contentSize.width > 0 ||
+             contentOffset.y > contentSize.height - frame.size.height && contentSize.height > 0) {
         return true
     }
     return false
@@ -222,29 +249,35 @@ private fun UIScrollView._computeXY(xOry: Double, isX: Boolean): Double {
 }
 
 private fun UIScrollView._requestBoundsPoint(point: CGPoint): CGPoint {
-    val nearestBoundsY = _requestBoundsY(point.y)
-    val nearestBoundsX = _requestBoundsX(point.x)
-    return CGPoint(nearestBoundsX, nearestBoundsY)
+    return CGPoint(_requestBoundsX(point.x), _requestBoundsY(point.y))
 }
 
 private fun UIScrollView._requestBoundsX(x: Double): Double {
-    var nearestBoundsX = x
     if (x < 0.0) {
-        nearestBoundsX = 0.0
+        return 0.0
+    }
+    else if (contentSize.width < frame.width) {
+        return 0.0
     }
     else if (x > contentSize.width - frame.size.width && contentSize.width > 0) {
-        nearestBoundsX = contentSize.width - frame.size.width
+        return contentSize.width - frame.size.width
     }
-    return nearestBoundsX
+    else {
+        return 0.0
+    }
 }
 
 private fun UIScrollView._requestBoundsY(y: Double): Double {
-    var nearestBoundsY = y
     if (y < 0.0) {
-        nearestBoundsY = 0.0
+        return 0.0
+    }
+    else if (contentSize.height < frame.height) {
+        return 0.0
     }
     else if (y > contentSize.height - frame.size.height && contentSize.height > 0) {
-        nearestBoundsY = contentSize.height - frame.size.height
+        return contentSize.height - frame.size.height
     }
-    return nearestBoundsY
+    else {
+        return 0.0
+    }
 }

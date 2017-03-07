@@ -86,6 +86,7 @@ class TestViewController extends UIViewController {
         getNavigationItem().setRightBarButtonItem(new UIBarButtonItem("Next", this, "handleNextButtonTapped"));
 
         UITableView tableView = new UITableView(getContext());
+        tableView.setAlwaysBounceVertical(true);
         tableView.setConstraint(UIConstraint.Companion.full());
         tableView.setDataSource(new UITableView.UITableViewDataSource() {
             @Override

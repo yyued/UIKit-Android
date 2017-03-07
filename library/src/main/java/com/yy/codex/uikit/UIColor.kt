@@ -8,6 +8,8 @@ import android.graphics.Color
 
 class UIColor(val r: Double, val g: Double, val b: Double, val a: Double) {
 
+    constructor(r: Int, g: Int, b: Int): this(r / 255.0, g / 255.0, b / 255.0, 1.0)
+
     constructor(int: Int): this(Color.red(int) / 255.0, Color.green(int) / 255.0, Color.blue(int) / 255.0, Color.alpha(int) / 255.0)
 
     fun colorWithDarken(darken: Double): UIColor {

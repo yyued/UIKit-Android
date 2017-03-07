@@ -247,18 +247,14 @@ open class UIView : FrameLayout, UIResponder {
             val oldValue = field
             field = frame
             layoutSubviews()
-            this.x = Math.ceil((frame.origin.x * UIScreen.mainScreen.scale())).toFloat()
-            this.y = Math.ceil((frame.origin.y * UIScreen.mainScreen.scale())).toFloat()
-            var mWidth = frame.size.width * UIScreen.mainScreen.scale()
-            var mHeight = frame.size.height * UIScreen.mainScreen.scale()
-            if (Math.ceil(mWidth) - mWidth < 0.1) {
-                mWidth = Math.ceil(mWidth)
+            this.x = (frame.origin.x * UIScreen.mainScreen.scale()).toFloat()
+            this.y = (frame.origin.y * UIScreen.mainScreen.scale()).toFloat()
+            (frame.size.width * UIScreen.mainScreen.scale())?.let {
+                this.minimumWidth = if (Math.ceil(it) - it < 0.1) Math.ceil(it).toInt() else it.toInt()
             }
-            if (Math.ceil(mWidth) - mHeight < 0.1) {
-                mHeight = Math.ceil(mHeight)
+            (frame.size.height * UIScreen.mainScreen.scale())?.let {
+                this.minimumHeight = if (Math.ceil(it) - it < 0.1) Math.ceil(it).toInt() else it.toInt()
             }
-            this.minimumWidth = mWidth.toInt()
-            this.minimumHeight = mHeight.toInt()
             this.layer.frame = CGRect(0.0, 0.0, frame.size.width, frame.size.height)
             enlargerView?.let { resetEnlargerLayerView() }
             UIViewAnimator.addAnimationState(this, "frame.origin.x", oldValue.origin.x, frame.origin.x)
