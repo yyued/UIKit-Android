@@ -7,11 +7,11 @@ package com.yy.codex.uikit
 internal fun UIScrollView._initScrollIndicator() {
     _horizontalScrollIndicator = UIView(context)
     _horizontalScrollIndicator.wantsLayer = true
-    _horizontalScrollIndicator.setBackgroundColor(UIColor(0x7f, 0x7f, 0x7f))
+    _horizontalScrollIndicator.setBackgroundColor(UIColor(0x00 / 255.0, 0x00 / 255.0, 0x00 / 255.0, 0.50))
     _horizontalScrollIndicator.layer.cornerRadius = 1.0
     _verticalScrollIndicator = UIView(context)
     _verticalScrollIndicator.wantsLayer = true
-    _verticalScrollIndicator.setBackgroundColor(UIColor(0x7f, 0x7f, 0x7f))
+    _verticalScrollIndicator.setBackgroundColor(UIColor(0x00 / 255.0, 0x00 / 255.0, 0x00 / 255.0, 0.50))
     _verticalScrollIndicator.layer.cornerRadius = 1.0
     addSubview(_horizontalScrollIndicator)
     addSubview(_verticalScrollIndicator)

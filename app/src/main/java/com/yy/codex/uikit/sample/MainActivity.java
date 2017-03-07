@@ -22,7 +22,6 @@ import com.yy.codex.uikit.UITabBarActivity;
 import com.yy.codex.uikit.UITabBarItem;
 import com.yy.codex.uikit.UITableView;
 import com.yy.codex.uikit.UITableViewCell;
-import com.yy.codex.uikit.UITableViewCellStyle;
 import com.yy.codex.uikit.UIView;
 import com.yy.codex.uikit.UIViewController;
 
@@ -100,11 +99,11 @@ class TestViewController extends UIViewController {
                 UITableViewCell cell = tableView.dequeueReusableCellWithIdentifier("Cell");
                 if (cell == null) {
                     NSLog.INSTANCE.log("NULL Cell");
-                    cell = new UITableViewCell(getContext(), UITableViewCellStyle.UITableViewCellStyleDefault, "Cell");
+                    cell = new UITableViewCell(getContext(), "Cell");
                     UILabel label = new UILabel(getContext());
                     label.setTag("myLabel");
                     label.setFrame(new CGRect(0.0, 0.0, 100.0, 22.0));
-                    cell.addSubview(label);
+                    cell.contentView.addSubview(label);
                 }
                 UILabel myLabel = (UILabel) cell.findViewWithTag("myLabel");
                 if (myLabel instanceof UILabel) {

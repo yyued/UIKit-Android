@@ -38,6 +38,12 @@ class UIPixelLine : UIView {
             invalidate()
         }
 
+    var contentInsets: UIEdgeInsets = UIEdgeInsets.zero
+        set(value) {
+            field = value
+            invalidate()
+        }
+
     override fun prepareProps(attrs: AttributeSet) {
         super.prepareProps(attrs)
         val typedArray = context.theme.obtainStyledAttributes(attrs, R.styleable.UIPixelLine, 0, 0)
@@ -70,9 +76,20 @@ class UIPixelLine : UIView {
         paint.color = color.toInt()
         paint.strokeWidth = 1.0f
         if (vertical) {
-            canvas.drawLine(0f, 0f, 0f, canvas.height.toFloat(), paint)
-        } else {
-            canvas.drawLine(0f, 0f, canvas.width.toFloat(), 0f, paint)
+            if (contentInsets.right > 0) {
+                canvas.drawLine((canvas.width - 1.0).toFloat(), 0f, (canvas.width - 1.0).toFloat(), canvas.height.toFloat(), paint)
+            }
+            else {
+                canvas.drawLine(0f, 0f, 0f, canvas.height.toFloat(), paint)
+            }
+        }
+        else {
+            if (contentInsets.bottom > 0) {
+                canvas.drawLine(0f, (canvas.height - 1.0).toFloat(), canvas.width.toFloat(), (canvas.height - 1.0).toFloat(), paint)
+            }
+            else {
+                canvas.drawLine(0f, 0f, canvas.width.toFloat(), 0f, paint)
+            }
         }
     }
 

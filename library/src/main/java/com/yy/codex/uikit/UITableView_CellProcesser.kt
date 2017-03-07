@@ -27,6 +27,7 @@ internal fun UITableView._updateCells() {
     _markCellReusable(visiblePositions).forEach {
         val cell = dataSource.cellForRowAtIndexPath(this, it.indexPath)
         cell.frame = CGRect(0.0, it.value, frame.width, it.height)
+        cell.separatorLine.hidden = it.indexPath.section < dataSource.numberOfSections(this) && it.indexPath.row == dataSource.numberOfRowsInSection(this, it.indexPath.section) - 1
         _enqueueCell(cell, it)
         if (cell.superview !== this) {
             cell.removeFromSuperview()
@@ -39,11 +40,15 @@ internal fun UITableView._dequeueCell(reuseIdentifier: String): UITableViewCell?
     var cell: UITableViewCell? = null
     _cellInstances[reuseIdentifier]?.let {
         it.toList().forEach {
+            if (cell != null) {
+                return@forEach
+            }
             if (!it.isBusy) {
                 cell = it.cell
             }
         }
     }
+    cell?.prepareForReuse()
     return cell
 }
 
