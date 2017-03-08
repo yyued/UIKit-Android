@@ -125,11 +125,11 @@ open class UIControl : UIView {
             }
         } else if (target != null && selector != null && event == null) {
             for ((key, invocations) in invocations) {
-                this.invocations.put(key, invocations.filter { it.target !== target || it.selector !== selector })
+                this.invocations.put(key, invocations.filter { it.target !== target || it.selector != selector })
             }
         } else if (target == null && selector != null && event == null) {
             for ((key, invocations) in invocations) {
-                this.invocations.put(key, invocations.filter { it.selector !== selector })
+                this.invocations.put(key, invocations.filter { it.selector != selector })
             }
         } else if (target == null && selector != null && event != null) {
             if (!invocations.containsKey(event)) {
@@ -145,7 +145,7 @@ open class UIControl : UIView {
             }
             val invocations = invocations[event]
             invocations?.let {
-                this.invocations.put(event, invocations.filter { it.target !== target || it.selector !== selector })
+                this.invocations.put(event, invocations.filter { it.target !== target || it.selector != selector })
             }
         }
     }

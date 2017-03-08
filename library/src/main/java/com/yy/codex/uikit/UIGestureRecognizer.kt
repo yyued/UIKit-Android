@@ -44,8 +44,8 @@ open class UIGestureRecognizer {
             return
         }
         actions = actions.filter {
-            !(target != null && it.target === target && selector != null && it.selector === selector) &&
-            !(target == null && selector != null && it.selector === selector) &&
+            !(target != null && it.target === target && selector != null && it.selector == selector) &&
+            !(target == null && selector != null && it.selector == selector) &&
             !(target != null && it.target === target && selector == null)
         }
     }

@@ -168,7 +168,40 @@ open class UITableView : UIScrollView {
         _requestCell(indexPath)?.let {
             it.setSelected(false, animated)
         }
-        indexPathsForSelectedRows = indexPathsForSelectedRows.filter { it !== indexPath }
+        indexPathsForSelectedRows = indexPathsForSelectedRows.filter { it != indexPath }
+    }
+
+    fun indexPathForRowAtPoint(point: CGPoint): NSIndexPath? {
+        val position = _requestCellPositionWithPoint(point.y)
+        if (point.y < position.value) {
+            return null
+        }
+        else if (point.y > position.value + position.height) {
+            return null
+        }
+        else {
+            return _requestCellPositionWithPoint(point.y).indexPath
+        }
+    }
+
+    fun indexPathForCell(cell: UITableViewCell): NSIndexPath? {
+        return _allCells().firstOrNull { it === cell }?.indexPath
+    }
+
+    fun indexPathsForRowsInRect(rect: CGRect): List<NSIndexPath> {
+        return _requestVisiblePositionsWithValues(rect.y, rect.y + rect.height).map { return@map it.indexPath }
+    }
+
+    fun cellForRowAtIndexPath(indexPath: NSIndexPath): UITableViewCell? {
+        return _allCells().firstOrNull { it.indexPath == indexPath }
+    }
+
+    fun visibleCells(): List<UITableViewCell> {
+        return _requestVisiblePositions().mapNotNull { return@mapNotNull _requestCell(it.indexPath) }
+    }
+
+    fun indexPathsForVisibleRows(): List<NSIndexPath> {
+        return _requestVisiblePositions().map { return@map it.indexPath }
     }
 
 }

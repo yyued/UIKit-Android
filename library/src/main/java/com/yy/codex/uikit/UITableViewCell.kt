@@ -91,7 +91,7 @@ open class UITableViewCell : UIView {
         else {
             _resetHighlightedView()
         }
-        _requestPreviousPointCell()?.let {
+        tableView?._requestPreviousPointCell(this)?.let {
             it.nextCellSelected = cellSelected || cellHighlighted
         }
     }
@@ -106,7 +106,7 @@ open class UITableViewCell : UIView {
         else {
             _resetHighlightedView()
         }
-        _requestPreviousPointCell()?.let {
+        tableView?._requestPreviousPointCell(this)?.let {
             it.nextCellSelected = cellSelected || cellHighlighted
         }
     }
@@ -125,6 +125,11 @@ open class UITableViewCell : UIView {
             _updateSeparatorLineHiddenState()
         }
 
+    internal var tableView: UITableView? = null
+        get() {
+            return nextResponder as? UITableView
+        }
+
     override fun init() {
         super.init()
         _initBackgroundView()
@@ -140,7 +145,7 @@ open class UITableViewCell : UIView {
 
     override fun didMoveToSuperview() {
         super.didMoveToSuperview()
-        _requestPreviousPointCell()?.let(UITableViewCell::_updateSeparatorLineHiddenState)
+        tableView?.let { it._requestPreviousPointCell(this)?.let(UITableViewCell::_updateSeparatorLineHiddenState) }
     }
 
     internal fun _updateAppearance() {
@@ -182,30 +187,6 @@ open class UITableViewCell : UIView {
 
     internal fun _resetHighlightedView() {
         selectedBackgroundView.alpha = if (cellSelected || cellHighlighted) 1.0f else 0.0f
-    }
-
-    internal fun _requestPreviousPointCell(): UITableViewCell? {
-        (nextResponder as? UITableView)?.let {
-            val tableView = it
-            (tableView._requestCell(tableView._requestCellPositionWithPoint(this.frame.y - 1.0).indexPath))?.let {
-                if (it != this && it.frame.y + it.frame.height >= this.frame.y - 1.0) {
-                    return it
-                }
-            }
-        }
-        return null
-    }
-
-    internal fun _requestNextPointCell(): UITableViewCell? {
-        (nextResponder as? UITableView)?.let {
-            val tableView = it
-            (tableView._requestCell(tableView._requestCellPositionWithPoint(this.frame.y + this.frame.height + 1.0).indexPath))?.let {
-                if (it != this && it.frame.y <= this.frame.y + this.frame.height + 1.0) {
-                    return it
-                }
-            }
-        }
-        return null
     }
 
     private fun onTapped(sender: UITapGestureRecognizer) {

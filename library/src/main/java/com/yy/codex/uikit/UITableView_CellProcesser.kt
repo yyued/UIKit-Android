@@ -19,7 +19,7 @@ internal fun UITableView._updateCellsFrame() {
 internal fun UITableView._requestCell(indexPath: NSIndexPath): UITableViewCell? {
     _cellInstances.toList().forEach {
         it.second.toList().forEach {
-            if (it.cell.indexPath === indexPath) {
+            if (it.cell.indexPath == indexPath) {
                 return it.cell
             }
         }
@@ -61,7 +61,7 @@ internal fun UITableView._updateCells() {
 
 internal fun UITableView._isCellSelected(cell: UITableViewCell): Boolean {
     indexPathsForSelectedRows.forEach {
-        if (it === cell.indexPath) {
+        if (it == cell.indexPath) {
             return true
         }
     }
@@ -82,6 +82,24 @@ internal fun UITableView._dequeueCell(reuseIdentifier: String): UITableViewCell?
     }
     cell?.prepareForReuse()
     return cell
+}
+
+internal fun UITableView._requestPreviousPointCell(cell: UITableViewCell): UITableViewCell? {
+    (this._requestCell(this._requestCellPositionWithPoint(cell.frame.y - 1.0).indexPath))?.let {
+        if (it != cell && it.frame.y + it.frame.height >= cell.frame.y - 1.0) {
+            return it
+        }
+    }
+    return null
+}
+
+internal fun UITableView._requestNextPointCell(cell: UITableViewCell): UITableViewCell? {
+    (this._requestCell(this._requestCellPositionWithPoint(cell.frame.y + cell.frame.height + 1.0).indexPath))?.let {
+        if (it != cell && it.frame.y <= cell.frame.y + cell.frame.height + 1.0) {
+            return it
+        }
+    }
+    return null
 }
 
 private fun UITableView._enqueueCell(cell: UITableViewCell, cellPosition: UITableViewCellPosition) {
@@ -112,7 +130,7 @@ private fun UITableView._markCellReusable(visiblePositions: List<UITableViewCell
     }
     _cellInstances.toList().forEach {
         it.second.toList().forEach {
-            it.isBusy = visibleMapping[it.cellPosition] === true
+            it.isBusy = visibleMapping[it.cellPosition] == true
             if (it.isBusy) {
                 trimmedPositions.remove(it.cellPosition)
             }

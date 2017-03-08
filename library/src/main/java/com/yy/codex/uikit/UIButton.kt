@@ -298,18 +298,18 @@ open class UIButton : UIControl {
         contentWidth += contentEdgeInsets.left + contentEdgeInsets.right + imageEdgeInsets.left + imageEdgeInsets.right + titleEdgeInsets.left + titleEdgeInsets.right
         var imageViewOriginY = 0.0
         var titleLabelOriginY = 0.0
-        if (contentVerticalAlignment === UIControl.ContentVerticalAlignment.Center) {
+        if (contentVerticalAlignment == UIControl.ContentVerticalAlignment.Center) {
             imageViewOriginY = (frame.size.height - imageView.intrinsicContentSize().height) / 2.0
             titleLabelOriginY = (frame.size.height - titleLabel.intrinsicContentSize().height) / 2.0
             imageViewOriginY = imageViewOriginY
             titleLabelOriginY = titleLabelOriginY
-        } else if (contentVerticalAlignment === UIControl.ContentVerticalAlignment.Bottom) {
+        } else if (contentVerticalAlignment == UIControl.ContentVerticalAlignment.Bottom) {
             imageViewOriginY = frame.size.height - imageView.intrinsicContentSize().height
             titleLabelOriginY = frame.size.height - titleLabel.intrinsicContentSize().height
             imageViewOriginY = imageViewOriginY
             titleLabelOriginY = titleLabelOriginY
         }
-        if (contentHorizontalAlignment === UIControl.ContentHorizontalAlignment.Left) {
+        if (contentHorizontalAlignment == UIControl.ContentHorizontalAlignment.Left) {
             imageView.frame = CGRect(
                     contentEdgeInsets.left + imageEdgeInsets.left,
                     imageViewOriginY,
@@ -320,7 +320,7 @@ open class UIButton : UIControl {
                     titleLabelOriginY,
                     titleLabel.intrinsicContentSize().width,
                     titleLabel.intrinsicContentSize().height)
-        } else if (contentHorizontalAlignment === UIControl.ContentHorizontalAlignment.Center) {
+        } else if (contentHorizontalAlignment == UIControl.ContentHorizontalAlignment.Center) {
             imageView.frame = CGRect(
                     (frame.size.width - contentWidth) / 2.0 + contentEdgeInsets.left + imageEdgeInsets.left,
                     imageViewOriginY,
@@ -331,7 +331,7 @@ open class UIButton : UIControl {
                     titleLabelOriginY,
                     titleLabel.intrinsicContentSize().width,
                     titleLabel.intrinsicContentSize().height)
-        } else if (contentHorizontalAlignment === UIControl.ContentHorizontalAlignment.Right) {
+        } else if (contentHorizontalAlignment == UIControl.ContentHorizontalAlignment.Right) {
             imageView.frame = CGRect(
                     frame.size.width - contentWidth + contentEdgeInsets.left + imageEdgeInsets.left,
                     imageViewOriginY,

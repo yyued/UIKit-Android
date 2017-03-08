@@ -11,7 +11,7 @@ internal fun UITableViewCell._initSeparatorLine() {
 }
 
 internal fun UITableViewCell._updateSeparatorLineHiddenState() {
-    if (_requestNextPointCell() == null) {
+    if (tableView?._requestNextPointCell(this) == null) {
         separatorLine.hidden = true
         return
     }

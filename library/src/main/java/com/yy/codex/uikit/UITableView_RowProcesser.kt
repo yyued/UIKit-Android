@@ -16,9 +16,13 @@ internal fun UITableView._reloadContentSize() {
 }
 
 internal fun UITableView._requestVisiblePositions(): List<UITableViewCellPosition> {
+    return _requestVisiblePositionsWithValues(contentOffset.y, contentOffset.y + frame.height)
+}
+
+internal fun UITableView._requestVisiblePositionsWithValues(startValue: Double, endValue: Double): List<UITableViewCellPosition> {
     val results: MutableList<UITableViewCellPosition> = mutableListOf()
-    val startPosition = _requestCellPositionWithPoint(contentOffset.y)
-    val endPosition = _requestCellPositionWithPoint(contentOffset.y + frame.height)
+    val startPosition = _requestCellPositionWithPoint(startValue)
+    val endPosition = _requestCellPositionWithPoint(endValue)
     results.add(startPosition)
     if (endPosition !== startPosition) {
         _cellPositions.indexOf(startPosition)?.let {

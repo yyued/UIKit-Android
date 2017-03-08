@@ -59,7 +59,7 @@ internal fun UIScrollView._scrollerHandlePan(panGestureRecognizer: UIPanGestureR
         delegate?.let { it.scrollViewWillBeginDragging(this) }
         _showScrollIndicator()
     }
-    else if (dragging && panGestureRecognizer.state === UIGestureRecognizerState.Changed) {
+    else if (dragging && panGestureRecognizer.state == UIGestureRecognizerState.Changed) {
         /* Move */
         val offset = _computeMovePoint(CGPoint(originX, originY), pagingEnabled)
         lets(_trackingPoint, _windowSizePoint) { trackingPoint, windowSizePoint ->
@@ -68,7 +68,7 @@ internal fun UIScrollView._scrollerHandlePan(panGestureRecognizer: UIPanGestureR
         }
         setContentOffset(offset)
     }
-    else if (panGestureRecognizer.state === UIGestureRecognizerState.Ended) {
+    else if (panGestureRecognizer.state == UIGestureRecognizerState.Ended) {
         /* Ended */
         dragging = false
         tracking = false

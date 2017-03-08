@@ -8,6 +8,7 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.yy.codex.foundation.NSLog;
+import com.yy.codex.uikit.CGPoint;
 import com.yy.codex.uikit.CGRect;
 import com.yy.codex.uikit.NSIndexPath;
 import com.yy.codex.uikit.UIBarButtonItem;
@@ -143,9 +144,7 @@ class TestViewController extends UIViewController {
 
             @Override
             public void didSelectRowAtIndexPath(@NotNull UITableView tableView, @NotNull NSIndexPath indexPath) {
-                NextViewController nextViewController = new NextViewController(getContext());
-                nextViewController.setHidesBottomBarWhenPushed(true);
-                navigationController().pushViewController(nextViewController, true);
+                List<NSIndexPath> indexPaths = tableView.indexPathsForVisibleRows();
                 tableView.deselectRow(indexPath, true);
             }
 
