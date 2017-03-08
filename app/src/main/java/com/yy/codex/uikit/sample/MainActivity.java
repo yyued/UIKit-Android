@@ -90,6 +90,12 @@ class TestViewController extends UIViewController {
         tableView.setAlwaysBounceVertical(true);
         tableView.setConstraint(UIConstraint.Companion.full());
         tableView.setDataSource(new UITableView.UITableViewDataSource() {
+            @Nullable
+            @Override
+            public String titleForFooterInSection(@NotNull UITableView tableView, int section) {
+                return null;
+            }
+
             @Override
             public int numberOfRowsInSection(@NotNull UITableView tableView, int section) {
                 return 30;
@@ -122,10 +128,21 @@ class TestViewController extends UIViewController {
             @Nullable
             @Override
             public String titleForHeaderInSection(@NotNull UITableView tableView, int section) {
-                return "Hello";
+                return "Header";
             }
         });
         tableView.setDelegate(new UITableView.UITableViewDelegate() {
+            @Override
+            public double heightForFooterInSection(@NotNull UITableView tableView, int section) {
+                return 28;
+            }
+
+            @Nullable
+            @Override
+            public UIView viewForFooterInSection(@NotNull UITableView tableView, int section) {
+                return null;
+            }
+
             @Override
             public void didDeselectRowAtIndexPath(@NotNull UITableView tableView, @NotNull NSIndexPath indexPath) {
 
@@ -144,7 +161,7 @@ class TestViewController extends UIViewController {
 
             @Override
             public void didSelectRowAtIndexPath(@NotNull UITableView tableView, @NotNull NSIndexPath indexPath) {
-                List<NSIndexPath> indexPaths = tableView.indexPathsForVisibleRows();
+                tableView.scrollToRow(new NSIndexPath(0, 12), UITableView.ScrollPosition.Bottom, true);
                 tableView.deselectRow(indexPath, true);
             }
 

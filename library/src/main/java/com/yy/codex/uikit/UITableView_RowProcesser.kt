@@ -10,9 +10,16 @@ internal fun UITableView._reloadCellCaches() {
 
 internal fun UITableView._reloadContentSize() {
     if (_cellPositions.size > 0) {
-        val maxY = _cellPositions.last().value + _cellPositions.last().height + (tableFooterView?.frame?.height ?: 0.0)
+        var maxY = _cellPositions.last().value + _cellPositions.last().height + (tableFooterView?.frame?.height ?: 0.0)
+        if (_sectionsFooterView.size > 0) {
+            maxY += _sectionsFooterView.last()?.viewHeight ?: 0.0
+        }
         contentSize = CGSize(0.0, maxY)
     }
+}
+
+internal fun UITableView._requestPositionWithIndexPath(indexPath: NSIndexPath): UITableViewCellPosition? {
+    return _cellPositions.firstOrNull { it.indexPath == indexPath }
 }
 
 internal fun UITableView._requestVisiblePositions(): List<UITableViewCellPosition> {
@@ -79,8 +86,10 @@ private fun UITableView._reloadCellPositionCaches() {
         (0 until sectionCount).forEach {
             val section = it
             val sectionHeader = _sectionsHeaderView[section]
+            val sectionFooter = _sectionsFooterView[section]
             sectionHeader?.startY = currentY
-            currentY += sectionHeader?.headerHeight ?: 0.0
+            currentY += sectionHeader?.viewHeight ?: 0.0
+            sectionFooter?.startY = currentY
             val rowCount = dataSource.numberOfRowsInSection(this, it)
             (0 until rowCount).forEach {
                 val row = it
@@ -89,6 +98,8 @@ private fun UITableView._reloadCellPositionCaches() {
                 currentY += rowHeight
             }
             sectionHeader?.endY = currentY
+            currentY += sectionFooter?.viewHeight ?: 0.0
+            sectionFooter?.endY = currentY
         }
         this._cellPositions = cellPositions.toList()
     }

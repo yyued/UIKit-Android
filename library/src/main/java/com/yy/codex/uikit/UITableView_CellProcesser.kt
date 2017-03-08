@@ -41,10 +41,10 @@ internal fun UITableView._updateCells() {
     val dataSource = dataSource ?: return
     val visiblePositions = _requestVisiblePositions()
     val currentVisibleHash = _computeVisibleHash(visiblePositions)
-    if (lastVisibleHash == currentVisibleHash) {
+    if (_lastVisibleHash == currentVisibleHash) {
         return
     }
-    lastVisibleHash = currentVisibleHash
+    _lastVisibleHash = currentVisibleHash
     _markCellReusable(visiblePositions).forEach {
         val cell = dataSource.cellForRowAtIndexPath(this, it.indexPath)
         cell.indexPath = it.indexPath

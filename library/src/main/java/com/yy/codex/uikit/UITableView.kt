@@ -17,6 +17,7 @@ open class UITableView : UIScrollView {
         fun cellForRowAtIndexPath(tableView: UITableView, indexPath: NSIndexPath): UITableViewCell
         fun numberOfSections(tableView: UITableView): Int
         fun titleForHeaderInSection(tableView: UITableView, section: Int): String?
+        fun titleForFooterInSection(tableView: UITableView, section: Int): String?
     }
 
     interface UITableViewDelegate: UIScrollView.UIScrollViewDelegate {
@@ -24,7 +25,16 @@ open class UITableView : UIScrollView {
         fun didSelectRowAtIndexPath(tableView: UITableView, indexPath: NSIndexPath)
         fun didDeselectRowAtIndexPath(tableView: UITableView, indexPath: NSIndexPath)
         fun heightForHeaderInSection(tableView: UITableView, section: Int): Double
+        fun heightForFooterInSection(tableView: UITableView, section: Int): Double
         fun viewForHeaderInSection(tableView: UITableView, section: Int): UIView?
+        fun viewForFooterInSection(tableView: UITableView, section: Int): UIView?
+    }
+
+    enum class ScrollPosition {
+        None,
+        Top,
+        Middle,
+        Bottom,
     }
 
     constructor(context: Context, view: View) : super(context, view) {}
@@ -99,18 +109,6 @@ open class UITableView : UIScrollView {
             field = value
             _allCells().forEach { it._updateAppearance() }
         }
-
-    /**
-     * Private
-     */
-
-    internal var lastVisibleHash: String = ""
-
-    internal var _cellPositions: List<UITableViewCellPosition> = listOf()
-
-    internal var _cellInstances: HashMap<String, MutableList<UITableViewReusableCell>> = hashMapOf()
-
-    internal var _sectionsHeaderView: List<UITableViewSectionHeaderViewWrapper?> = listOf()
 
     fun reloadData() {
         _reloadSectionHeaderFooterView()
@@ -203,5 +201,30 @@ open class UITableView : UIScrollView {
     fun indexPathsForVisibleRows(): List<NSIndexPath> {
         return _requestVisiblePositions().map { return@map it.indexPath }
     }
+
+    fun scrollToRow(indexPath: NSIndexPath, scrollPosition: ScrollPosition, animated: Boolean) {
+        val position = _requestPositionWithIndexPath(indexPath) ?: return
+        when (scrollPosition) {
+            ScrollPosition.None, ScrollPosition.Top -> {
+                setContentOffset(CGPoint(0.0, position.value), animated)
+            }
+            ScrollPosition.Middle -> {
+                setContentOffset(CGPoint(0.0, position.value + position.height - frame.height / 2.0), animated)
+            }
+            ScrollPosition.Bottom -> {
+                setContentOffset(CGPoint(0.0, Math.max(0.0, position.value + position.height - frame.height)), animated)
+            }
+        }
+    }
+
+    /**
+     * Private Props
+     */
+
+    internal var _lastVisibleHash: String = ""
+    internal var _cellPositions: List<UITableViewCellPosition> = listOf()
+    internal var _cellInstances: HashMap<String, MutableList<UITableViewReusableCell>> = hashMapOf()
+    internal var _sectionsHeaderView: List<UITableViewSectionHeaderFooterViewWrapper?> = listOf()
+    internal var _sectionsFooterView: List<UITableViewSectionHeaderFooterViewWrapper?> = listOf()
 
 }
