@@ -1,6 +1,7 @@
 package com.yy.codex.uikit
 
 import com.yy.codex.foundation.NSLog
+import com.yy.codex.foundation.lets
 import org.jetbrains.annotations.Mutable
 import java.util.*
 
@@ -46,6 +47,7 @@ internal fun UITableView._updateCells() {
     }
     _lastVisibleHash = currentVisibleHash
     _markCellReusable(visiblePositions).forEach {
+        val visiblePosition = it
         val cell = dataSource.cellForRowAtIndexPath(this, it.indexPath)
         cell.indexPath = it.indexPath
         cell.frame = CGRect(0.0, it.value, frame.width, it.height)
@@ -56,6 +58,7 @@ internal fun UITableView._updateCells() {
             insertSubview(cell, 0)
         }
         cell._updateAppearance()
+        delegate()?.let { it.willDisplayCell(this, cell, visiblePosition.indexPath) }
     }
 }
 
@@ -133,6 +136,13 @@ private fun UITableView._markCellReusable(visiblePositions: List<UITableViewCell
             it.isBusy = visibleMapping[it.cellPosition] == true
             if (it.isBusy) {
                 trimmedPositions.remove(it.cellPosition)
+            }
+            else {
+                lets(it.cell, it.cell.indexPath) { cell, indexPath ->
+                    delegate()?.let {
+                        it.didEndDisplayingCell(this, cell, indexPath)
+                    }
+                }
             }
         }
     }

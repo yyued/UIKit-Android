@@ -79,7 +79,7 @@ internal fun UITableView._reloadSectionHeaderFooterView() {
         _sectionsFooterView = (0 until it.numberOfSections(this)).map {
             val idx = it
             _requestSectionFooterView(it)?.let {
-                return@map UITableViewSectionHeaderFooterViewWrapper(it, 0.0, 0.0, _requestSectionHeaderHeight(idx))
+                return@map UITableViewSectionHeaderFooterViewWrapper(it, 0.0, 0.0, _requestSectionFooterHeight(idx))
             }
             return@map null
         }
@@ -89,6 +89,9 @@ internal fun UITableView._reloadSectionHeaderFooterView() {
 }
 
 internal fun UITableView._requestSectionHeaderView(section: Int): UIView? {
+    delegate()?.let {
+        it.viewForHeaderInSection(this, section)?.let { return it }
+    }
     dataSource?.let {
         it.titleForHeaderInSection(this, section)?.let {
             val view = UITableViewSectionHeaderFooterView(context)
@@ -107,6 +110,9 @@ internal fun UITableView._requestSectionHeaderHeight(section: Int): Double {
 }
 
 internal fun UITableView._requestSectionFooterView(section: Int): UIView? {
+    delegate()?.let {
+        it.viewForFooterInSection(this, section)?.let { return it }
+    }
     dataSource?.let {
         it.titleForFooterInSection(this, section)?.let {
             val view = UITableViewSectionHeaderFooterView(context)

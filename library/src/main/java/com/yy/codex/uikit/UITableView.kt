@@ -22,12 +22,14 @@ open class UITableView : UIScrollView {
 
     interface UITableViewDelegate: UIScrollView.UIScrollViewDelegate {
         fun heightForRowAtIndexPath(tableView: UITableView, indexPath: NSIndexPath): Double
-        fun didSelectRowAtIndexPath(tableView: UITableView, indexPath: NSIndexPath)
-        fun didDeselectRowAtIndexPath(tableView: UITableView, indexPath: NSIndexPath)
         fun heightForHeaderInSection(tableView: UITableView, section: Int): Double
         fun heightForFooterInSection(tableView: UITableView, section: Int): Double
+        fun didSelectRowAtIndexPath(tableView: UITableView, indexPath: NSIndexPath)
+        fun didDeselectRowAtIndexPath(tableView: UITableView, indexPath: NSIndexPath)
         fun viewForHeaderInSection(tableView: UITableView, section: Int): UIView?
         fun viewForFooterInSection(tableView: UITableView, section: Int): UIView?
+        fun willDisplayCell(tableView: UITableView, cell: UITableViewCell, indexPath: NSIndexPath)
+        fun didEndDisplayingCell(tableView: UITableView, cell: UITableViewCell, indexPath: NSIndexPath)
     }
 
     enum class ScrollPosition {
@@ -138,8 +140,7 @@ open class UITableView : UIScrollView {
     }
 
     fun dequeueReusableCellWithIdentifier(reuseIdentifier: String): UITableViewCell? {
-        val cell = _dequeueCell(reuseIdentifier)
-        return cell
+        return _dequeueCell(reuseIdentifier)
     }
 
     fun selectRow(indexPath: NSIndexPath, animated: Boolean) {

@@ -133,6 +133,16 @@ class TestViewController extends UIViewController {
         });
         tableView.setDelegate(new UITableView.UITableViewDelegate() {
             @Override
+            public void didEndDisplayingCell(@NotNull UITableView tableView, @NotNull UITableViewCell cell, @NotNull NSIndexPath indexPath) {
+
+            }
+
+            @Override
+            public void willDisplayCell(@NotNull UITableView tableView, @NotNull UITableViewCell cell, @NotNull NSIndexPath indexPath) {
+
+            }
+
+            @Override
             public double heightForFooterInSection(@NotNull UITableView tableView, int section) {
                 return 28;
             }
