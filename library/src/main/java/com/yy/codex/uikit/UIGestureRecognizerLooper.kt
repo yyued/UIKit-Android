@@ -54,30 +54,53 @@ internal class UIGestureRecognizerLooper internal constructor(internal var hitTe
         markFailed()
     }
 
+    internal fun onTouchesCancelled(touches: List<UITouch>, event: UIEvent) {
+        val copyList = ArrayList(gestureRecognizers)
+        copyList.indices
+                .filter { checkState(copyList[it]) }
+                .forEach { copyList[it].touchesCancelled() }
+    }
+
     internal fun checkState(gestureRecognizer: UIGestureRecognizer): Boolean {
         val mutableList = gestureRecognizers.toMutableList()
         if (gestureRecognizer.state == UIGestureRecognizerState.Failed || gestureRecognizer.state == UIGestureRecognizerState.Cancelled) {
             mutableList.remove(gestureRecognizer)
             gestureRecognizers = mutableList.toList()
             return false
-        } else if (gestureRecognizer.state == UIGestureRecognizerState.Ended) {
+        }
+        else if (gestureRecognizer.state == UIGestureRecognizerState.Ended) {
             isFinished = true
         }
         return true
     }
 
     internal fun markFailed() {
-        var hasRecognized = false
-        for (i in gestureRecognizers.indices) {
-            hasRecognized = gestureRecognizers[i].state == UIGestureRecognizerState.Began || gestureRecognizers[i].state == UIGestureRecognizerState.Changed || gestureRecognizers[i].state == UIGestureRecognizerState.Ended
-            if (hasRecognized) {
-                break
+        val recognizedGestures = gestureRecognizers.filter { (it.state == UIGestureRecognizerState.Began || it.state == UIGestureRecognizerState.Changed || it.state == UIGestureRecognizerState.Ended) }
+        if (recognizedGestures.size > 0) {
+            val stealable = recognizedGestures.any { it.stealable && (it.state == UIGestureRecognizerState.Began || it.state == UIGestureRecognizerState.Changed || it.state == UIGestureRecognizerState.Ended) }
+            val stealed = recognizedGestures.any { it.stealer && (it.state == UIGestureRecognizerState.Began || it.state == UIGestureRecognizerState.Changed || it.state == UIGestureRecognizerState.Ended) }
+            if (stealable) {
+                if (!stealed) {
+                    gestureRecognizers
+                            .filter { !it.stealer && !it.stealable && !(it.state == UIGestureRecognizerState.Began || it.state == UIGestureRecognizerState.Changed || it.state == UIGestureRecognizerState.Ended) }
+                            .forEach { it.state = UIGestureRecognizerState.Failed }
+                }
+                else {
+                    gestureRecognizers
+                            .filter { !it.stealer && !it.stealable && !(it.state == UIGestureRecognizerState.Began || it.state == UIGestureRecognizerState.Changed || it.state == UIGestureRecognizerState.Ended) }
+                            .forEach { it.state = UIGestureRecognizerState.Failed }
+                    gestureRecognizers.forEach {
+                        if (it.stealable && (it.state == UIGestureRecognizerState.Began || it.state == UIGestureRecognizerState.Changed || it.state == UIGestureRecognizerState.Ended)) {
+                            it.touchesCancelled()
+                        }
+                    }
+                }
             }
-        }
-        if (hasRecognized) {
-            gestureRecognizers
-                .filter { !(it.state == UIGestureRecognizerState.Began || it.state == UIGestureRecognizerState.Changed || it.state == UIGestureRecognizerState.Ended) }
-                .forEach { it.state = UIGestureRecognizerState.Failed }
+            else {
+                gestureRecognizers
+                        .filter { !(it.state == UIGestureRecognizerState.Began || it.state == UIGestureRecognizerState.Changed || it.state == UIGestureRecognizerState.Ended) }
+                        .forEach { it.state = UIGestureRecognizerState.Failed }
+            }
         }
     }
 

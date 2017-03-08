@@ -78,6 +78,10 @@ open class UIViewController(val context: Context) : UIResponder {
         nextResponder?.touchesEnded(touches, event)
     }
 
+    override fun touchesCancelled(touches: List<UITouch>, event: UIEvent) {
+        nextResponder?.touchesCancelled(touches, event)
+    }
+
     override fun keyboardPressDown(event: UIKeyEvent) {
         nextResponder?.keyboardPressDown(event)
     }

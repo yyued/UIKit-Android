@@ -298,7 +298,7 @@ object UIViewAnimator {
             val now = System.currentTimeMillis()
             val value = fromValue + velocity / (1.0 - deceleration) * (1 - Math.exp(-(1 - deceleration) * (now - startTime)))
             animationView.animate(animationKey, value.toFloat())
-            if (Math.abs(finalValue - value) < 0.1) {
+            if (Math.abs(finalValue - value) < 1.0) {
                 valueAnimator.cancel()
                 animation.markFinished()
                 completion?.run()
@@ -417,6 +417,7 @@ object UIViewAnimator {
                 val spring = system.createSpring()
                 spring.currentValue = finalBackStartValue
                 val config = SpringConfig(120.0, 20.0)
+                var fValue = 0.0f
                 spring.springConfig = config
                 spring.addListener(object : SpringListener {
                     override fun onSpringUpdate(spring: Spring) {
@@ -424,6 +425,11 @@ object UIViewAnimator {
                             return
                         }
                         val currentValue = spring.currentValue.toFloat()
+                        if (Math.abs(fValue - currentValue) < 1.0) {
+                            onSpringAtRest(spring)
+                            return
+                        }
+                        fValue = currentValue
                         animationView.animate(animationKey, currentValue)
                     }
 

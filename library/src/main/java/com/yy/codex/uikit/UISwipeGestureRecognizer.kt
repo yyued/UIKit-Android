@@ -118,4 +118,11 @@ class UISwipeGestureRecognizer : UIGestureRecognizer {
         }
     }
 
+    override fun sendActions() {
+        if (state == UIGestureRecognizerState.Cancelled) {
+            return
+        }
+        super.sendActions()
+    }
+
 }

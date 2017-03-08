@@ -11,7 +11,6 @@ open class UIPanGestureRecognizer : UIGestureRecognizer {
     internal var maxTouches: List<UITouch> = listOf()
     internal var translatePoint: List<CGPoint> = listOf()
     internal var velocityPoint = CGPoint(0.0, 0.0)
-    internal var lastTouches: List<UITouch> = listOf()
 
     constructor(target: Any, selector: String) : super(target, selector) {}
 
@@ -28,19 +27,6 @@ open class UIPanGestureRecognizer : UIGestureRecognizer {
     }
 
     override fun touchesMoved(touches: List<UITouch>, event: UIEvent) {
-        if (lastTouches.count() == touches.count()) {
-            var same = true
-            lastTouches.forEachIndexed { idx, oldTouch ->
-                val newTouch = touches[idx]
-                if (Math.abs(oldTouch.absolutePoint.x - newTouch.absolutePoint.x) >= 1.0 || Math.abs(oldTouch.absolutePoint.y - newTouch.absolutePoint.y) >= 1.0) {
-                    same = false
-                }
-            }
-            if (same) {
-                return
-            }
-        }
-        lastTouches = touches
         if (state == UIGestureRecognizerState.Began || state == UIGestureRecognizerState.Changed) {
             resetVelocity(touches)
         }
@@ -49,7 +35,8 @@ open class UIPanGestureRecognizer : UIGestureRecognizer {
             setTranslation(CGPoint(-translation().x, -translation().y))
             state = UIGestureRecognizerState.Began
             sendActions()
-        } else if (state == UIGestureRecognizerState.Began || state == UIGestureRecognizerState.Changed) {
+        }
+        else if (state == UIGestureRecognizerState.Began || state == UIGestureRecognizerState.Changed) {
             if (touches.size > maxTouches.size) {
                 maxTouches = touches.toList()
                 bonusTranslation()
@@ -68,9 +55,11 @@ open class UIPanGestureRecognizer : UIGestureRecognizer {
         if (state == UIGestureRecognizerState.Began || state == UIGestureRecognizerState.Changed) {
             state = UIGestureRecognizerState.Ended
             sendActions()
-        } else if (state == UIGestureRecognizerState.Ended) {
+        }
+        else if (state == UIGestureRecognizerState.Ended) {
             // Because as least one finger touch up, turns Ended during Moved.
-        } else {
+        }
+        else {
             state = UIGestureRecognizerState.Failed
         }
     }

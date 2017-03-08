@@ -17,6 +17,7 @@ interface UIResponder {
     fun touchesBegan(touches: List<UITouch>, event: UIEvent)
     fun touchesMoved(touches: List<UITouch>, event: UIEvent)
     fun touchesEnded(touches: List<UITouch>, event: UIEvent)
+    fun touchesCancelled(touches: List<UITouch>, event: UIEvent)
 
     fun keyboardPressDown(event: UIKeyEvent)
     fun keyboardPressUp(event: UIKeyEvent)

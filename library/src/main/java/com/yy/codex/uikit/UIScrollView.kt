@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Build
 import android.support.annotation.RequiresApi
 import android.util.AttributeSet
+import android.view.MotionEvent
 import android.view.View
 
 import com.yy.codex.foundation.NSLog
@@ -98,6 +99,7 @@ open class UIScrollView : UIView {
     internal lateinit var _horizontalScrollIndicator: UIView
     internal lateinit var _verticalScrollIndicator: UIView
     internal var _scrollIndicatorHideAnimation: UIViewAnimation? = null
+    internal var _deceleratingCancelled = false
     internal var _bounceAnimationCancelled = false
 
     override fun init() {
@@ -105,6 +107,19 @@ open class UIScrollView : UIView {
         contentInset = UIEdgeInsets(0.0, 0.0, 0.0, 0.0)
         _initScroller()
         _initScrollIndicator()
+    }
+
+    override fun hitTest(point: CGPoint, event: MotionEvent): UIView? {
+        if (decelerating) {
+            val view = super.hitTest(point, event)
+            if (view != null && view !== this) {
+                return this
+            }
+            else {
+                return view
+            }
+        }
+        return super.hitTest(point, event)
     }
 
     override fun touchesBegan(touches: List<UITouch>, event: UIEvent) {

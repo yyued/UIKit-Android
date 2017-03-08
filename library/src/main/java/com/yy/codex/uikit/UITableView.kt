@@ -22,6 +22,7 @@ open class UITableView : UIScrollView {
     interface UITableViewDelegate: UIScrollView.UIScrollViewDelegate {
         fun heightForRowAtIndexPath(tableView: UITableView, indexPath: NSIndexPath): Double
         fun didSelectRowAtIndexPath(tableView: UITableView, indexPath: NSIndexPath)
+        fun didDeselectRowAtIndexPath(tableView: UITableView, indexPath: NSIndexPath)
         fun heightForHeaderInSection(tableView: UITableView, section: Int): Double
         fun viewForHeaderInSection(tableView: UITableView, section: Int): UIView?
     }
@@ -32,6 +33,10 @@ open class UITableView : UIScrollView {
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {}
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes) {}
+
+    /**
+     * Public
+     */
 
     var rowHeight = 0.0
 
@@ -58,6 +63,28 @@ open class UITableView : UIScrollView {
             field = value
             _reloadHeaderFooterView()
         }
+
+    var allowsSelection = true
+
+    var allowsMultipleSelection = false
+
+    var indexPathsForSelectedRow: NSIndexPath? = null
+        get() {
+            if (indexPathsForSelectedRows.count() > 0) {
+                return indexPathsForSelectedRows.first()
+            }
+            else {
+                return null
+            }
+        }
+        private set
+
+    var indexPathsForSelectedRows: List<NSIndexPath> = listOf()
+        internal set
+
+    /**
+     * Private
+     */
 
     internal var lastVisibleHash: String = ""
 
@@ -97,6 +124,30 @@ open class UITableView : UIScrollView {
     fun dequeueReusableCellWithIdentifier(reuseIdentifier: String): UITableViewCell? {
         val cell = _dequeueCell(reuseIdentifier)
         return cell
+    }
+
+    fun selectRow(indexPath: NSIndexPath, animated: Boolean) {
+        if (!allowsMultipleSelection) {
+            indexPathsForSelectedRows?.forEach {
+                val indexPath = it
+                deselectRow(indexPath, false)
+                this.delegate()?.let {
+                    it.didDeselectRowAtIndexPath(this, indexPath)
+                }
+            }
+            indexPathsForSelectedRows = listOf()
+        }
+        _requestCell(indexPath)?.let {
+            it.setSelected(true, animated)
+        }
+        indexPathsForSelectedRows = indexPathsForSelectedRows.plus(indexPath)
+    }
+
+    fun deselectRow(indexPath: NSIndexPath, animated: Boolean) {
+        _requestCell(indexPath)?.let {
+            it.setSelected(false, animated)
+        }
+        indexPathsForSelectedRows = indexPathsForSelectedRows.filter { it !== indexPath }
     }
 
 }

@@ -11,6 +11,7 @@ private val FINGER_VELOCITY = 300.0
 internal fun UIScrollView._initScroller() {
     _windowSizePoint = CGPoint(0.0, 0.0)
     _panGestureRecognizer = UIPanGestureRecognizer(this, "handlePan:")
+    _panGestureRecognizer?.stealer = true
     _panGestureRecognizer?.let {
         addGestureRecognizer(it)
     }
@@ -20,15 +21,14 @@ internal fun UIScrollView._scrollerTouchBegan() {
     if (!scrollEnabled) {
         return
     }
-    val nowDecelerating = decelerating
-    _bounceAnimationCancelled = decelerating && _checkOutOfBounds()
+    _deceleratingCancelled = decelerating
     _currentAnimationY?.let(UIViewAnimation::cancel)
     _currentAnimationY = null
     _currentAnimationX?.let(UIViewAnimation::cancel)
     _currentAnimationX = null
     tracking = true
     decelerating = false
-    if (nowDecelerating) {
+    if (_deceleratingCancelled) {
         _showScrollIndicator()
     }
 }
@@ -37,10 +37,10 @@ internal fun UIScrollView._scrollerTouchEnded() {
     if (!scrollEnabled) {
         return
     }
-    if (_bounceAnimationCancelled && _checkOutOfBounds()) {
+    if (_deceleratingCancelled && _checkOutOfBounds()) {
         _setContentOffsetWithSpring(_requestBoundsPoint(contentOffset))
     }
-    if (!dragging) {
+    else if (_deceleratingCancelled && !dragging && !decelerating) {
         _hideScrollIndicator()
     }
 }
@@ -72,7 +72,6 @@ internal fun UIScrollView._scrollerHandlePan(panGestureRecognizer: UIPanGestureR
         /* Ended */
         dragging = false
         tracking = false
-        decelerating = true
         delegate?.let {
             it.scrollViewDidEndDragging(this, false)
         }
@@ -82,7 +81,9 @@ internal fun UIScrollView._scrollerHandlePan(panGestureRecognizer: UIPanGestureR
             _windowSizePoint?.let {
                 _setContentOffsetWithSpring(it)
             }
-        } else {
+        }
+        else {
+            decelerating = true
             _currentAnimationX?.let { it.cancel() }
             _currentAnimationY?.let { it.cancel() }
             val xOptions = UIViewAnimator.UIViewAnimationDecayBoundsOptions()
@@ -90,6 +91,9 @@ internal fun UIScrollView._scrollerHandlePan(panGestureRecognizer: UIPanGestureR
             xOptions.alwaysBounds = alwaysBounceHorizontal
             xOptions.fromValue = contentOffset.x
             xOptions.velocity = -velocity.x / 1000.0
+            if (Math.abs(xOptions.velocity) < 0.1) {
+                xOptions.velocity = 0.0
+            }
             xOptions.topBounds = 0.0
             xOptions.bottomBounds = contentSize.width - frame.size.width
             xOptions.viewBounds = frame.size.width
@@ -99,6 +103,9 @@ internal fun UIScrollView._scrollerHandlePan(panGestureRecognizer: UIPanGestureR
             yOptions.alwaysBounds = alwaysBounceVertical
             yOptions.fromValue = contentOffset.y
             yOptions.velocity = -velocity.y / 1000.0
+            if (Math.abs(yOptions.velocity) < 0.1) {
+                yOptions.velocity = 0.0
+            }
             yOptions.topBounds = 0.0
             yOptions.bottomBounds = contentSize.height + contentInset.bottom - frame.size.height
             yOptions.viewBounds = frame.size.height

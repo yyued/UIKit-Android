@@ -17,6 +17,8 @@ open class UIGestureRecognizer {
 
     internal var looper: UIGestureRecognizerLooper? = null
     var enabled = true
+    var stealer = false
+    var stealable = false
 
     private var actions: List<NSInvocation> = listOf()
     private var triggerBlock: Runnable? = null
@@ -79,12 +81,12 @@ open class UIGestureRecognizer {
         lastPoints = touches.toList()
     }
 
-    fun touchesCancelled(touches: List<UITouch>, event: UIEvent) {
-        lastPoints = touches.toList()
+    open fun touchesCancelled() {
         state = UIGestureRecognizerState.Cancelled
+        sendActions()
     }
 
-    protected fun sendActions() {
+    protected open fun sendActions() {
         for (action in actions) {
             action.invoke(arrayOf<Any>(this))
         }

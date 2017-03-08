@@ -656,6 +656,16 @@ open class UIView : FrameLayout, UIResponder {
         }
     }
 
+    override fun touchesCancelled(touches: List<UITouch>, event: UIEvent) {
+        nextResponder?.touchesCancelled(touches, event)
+        if (UIGestureRecognizerLooper.isHitTestedView(touches, this)) {
+            if (gestureRecognizerLooper == null || gestureRecognizerLooper?.isFinished ?: false) {
+                gestureRecognizerLooper = UIGestureRecognizerLooper(this)
+            }
+            gestureRecognizerLooper?.let { it.onTouchesCancelled(touches, event) }
+        }
+    }
+
     override fun keyboardPressDown(event: UIKeyEvent) {
         nextResponder?.keyboardPressDown(event)
     }

@@ -8,12 +8,23 @@ import java.util.*
  * Created by cuiminghui on 2017/2/27.
  */
 
-fun UITableView._updateCellsFrame() {
+internal fun UITableView._updateCellsFrame() {
     subviews.forEach {
         (it as? UITableViewCell)?.let {
             it.frame = it.frame.setWidth(frame.width)
         }
     }
+}
+
+internal fun UITableView._requestCell(indexPath: NSIndexPath): UITableViewCell? {
+    _cellInstances.toList().forEach {
+        it.second.toList().forEach {
+            if (it.cell.indexPath === indexPath) {
+                return it.cell
+            }
+        }
+    }
+    return null
 }
 
 internal fun UITableView._updateCells() {
@@ -26,14 +37,25 @@ internal fun UITableView._updateCells() {
     lastVisibleHash = currentVisibleHash
     _markCellReusable(visiblePositions).forEach {
         val cell = dataSource.cellForRowAtIndexPath(this, it.indexPath)
+        cell.indexPath = it.indexPath
         cell.frame = CGRect(0.0, it.value, frame.width, it.height)
         cell.separatorLine.hidden = it.indexPath.section < dataSource.numberOfSections(this) && it.indexPath.row == dataSource.numberOfRowsInSection(this, it.indexPath.section) - 1
+        cell.setSelected(_isCellSelected(cell), false)
         _enqueueCell(cell, it)
         if (cell.superview !== this) {
             cell.removeFromSuperview()
             insertSubview(cell, 0)
         }
     }
+}
+
+internal fun UITableView._isCellSelected(cell: UITableViewCell): Boolean {
+    indexPathsForSelectedRows.forEach {
+        if (it === cell.indexPath) {
+            return true
+        }
+    }
+    return false
 }
 
 internal fun UITableView._dequeueCell(reuseIdentifier: String): UITableViewCell? {

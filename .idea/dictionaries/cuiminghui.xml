@@ -5,6 +5,8 @@
       <w>pagecontrol</w>
       <w>pixelline</w>
       <w>progressview</w>
+      <w>stealable</w>
+      <w>stealed</w>
       <w>uikit</w>
     </words>
   </dictionary>

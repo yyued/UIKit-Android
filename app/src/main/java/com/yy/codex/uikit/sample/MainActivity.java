@@ -124,6 +124,11 @@ class TestViewController extends UIViewController {
             }
         });
         tableView.setDelegate(new UITableView.UITableViewDelegate() {
+            @Override
+            public void didDeselectRowAtIndexPath(@NotNull UITableView tableView, @NotNull NSIndexPath indexPath) {
+
+            }
+
             @Nullable
             @Override
             public UIView viewForHeaderInSection(@NotNull UITableView tableView, int section) {
@@ -137,7 +142,10 @@ class TestViewController extends UIViewController {
 
             @Override
             public void didSelectRowAtIndexPath(@NotNull UITableView tableView, @NotNull NSIndexPath indexPath) {
-
+                NextViewController nextViewController = new NextViewController(getContext());
+                nextViewController.setHidesBottomBarWhenPushed(true);
+                navigationController().pushViewController(nextViewController, true);
+                tableView.deselectRow(indexPath, true);
             }
 
             @Override

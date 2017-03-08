@@ -98,4 +98,11 @@ class UITapGestureRecognizer : UIGestureRecognizer {
         return numberOfTapsRequired
     }
 
+    override fun sendActions() {
+        if (state == UIGestureRecognizerState.Cancelled) {
+            return
+        }
+        super.sendActions()
+    }
+
 }
