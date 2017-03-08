@@ -46,22 +46,22 @@ open class UITableView : UIScrollView {
         return delegate as? UITableViewDelegate
     }
 
-    var headerView: UIView? = null
+    var tableHeaderView: UIView? = null
         set(value) {
             if (field !== value) {
                 field?.let(UIView::removeFromSuperview)
             }
             field = value
-            _reloadHeaderFooterView()
+            _reloadTableHeaderFooterView()
         }
 
-    var footerView: UIView? = null
+    var tableFooterView: UIView? = null
         set(value) {
             if (field !== value) {
                 field?.let(UIView::removeFromSuperview)
             }
             field = value
-            _reloadHeaderFooterView()
+            _reloadTableHeaderFooterView()
         }
 
     var allowsSelection = true
@@ -82,6 +82,24 @@ open class UITableView : UIScrollView {
     var indexPathsForSelectedRows: List<NSIndexPath> = listOf()
         internal set
 
+    var separatorStyle: UITableViewCell.SeparatorStyle = UITableViewCell.SeparatorStyle.SingleLine
+        set(value) {
+            field = value
+            _allCells().forEach { it._updateAppearance() }
+        }
+
+    var separatorInset: UIEdgeInsets = UIEdgeInsets.zero
+        set(value) {
+            field = value
+            _allCells().forEach { it._updateAppearance() }
+        }
+
+    var separatorColor: UIColor = UIColor(0xc8, 0xc7, 0xcc)
+        set(value) {
+            field = value
+            _allCells().forEach { it._updateAppearance() }
+        }
+
     /**
      * Private
      */
@@ -99,7 +117,7 @@ open class UITableView : UIScrollView {
         _reloadCellCaches()
         _reloadContentSize()
         _updateCells()
-        _updateHeaderFooterViewFrame()
+        _updateTableHeaderFooterViewFrame()
         _updateSectionHeaderFooterFrame()
     }
 
@@ -111,7 +129,7 @@ open class UITableView : UIScrollView {
         super.layoutSubviews()
         _updateCellsFrame()
         _updateCells()
-        _updateHeaderFooterViewFrame()
+        _updateTableHeaderFooterViewFrame()
         _updateSectionHeaderFooterFrame()
     }
 
@@ -127,6 +145,9 @@ open class UITableView : UIScrollView {
     }
 
     fun selectRow(indexPath: NSIndexPath, animated: Boolean) {
+        if (!allowsSelection) {
+            return
+        }
         if (!allowsMultipleSelection) {
             indexPathsForSelectedRows?.forEach {
                 val indexPath = it

@@ -13,6 +13,7 @@ import com.yy.codex.uikit.NSIndexPath;
 import com.yy.codex.uikit.UIBarButtonItem;
 import com.yy.codex.uikit.UIColor;
 import com.yy.codex.uikit.UIConstraint;
+import com.yy.codex.uikit.UIEdgeInsets;
 import com.yy.codex.uikit.UIImage;
 import com.yy.codex.uikit.UILabel;
 import com.yy.codex.uikit.UINavigationController;
@@ -84,7 +85,7 @@ class TestViewController extends UIViewController {
         setTitle("Test");
         getNavigationItem().setRightBarButtonItem(new UIBarButtonItem("Next", this, "handleNextButtonTapped"));
 
-        UITableView tableView = new UITableView(getContext());
+        final UITableView tableView = new UITableView(getContext());
         tableView.setAlwaysBounceVertical(true);
         tableView.setConstraint(UIConstraint.Companion.full());
         tableView.setDataSource(new UITableView.UITableViewDataSource() {
@@ -181,17 +182,17 @@ class TestViewController extends UIViewController {
         getView().addSubview(tableView);
         tableView.reloadData();
 
-
+        tableView.setSeparatorInset(new UIEdgeInsets(0.0, 15.0, 0.0, 0.0));
 
         UIView headerView = new UIView(getContext());
         headerView.setFrame(new CGRect(0.0, 0.0, 0.0, 44.0));
         headerView.setBackgroundColor(UIColor.Companion.getYellowColor());
-        tableView.setHeaderView(headerView);
+        tableView.setTableHeaderView(headerView);
 
         UIView footerView = new UIView(getContext());
         footerView.setFrame(new CGRect(0.0, 0.0, 0.0, 44.0));
         footerView.setBackgroundColor(UIColor.Companion.getRedColor());
-        tableView.setFooterView(footerView);
+        tableView.setTableFooterView(footerView);
 
     }
 

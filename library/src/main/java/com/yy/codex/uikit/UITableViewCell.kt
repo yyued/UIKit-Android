@@ -13,6 +13,16 @@ import com.yy.codex.foundation.NSLog
 
 open class UITableViewCell : UIView {
 
+    enum class SelectionStyle {
+        None,
+        Gray,
+    }
+
+    enum class SeparatorStyle {
+        None,
+        SingleLine,
+    }
+
     constructor(context: Context, view: View) : super(context, view) {}
     constructor(context: Context) : super(context) {}
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {}
@@ -27,10 +37,10 @@ open class UITableViewCell : UIView {
     var reuseIdentifier: String? = null
         internal set
 
-    var separatorInset: UIEdgeInsets = UIEdgeInsets.zero
+    var separatorInset: UIEdgeInsets? = null
         set(value) {
             field = value
-            _updateSeparatorLineFrame()
+            _updateAppearance()
         }
 
     lateinit var contentView: UIView
@@ -42,11 +52,32 @@ open class UITableViewCell : UIView {
     lateinit var selectedBackgroundView: UIView
         internal set
 
+    var selectionStyle: SelectionStyle = SelectionStyle.Gray
+        set(value) {
+            field = value
+            when (value) {
+                SelectionStyle.None -> selectedBackgroundView.setBackgroundColor(UIColor.clearColor)
+                SelectionStyle.Gray -> selectedBackgroundView.setBackgroundColor(UIColor(0xd9, 0xd9, 0xd9))
+            }
+        }
+
+    var separatorStyle: SeparatorStyle? = null
+        set(value) {
+            field = value
+            _updateAppearance()
+        }
+
     var cellSelected = false
-        internal set
+        internal set(value) {
+            field = value
+            _updateSeparatorLineHiddenState()
+        }
 
     var cellHighlighted = false
-        internal set
+        internal set(value) {
+            field = value
+            _updateSeparatorLineHiddenState()
+        }
 
     open fun prepareForReuse() {}
 
@@ -60,6 +91,9 @@ open class UITableViewCell : UIView {
         else {
             _resetHighlightedView()
         }
+        _requestPreviousPointCell()?.let {
+            it.nextCellSelected = cellSelected || cellHighlighted
+        }
     }
 
     fun setHighlighted(highlighted: Boolean, animated: Boolean) {
@@ -72,6 +106,9 @@ open class UITableViewCell : UIView {
         else {
             _resetHighlightedView()
         }
+        _requestPreviousPointCell()?.let {
+            it.nextCellSelected = cellSelected || cellHighlighted
+        }
     }
 
     /**
@@ -79,7 +116,14 @@ open class UITableViewCell : UIView {
      */
 
     internal lateinit var separatorLine: UIPixelLine
+
     internal var indexPath: NSIndexPath? = null
+
+    internal var nextCellSelected = false
+        set(value) {
+            field = value
+            _updateSeparatorLineHiddenState()
+        }
 
     override fun init() {
         super.init()
@@ -94,14 +138,15 @@ open class UITableViewCell : UIView {
         _initTouches()
     }
 
-    internal fun _initSeparatorLine() {
-        separatorLine = UIPixelLine(context)
-        separatorLine.color = UIColor(0xc8, 0xc7, 0xcc)
-        separatorLine.contentInsets = UIEdgeInsets(0.0, 0.0, 1.0, 0.0)
+    override fun didMoveToSuperview() {
+        super.didMoveToSuperview()
+        _requestPreviousPointCell()?.let(UITableViewCell::_updateSeparatorLineHiddenState)
     }
 
-    internal fun _updateSeparatorLineFrame() {
-        separatorLine.frame = CGRect(separatorInset.left, frame.height - 2.0, frame.width - separatorInset.left - separatorInset.right, 2.0)
+    internal fun _updateAppearance() {
+        _updateSeparatorLineStyle()
+        _updateSeparatorLineFrame()
+        _updateSeparatorLineHiddenState()
     }
 
     override fun layoutSubviews() {
@@ -139,9 +184,36 @@ open class UITableViewCell : UIView {
         selectedBackgroundView.alpha = if (cellSelected || cellHighlighted) 1.0f else 0.0f
     }
 
+    internal fun _requestPreviousPointCell(): UITableViewCell? {
+        (nextResponder as? UITableView)?.let {
+            val tableView = it
+            (tableView._requestCell(tableView._requestCellPositionWithPoint(this.frame.y - 1.0).indexPath))?.let {
+                if (it != this && it.frame.y + it.frame.height >= this.frame.y - 1.0) {
+                    return it
+                }
+            }
+        }
+        return null
+    }
+
+    internal fun _requestNextPointCell(): UITableViewCell? {
+        (nextResponder as? UITableView)?.let {
+            val tableView = it
+            (tableView._requestCell(tableView._requestCellPositionWithPoint(this.frame.y + this.frame.height + 1.0).indexPath))?.let {
+                if (it != this && it.frame.y <= this.frame.y + this.frame.height + 1.0) {
+                    return it
+                }
+            }
+        }
+        return null
+    }
+
     private fun onTapped(sender: UITapGestureRecognizer) {
         val indexPath = indexPath ?: return
         val tableView = (nextResponder as? UITableView) ?: return
+        if (!tableView.allowsSelection) {
+            return
+        }
         tableView.selectRow(indexPath, false)
         tableView.delegate()?.let {
             it.didSelectRowAtIndexPath(tableView, indexPath)
@@ -149,13 +221,16 @@ open class UITableViewCell : UIView {
     }
 
     private fun onLongPressed(sender: UILongPressGestureRecognizer) {
+        val indexPath = indexPath ?: return
+        val tableView = (nextResponder as? UITableView) ?: return
+        if (!tableView.allowsSelection) {
+            return
+        }
         if (sender.state == UIGestureRecognizerState.Began) {
             setHighlighted(true, false)
         }
         else if (sender.state == UIGestureRecognizerState.Ended) {
             setHighlighted(false, false)
-            val indexPath = indexPath ?: return
-            val tableView = (nextResponder as? UITableView) ?: return
             tableView.selectRow(indexPath, false)
             tableView.delegate()?.let {
                 it.didSelectRowAtIndexPath(tableView, indexPath)

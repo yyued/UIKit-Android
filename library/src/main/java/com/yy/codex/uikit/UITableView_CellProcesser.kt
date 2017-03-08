@@ -27,6 +27,16 @@ internal fun UITableView._requestCell(indexPath: NSIndexPath): UITableViewCell? 
     return null
 }
 
+internal fun UITableView._allCells(): List<UITableViewCell> {
+    var cells: MutableList<UITableViewCell> = mutableListOf()
+    _cellInstances.toList().forEach {
+        it.second.toList().forEach {
+            cells.add(it.cell)
+        }
+    }
+    return cells.toList()
+}
+
 internal fun UITableView._updateCells() {
     val dataSource = dataSource ?: return
     val visiblePositions = _requestVisiblePositions()
@@ -39,13 +49,13 @@ internal fun UITableView._updateCells() {
         val cell = dataSource.cellForRowAtIndexPath(this, it.indexPath)
         cell.indexPath = it.indexPath
         cell.frame = CGRect(0.0, it.value, frame.width, it.height)
-        cell.separatorLine.hidden = it.indexPath.section < dataSource.numberOfSections(this) && it.indexPath.row == dataSource.numberOfRowsInSection(this, it.indexPath.section) - 1
         cell.setSelected(_isCellSelected(cell), false)
         _enqueueCell(cell, it)
         if (cell.superview !== this) {
             cell.removeFromSuperview()
             insertSubview(cell, 0)
         }
+        cell._updateAppearance()
     }
 }
 

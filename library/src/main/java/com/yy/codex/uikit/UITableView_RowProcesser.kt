@@ -10,7 +10,7 @@ internal fun UITableView._reloadCellCaches() {
 
 internal fun UITableView._reloadContentSize() {
     if (_cellPositions.size > 0) {
-        val maxY = _cellPositions.last().value + _cellPositions.last().height + (footerView?.frame?.height ?: 0.0)
+        val maxY = _cellPositions.last().value + _cellPositions.last().height + (tableFooterView?.frame?.height ?: 0.0)
         contentSize = CGSize(0.0, maxY)
     }
 }
@@ -39,7 +39,7 @@ internal fun UITableView._computeVisibleHash(visiblePositions: List<UITableViewC
     return hash
 }
 
-private fun UITableView._requestCellPositionWithPoint(atPoint: Double): UITableViewCellPosition {
+internal fun UITableView._requestCellPositionWithPoint(atPoint: Double): UITableViewCellPosition {
     var left = 0
     var right = _cellPositions.size - 1
     if (atPoint <= _cellPositions[left].value) {
@@ -71,7 +71,7 @@ private fun UITableView._reloadCellPositionCaches() {
         val dataSource = it
         val sectionCount = dataSource.numberOfSections(this)
         var currentY = 0.0
-        currentY += headerView?.frame?.height ?: 0.0
+        currentY += tableHeaderView?.frame?.height ?: 0.0
         (0 until sectionCount).forEach {
             val section = it
             val sectionHeader = _sectionsHeaderView[section]
