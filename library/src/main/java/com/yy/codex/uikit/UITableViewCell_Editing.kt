@@ -54,7 +54,7 @@ internal fun UITableViewCell._onEditingPanned(sender: UIPanGestureRecognizer) {
             layoutSubviews()
         }
         UIGestureRecognizerState.Ended, UIGestureRecognizerState.Cancelled, UIGestureRecognizerState.Failed -> {
-            editing = _editingPanGesture?.velocity()?.x ?: 0.0 < 20.0 && (_editingPanGesture?.velocity()?.x ?: 0.0 < -200.0 || -Math.ceil(_editingPanGesture?.translation()?.x ?: 0.0) > _editingView.contentWidth * 2 / 3)
+            editing = _editingPanGesture?.velocity()?.x ?: 0.0 < 80.0 && (_editingPanGesture?.velocity()?.x ?: 0.0 < -200.0 || -Math.ceil(_editingPanGesture?.translation()?.x ?: 0.0) > _editingView.contentWidth * 2 / 3)
             UIViewAnimator.springWithBounciness(1.0, 20.0, Runnable { _updateFrames() }, null)
             if (editing) {
                 val maskView = UITableViewCellActionMaskView(context)
