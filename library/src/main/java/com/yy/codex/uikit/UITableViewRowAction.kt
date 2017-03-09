@@ -48,7 +48,7 @@ open class UITableViewRowAction {
             var nextResponder = actionView.nextResponder
             while (nextResponder != null) {
                 if (nextResponder is UITableViewCell) {
-                    nextResponder._endEditing()
+                    nextResponder.endEditing()
                     break
                 }
                 nextResponder = nextResponder.nextResponder

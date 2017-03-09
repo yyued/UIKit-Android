@@ -113,6 +113,14 @@ open class UITableViewCell : UIView {
         internal set(value) {
             field = value
             _tableView?.editing = value
+            lets(_tableView, _indexPath) { tableView, indexPath ->
+                if (value) {
+                    tableView?.delegate()?.willBeginEditing(tableView, indexPath)
+                }
+                else {
+                    tableView?.delegate()?.didEndEditing(tableView, indexPath)
+                }
+            }
         }
 
     open fun prepareForReuse() {}
@@ -121,11 +129,11 @@ open class UITableViewCell : UIView {
         cellSelected = selected
         if (animated) {
             UIViewAnimator.linear(Runnable {
-                _resetHighlightedView()
+                _resetSelectedBackgroundViewState()
             })
         }
         else {
-            _resetHighlightedView()
+            _resetSelectedBackgroundViewState()
         }
         _tableView?._requestPreviousPointCell(this)?.let {
             it._nextCellSelected = cellSelected || cellHighlighted
@@ -136,11 +144,11 @@ open class UITableViewCell : UIView {
         cellHighlighted = highlighted
         if (animated) {
             UIViewAnimator.linear(Runnable {
-                _resetHighlightedView()
+                _resetSelectedBackgroundViewState()
             })
         }
         else {
-            _resetHighlightedView()
+            _resetSelectedBackgroundViewState()
         }
         _tableView?._requestPreviousPointCell(this)?.let {
             it._nextCellSelected = cellSelected || cellHighlighted
@@ -155,9 +163,6 @@ open class UITableViewCell : UIView {
 
     internal lateinit var _accessoryView: UIView
 
-    internal lateinit var _actionsView: UITableViewCellActionView
-    internal var _actionsViewMaskView: UIView? = null
-
     internal var _indexPath: NSIndexPath? = null
 
     internal var _nextCellSelected = false
@@ -170,8 +175,6 @@ open class UITableViewCell : UIView {
         get() {
             return nextResponder as? UITableView
         }
-
-    internal var editingPanGesture: UIPanGestureRecognizer? = null
 
     override fun init() {
         super.init()
@@ -190,15 +193,7 @@ open class UITableViewCell : UIView {
     }
 
     internal fun _initTouches() {
-        val editingPanGesture = UIPanGestureRecognizer(this, "onEditingPanned:")
-        this.editingPanGesture = editingPanGesture
-        editingPanGesture.stealer = true
-        editingPanGesture.delegate = object : UIGestureRecognizer.Delegate {
-            override fun shouldBegin(gestureRecognizer: UIGestureRecognizer): Boolean {
-                return Math.abs((gestureRecognizer as UIPanGestureRecognizer).translation().y) < 8.0
-            }
-        }
-        addGestureRecognizer(editingPanGesture)
+        _initEditingTouches()
         val longPressGesture = UILongPressGestureRecognizer(this, "onLongPressed:")
         longPressGesture.minimumPressDuration = 0.10
         longPressGesture.stealable = true
@@ -207,72 +202,32 @@ open class UITableViewCell : UIView {
     }
 
     private fun onTapped(sender: UITapGestureRecognizer) {
-        val indexPath = _indexPath ?: return
-        val tableView = (nextResponder as? UITableView) ?: return
-        if (!tableView.allowsSelection) {
-            return
-        }
-        if (!cellSelected || !tableView.allowsMultipleSelection) {
-            tableView.selectRow(indexPath, false)
-            tableView.delegate()?.let {
-                it.didSelectRowAtIndexPath(tableView, indexPath)
-            }
-        }
-        else {
-            tableView.deselectRow(indexPath, false)
-            tableView.delegate()?.let {
-                it.didDeselectRowAtIndexPath(tableView, indexPath)
-            }
-        }
+        _onTapped(sender)
     }
 
     private fun onLongPressed(sender: UILongPressGestureRecognizer) {
-        val indexPath = _indexPath ?: return
-        val tableView = (nextResponder as? UITableView) ?: return
-        if (!tableView.allowsSelection) {
-            return
-        }
-        if (sender.state == UIGestureRecognizerState.Began) {
-            setHighlighted(tableView.delegate()?.shouldHighlightRow(tableView, indexPath) ?: true, false)
-            if (cellHighlighted) {
-                tableView.delegate()?.didHighlightRow(tableView, indexPath)
-            }
-        }
-        else if (sender.state == UIGestureRecognizerState.Ended) {
-            setHighlighted(false, false)
-            if (!cellSelected || !tableView.allowsMultipleSelection) {
-                tableView.selectRow(indexPath, false)
-                tableView.delegate()?.let {
-                    it.didSelectRowAtIndexPath(tableView, indexPath)
-                }
-            }
-            else {
-                tableView.deselectRow(indexPath, false)
-                tableView.delegate()?.let {
-                    it.didDeselectRowAtIndexPath(tableView, indexPath)
-                }
-            }
-        }
-        else if (sender.state == UIGestureRecognizerState.Cancelled) {
-            if (cellHighlighted) {
-                setHighlighted(false, false)
-                tableView.delegate()?.didUnhighlightRow(tableView, indexPath)
-            }
-        }
+        _onLongPressed(sender)
     }
+
+    /**
+     * Private - Editing
+     */
+    internal var _editingPanGesture: UIPanGestureRecognizer? = null
+    internal lateinit var _editingView: UITableViewCellActionView
+    internal var _editingMaskView: UIView? = null
 
     private fun onEditingPanned(sender: UIPanGestureRecognizer) {
         _onEditingPanned(sender)
     }
 
-    private fun endEditing() {
+    private fun _endEditing() {
         editing = false
-        _actionsViewMaskView?.removeFromSuperview()
+        _editingMaskView?.removeFromSuperview()
         UIViewAnimator.springWithBounciness(1.0, 20.0, Runnable { _updateFrames() }, null)
     }
 
-    internal fun _endEditing() {
-        endEditing()
+    internal fun endEditing() {
+        _endEditing()
     }
 
 }

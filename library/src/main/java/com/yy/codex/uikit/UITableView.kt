@@ -36,6 +36,8 @@ open class UITableView : UIScrollView {
         fun didHighlightRow(tableView: UITableView, indexPath: NSIndexPath)
         fun didUnhighlightRow(tableView: UITableView, indexPath: NSIndexPath)
         fun editActionsForRow(tableView: UITableView, indexPath: NSIndexPath): List<UITableViewRowAction>?
+        fun willBeginEditing(tableView: UITableView, indexPath: NSIndexPath)
+        fun didEndEditing(tableView: UITableView, indexPath: NSIndexPath)
     }
 
     enum class ScrollPosition {
@@ -120,10 +122,6 @@ open class UITableView : UIScrollView {
 
     var editing = false
         internal set
-
-    fun setEditing(editing: Boolean, animated: Boolean) {
-        this.editing = editing
-    }
 
     fun reloadData() {
         _reloadSectionHeaderFooterView()

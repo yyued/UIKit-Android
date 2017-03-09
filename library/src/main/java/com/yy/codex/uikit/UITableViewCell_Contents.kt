@@ -17,35 +17,40 @@ internal fun UITableViewCell._initControls() {
     addSubview(_accessoryView)
     _initContentView()
     addSubview(contentView)
-    _initActionsView()
-    addSubview(_actionsView)
+    _initEditingView()
+    addSubview(_editingView)
     _initSeparatorLine()
     addSubview(_separatorLine)
 }
 
 internal fun UITableViewCell._updateAppearance() {
     _updateSeparatorLineStyle()
-    _updateSeparatorLineFrame()
     _updateSeparatorLineHiddenState()
     _updateAccessoryView()
-    _enableActionsView()
+    _enableEditingView()
+    _updateFrames()
 }
 
 internal fun UITableViewCell._updateFrames() {
-    _updateContentViewFrame()
-    _updateBackgroundViewFrame()
-    _updateSelectedBackgroundViewFrame()
-    _updateSeparatorLineFrame()
-    _updateAccessoryViewFrame()
-    _updateActionsViewFrame()
+    contentView.frame = CGRect(_editingMovement(), 0.0, frame.width, frame.height)
+    backgroundView.frame = CGRect(_editingMovement(), 0.0, frame.width, frame.height)
+    selectedBackgroundView.frame = CGRect(_editingMovement(), 0.0, frame.width, frame.height)
+    (separatorInset ?: (nextResponder as? UITableView)?.separatorInset ?: UIEdgeInsets.zero)?.let {
+        _separatorLine.frame = CGRect(it.left, frame.height - 2.0, frame.width - it.left - it.right + _editingMovement(), 2.0)
+    }
+    _accessoryView.frame = CGRect(frame.width - _accessoryView.frame.width + _editingMovement(), 0.0, _accessoryView.frame.width, frame.height)
+    _accessoryView.subviews.firstOrNull()?.let {
+        it.frame = it.frame.setY((frame.height - it.frame.height) / 2.0)
+    }
+    _editingView.frame = CGRect(frame.width + _editingMovement(), 0.0 , Math.max(0.0, -_editingMovement() + 1.0), frame.height)
 }
 
-internal fun UITableViewCell._editingMovement(): Double {
-    if (editingPanGesture?.state == UIGestureRecognizerState.Began || editingPanGesture?.state == UIGestureRecognizerState.Changed) {
-        return Math.ceil(editingPanGesture?.translation()?.x ?: 0.0)
+private fun UITableViewCell._editingMovement(): Double {
+    if (_editingPanGesture?.state == UIGestureRecognizerState.Began || _editingPanGesture?.state == UIGestureRecognizerState.Changed) {
+        return Math.ceil(_editingPanGesture?.translation()?.x ?: 0.0)
     }
     else if (editing) {
-        return -_actionsView.contentWidth
+        return -_editingView.contentWidth
     }
     return 0.0
 }
@@ -54,44 +59,32 @@ internal fun UITableViewCell._editingMovement(): Double {
  * ContentView
  */
 
-internal fun UITableViewCell._initContentView() {
+private fun UITableViewCell._initContentView() {
     contentView = UIView(context)
-}
-
-internal fun UITableViewCell._updateContentViewFrame() {
-    contentView.frame = CGRect(_editingMovement(), 0.0, frame.width, frame.height)
 }
 
 /**
  * BackgroundView
  */
 
-internal fun UITableViewCell._initBackgroundView() {
+private fun UITableViewCell._initBackgroundView() {
     backgroundView = UIView(context)
     backgroundView.constraint = UIConstraint.full()
     backgroundView.setBackgroundColor(UIColor.whiteColor)
-}
-
-internal fun UITableViewCell._updateBackgroundViewFrame() {
-    backgroundView.frame = CGRect(_editingMovement(), 0.0, frame.width, frame.height)
 }
 
 /**
  * SelectedBackgroundView
  */
 
-internal fun UITableViewCell._initSelectedBackgroundView() {
+private fun UITableViewCell._initSelectedBackgroundView() {
     selectedBackgroundView = UIView(context)
     selectedBackgroundView.constraint = UIConstraint.full()
     selectedBackgroundView.alpha = 0.0f
     selectedBackgroundView.setBackgroundColor(UIColor(0xd9, 0xd9, 0xd9))
 }
 
-internal fun UITableViewCell._updateSelectedBackgroundViewFrame() {
-    selectedBackgroundView.frame = CGRect(_editingMovement(), 0.0, frame.width, frame.height)
-}
-
-internal fun UITableViewCell._resetHighlightedView() {
+internal fun UITableViewCell._resetSelectedBackgroundViewState() {
     selectedBackgroundView.alpha = if (cellSelected || cellHighlighted) 1.0f else 0.0f
 }
 
@@ -99,11 +92,11 @@ internal fun UITableViewCell._resetHighlightedView() {
  * AccessoryView
  */
 
-internal fun UITableViewCell._initAccessoryView() {
+private fun UITableViewCell._initAccessoryView() {
     _accessoryView = UIView(context)
 }
 
-internal fun UITableViewCell._updateAccessoryView() {
+private fun UITableViewCell._updateAccessoryView() {
     lets(_tableView, _indexPath) { _tableView, _indexPath ->
         _tableView.delegate()?.accessoryTypeForRow(_tableView, _indexPath)?.let {
             accessoryType = it
@@ -131,120 +124,11 @@ internal fun UITableViewCell._resetAccessoryView(accessoryType: UITableViewCell.
     }
 }
 
-internal fun UITableViewCell._updateAccessoryViewFrame() {
-    _accessoryView.frame = CGRect(frame.width - _accessoryView.frame.width + _editingMovement(), 0.0, _accessoryView.frame.width, frame.height)
-    _accessoryView.subviews.firstOrNull()?.let {
-        it.frame = it.frame.setY((frame.height - it.frame.height) / 2.0)
-    }
-}
-
-/**
- * ActionsView
- */
-
-internal fun UITableViewCell._initActionsView() {
-    _actionsView = UITableViewCellActionView(context)
-}
-
-internal fun UITableViewCell._enableActionsView() {
-    editingPanGesture?.enabled = false
-    _actionsView.clearViews()
-    lets(_tableView, _indexPath) { tableView, indexPath ->
-        tableView.delegate()?.editActionsForRow(tableView, indexPath)?.let {
-            editingPanGesture?.enabled = it.size > 0
-        }
-    }
-}
-
-internal fun UITableViewCell._resetActionsView() {
-    _actionsView.clearViews()
-    lets(_tableView, _indexPath) { tableView, indexPath ->
-        tableView.delegate()?.editActionsForRow(tableView, indexPath)?.let {
-            _actionsView.resetViews(it.map {
-                return@map it.requestActionView(context, indexPath)
-            })
-        }
-    }
-}
-
-internal fun UITableViewCell._onEditingPanned(sender: UIPanGestureRecognizer) {
-    when (sender.state) {
-        UIGestureRecognizerState.Began -> {
-            _resetActionsView()
-        }
-        UIGestureRecognizerState.Changed -> {
-            layoutSubviews()
-        }
-        UIGestureRecognizerState.Ended, UIGestureRecognizerState.Cancelled, UIGestureRecognizerState.Failed -> {
-            editing = editingPanGesture?.velocity()?.x ?: 0.0 < -200.0 || -Math.ceil(editingPanGesture?.translation()?.x ?: 0.0) > _actionsView.contentWidth * 2 / 3
-            UIViewAnimator.springWithBounciness(1.0, 20.0, Runnable { _updateFrames() }, null)
-            if (editing) {
-                val maskView = UITableViewCellActionMaskView(context)
-                maskView.addGestureRecognizer(UITapGestureRecognizer(this, "endEditing"))
-                maskView.touchesView = _actionsView
-                maskView.frame = _tableView?.frame ?: CGRect(0, 0, 0, 0)
-                _tableView?.superview?.addSubview(maskView)
-                this._actionsViewMaskView = maskView
-            }
-        }
-    }
-}
-
-internal fun UITableViewCell._updateActionsViewFrame() {
-    _actionsView.frame = CGRect(frame.width + _editingMovement(), 0.0 , Math.max(0.0, -_editingMovement() + 1.0), frame.height)
-}
-
-internal class UITableViewCellActionView(context: Context) : UIView(context) {
-
-    var contentWidth = 0.0
-
-    fun clearViews() {
-        subviews.forEach(UIView::removeFromSuperview)
-    }
-
-    fun resetViews(views: List<UITableViewRowActionView>) {
-        views.forEach {
-            addSubview(it)
-        }
-        contentWidth = views.sumByDouble { it.contentWidth }
-    }
-
-    override fun layoutSubviews() {
-        super.layoutSubviews()
-        if (contentWidth <= 0.0) {
-            return
-        }
-        val percentage = frame.width / contentWidth
-        var currentX = 0.0
-        subviews.forEachIndexed { idx, subview ->
-            val subview = (subview as? UITableViewRowActionView) ?: return@forEachIndexed
-            subview.frame = CGRect(currentX, 0.0, subview.contentWidth * percentage + 1.0, frame.height)
-            currentX += subview.contentWidth * percentage
-        }
-    }
-
-}
-
-private class UITableViewCellActionMaskView(context: Context): UIView(context) {
-
-    internal var touchesView: UIView? = null
-
-    override fun hitTest(point: CGPoint, event: MotionEvent): UIView? {
-        touchesView?.let {
-            if (UIViewHelpers.pointInside(it, this.convertPoint(point, it))) {
-                return null
-            }
-        }
-        return super.hitTest(point, event)
-    }
-
-}
-
 /**
  * Separator
  */
 
-internal fun UITableViewCell._initSeparatorLine() {
+private fun UITableViewCell._initSeparatorLine() {
     _separatorLine = UIPixelLine(context)
     _separatorLine.color = UIColor(0xc8, 0xc7, 0xcc)
     _separatorLine.contentInsets = UIEdgeInsets(0.0, 0.0, 1.0, 0.0)
@@ -258,7 +142,7 @@ internal fun UITableViewCell._updateSeparatorLineHiddenState() {
     _separatorLine.hidden = selectionStyle == UITableViewCell.SelectionStyle.Gray && (cellSelected || cellHighlighted || _nextCellSelected)
 }
 
-internal fun UITableViewCell._updateSeparatorLineStyle() {
+private fun UITableViewCell._updateSeparatorLineStyle() {
     (separatorStyle ?: (nextResponder as? UITableView)?.separatorStyle ?: UITableViewCell.SeparatorStyle.SingleLine)?.let {
         when (it) {
             UITableViewCell.SeparatorStyle.None -> _separatorLine.alpha = 0.0f
@@ -267,11 +151,5 @@ internal fun UITableViewCell._updateSeparatorLineStyle() {
     }
     ((nextResponder as? UITableView)?.separatorColor ?: UIColor(0xc8, 0xc7, 0xcc))?.let {
         _separatorLine.color = it
-    }
-}
-
-internal fun UITableViewCell._updateSeparatorLineFrame() {
-    (separatorInset ?: (nextResponder as? UITableView)?.separatorInset ?: UIEdgeInsets.zero)?.let {
-        _separatorLine.frame = CGRect(it.left, frame.height - 2.0, frame.width - it.left - it.right + _editingMovement(), 2.0)
     }
 }

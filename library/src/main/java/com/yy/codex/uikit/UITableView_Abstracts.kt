@@ -62,6 +62,10 @@ abstract class UITableViewDelegateObject: UITableView.UITableViewDelegate {
         return null
     }
 
+    override fun willBeginEditing(tableView: UITableView, indexPath: NSIndexPath) {}
+
+    override fun didEndEditing(tableView: UITableView, indexPath: NSIndexPath) {}
+
     override fun scrollViewDidScroll(scrollView: UIScrollView) {}
 
     override fun scrollViewWillBeginDragging(scrollView: UIScrollView) {}
