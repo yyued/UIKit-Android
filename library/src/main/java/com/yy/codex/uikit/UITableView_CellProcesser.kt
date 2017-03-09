@@ -2,7 +2,6 @@ package com.yy.codex.uikit
 
 import com.yy.codex.foundation.NSLog
 import com.yy.codex.foundation.lets
-import org.jetbrains.annotations.Mutable
 import java.util.*
 
 /**
@@ -20,7 +19,7 @@ internal fun UITableView._updateCellsFrame() {
 internal fun UITableView._requestCell(indexPath: NSIndexPath): UITableViewCell? {
     _cellInstances.toList().forEach {
         it.second.toList().forEach {
-            if (it.cell.indexPath == indexPath) {
+            if (it.cell._indexPath == indexPath) {
                 return it.cell
             }
         }
@@ -49,7 +48,7 @@ internal fun UITableView._updateCells() {
     _markCellReusable(visiblePositions).forEach {
         val visiblePosition = it
         val cell = dataSource.cellForRowAtIndexPath(this, it.indexPath)
-        cell.indexPath = it.indexPath
+        cell._indexPath = it.indexPath
         cell.frame = CGRect(0.0, it.value, frame.width, it.height)
         cell.setSelected(_isCellSelected(cell), false)
         _enqueueCell(cell, it)
@@ -64,7 +63,7 @@ internal fun UITableView._updateCells() {
 
 internal fun UITableView._isCellSelected(cell: UITableViewCell): Boolean {
     indexPathsForSelectedRows.forEach {
-        if (it == cell.indexPath) {
+        if (it == cell._indexPath) {
             return true
         }
     }
@@ -138,7 +137,7 @@ private fun UITableView._markCellReusable(visiblePositions: List<UITableViewCell
                 trimmedPositions.remove(it.cellPosition)
             }
             else {
-                lets(it.cell, it.cell.indexPath) { cell, indexPath ->
+                lets(it.cell, it.cell._indexPath) { cell, indexPath ->
                     delegate()?.let {
                         it.didEndDisplayingCell(this, cell, indexPath)
                     }

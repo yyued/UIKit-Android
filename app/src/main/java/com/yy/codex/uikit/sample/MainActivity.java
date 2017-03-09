@@ -24,6 +24,8 @@ import com.yy.codex.uikit.UITabBarActivity;
 import com.yy.codex.uikit.UITabBarItem;
 import com.yy.codex.uikit.UITableView;
 import com.yy.codex.uikit.UITableViewCell;
+import com.yy.codex.uikit.UITableViewDataSourceObject;
+import com.yy.codex.uikit.UITableViewDelegateObject;
 import com.yy.codex.uikit.UIView;
 import com.yy.codex.uikit.UIViewController;
 
@@ -89,13 +91,8 @@ class TestViewController extends UIViewController {
         final UITableView tableView = new UITableView(getContext());
         tableView.setAlwaysBounceVertical(true);
         tableView.setConstraint(UIConstraint.Companion.full());
-        tableView.setDataSource(new UITableView.UITableViewDataSource() {
-            @Nullable
-            @Override
-            public String titleForFooterInSection(@NotNull UITableView tableView, int section) {
-                return null;
-            }
 
+        tableView.setDataSource(new UITableViewDataSourceObject() {
             @Override
             public int numberOfRowsInSection(@NotNull UITableView tableView, int section) {
                 return 30;
@@ -112,6 +109,9 @@ class TestViewController extends UIViewController {
                     label.setTag("myLabel");
                     label.setFrame(new CGRect(0.0, 0.0, 100.0, 22.0));
                     cell.contentView.addSubview(label);
+                    UIView accessoryView = new UIView(getContext());
+                    accessoryView.setBackgroundColor(UIColor.Companion.getRedColor());
+                    accessoryView.setFrame(new CGRect(0,0,44,22));
                 }
                 UILabel myLabel = (UILabel) cell.findViewWithTag("myLabel");
                 if (myLabel instanceof UILabel) {
@@ -124,87 +124,21 @@ class TestViewController extends UIViewController {
             public int numberOfSections(@NotNull UITableView tableView) {
                 return 3;
             }
-
-            @Nullable
-            @Override
-            public String titleForHeaderInSection(@NotNull UITableView tableView, int section) {
-                return "Header";
-            }
         });
-        tableView.setDelegate(new UITableView.UITableViewDelegate() {
-            @Override
-            public void didEndDisplayingCell(@NotNull UITableView tableView, @NotNull UITableViewCell cell, @NotNull NSIndexPath indexPath) {
 
-            }
+        tableView.setDelegate(new UITableViewDelegateObject() {
 
             @Override
-            public void willDisplayCell(@NotNull UITableView tableView, @NotNull UITableViewCell cell, @NotNull NSIndexPath indexPath) {
-
-            }
-
-            @Override
-            public double heightForFooterInSection(@NotNull UITableView tableView, int section) {
-                return 28;
-            }
-
-            @Nullable
-            @Override
-            public UIView viewForFooterInSection(@NotNull UITableView tableView, int section) {
-                return null;
+            public void didSelectRowAtIndexPath(@NotNull UITableView tableView, @NotNull NSIndexPath indexPath) {
+                super.didSelectRowAtIndexPath(tableView, indexPath);
             }
 
             @Override
             public void didDeselectRowAtIndexPath(@NotNull UITableView tableView, @NotNull NSIndexPath indexPath) {
-
-            }
-
-            @Nullable
-            @Override
-            public UIView viewForHeaderInSection(@NotNull UITableView tableView, int section) {
-                return null;
-            }
-
-            @Override
-            public double heightForRowAtIndexPath(@NotNull UITableView tableView, @NotNull NSIndexPath indexPath) {
-                return 44.0;
-            }
-
-            @Override
-            public void didSelectRowAtIndexPath(@NotNull UITableView tableView, @NotNull NSIndexPath indexPath) {
-                tableView.scrollToRow(new NSIndexPath(0, 12), UITableView.ScrollPosition.Bottom, true);
-                tableView.deselectRow(indexPath, true);
-            }
-
-            @Override
-            public double heightForHeaderInSection(@NotNull UITableView tableView, int section) {
-                return 28;
-            }
-
-            @Override
-            public void scrollViewDidScroll(@NotNull UIScrollView scrollView) {
-
-            }
-
-            @Override
-            public void scrollViewWillBeginDragging(@NotNull UIScrollView scrollView) {
-
-            }
-
-            @Override
-            public void scrollViewDidEndDragging(@NotNull UIScrollView scrollView, boolean willDecelerate) {
-
-            }
-
-            @Override
-            public void scrollViewWillBeginDecelerating(@NotNull UIScrollView scrollView) {
-
-            }
-
-            @Override
-            public void scrollViewDidEndDecelerating(@NotNull UIScrollView scrollView) {
-
+                super.didDeselectRowAtIndexPath(tableView, indexPath);
             }
         });
+
         getView().addSubview(tableView);
         tableView.reloadData();
 

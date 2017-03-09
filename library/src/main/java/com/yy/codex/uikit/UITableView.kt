@@ -30,6 +30,10 @@ open class UITableView : UIScrollView {
         fun viewForFooterInSection(tableView: UITableView, section: Int): UIView?
         fun willDisplayCell(tableView: UITableView, cell: UITableViewCell, indexPath: NSIndexPath)
         fun didEndDisplayingCell(tableView: UITableView, cell: UITableViewCell, indexPath: NSIndexPath)
+        fun accessoryTypeForRow(tableView: UITableView, indexPath: NSIndexPath): UITableViewCell.AccessoryType?
+        fun shouldHighlightRow(tableView: UITableView, indexPath: NSIndexPath): Boolean?
+        fun didHighlightRow(tableView: UITableView, indexPath: NSIndexPath)
+        fun didUnhighlightRow(tableView: UITableView, indexPath: NSIndexPath)
     }
 
     enum class ScrollPosition {
@@ -50,7 +54,7 @@ open class UITableView : UIScrollView {
      * Public
      */
 
-    var rowHeight = 0.0
+    var rowHeight = 44.0
 
     var dataSource: UITableViewDataSource? = null
 
@@ -184,7 +188,7 @@ open class UITableView : UIScrollView {
     }
 
     fun indexPathForCell(cell: UITableViewCell): NSIndexPath? {
-        return _allCells().firstOrNull { it === cell }?.indexPath
+        return _allCells().firstOrNull { it === cell }?._indexPath
     }
 
     fun indexPathsForRowsInRect(rect: CGRect): List<NSIndexPath> {
@@ -192,7 +196,7 @@ open class UITableView : UIScrollView {
     }
 
     fun cellForRowAtIndexPath(indexPath: NSIndexPath): UITableViewCell? {
-        return _allCells().firstOrNull { it.indexPath == indexPath }
+        return _allCells().firstOrNull { it._indexPath == indexPath }
     }
 
     fun visibleCells(): List<UITableViewCell> {

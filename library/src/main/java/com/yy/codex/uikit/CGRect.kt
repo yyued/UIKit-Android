@@ -10,6 +10,8 @@ import android.graphics.RectF
 
 class CGRect(x: Double, y: Double, width: Double, height: Double) {
 
+    constructor(x: Int, y: Int, width: Int, height: Int): this(x.toDouble(), y.toDouble(), width.toDouble(), height.toDouble())
+
     val origin: CGPoint
     val size: CGSize
 
