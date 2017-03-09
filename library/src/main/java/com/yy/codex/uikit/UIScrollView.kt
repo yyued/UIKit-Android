@@ -132,7 +132,7 @@ open class UIScrollView : UIView {
         _scrollerTouchEnded()
     }
 
-    private fun handlePan(panGestureRecognizer: UIPanGestureRecognizer) {
+    protected open fun handlePan(panGestureRecognizer: UIPanGestureRecognizer) {
         _scrollerHandlePan(panGestureRecognizer)
     }
 

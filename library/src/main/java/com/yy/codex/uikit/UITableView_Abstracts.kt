@@ -58,6 +58,10 @@ abstract class UITableViewDelegateObject: UITableView.UITableViewDelegate {
 
     }
 
+    override fun editActionsForRow(tableView: UITableView, indexPath: NSIndexPath): List<UITableViewRowAction>? {
+        return null
+    }
+
     override fun scrollViewDidScroll(scrollView: UIScrollView) {}
 
     override fun scrollViewWillBeginDragging(scrollView: UIScrollView) {}

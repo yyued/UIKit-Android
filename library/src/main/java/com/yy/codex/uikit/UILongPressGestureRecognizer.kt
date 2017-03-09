@@ -38,9 +38,13 @@ class UILongPressGestureRecognizer : UIGestureRecognizer {
             override fun run() {
                 handler.post {
                     if (state != UIGestureRecognizerState.Failed) {
+                        if (delegate?.shouldBegin(self) == false) {
+                            state = UIGestureRecognizerState.Failed
+                            return@post
+                        }
                         state = UIGestureRecognizerState.Began
                         sendActions()
-                        val looper = looper
+                        val looper = _looper
                         if (looper != null) {
                             looper.checkState(self)
                             looper.markFailed()

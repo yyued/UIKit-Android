@@ -15,9 +15,24 @@ internal class UIGestureRecognizerLooper internal constructor(internal var hitTe
     init {
         gestureRecognizers = getGestureRecognizers(hitTestedView)
         for (i in gestureRecognizers.indices) {
-            gestureRecognizers[i].looper = this
+            gestureRecognizers[i]._looper = this
         }
-        gestureRecognizers = gestureRecognizers.sortedWith(Comparator { a, b -> if (a.gesturePriority() > b.gesturePriority()) 1 else -1 })
+        gestureRecognizers = gestureRecognizers.sortedWith(Comparator { a, b ->
+            if (a.gesturePriority() == b.gesturePriority()) {
+                if (a._looperOrder > b._looperOrder) {
+                    return@Comparator 1
+                }
+                else {
+                    return@Comparator -1
+                }
+            }
+            else if (a.gesturePriority() > b.gesturePriority()){
+                return@Comparator 1
+            }
+            else {
+                return@Comparator -1
+            }
+        })
         resetState()
     }
 
@@ -27,6 +42,9 @@ internal class UIGestureRecognizerLooper internal constructor(internal var hitTe
             if (checkState(copyList[i])) {
                 copyList[i].touchesBegan(touches, event)
                 checkState(copyList[i])
+                if (checkBegan(copyList[i]) && !copyList[i].stealable) {
+                    break
+                }
             }
         }
         markFailed()
@@ -38,6 +56,9 @@ internal class UIGestureRecognizerLooper internal constructor(internal var hitTe
             if (checkState(copyList[i])) {
                 copyList[i].touchesMoved(touches, event)
                 checkState(copyList[i])
+                if (checkBegan(copyList[i]) && !copyList[i].stealable) {
+                    break
+                }
             }
         }
         markFailed()
@@ -49,6 +70,9 @@ internal class UIGestureRecognizerLooper internal constructor(internal var hitTe
             if (checkState(copyList[i])) {
                 copyList[i].touchesEnded(touches, event)
                 checkState(copyList[i])
+                if (checkBegan(copyList[i]) && !copyList[i].stealable) {
+                    break
+                }
             }
         }
         markFailed()
@@ -72,6 +96,10 @@ internal class UIGestureRecognizerLooper internal constructor(internal var hitTe
             isFinished = true
         }
         return true
+    }
+
+    internal fun checkBegan(gestureRecognizer: UIGestureRecognizer): Boolean {
+        return gestureRecognizer.state == UIGestureRecognizerState.Began || gestureRecognizer.state == UIGestureRecognizerState.Changed || gestureRecognizer.state == UIGestureRecognizerState.Ended
     }
 
     internal fun markFailed() {
@@ -115,6 +143,7 @@ internal class UIGestureRecognizerLooper internal constructor(internal var hitTe
                 gestureRecognizers.addAll(superGestureRecognizers)
             }
             gestureRecognizers = removeConflictRecognizers(gestureRecognizers.toList()).toMutableList()
+            gestureRecognizers.forEachIndexed { idx, recognizer -> recognizer._looperOrder = idx }
             return gestureRecognizers.toList()
         }
     }

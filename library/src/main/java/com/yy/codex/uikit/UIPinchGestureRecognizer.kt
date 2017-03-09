@@ -31,6 +31,10 @@ class UIPinchGestureRecognizer : UIGestureRecognizer {
             }
             resetScaleInitialPoints()
             resetScale()
+            if (delegate?.shouldBegin(this) == false) {
+                state = UIGestureRecognizerState.Failed
+                return
+            }
             state = UIGestureRecognizerState.Began
             sendActions()
         } else if (state == UIGestureRecognizerState.Began || state == UIGestureRecognizerState.Changed) {

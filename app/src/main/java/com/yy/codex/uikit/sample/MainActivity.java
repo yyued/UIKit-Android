@@ -26,6 +26,7 @@ import com.yy.codex.uikit.UITableView;
 import com.yy.codex.uikit.UITableViewCell;
 import com.yy.codex.uikit.UITableViewDataSourceObject;
 import com.yy.codex.uikit.UITableViewDelegateObject;
+import com.yy.codex.uikit.UITableViewRowAction;
 import com.yy.codex.uikit.UIView;
 import com.yy.codex.uikit.UIViewController;
 
@@ -105,9 +106,10 @@ class TestViewController extends UIViewController {
                 if (cell == null) {
                     NSLog.INSTANCE.log("NULL Cell");
                     cell = new UITableViewCell(getContext(), "Cell");
+                    cell.setAccessoryType(UITableViewCell.AccessoryType.DisclosureIndicator);
                     UILabel label = new UILabel(getContext());
                     label.setTag("myLabel");
-                    label.setFrame(new CGRect(0.0, 0.0, 100.0, 22.0));
+                    label.setFrame(new CGRect(0.0, 0.0, 180.0, 22.0));
                     cell.contentView.addSubview(label);
                     UIView accessoryView = new UIView(getContext());
                     accessoryView.setBackgroundColor(UIColor.Companion.getRedColor());
@@ -115,7 +117,7 @@ class TestViewController extends UIViewController {
                 }
                 UILabel myLabel = (UILabel) cell.findViewWithTag("myLabel");
                 if (myLabel instanceof UILabel) {
-                    myLabel.setText(indexPath.getRow() + "");
+                    myLabel.setText(indexPath.getRow() + "fjkldshklfjhdsjkfhljkdshfjkldsahflkjhadsljkfhadslkjfh");
                 }
                 return cell;
             }
@@ -127,15 +129,28 @@ class TestViewController extends UIViewController {
         });
 
         tableView.setDelegate(new UITableViewDelegateObject() {
-
+            @Nullable
             @Override
-            public void didSelectRowAtIndexPath(@NotNull UITableView tableView, @NotNull NSIndexPath indexPath) {
-                super.didSelectRowAtIndexPath(tableView, indexPath);
+            public List<UITableViewRowAction> editActionsForRow(@NotNull UITableView tableView, @NotNull NSIndexPath indexPath) {
+                ArrayList<UITableViewRowAction> actions = new ArrayList<>();
+                actions.add(new UITableViewRowAction(UITableViewRowAction.Style.Normal, "取消关注", new UITableViewRowAction.Handler() {
+                    @Override
+                    public void trigger(@NotNull UITableViewRowAction action, @NotNull NSIndexPath indexPath) {
+                        NSLog.INSTANCE.log("123");
+                    }
+                }));
+                actions.add(new UITableViewRowAction(UITableViewRowAction.Style.Destructive, "删除", new UITableViewRowAction.Handler() {
+                    @Override
+                    public void trigger(@NotNull UITableViewRowAction action, @NotNull NSIndexPath indexPath) {
+                        NSLog.INSTANCE.log("123");
+                    }
+                }));
+                return actions;
             }
 
             @Override
-            public void didDeselectRowAtIndexPath(@NotNull UITableView tableView, @NotNull NSIndexPath indexPath) {
-                super.didDeselectRowAtIndexPath(tableView, indexPath);
+            public double heightForRowAtIndexPath(@NotNull UITableView tableView, @NotNull NSIndexPath indexPath) {
+                return 66.0;
             }
         });
 

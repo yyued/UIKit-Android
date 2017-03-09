@@ -247,13 +247,35 @@ open class UIView : FrameLayout, UIResponder {
             val oldValue = field
             field = frame
             layoutSubviews()
-            this.x = (frame.origin.x * UIScreen.mainScreen.scale()).toFloat()
-            this.y = (frame.origin.y * UIScreen.mainScreen.scale()).toFloat()
+            var cedX = false
+            (frame.origin.x * UIScreen.mainScreen.scale())?.let {
+                if (Math.ceil(it) - it <= 0.5) {
+                    cedX = true
+                    this.x = Math.ceil(it).toFloat()
+                }
+                else {
+                    cedX = false
+                    this.x = it.toFloat()
+                }
+            }
+            var cedY = false
+            (frame.origin.y * UIScreen.mainScreen.scale())?.let {
+                if (Math.ceil(it) - it <= 0.5) {
+                    cedY = true
+                    this.y = Math.ceil(it).toFloat()
+                }
+                else {
+                    cedY = false
+                    this.y = it.toFloat()
+                }
+            }
             (frame.size.width * UIScreen.mainScreen.scale())?.let {
-                this.minimumWidth = if (Math.ceil(it) - it < 0.1) Math.ceil(it).toInt() else it.toInt()
+                val value = it + (if (cedX) 0.5 else 0.0)
+                this.minimumWidth = if (Math.ceil(value) - value <= 0.5) Math.ceil(value).toInt() else value.toInt()
             }
             (frame.size.height * UIScreen.mainScreen.scale())?.let {
-                this.minimumHeight = if (Math.ceil(it) - it < 0.1) Math.ceil(it).toInt() else it.toInt()
+                val value = it + (if (cedY) 0.5 else 0.0)
+                this.minimumHeight = if (Math.ceil(value) - value <= 0.5) Math.ceil(value).toInt() else value.toInt()
             }
             this.layer.frame = CGRect(0.0, 0.0, frame.size.width, frame.size.height)
             enlargerView?.let { resetEnlargerLayerView() }

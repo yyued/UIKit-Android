@@ -97,22 +97,22 @@ open class UITableViewCell : UIView {
             field = value
             if (value == null) {
                 _accessoryView.subviews.forEach(UIView::removeFromSuperview)
-                _accessoryView.constraint?.width = "0"
-                _accessoryView.constraint?.setNeedsLayout()
-                contentView.constraint?.right = "0"
-                contentView.constraint?.setNeedsLayout()
+                _accessoryView.frame = _accessoryView.frame.setWidth(0.0)
                 layoutSubviews()
                 return
             }
             value?.let {
                 _accessoryView.subviews.forEach(UIView::removeFromSuperview)
-                _accessoryView.constraint?.width = it.frame.width.toString()
-                _accessoryView.constraint?.setNeedsLayout()
-                contentView.constraint?.right = it.frame.width.toString()
-                contentView.constraint?.setNeedsLayout()
+                _accessoryView.frame = _accessoryView.frame.setWidth(it.frame.width)
                 _accessoryView.addSubview(it)
                 layoutSubviews()
             }
+        }
+
+    var editing = false
+        internal set(value) {
+            field = value
+            _tableView?.editing = value
         }
 
     open fun prepareForReuse() {}
@@ -155,6 +155,9 @@ open class UITableViewCell : UIView {
 
     internal lateinit var _accessoryView: UIView
 
+    internal lateinit var _actionsView: UITableViewCellActionView
+    internal var _actionsViewMaskView: UIView? = null
+
     internal var _indexPath: NSIndexPath? = null
 
     internal var _nextCellSelected = false
@@ -168,18 +171,11 @@ open class UITableViewCell : UIView {
             return nextResponder as? UITableView
         }
 
+    internal var editingPanGesture: UIPanGestureRecognizer? = null
+
     override fun init() {
         super.init()
-        _initBackgroundView()
-        addSubview(backgroundView)
-        _initSelectedBackgroundView()
-        addSubview(selectedBackgroundView)
-        _initAccessoryView()
-        addSubview(_accessoryView)
-        _initContentView()
-        addSubview(contentView)
-        _initSeparatorLine()
-        addSubview(_separatorLine)
+        _initControls()
         _initTouches()
     }
 
@@ -188,94 +184,26 @@ open class UITableViewCell : UIView {
         _tableView?.let { it._requestPreviousPointCell(this)?.let(UITableViewCell::_updateSeparatorLineHiddenState) }
     }
 
-    internal fun _updateAppearance() {
-        _updateSeparatorLineStyle()
-        _updateSeparatorLineFrame()
-        _updateSeparatorLineHiddenState()
-        _updateAccessoryView()
-    }
-
     override fun layoutSubviews() {
         super.layoutSubviews()
-        _updateSeparatorLineFrame()
-        _updateAccessoryViewFrame()
-    }
-
-    internal fun _initContentView() {
-        contentView = UIView(context)
-        contentView.constraint = UIConstraint()
-        contentView.constraint?.top = "0"
-        contentView.constraint?.left = "0"
-        contentView.constraint?.bottom = "0"
-        contentView.constraint?.right = "0"
-    }
-
-    internal fun _initBackgroundView() {
-        backgroundView = UIView(context)
-        backgroundView.constraint = UIConstraint.full()
-        backgroundView.setBackgroundColor(UIColor.whiteColor)
-    }
-
-    internal fun _initSelectedBackgroundView() {
-        selectedBackgroundView = UIView(context)
-        selectedBackgroundView.constraint = UIConstraint.full()
-        selectedBackgroundView.alpha = 0.0f
-        selectedBackgroundView.setBackgroundColor(UIColor(0xd9, 0xd9, 0xd9))
-    }
-
-    internal fun _initAccessoryView() {
-        _accessoryView = UIView(context)
-        _accessoryView.constraint = UIConstraint()
-        _accessoryView.constraint?.height = "100%"
-        _accessoryView.constraint?.width = "0"
-        _accessoryView.constraint?.right = "0"
-        _accessoryView.constraint?.centerVertically = true
-    }
-
-    internal fun _updateAccessoryView() {
-        lets(_tableView, _indexPath) { _tableView, _indexPath ->
-            _tableView.delegate()?.accessoryTypeForRow(_tableView, _indexPath)?.let {
-                accessoryType = it
-            }
-        }
-    }
-
-    internal fun _resetAccessoryView(accessoryType: AccessoryType) {
-        when (accessoryType) {
-            AccessoryType.None -> {
-                accessoryView = null
-            }
-            AccessoryType.DisclosureIndicator -> {
-                val imageView = UIImageView(context)
-                imageView.image = UIImage("iVBORw0KGgoAAAANSUhEUgAAAFoAAABaBAMAAADKhlwxAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAAwUExURUdwTMzMzNra2sjIzMjIzMfHzMnJzMfHzMjIzsjIzf///8fHzOLi4sfHzMjIzMfHzAy8PhMAAAAPdFJOUwAKB7+1/V/7VF0Eqwmyp9PtpQYAAABuSURBVFjD7datDYBAAIPRKgIIwgi3Ah7FIijmQDIBEoFGMgBDgS83wtXwk/TTzdMFnHPuGy1BGBd9J6xnXkGgyXQ8i2sBH2jc+A/xKa7b1HE+kmet0I1p02/QlUKjPAQa2AQ64rtAA6svg3PugW6LboLTwj02WgAAAABJRU5ErkJggg==", 3.0)
-                imageView.frame = CGRect(0, 0, 30, 30)
-                accessoryView = imageView
-            }
-            AccessoryType.Checkmark -> {
-                val checkmarkButton = UIButton(context)
-                checkmarkButton.setImage(UIImage("iVBORw0KGgoAAAANSUhEUgAAAFoAAABaAgMAAABFxqmRAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAAMUExURUdwTBV/+xd/+xV++0vg/PkAAAADdFJOUwCAQLcpHQUAAAB3SURBVEjH7ZOxDcAgDATtNB7DGYURskGWSM+KDEOLPgscRbog8eUVJ+sEZnt7y++Y8CjMszGvHbFrsH7CU+ypaqxX+bn+nOgf1vtgfaigPtVQn+p4fWjg9S7dGKdKGCfFcUIcx/WtvSW3t+D25n3ylK/9y/eW3wvxMknyMSaeYAAAAABJRU5ErkJggg==", 3.0), UIControl.State.Normal)
-                checkmarkButton.frame = CGRect(0, 0, 30, 30)
-                accessoryView = checkmarkButton
-            }
-        }
-    }
-
-    internal fun _updateAccessoryViewFrame() {
-        _accessoryView.subviews.firstOrNull()?.let {
-            it.frame = it.frame.setY((frame.height - it.frame.height) / 2.0)
-        }
+        _updateFrames()
     }
 
     internal fun _initTouches() {
+        val editingPanGesture = UIPanGestureRecognizer(this, "onEditingPanned:")
+        this.editingPanGesture = editingPanGesture
+        editingPanGesture.stealer = true
+        editingPanGesture.delegate = object : UIGestureRecognizer.Delegate {
+            override fun shouldBegin(gestureRecognizer: UIGestureRecognizer): Boolean {
+                return Math.abs((gestureRecognizer as UIPanGestureRecognizer).translation().y) < 8.0
+            }
+        }
+        addGestureRecognizer(editingPanGesture)
         val longPressGesture = UILongPressGestureRecognizer(this, "onLongPressed:")
         longPressGesture.minimumPressDuration = 0.10
         longPressGesture.stealable = true
         addGestureRecognizer(longPressGesture)
         addGestureRecognizer(UITapGestureRecognizer(this, "onTapped:"))
-    }
-
-    internal fun _resetHighlightedView() {
-        selectedBackgroundView.alpha = if (cellSelected || cellHighlighted) 1.0f else 0.0f
     }
 
     private fun onTapped(sender: UITapGestureRecognizer) {
@@ -331,6 +259,20 @@ open class UITableViewCell : UIView {
                 tableView.delegate()?.didUnhighlightRow(tableView, indexPath)
             }
         }
+    }
+
+    private fun onEditingPanned(sender: UIPanGestureRecognizer) {
+        _onEditingPanned(sender)
+    }
+
+    private fun endEditing() {
+        editing = false
+        _actionsViewMaskView?.removeFromSuperview()
+        UIViewAnimator.springWithBounciness(1.0, 20.0, Runnable { _updateFrames() }, null)
+    }
+
+    internal fun _endEditing() {
+        endEditing()
     }
 
 }

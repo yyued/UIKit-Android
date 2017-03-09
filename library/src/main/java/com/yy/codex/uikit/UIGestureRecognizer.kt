@@ -15,10 +15,16 @@ import java.util.TimerTask
 
 open class UIGestureRecognizer {
 
-    internal var looper: UIGestureRecognizerLooper? = null
+    interface Delegate {
+        fun shouldBegin(gestureRecognizer: UIGestureRecognizer): Boolean
+    }
+
+    internal var _looper: UIGestureRecognizerLooper? = null
+    internal var _looperOrder = 0
     var enabled = true
     var stealer = false
     var stealable = false
+    var delegate: Delegate? = null
 
     private var actions: List<NSInvocation> = listOf()
     private var triggerBlock: Runnable? = null

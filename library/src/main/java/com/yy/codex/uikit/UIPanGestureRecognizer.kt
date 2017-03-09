@@ -33,6 +33,10 @@ open class UIPanGestureRecognizer : UIGestureRecognizer {
         super.touchesMoved(touches, event)
         if (state == UIGestureRecognizerState.Possible && moveOutOfBounds(touches)) {
             setTranslation(CGPoint(-translation().x, -translation().y))
+            if (delegate?.shouldBegin(this) == false) {
+                state = UIGestureRecognizerState.Failed
+                return
+            }
             state = UIGestureRecognizerState.Began
             sendActions()
         }

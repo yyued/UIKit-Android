@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Build
 import android.support.annotation.RequiresApi
 import android.util.AttributeSet
+import android.view.MotionEvent
 import android.view.View
 import java.util.*
 
@@ -34,6 +35,7 @@ open class UITableView : UIScrollView {
         fun shouldHighlightRow(tableView: UITableView, indexPath: NSIndexPath): Boolean?
         fun didHighlightRow(tableView: UITableView, indexPath: NSIndexPath)
         fun didUnhighlightRow(tableView: UITableView, indexPath: NSIndexPath)
+        fun editActionsForRow(tableView: UITableView, indexPath: NSIndexPath): List<UITableViewRowAction>?
     }
 
     enum class ScrollPosition {
@@ -115,6 +117,13 @@ open class UITableView : UIScrollView {
             field = value
             _allCells().forEach { it._updateAppearance() }
         }
+
+    var editing = false
+        internal set
+
+    fun setEditing(editing: Boolean, animated: Boolean) {
+        this.editing = editing
+    }
 
     fun reloadData() {
         _reloadSectionHeaderFooterView()
