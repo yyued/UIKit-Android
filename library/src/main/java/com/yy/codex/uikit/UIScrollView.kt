@@ -19,12 +19,12 @@ import java.util.TimerTask
 
 open class UIScrollView : UIView {
 
-    open interface UIScrollViewDelegate {
-        fun scrollViewDidScroll(scrollView: UIScrollView)
-        fun scrollViewWillBeginDragging(scrollView: UIScrollView)
-        fun scrollViewDidEndDragging(scrollView: UIScrollView, willDecelerate: Boolean)
-        fun scrollViewWillBeginDecelerating(scrollView: UIScrollView)
-        fun scrollViewDidEndDecelerating(scrollView: UIScrollView)
+    open interface Delegate {
+        fun didScroll(scrollView: UIScrollView)
+        fun willBeginDragging(scrollView: UIScrollView)
+        fun didEndDragging(scrollView: UIScrollView, willDecelerate: Boolean)
+        fun willBeginDecelerating(scrollView: UIScrollView)
+        fun didEndDecelerating(scrollView: UIScrollView)
     }
 
     constructor(context: Context, view: View) : super(context, view) {}
@@ -52,7 +52,7 @@ open class UIScrollView : UIView {
 
     var contentInset = UIEdgeInsets.zero
 
-    open var delegate: UIScrollViewDelegate? = null
+    open var delegate: Delegate? = null
 
     var tracking: Boolean = false
         internal set
@@ -100,7 +100,6 @@ open class UIScrollView : UIView {
     internal lateinit var _verticalScrollIndicator: UIView
     internal var _scrollIndicatorHideAnimation: UIViewAnimation? = null
     internal var _deceleratingCancelled = false
-    internal var _bounceAnimationCancelled = false
 
     override fun init() {
         super.init()

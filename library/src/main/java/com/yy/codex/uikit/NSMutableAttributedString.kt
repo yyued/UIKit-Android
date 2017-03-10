@@ -1,10 +1,6 @@
 package com.yy.codex.uikit
 
-import android.text.BoringLayout
-import android.text.DynamicLayout
-import android.text.Layout
-import android.text.StaticLayout
-import java.util.HashMap
+import java.util.*
 
 /**
  * Created by cuiminghui on 2017/1/9.

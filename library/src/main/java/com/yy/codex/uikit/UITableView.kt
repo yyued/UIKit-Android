@@ -13,7 +13,7 @@ import java.util.*
  */
 open class UITableView : UIScrollView {
 
-    interface UITableViewDataSource {
+    interface DataSource {
         fun numberOfRowsInSection(tableView: UITableView, section: Int): Int
         fun cellForRowAtIndexPath(tableView: UITableView, indexPath: NSIndexPath): UITableViewCell
         fun numberOfSections(tableView: UITableView): Int
@@ -21,7 +21,7 @@ open class UITableView : UIScrollView {
         fun titleForFooterInSection(tableView: UITableView, section: Int): String?
     }
 
-    interface UITableViewDelegate: UIScrollView.UIScrollViewDelegate {
+    interface Delegate : UIScrollView.Delegate {
         fun heightForRowAtIndexPath(tableView: UITableView, indexPath: NSIndexPath): Double
         fun heightForHeaderInSection(tableView: UITableView, section: Int): Double
         fun heightForFooterInSection(tableView: UITableView, section: Int): Double
@@ -60,10 +60,10 @@ open class UITableView : UIScrollView {
 
     var rowHeight = 44.0
 
-    var dataSource: UITableViewDataSource? = null
+    var dataSource: DataSource? = null
 
-    fun delegate(): UITableViewDelegate? {
-        return delegate as? UITableViewDelegate
+    fun delegate(): Delegate? {
+        return delegate as? Delegate
     }
 
     var tableHeaderView: UIView? = null

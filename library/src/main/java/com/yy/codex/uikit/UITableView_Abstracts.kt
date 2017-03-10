@@ -1,6 +1,6 @@
 package com.yy.codex.uikit
 
-abstract class UITableViewDataSourceObject: UITableView.UITableViewDataSource {
+abstract class UITableViewDataSourceObject: UITableView.DataSource {
 
     override fun titleForHeaderInSection(tableView: UITableView, section: Int): String? {
         return null
@@ -12,7 +12,7 @@ abstract class UITableViewDataSourceObject: UITableView.UITableViewDataSource {
 
 }
 
-abstract class UITableViewDelegateObject: UITableView.UITableViewDelegate {
+abstract class UITableViewDelegateObject: UIScrollViewDelegateObject(), UITableView.Delegate {
 
     override fun heightForRowAtIndexPath(tableView: UITableView, indexPath: NSIndexPath): Double {
         return tableView.rowHeight
@@ -65,15 +65,5 @@ abstract class UITableViewDelegateObject: UITableView.UITableViewDelegate {
     override fun willBeginEditing(tableView: UITableView, indexPath: NSIndexPath) {}
 
     override fun didEndEditing(tableView: UITableView, indexPath: NSIndexPath) {}
-
-    override fun scrollViewDidScroll(scrollView: UIScrollView) {}
-
-    override fun scrollViewWillBeginDragging(scrollView: UIScrollView) {}
-
-    override fun scrollViewDidEndDragging(scrollView: UIScrollView, willDecelerate: Boolean) {}
-
-    override fun scrollViewWillBeginDecelerating(scrollView: UIScrollView) {}
-
-    override fun scrollViewDidEndDecelerating(scrollView: UIScrollView) {}
 
 }

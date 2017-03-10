@@ -56,7 +56,7 @@ internal fun UIScrollView._scrollerHandlePan(panGestureRecognizer: UIPanGestureR
         dragging = true
         _trackingPoint = CGPoint(originX, originY)
         panGestureRecognizer.setTranslation(contentOffset)
-        delegate?.let { it.scrollViewWillBeginDragging(this) }
+        delegate?.let { it.willBeginDragging(this) }
         _showScrollIndicator()
     }
     else if (dragging && panGestureRecognizer.state == UIGestureRecognizerState.Changed) {
@@ -73,7 +73,7 @@ internal fun UIScrollView._scrollerHandlePan(panGestureRecognizer: UIPanGestureR
         dragging = false
         tracking = false
         delegate?.let {
-            it.scrollViewDidEndDragging(this, false)
+            it.didEndDragging(this, false)
         }
         val velocity = panGestureRecognizer.velocity()
         if (pagingEnabled) {
@@ -134,7 +134,7 @@ internal fun UIScrollView._setContentOffset(contentOffset: CGPoint, animated: Bo
     } else {
         scrollTo((this.contentOffset.x * UIScreen.mainScreen.scale()).toInt(), (this.contentOffset.y * UIScreen.mainScreen.scale() - contentInset.top).toInt())
         delegate?.let {
-            it.scrollViewDidScroll(this)
+            it.didScroll(this)
         }
         UIViewAnimator.addAnimationState(self, "contentOffset.x", oldValue.x, this.contentOffset.x)
         UIViewAnimator.addAnimationState(self, "contentOffset.y", oldValue.y, this.contentOffset.y)

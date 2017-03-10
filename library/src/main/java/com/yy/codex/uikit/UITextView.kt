@@ -14,13 +14,13 @@ import android.view.View
  */
 class UITextView : UIScrollView, UITextInput.Delegate {
 
-    interface Delegate: UIScrollViewDelegate {
-        fun textViewShouldBeginEditing(textView: UITextView): Boolean
-        fun textViewShouldEndEditing(textView: UITextView): Boolean
-        fun textViewDidBeginEditing(textView: UITextView)
-        fun textViewDidEndEditing(textView: UITextView)
-        fun textViewShouldChangeTextInRange(textView: UITextView, inRange: NSRange, replacementString: String): Boolean
-        fun textViewDidChange(textView: UITextView)
+    interface Delegate: UIScrollView.Delegate {
+        fun shouldBeginEditing(textView: UITextView): Boolean
+        fun shouldEndEditing(textView: UITextView): Boolean
+        fun didBeginEditing(textView: UITextView)
+        fun didEndEditing(textView: UITextView)
+        fun shouldChangeTextInRange(textView: UITextView, inRange: NSRange, replacementString: String): Boolean
+        fun didChange(textView: UITextView)
     }
 
     constructor(context: Context, view: View) : super(context, view) {}
@@ -56,7 +56,7 @@ class UITextView : UIScrollView, UITextInput.Delegate {
             return
         }
         (delegate as? Delegate)?.let {
-            if (!it.textViewShouldBeginEditing(this)) {
+            if (!it.shouldBeginEditing(this)) {
                 return
             }
         }
@@ -64,13 +64,13 @@ class UITextView : UIScrollView, UITextInput.Delegate {
         input.beginEditing()
         showCursorView()
         (delegate as? Delegate)?.let {
-            it.textViewDidBeginEditing(this)
+            it.didBeginEditing(this)
         }
     }
 
     override fun resignFirstResponder() {
         (delegate as? Delegate)?.let {
-            if (!it.textViewShouldEndEditing(this)) {
+            if (!it.shouldEndEditing(this)) {
                 return
             }
         }
@@ -82,7 +82,7 @@ class UITextView : UIScrollView, UITextInput.Delegate {
         super.resignFirstResponder()
         resetLayouts()
         (delegate as? Delegate)?.let {
-            it.textViewDidEndEditing(this)
+            it.didEndEditing(this)
         }
     }
 
@@ -183,28 +183,28 @@ class UITextView : UIScrollView, UITextInput.Delegate {
             resetSelection()
         }
 
-    override fun textDidChanged(onDelete: Boolean) {
+    override fun didChanged(onDelete: Boolean) {
         resetText(onDelete)
         selection?.let {
             selection = null
         }
         (delegate as? Delegate)?.let {
-            it.textViewDidChange(this)
+            it.didChange(this)
         }
     }
 
-    override fun textShouldChange(range: NSRange, replacementString: String): Boolean {
+    override fun shouldChange(range: NSRange, replacementString: String): Boolean {
         (delegate as? Delegate)?.let {
-            return it.textViewShouldChangeTextInRange(this, range, replacementString)
+            return it.shouldChangeTextInRange(this, range, replacementString)
         }
         return true
     }
 
-    override fun textShouldClear(): Boolean {
+    override fun shouldClear(): Boolean {
         return true
     }
 
-    override fun textShouldReturn(): Boolean {
+    override fun shouldReturn(): Boolean {
         return true
     }
 

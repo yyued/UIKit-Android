@@ -18,10 +18,10 @@ import com.yy.codex.foundation.lets
 class UITextInput {
 
     interface Delegate {
-        fun textDidChanged(onDelete: Boolean)
-        fun textShouldChange(range: NSRange, replacementString: String): Boolean
-        fun textShouldClear(): Boolean
-        fun textShouldReturn(): Boolean
+        fun didChanged(onDelete: Boolean)
+        fun shouldChange(range: NSRange, replacementString: String): Boolean
+        fun shouldClear(): Boolean
+        fun shouldReturn(): Boolean
     }
 
     internal var editor: EditText? = null
@@ -39,11 +39,11 @@ class UITextInput {
                 editor?.addTextChangedListener(object : TextWatcher {
                     override fun afterTextChanged(p0: Editable?) {
                         lets(currentOperationRange, p0) { currentOperationRange, p0 ->
-                            if (!delegate.textShouldChange(currentOperationRange, p0.substring(currentOperationRange.location, currentOperationRange.location + currentOperationRange.length))) {
+                            if (!delegate.shouldChange(currentOperationRange, p0.substring(currentOperationRange.location, currentOperationRange.location + currentOperationRange.length))) {
                                 p0.delete(currentOperationRange.location, currentOperationRange.location + currentOperationRange.length)
                             }
                         }
-                        delegate.textDidChanged(currentOperationDeleting)
+                        delegate.didChanged(currentOperationDeleting)
                     }
                     override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
                     override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -51,7 +51,7 @@ class UITextInput {
                     }
                 })
                 editor?.setOnEditorActionListener { p0, p1, p2 ->
-                    return@setOnEditorActionListener delegate.textShouldReturn()
+                    return@setOnEditorActionListener delegate.shouldReturn()
                 }
                 editor?.alpha = 0.0f
                 editor?.clearFocus()
@@ -117,7 +117,7 @@ class UITextInput {
 
     fun clear() {
         view?.let {
-            if (it.textShouldClear()) {
+            if (it.shouldClear()) {
                 editor?.let {
                     val editable = it.text
                     editable.clear()

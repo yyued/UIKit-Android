@@ -18,6 +18,22 @@ import java.util.*
 
 open class UIView : FrameLayout, UIResponder {
 
+    enum class ContentMode {
+        ScaleToFill,
+        ScaleAspectFit, // contents scaled to fit with fixed aspect. remainder is transparent
+        ScaleAspectFill, // contents scaled to fill with fixed aspect. some portion of content may be clipped.
+        Redraw, // redraw on bounds change (calls -setNeedsDisplay).
+        Center, // contents remain same size. positioned adjusted.
+        Top,
+        Bottom,
+        Left,
+        Right,
+        TopLeft,
+        TopRight,
+        BottomLeft,
+        BottomRight
+    }
+
     /* FrameLayout initialize methods */
 
     constructor(context: Context, view: View) : super(context) {

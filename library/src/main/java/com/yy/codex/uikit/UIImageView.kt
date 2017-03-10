@@ -37,7 +37,7 @@ class UIImageView : UIView {
         super.init()
         userInteractionEnabled = false
         wantsLayer = true
-        contentMode = UIViewContentMode.ScaleToFill
+        contentMode = ContentMode.ScaleToFill
     }
 
     /* XML */
@@ -66,19 +66,19 @@ class UIImageView : UIView {
         }
         (initializeAttributes["UIImageView.contentMode"] as? Int)?.let {
             when (it) {
-                0 -> contentMode = UIViewContentMode.ScaleToFill
-                1 -> contentMode = UIViewContentMode.ScaleAspectFit
-                2 -> contentMode = UIViewContentMode.ScaleAspectFill
-                3 -> contentMode = UIViewContentMode.Redraw
-                4 -> contentMode = UIViewContentMode.Center
-                5 -> contentMode = UIViewContentMode.Top
-                6 -> contentMode = UIViewContentMode.Bottom
-                7 -> contentMode = UIViewContentMode.Left
-                8 -> contentMode = UIViewContentMode.Right
-                9 -> contentMode = UIViewContentMode.TopLeft
-                10 -> contentMode = UIViewContentMode.TopRight
-                11 -> contentMode = UIViewContentMode.BottomLeft
-                12 -> contentMode = UIViewContentMode.BottomRight
+                0 -> contentMode = ContentMode.ScaleToFill
+                1 -> contentMode = ContentMode.ScaleAspectFit
+                2 -> contentMode = ContentMode.ScaleAspectFill
+                3 -> contentMode = ContentMode.Redraw
+                4 -> contentMode = ContentMode.Center
+                5 -> contentMode = ContentMode.Top
+                6 -> contentMode = ContentMode.Bottom
+                7 -> contentMode = ContentMode.Left
+                8 -> contentMode = ContentMode.Right
+                9 -> contentMode = ContentMode.TopLeft
+                10 -> contentMode = ContentMode.TopRight
+                11 -> contentMode = ContentMode.BottomLeft
+                12 -> contentMode = ContentMode.BottomRight
             }
         }
     }
@@ -109,32 +109,32 @@ class UIImageView : UIView {
 
     /* Content Mode */
 
-    var contentMode = UIViewContentMode.ScaleToFill
+    var contentMode = ContentMode.ScaleToFill
         set(contentMode) {
             field = contentMode
-            if (contentMode == UIViewContentMode.ScaleToFill) {
+            if (contentMode == ContentMode.ScaleToFill) {
                 this.layer.bitmapGravity = CALayer.BitmapGravity.ScaleToFill
-            } else if (contentMode == UIViewContentMode.ScaleAspectFit) {
+            } else if (contentMode == ContentMode.ScaleAspectFit) {
                 this.layer.bitmapGravity = CALayer.BitmapGravity.ScaleAspectFit
-            } else if (contentMode == UIViewContentMode.ScaleAspectFill) {
+            } else if (contentMode == ContentMode.ScaleAspectFill) {
                 this.layer.bitmapGravity = CALayer.BitmapGravity.ScaleAspectFill
-            } else if (contentMode == UIViewContentMode.TopLeft) {
+            } else if (contentMode == ContentMode.TopLeft) {
                 this.layer.bitmapGravity = CALayer.BitmapGravity.TopLeft
-            } else if (contentMode == UIViewContentMode.Top) {
+            } else if (contentMode == ContentMode.Top) {
                 this.layer.bitmapGravity = CALayer.BitmapGravity.Top
-            } else if (contentMode == UIViewContentMode.TopRight) {
+            } else if (contentMode == ContentMode.TopRight) {
                 this.layer.bitmapGravity = CALayer.BitmapGravity.TopRight
-            } else if (contentMode == UIViewContentMode.Left) {
+            } else if (contentMode == ContentMode.Left) {
                 this.layer.bitmapGravity = CALayer.BitmapGravity.Left
-            } else if (contentMode == UIViewContentMode.Right) {
+            } else if (contentMode == ContentMode.Right) {
                 this.layer.bitmapGravity = CALayer.BitmapGravity.Right
-            } else if (contentMode == UIViewContentMode.Center) {
+            } else if (contentMode == ContentMode.Center) {
                 this.layer.bitmapGravity = CALayer.BitmapGravity.Center
-            } else if (contentMode == UIViewContentMode.BottomLeft) {
+            } else if (contentMode == ContentMode.BottomLeft) {
                 this.layer.bitmapGravity = CALayer.BitmapGravity.BottomLeft
-            } else if (contentMode == UIViewContentMode.Bottom) {
+            } else if (contentMode == ContentMode.Bottom) {
                 this.layer.bitmapGravity = CALayer.BitmapGravity.Bottom
-            } else if (contentMode == UIViewContentMode.BottomRight) {
+            } else if (contentMode == ContentMode.BottomRight) {
                 this.layer.bitmapGravity = CALayer.BitmapGravity.BottomRight
             }
         }

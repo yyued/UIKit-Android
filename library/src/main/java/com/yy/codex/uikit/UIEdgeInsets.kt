@@ -1,7 +1,5 @@
 package com.yy.codex.uikit
 
-import android.content.res.TypedArray
-
 /**
  * Created by cuiminghui on 2017/1/16.
  */

@@ -1,7 +1,6 @@
 package com.yy.codex.uikit
 
 import android.content.res.TypedArray
-import net.objecthunter.exp4j.Expression
 import net.objecthunter.exp4j.ExpressionBuilder
 
 /**

@@ -1,12 +1,10 @@
 package com.yy.codex.uikit
 
-import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.os.Build
 import android.text.*
 import android.text.style.*
-import com.yy.codex.foundation.NSLog
 import java.util.*
 
 /**

@@ -23,4 +23,8 @@ class CGSize(val width: Double, val height: Double) {
         return "CGSize{width=$width,height=$height}"
     }
 
+    companion object {
+        val zero = CGSize(0.0, 0.0)
+    }
+
 }

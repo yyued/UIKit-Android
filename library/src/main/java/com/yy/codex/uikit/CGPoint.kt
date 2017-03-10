@@ -27,4 +27,8 @@ class CGPoint(val x: Double, val y: Double) {
         return "CGPoint{x=$x,y=$y}"
     }
 
+    companion object {
+        val zero = CGPoint(0.0, 0.0)
+    }
+
 }

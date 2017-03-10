@@ -12,13 +12,8 @@ class CGRect(x: Double, y: Double, width: Double, height: Double) {
 
     constructor(x: Int, y: Int, width: Int, height: Int): this(x.toDouble(), y.toDouble(), width.toDouble(), height.toDouble())
 
-    val origin: CGPoint
-    val size: CGSize
-
-    init {
-        this.origin = CGPoint(x, y)
-        this.size = CGSize(width, height)
-    }
+    val origin: CGPoint = CGPoint(x, y)
+    val size: CGSize = CGSize(width, height)
 
     fun toRectF(): RectF {
         return RectF(origin.x.toFloat(), origin.y.toFloat(), (origin.x + size.width).toFloat(), (origin.y + size.height).toFloat())
@@ -34,14 +29,6 @@ class CGRect(x: Double, y: Double, width: Double, height: Double) {
 
     fun toRect(): Rect {
         return Rect(origin.x.toInt(), origin.y.toInt(), (origin.x + size.width).toInt(), (origin.y + size.height).toInt())
-    }
-
-    fun shrinkToRectF(offset: Float): RectF {
-        val top = origin.y.toFloat() + offset
-        val left = origin.x.toFloat() + offset
-        val right = size.width.toFloat() + left - 2 * offset
-        val bottom = size.height.toFloat() + top - 2 * offset
-        return RectF(left, top, right, bottom)
     }
 
     fun shrinkToRectF(offset: Float, point: CGPoint): RectF {
@@ -99,6 +86,8 @@ class CGRect(x: Double, y: Double, width: Double, height: Double) {
                 attributes.getFloat(R.styleable.UIView_frame_height, 0.0f).toDouble()
             )
         }
+
+        val zero = CGRect(0.0, 0.0, 0.0, 0.0)
 
     }
 

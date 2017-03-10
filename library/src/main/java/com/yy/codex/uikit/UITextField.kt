@@ -33,13 +33,13 @@ class UITextField : UIControl, UITextInput.Delegate, UITextInputTraits {
     }
 
     interface Delegate {
-        fun textFieldShouldBeginEditing(textField: UITextField): Boolean
-        fun textFieldDidBeginEditing(textField: UITextField)
-        fun textFieldShouldEndEditing(textField: UITextField): Boolean
-        fun textFieldDidEndEditing(textField: UITextField)
-        fun textFieldShouldChangeCharactersInRange(textField: UITextField, inRange: NSRange, replacementString: String): Boolean
-        fun textFieldShouldClear(textField: UITextField): Boolean
-        fun textFieldShouldReturn(textField: UITextField): Boolean
+        fun shouldBeginEditing(textField: UITextField): Boolean
+        fun didBeginEditing(textField: UITextField)
+        fun shouldEndEditing(textField: UITextField): Boolean
+        fun didEndEditing(textField: UITextField)
+        fun shouldChangeCharactersInRange(textField: UITextField, inRange: NSRange, replacementString: String): Boolean
+        fun shouldClear(textField: UITextField): Boolean
+        fun shouldReturn(textField: UITextField): Boolean
     }
 
     constructor(context: Context, view: View) : super(context, view) {}
@@ -184,7 +184,7 @@ class UITextField : UIControl, UITextInput.Delegate, UITextInputTraits {
 
     override fun becomeFirstResponder() {
         delegate?.let {
-            if (!it.textFieldShouldBeginEditing(this)) {
+            if (!it.shouldBeginEditing(this)) {
                 return
             }
         }
@@ -197,13 +197,13 @@ class UITextField : UIControl, UITextInput.Delegate, UITextInputTraits {
         showCursorView()
         resetLayouts()
         delegate?.let {
-            it.textFieldDidBeginEditing(this)
+            it.didBeginEditing(this)
         }
     }
 
     override fun resignFirstResponder() {
         delegate?.let {
-            if (!it.textFieldShouldEndEditing(this)) {
+            if (!it.shouldEndEditing(this)) {
                 return
             }
         }
@@ -216,7 +216,7 @@ class UITextField : UIControl, UITextInput.Delegate, UITextInputTraits {
         super.resignFirstResponder()
         resetLayouts()
         delegate?.let {
-            it.textFieldDidEndEditing(this)
+            it.didEndEditing(this)
         }
     }
 
@@ -263,7 +263,7 @@ class UITextField : UIControl, UITextInput.Delegate, UITextInputTraits {
         }
     }
 
-    override fun textDidChanged(onDelete: Boolean) {
+    override fun didChanged(onDelete: Boolean) {
         resetText(onDelete)
         selection?.let {
             selection = null
@@ -271,26 +271,26 @@ class UITextField : UIControl, UITextInput.Delegate, UITextInputTraits {
         UIMenuController.sharedMenuController.setMenuVisible(false, true)
     }
 
-    override fun textShouldChange(range: NSRange, replacementString: String): Boolean {
+    override fun shouldChange(range: NSRange, replacementString: String): Boolean {
         if (replacementString == "\n") {
             return false
         }
         delegate?.let {
-            return it.textFieldShouldChangeCharactersInRange(this, range, replacementString)
+            return it.shouldChangeCharactersInRange(this, range, replacementString)
         }
         return true
     }
 
-    override fun textShouldClear(): Boolean {
+    override fun shouldClear(): Boolean {
         delegate?.let {
-            return it.textFieldShouldClear(this)
+            return it.shouldClear(this)
         }
         return true
     }
 
-    override fun textShouldReturn(): Boolean {
+    override fun shouldReturn(): Boolean {
         delegate?.let {
-            return it.textFieldShouldReturn(this)
+            return it.shouldReturn(this)
         }
         return false
     }
