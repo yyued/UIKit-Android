@@ -16,6 +16,17 @@ internal fun UITableView._updateCellsFrame() {
     }
 }
 
+internal fun UITableView._reloadData() {
+    _lastVisibleHash = ""
+    _reloadSectionHeaderFooterView()
+    _reloadCellCaches()
+    _reloadContentSize()
+    _markCellReusable(listOf())
+    _updateCells()
+    _updateTableHeaderFooterViewFrame()
+    _updateSectionHeaderFooterFrame()
+}
+
 internal fun UITableView._requestCell(indexPath: NSIndexPath): UITableViewCell? {
     _cellInstances.toList().forEach {
         it.second.toList().forEach {
@@ -132,11 +143,12 @@ private fun UITableView._markCellReusable(visiblePositions: List<UITableViewCell
     }
     _cellInstances.toList().forEach {
         it.second.toList().forEach {
-            it.isBusy = visibleMapping[it.cellPosition] == true
+            it.isBusy = it.cellPosition != null && visibleMapping[it.cellPosition!!] == true
             if (it.isBusy) {
                 trimmedPositions.remove(it.cellPosition)
             }
             else {
+                it.cellPosition = null
                 lets(it.cell, it.cell._indexPath) { cell, indexPath ->
                     delegate()?.let {
                         it.didEndDisplayingCell(this, cell, indexPath)
@@ -148,4 +160,4 @@ private fun UITableView._markCellReusable(visiblePositions: List<UITableViewCell
     return trimmedPositions.toList()
 }
 
-internal class UITableViewReusableCell(val cell: UITableViewCell, var cellPosition: UITableViewCellPosition, var isBusy: Boolean)
+internal class UITableViewReusableCell(val cell: UITableViewCell, var cellPosition: UITableViewCellPosition?, var isBusy: Boolean)

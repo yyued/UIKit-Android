@@ -47,6 +47,17 @@ open class UITableView : UIScrollView {
         Bottom,
     }
 
+    enum class RowAnimation {
+        Fade,
+        Right,
+        Left,
+        Top,
+        Bottom,
+        None,
+        Middle,
+        Automatic,
+    }
+
     constructor(context: Context, view: View) : super(context, view) {}
     constructor(context: Context) : super(context) {}
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {}
@@ -124,12 +135,7 @@ open class UITableView : UIScrollView {
         internal set
 
     fun reloadData() {
-        _reloadSectionHeaderFooterView()
-        _reloadCellCaches()
-        _reloadContentSize()
-        _updateCells()
-        _updateTableHeaderFooterViewFrame()
-        _updateSectionHeaderFooterFrame()
+        _reloadData()
     }
 
     override fun didMoveToSuperview() {
@@ -229,6 +235,33 @@ open class UITableView : UIScrollView {
         }
     }
 
+    fun beginUpdates() {
+        _currentUpdateOperation = UITableViewUpdateOperation()
+    }
+
+    fun endUpdates() {
+        _updateData()
+        _currentUpdateOperation = null
+    }
+
+    fun insertRows(indexPaths: List<NSIndexPath>, animation: RowAnimation) {
+        indexPaths.forEach {
+            _currentUpdateOperation?.operations?.add(UITableViewUpdateOperation.OperationEntity(UITableViewUpdateOperation.OperationType.Insert, it, animation))
+        }
+    }
+
+    fun deleteRows(indexPaths: List<NSIndexPath>, animation: RowAnimation) {
+        indexPaths.forEach {
+            _currentUpdateOperation?.operations?.add(UITableViewUpdateOperation.OperationEntity(UITableViewUpdateOperation.OperationType.Delete, it, animation))
+        }
+    }
+
+    fun reloadRows(indexPaths: List<NSIndexPath>, animation: RowAnimation) {
+        indexPaths.forEach {
+            _currentUpdateOperation?.operations?.add(UITableViewUpdateOperation.OperationEntity(UITableViewUpdateOperation.OperationType.Reload, it, animation))
+        }
+    }
+
     /**
      * Private Props
      */
@@ -238,5 +271,6 @@ open class UITableView : UIScrollView {
     internal var _cellInstances: HashMap<String, MutableList<UITableViewReusableCell>> = hashMapOf()
     internal var _sectionsHeaderView: List<UITableViewSectionHeaderFooterViewWrapper?> = listOf()
     internal var _sectionsFooterView: List<UITableViewSectionHeaderFooterViewWrapper?> = listOf()
+    internal var _currentUpdateOperation: UITableViewUpdateOperation? = null
 
 }

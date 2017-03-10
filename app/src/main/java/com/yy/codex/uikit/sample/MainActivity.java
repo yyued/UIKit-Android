@@ -87,6 +87,10 @@ class TestViewController extends UIViewController {
     public void viewDidLoad() {
         super.viewDidLoad();
         setTitle("Test");
+
+        final Boolean[] reloaded = {false};
+
+
         getNavigationItem().setRightBarButtonItem(new UIBarButtonItem("Next", this, "handleNextButtonTapped"));
 
         final UITableView tableView = new UITableView(getContext());
@@ -96,6 +100,9 @@ class TestViewController extends UIViewController {
         tableView.setDataSource(new UITableViewDataSourceObject() {
             @Override
             public int numberOfRowsInSection(@NotNull UITableView tableView, int section) {
+                if (reloaded[0] && section == 0) {
+                    return 31;
+                }
                 return 30;
             }
 
@@ -117,7 +124,12 @@ class TestViewController extends UIViewController {
                 }
                 UILabel myLabel = (UILabel) cell.findViewWithTag("myLabel");
                 if (myLabel instanceof UILabel) {
-                    myLabel.setText(indexPath.getRow() + "fjkldshklfjhdsjkfhljkdshfjkldsahflkjhadsljkfhadslkjfh");
+                    if (reloaded[0] && indexPath.getSection() == 0 && indexPath.getRow() == 0) {
+                        myLabel.setText("Inserted!");
+                    }
+                    else {
+                        myLabel.setText("Samples");
+                    }
                 }
                 return cell;
             }
@@ -168,6 +180,18 @@ class TestViewController extends UIViewController {
         footerView.setFrame(new CGRect(0.0, 0.0, 0.0, 44.0));
         footerView.setBackgroundColor(UIColor.Companion.getRedColor());
         tableView.setTableFooterView(footerView);
+
+        postDelay(new Runnable() {
+            @Override
+            public void run() {
+                tableView.beginUpdates();
+                ArrayList<NSIndexPath> indexPaths = new ArrayList();
+                indexPaths.add(new NSIndexPath(0, 0));
+                tableView.insertRows(indexPaths, UITableView.RowAnimation.Automatic);
+                reloaded[0] = true;
+                tableView.endUpdates();
+            }
+        }, 3000);
 
     }
 
